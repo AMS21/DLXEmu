@@ -1,0 +1,10 @@
+path_classifiers:
+  docs:
+    - docs
+  test:
+    - tests
+  library:
+    - external
+
+queries:
+  - include: "*"

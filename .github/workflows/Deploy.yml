@@ -1,0 +1,56 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  gh_pages:
+    runs-on: ubuntu-latest
+
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: "2"
+      EM_CACHE_FOLDER: 'emsdk-cache'
+      EM_VERSION: "2.0.12"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: recursive
+
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v8
+        with:
+          version: ${{ env.EM_VERSION }}
+          actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
+
+      - name: Install cmake
+        uses: lukka/get-cmake@v3.19.2
+
+      - name: Build
+        run: |
+          mkdir -p build
+          cd build
+
+          emcmake cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Release
+          emmake cmake --build . --clean-first --target DLXEmu
+
+          mv bin/DLXEmu.html bin/index.html
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v3.0.2
+        with:
+          gpg-private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          passphrase: ${{ secrets.BOT_KEY_PASSPHRASE }}
+          git-user-signingkey: true
+          git-commit-gpgsign: true
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          BRANCH: gh-pages
+          FOLDER: build/bin
+          GIT_CONFIG_NAME: AMS21Bot
+          GIT_CONFIG_EMAIL: AMS21Bot.github@gmail.com

@@ -1,0 +1,401 @@
+name: ContinousFuzzing
+on:
+  schedule:
+    - cron: '0 0/6 * * *' # Every 6 hours
+  push:
+    branches:
+      - 'fuzz/**'
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    env:
+      LLVM_VERSION: "11"
+      CMAKE_BUILD_PARALLEL_LEVEL: "2"
+      CTEST_PARALLEL_LEVEL: "2"
+      CTEST_OUTPUT_ON_FAILURE: "ON"
+      TOTAL_RUN_TIME: "14400" # 4 Hours
+      ASAN_OPTIONS: "strict_string_checks=1:detect_odr_violation=2:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=true:detect_invalid_pointer_pairs=3:detect_leaks=1"
+      UBSAN_OPTIONS: "print_stacktrace=1"
+      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,nullability -fno-sanitize-recover=undefined,nullability -g -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        fuzz_target: ["fuzz_parser", "fuzz_execution"]
+
+    steps:
+      - name: Setup Git
+        run: |
+          git config --global user.name "AMS21Bot"
+          git config --global user.email "AMS21Bot.github@gmail.com"
+          git config --global pull.rebase false
+
+          echo "AUTHOR=AMS21Bot <AMS21Bot.github@gmail.com>" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: recursive
+          path: DLXEmu-App
+          token: ${{ secrets.PAT }}
+
+      - name: Display last commit
+        run: |
+          cd DLXEmu-App
+
+          git log --max-count=1
+
+      - name: Install cmake
+        uses: lukka/get-cmake@v3.19.2
+
+      - name: Install
+        run: |
+          # Add clang repo
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${{ env.LLVM_VERSION }} main"
+
+          # Update repo list
+          sudo apt-get update -m
+
+          # Install clang++
+          sudo apt-get install "clang-${{ env.LLVM_VERSION }}" g++-multilib -y
+
+          # export compiler
+          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+
+      - name: Configure build directory
+        run: |
+          cd DLXEmu-App
+
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDLXEMU_FUZZ_BUILD=ON -DCMAKE_CXX_FLAGS="${{ env.FUZZING_BUILD_FLAGS }}"
+
+      - name: Build
+        run: |
+          cd DLXEmu-App
+
+          cd build
+          cmake --build . --clean-first --target ${{ matrix.fuzz_target }} generate_dictionary_app
+
+          echo "BINARY_DIR=${{ github.workspace }}/DLXEmu-App/build/bin" >> $GITHUB_ENV
+          echo "FUZZER=${{ github.workspace }}/DLXEmu-App/build/bin/${{ matrix.fuzz_target }}" >> $GITHUB_ENV
+
+      - name: Checkout Corpus
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: "AMS21/DLXEmu-Corpus"
+          path: DLXEmu-Corpus
+          token: ${{ secrets.PAT }}
+
+      - name: Setup Corpus
+        run: echo "CORPUS_ROOT_DIR=$GITHUB_WORKSPACE/DLXEmu-Corpus" >> $GITHUB_ENV
+
+      - name: Setup Fuzzer
+        run: |
+          mkdir -p fuzzing
+          cd fuzzing
+
+          echo "FUZZING_DIR=$GITHUB_WORKSPACE/fuzzing" >> $GITHUB_ENV
+
+          # Generate dictionary
+          $BINARY_DIR/generate_dictionary_app
+
+          if [ ! -f "Dictionary.txt" ]; then
+            echo "Failed to generate Dictionary.txt"
+            exit 1
+          else
+            echo "Sucessfully genreated the Dictionary"
+            echo "Dictionary:"
+            cat Dictionary.txt
+          fi
+
+          # Only run for 20 seconds when pushing
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TOTAL_RUN_TIME=20
+          fi
+
+          fuzz_args="-max_total_time=$TOTAL_RUN_TIME -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -dict=Dictionary.txt"
+
+          if [ "${{ matrix.fuzz_target }}" = "fuzz_execution" ]; then
+            fuzz_args="$fuzz_args -only_ascii=1"
+          fi
+
+          echo "FUZZ_ARGUMENTS=$fuzz_args" >> $GITHUB_ENV
+          echo "Fuzzing arguments: $fuzz_args"
+
+          local_corpus_dir="$CORPUS_ROOT_DIR/${{ matrix.fuzz_target }}"
+          echo "LOCAL_CORPUS_DIR=$local_corpus_dir" >> $GITHUB_ENV
+          echo "Local corpus directory: $local_corpus_dir"
+
+          # Create require directories
+          mkdir -p TempCorpus
+          mkdir -p "$local_corpus_dir/Corpus"
+          mkdir -p "$local_corpus_dir/Crash"
+          mkdir -p "$local_corpus_dir/Timeout"
+          mkdir -p "$CORPUS_ROOT_DIR/Seed"
+
+          all_input_corpus=$(find $CORPUS_ROOT_DIR -type d -iname "Corpus" -printf "%p ")
+          echo "Found existing input corpuses: $all_input_corpus"
+
+          echo "INPUT_CORPUS=$CORPUS_ROOT_DIR/Seed $all_input_corpus" >> $GITHUB_ENV
+
+      - name: Run Fuzzer
+        continue-on-error: true
+        id: fuzzing
+        run: |
+          cd fuzzing
+
+          # Fuzz the target
+          $FUZZER TempCorpus $INPUT_CORPUS $FUZZ_ARGUMENTS |& tee fuzz_run.log
+          exit ${PIPESTATUS[0]}
+
+      - name: Print fuzz_run.log
+        run: cat $FUZZING_DIR/fuzz_run.log
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v3.0.2
+        with:
+          gpg-private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          passphrase: ${{ secrets.BOT_KEY_PASSPHRASE }}
+          git-user-signingkey: true
+          git-commit-gpgsign: true
+          workdir: DLXEmu-App
+
+      - name: Handle crash
+        if: steps.fuzzing.outcome == 'failure'
+        run: |
+            cd $FUZZING_DIR
+
+            # List crash file
+            crash=$(find . -maxdepth 1 -type f -iname "crash-*")
+            if [ -z "$crash" ]; then
+              echo "No crash file found"
+              is_crash=0
+            else
+              is_crash=1
+              err_name="Crash"
+            fi
+
+            # Search for timeout file
+            timeout=$(find . -maxdepth 1 -type f -iname "timeout-*")
+            if [ -z $timeout ]; then
+              echo "No timeout file found"
+              is_timeout=0
+            else
+              is_timeout=1
+              err_name="Timeout"
+              crash=$timeout
+            fi
+
+            if [ "$is_crash" = 0 && "$is_timeout" = 0 ]; then
+              echo "ERROR: No crash and no timeout must be another problem"
+              exit 1
+            fi
+
+            crash_size=$(stat --printf="%s" $crash)
+
+            echo "Found $err_name \"$crash\" with $crash_size bytes:"
+            cat $crash
+
+            # Minimize crash
+            $FUZZER -minimize_crash=1 -runs=500000 -timeout=10 -max_total_time=5400 $crash || true
+            if [ ! "${PIPESTATUS[0]}" = 0 ]; then
+              echo "WARN: Failed to minimize $err_name"
+              rm minimized-from-* -v || true
+            fi
+
+            # Get the smallest file
+            minimized_crash=$(find . -maxdepth 1 -type f \( -iname "minimized-from-*" -or -iname "crash-*" -or -iname "timeout-*" \) -printf '%s %p\n' | sort -n | head -1 | cut -f2- -d" ")
+            minimized_crash_size=$(stat --printf="%s" $minimized_crash)
+
+            if [ "$crash_size" = "$minimized_crash_size" ]; then
+              echo "Failed to minimize further"
+            else
+              echo "Minimized $err_name \"$minimized_crash\" from $crash_size to $minimized_crash_size bytes:"
+              cat $minimized_crash
+            fi
+
+            checksum=$(sha1sum $minimized_crash | cut -f1 -d" ")
+
+            # Check if file already exists
+            if [ -f "$LOCAL_CORPUS_DIR/$err_name/$err_name-$checksum" ]; then
+              echo "$err_name \"$err_name-$checksum\" already exists"
+              exit 0
+            fi
+
+            # Build commit message
+            echo "[$err_name] Add $err_name $checksum" >> commit_message
+            echo "" >> commit_message
+            echo "GitHub Action log: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> commit_message
+
+            # Commit crash
+            cd $CORPUS_ROOT_DIR
+
+            for i in {1..5}; do
+              echo "Push try $i"
+
+              git reset --hard
+              git pull -ff
+
+              # Copy minimized crash to Corpus
+              cp "$FUZZING_DIR/$minimized_crash" "$LOCAL_CORPUS_DIR/$err_name/$err_name-$checksum"
+
+              git add ${{ matrix.fuzz_target }}
+              git status
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" --file $FUZZING_DIR/commit_message
+              git push -u origin main || true
+
+              if [ "${PIPESTATUS[0]}" = 0 ]; then
+                echo "Sucessfully pushed after $i tries"
+                break
+              else
+                if [ "$i" = 5]; then
+                  echo "Failed to push after 5 retries"
+                  exit 1
+                fi
+              fi
+            done
+
+            # Create GitHub issue
+            title="$err_name: ${{ matrix.fuzz_target }} $checksum"
+            # Body
+            echo "New $err_name discovered by the ${{ matrix.fuzz_target }} fuzzer." >> issue_body
+            echo "" >> issue_body
+            echo "Faulting input [download]($GITHUB_SERVER_URL/AMS21/DLXEmu-Corpus/blob/main/${{ matrix.fuzz_target }}/$err_name/$err_name-$checksum):" >> issue_body
+            echo "" >> issue_body
+            echo "\`\`\`" >> issue_body
+            cat $FUZZING_DIR/$minimized_crash >> issue_body
+            echo "\`\`\`" >> issue_body
+            echo "" >> issue_body
+            echo "Log lines [full log]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)" >> issue_body
+            echo "<details>" >> issue_body
+            echo "" >> issue_body
+            echo "\`\`\`" >> issue_body
+            $FUZZER $FUZZING_DIR/$minimized_crash 2>> issue_body || true
+            echo "\`\`\`" >> issue_body
+            echo "" >> issue_body
+            echo "</details>" >> issue_body
+            echo "" >> issue_body
+            echo "Original log:" >> issue_body
+            echo "<details>" >> issue_body
+            echo "" >> issue_body
+            echo "\`\`\`" >> issue_body
+            cat $FUZZING_DIR/fuzz_run.log | tail -n 50 >> issue_body
+            echo "\`\`\`" >> issue_body
+            echo "" >> issue_body
+            echo "</details>" >> issue_body
+
+            # Sanitize string
+            body=$(sed '/^#/d' issue_body) # Remove lines starting with #
+            body=${body//\\/\\\\} # Escape the \ character
+            body=${body//\"/\\\"} # Escape the " character
+            body=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\r\\n/g' <<< "$body") # Replace newlines with \r\n
+
+            data="{\"title\": \"$title\", \"body\": \"$body\", \"labels\": [\"bug\", \"fuzzer\"], \"assignees\": [\"AMS21\"]}"
+
+            # Make API call
+            curl -u "AMS21Bot:${{ secrets.PAT }}" -X POST -H "Accept: application/vnd.github.v3+json" $GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues -d "$data"
+
+      - name: Merge corpus
+        run: |
+          mkdir -p $FUZZING_DIR/MergeCorpus
+
+          # Merge all our corpuses
+          $FUZZER $FUZZING_DIR/MergeCorpus $FUZZING_DIR/TempCorpus $INPUT_CORPUS -merge=1
+
+          # Update
+          cd $CORPUS_ROOT_DIR
+
+          for i in {1..5}; do
+            echo "Push try $i"
+
+            git reset --hard
+            git pull -ff
+
+            # Remove all old files
+            mkdir -p $LOCAL_CORPUS_DIR/Corpus
+            rm $LOCAL_CORPUS_DIR/Corpus/* -v || true
+
+            # Copy merged files
+            cp $FUZZING_DIR/MergeCorpus/* --target-directory $LOCAL_CORPUS_DIR/Corpus --force || true
+
+            git status
+
+            git_dirty=$(git status -s)
+            if [ -z "$git_dirty" ]; then
+              echo "No Corpus changes detected"
+              break
+            else
+              git add ${{ matrix.fuzz_target }}
+              git status
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Corpus] '$(date)' Automatic corpus update"
+              git push -u origin main || true
+
+              if [ "${PIPESTATUS[0]}" = 0 ]; then
+                echo "Sucessfully pushed after $i tries"
+                break
+              else
+                if [ "$i" = 5]; then
+                  echo "Failed to push after 5 retries"
+                  exit 1
+                fi
+              fi
+            fi
+          done
+
+      - name: Generate Coverage reports
+        env:
+          LLVM_PROFILE_FILE: "profile-%p.profraw"
+        run: |
+          cd DLXEmu-App
+          cd build
+
+          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-O0 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fprofile-instr-generate -fcoverage-mapping" ..
+          cmake --build . --clean-first --target ${{ matrix.fuzz_target }}
+
+          # Generate coverage data
+          find $LOCAL_CORPUS_DIR -type f -exec bash -c '$FUZZER ${0}' {} \;
+
+          llvm-profdata-${{ env.LLVM_VERSION }} merge -sparse $(find . -iname "*.profraw" -type f) -o coverage.profdata
+
+          files=$(find $GITHUB_WORKSPACE/DLXEmu-App/DLXLib -iname "*.hpp" -or -iname "*.cpp" -printf "%p ")
+
+          # Generate coverage reports
+          llvm-cov-${{ env.LLVM_VERSION }} show "$FUZZER" -instr-profile=coverage.profdata $files                               > $FUZZING_DIR/coverage.info
+          llvm-cov-${{ env.LLVM_VERSION }} show "$FUZZER" -instr-profile=coverage.profdata $files --format html                 > $FUZZING_DIR/coverage.html
+          llvm-cov-${{ env.LLVM_VERSION }} report "$FUZZER" -instr-profile=coverage.profdata $files -show-instantiation-summary > $FUZZING_DIR/coverage.report
+
+          cd $CORPUS_ROOT_DIR
+
+          for i in {1..5}; do
+            echo "Push try $i"
+
+            git reset --hard
+            git pull -ff
+
+            # Copy coverage files
+            cp $FUZZING_DIR/coverage.* --target-directory $LOCAL_CORPUS_DIR --force || true
+
+            git_dirty=$(git status -s)
+            if [ -z "$git_dirty" ]; then
+              echo "No coverage changes detected"
+              break
+            else
+              git add ${{ matrix.fuzz_target }}
+              git status
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Coverage] '$(date)' Automatic coverage update"
+              git push -u origin main || true
+
+              if [ "${PIPESTATUS[0]}" = 0 ]; then
+                echo "Sucessfully pushed after $i tries"
+                break
+              else
+                if [ "$i" = 5]; then
+                  echo "Failed to push after 5 retries"
+                  exit 1
+                fi
+              fi
+            fi
+          done

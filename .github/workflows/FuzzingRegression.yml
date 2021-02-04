@@ -1,0 +1,84 @@
+name: Fuzzing
+
+on:
+  push:
+    branches-ignore:
+      - 'fuzz/**'
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    env:
+      LLVM_VERSION: "11"
+      CMAKE_BUILD_PARALLEL_LEVEL: "2"
+      CTEST_PARALLEL_LEVEL: "2"
+      CTEST_OUTPUT_ON_FAILURE: "ON"
+      ASAN_OPTIONS: "strict_string_checks=1:detect_odr_violation=2:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=true:detect_invalid_pointer_pairs=3:detect_leaks=1"
+      UBSAN_OPTIONS: "print_stacktrace=1"
+      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,nullability -fno-sanitize-recover=undefined,nullability -g -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: recursive
+          path: DLXEmu-App
+
+      - name: Checkout Corpus
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: "AMS21/DLXEmu-Corpus"
+          path: DLXEmu-Corpus
+
+      - name: Install cmake
+        uses: lukka/get-cmake@v3.19.2
+
+      - name: Install
+        run: |
+          # Add clang repo
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${{ env.LLVM_VERSION }} main"
+
+          # Update repo list
+          sudo apt-get update -m
+
+          # Install clang++
+          sudo apt-get install "clang-${{ env.LLVM_VERSION }}" g++-multilib -y
+
+          # export compiler
+          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+
+      - name: Configure build directory
+        run: |
+          cd DLXEmu-App
+
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDLXEMU_FUZZ_BUILD=ON -DCMAKE_CXX_FLAGS="${{ env.FUZZING_BUILD_FLAGS }}"
+
+      - name: Build
+        run: |
+          cd DLXEmu-App
+
+          cd build
+          cmake --build . --clean-first
+
+          echo "BINARY_DIR=${{ github.workspace }}/DLXEmu-App/build/bin" >> $GITHUB_ENV
+
+      - name: Setup Corpus
+        run: echo "CORPUS_ROOT_DIR=$GITHUB_WORKSPACE/DLXEmu-Corpus" >> $GITHUB_ENV
+
+      - name: Run Fuzzer
+        run: |
+          # Find all files
+          files=$(find $CORPUS_ROOT_DIR -type f \( -iname "Crash-*" -or -iname "Timeout-*" \) -printf "%p ")
+          echo "Found regression tests: $files"
+
+          if [ -z "$files" ]; then
+            echo "No regression test found!"
+            exit 0
+          fi
+
+          # Run the fuzzer on all previous crashes and timeouts
+          $BINARY_DIR/fuzz_regression -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 $files

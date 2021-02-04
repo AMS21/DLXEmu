@@ -1,0 +1,201 @@
+name: Windows
+
+on:
+  push:
+    branches-ignore:
+      - 'fuzz/**'
+  pull_request:
+
+jobs:
+  Build:
+    runs-on: windows-latest
+
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: "2"
+      CTEST_PARALLEL_LEVEL: "2"
+      CTEST_OUTPUT_ON_FAILURE: "ON"
+      CMAKE_GENERATOR: 'Ninja'
+      # Sanitizers
+      ASAN_OPTIONS: "strict_string_checks=true:detect_odr_violation=2:detect_stack_use_after_return=true:check_initialization_order=true:strict_init_order=true:detect_invalid_pointer_pairs=3"
+      TSAN_OPTIONS: "force_seq_cst_atomics=1"
+      UBSAN_OPTIONS: "print_stacktrace=1"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - { compiler: cl }
+          #- { compiler: g++ }
+          - { compiler: clang++ }
+          #- { compiler: clang++, sanitizer: "ubsan" }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: recursive
+
+      - name: Install cmake
+        uses: lukka/get-cmake@v3.19.2
+
+      - name: Install
+        shell: powershell
+        run: |
+          # Install scoop
+          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+
+          # Install required compilers
+          if ("${{ matrix.cfg.compiler }}".StartsWith("clang")) {
+            # Clang
+            scoop install llvm --global
+            echo "CXX=${{ matrix.cfg.compiler }}" >> $GITHUB_ENV
+            echo "C:\ProgramData\scoop\apps\llvm\current\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          }
+          elseif ("${{ matrix.cfg.compiler }}" -eq "g++") {
+            # GCC
+            scoop install gcc --global
+            echo "CXX=${{ matrix.cfg.compiler }}" >> $GITHUB_ENV
+            echo "C:\ProgramData\scoop\apps\gcc\current\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          }
+
+          scoop install ninja --global
+
+      - name: Setup msvc dev
+        if: matrix.cfg.compiler == 'cl'
+        uses: ilammy/msvc-dev-cmd@v1.5.0
+
+      - name: Configure build directory
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..
+
+      - name: Configure Sanitizers
+        shell: bash
+        run: |
+          cd build
+
+          # Address Sanitizer
+          if [ "${{ matrix.cfg.sanitizer }}" = "asan" ]; then
+            cmake .. -DENABLE_SANITIZER_ADDRESS=ON            -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fno-omit-frame-pointer -fno-common -g"
+
+          # Leak Sanitizer
+          elif [ "${{ matrix.cfg.sanitizer }}" = "lsan" ]; then
+            cmake .. -DENABLE_SANITIZER_LEAK=ON               -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fno-omit-frame-pointer -g"
+
+          # Memory Sanitizer
+          elif [ "${{ matrix.cfg.sanitizer }}" = "msan" ]; then
+            cmake .. -DENABLE_SANITIZER_MEMORY=ON             -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fsanitize-memory-track-origins=2 -fsanitize-memory-use-after-dtor -fno-omit-frame-pointer -g"
+
+          # Thread Sanitizer
+          elif [ "${{ matrix.cfg.sanitizer }}" = "tsan" ]; then
+            cmake .. -DENABLE_SANITIZER_THREAD=ON             -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fno-omit-frame-pointer -g"
+
+          # Undefined Behavior Sanitizer
+          elif [ "${{ matrix.cfg.sanitizer }}" = "ubsan" ]; then
+            cmake .. -DENABLE_SANITIZER_UNDEFINED_BEHAVIOR=ON -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fno-omit-frame-pointer -g"
+
+          # No Sanitizer
+          else
+            echo Running without sanitizer
+          fi
+
+      - name: Build Debug
+        if: matrix.cfg.sanitizer == 0
+        shell: bash
+        run: |
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Debug
+          cmake --build . --config "Debug" --clean-first
+          ctest . -C Debug
+
+      - name: Build RelWithDebInfo
+        run: |
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          cmake --build . --config "RelWithDebInfo" --clean-first
+          ctest . -C RelWithDebInfo
+
+      - name: Build Release
+        run: |
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --config "Release" --clean-first
+          ctest . -C Release
+
+  Warnings:
+    name: "Warnings ${{ matrix.cfg.compiler }}"
+    runs-on: windows-latest
+
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: "2"
+      CMAKE_GENERATOR: 'Ninja'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - { compiler: cl, error_format: "%f(%l,%c): warning %m" }
+          #- { compiler: g++, error_format: "%f:%l:%c: warning: %m" }
+          - { compiler: clang++, error_format: "%f:%l:%c: warning: %m" }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: recursive
+
+      - uses: reviewdog/action-setup@v1.0.2
+        with:
+          reviewdog_version: latest
+
+      - name: Install cmake
+        uses: lukka/get-cmake@v3.19.2
+
+      - name: Install
+        shell: powershell
+        run: |
+          # Install scoop
+          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+
+          # Install required compilers
+          if ("${{ matrix.cfg.compiler }}".StartsWith("clang")) {
+            # Clang
+            scoop install llvm --global
+            echo "CXX=${{ matrix.cfg.compiler }}" >> $GITHUB_ENV
+            echo "C:\ProgramData\scoop\apps\llvm\current\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          }
+          elseif ("${{ matrix.cfg.compiler }}" -eq "g++") {
+            # GCC
+            scoop install gcc --global
+            echo "CXX=${{ matrix.cfg.compiler }}" >> $GITHUB_ENV
+            echo "C:\ProgramData\scoop\apps\gcc\current\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          }
+
+          scoop install ninja --global
+
+      - name: Setup msvc dev
+        if: matrix.cfg.compiler == 'cl'
+        uses: ilammy/msvc-dev-cmd@v1.5.0
+
+      - name: Generate warnings
+        shell: bash
+        run: |
+          # Build
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          cmake --build . --config "RelWithDebInfo" --clean-first 2> build.log
+
+          # Filter out warnings for external dependencies
+          cat build.log | grep -Ev "DLXEmu/external" > build_filtered.log || true
+
+          # Print logs
+          cat build_filtered.log
+
+      - name: ReviewDog check
+        shell: bash
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat build/build_filtered.log | reviewdog -efm="${{ matrix.cfg.error_format }}" -diff="git diff" -reporter=github-check -name "Windows ${{ matrix.cfg.compiler }} warnings" -level warning
