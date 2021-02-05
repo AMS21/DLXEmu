@@ -44,7 +44,7 @@ namespace dlx
 
         void ExecuteInstruction(const Instruction& inst);
 
-        void LoadProgram(ParsedProgram* programm);
+        void LoadProgram(ParsedProgram& programm);
 
         [[nodiscard]] phi::ObserverPtr<ParsedProgram> GetCurrentProgramm() const noexcept;
 

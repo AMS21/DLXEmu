@@ -18,7 +18,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "ADD R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
@@ -59,7 +59,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "ADD R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
@@ -100,7 +100,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "ADDU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, unsigned_max);
@@ -130,7 +130,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SUB R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
@@ -160,7 +160,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SUB R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
@@ -201,7 +201,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SUBU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 0u);
@@ -242,7 +242,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "MULT R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
@@ -283,7 +283,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "MULT R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
@@ -313,7 +313,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "MULTU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, unsigned_max);
@@ -332,7 +332,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "DIV R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 5);
@@ -345,7 +345,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "DIVI R1 R2 #0");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 5);
@@ -360,7 +360,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "DIVU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
@@ -373,7 +373,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "DIVUI R1 R2 #0");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
@@ -389,7 +389,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SLL R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
@@ -417,7 +417,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SLA R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
@@ -448,7 +448,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SRL R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
@@ -476,7 +476,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SRA R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
@@ -507,7 +507,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "J label");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -518,7 +518,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "JAL label");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -532,7 +532,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "JR R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 1);
 
@@ -552,7 +552,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "JALR R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 1);
 
@@ -574,7 +574,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "LW R1 #4");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -584,7 +584,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "LW R1 #-4");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -594,7 +594,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "LW R1 #5000");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -604,7 +604,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "LW R1 4(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -614,7 +614,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "LW R1 -4(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -624,7 +624,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "LW R1 5000(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -637,7 +637,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SW #4 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -647,7 +647,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SW #-4 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -657,7 +657,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SW #5000 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -667,7 +667,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SW 4(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -677,7 +677,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SW -4(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -687,7 +687,7 @@ TEST_CASE("Operation exceptions")
         res = dlx::Parser::Parse(lib, "SW 5000(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -707,7 +707,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "ADD R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -725,7 +725,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "ADDI R1 R2 #30");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -741,7 +741,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "ADDU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
@@ -759,7 +759,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "ADDUI R1 R2 #19");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
@@ -775,7 +775,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SUB R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 50);
@@ -793,7 +793,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SUBI R1 R2 #25");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 50);
@@ -809,7 +809,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SUBU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 50u);
@@ -825,7 +825,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SUBUI R1 R2 #25");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 50u);
@@ -841,7 +841,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "MULT R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -859,7 +859,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "MULTI R1 R2 #3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -875,7 +875,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "MULTU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
@@ -893,7 +893,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "MULTUI R1 R2 #3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
@@ -909,7 +909,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "DIV R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 6);
@@ -934,7 +934,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "DIVI R1 R2 #2");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 6);
@@ -948,7 +948,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "DIVI R1 R2 #0");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 6);
@@ -963,7 +963,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "DIVU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 6u);
@@ -988,7 +988,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "DIVUI R1 R2 #2");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 6u);
@@ -1003,7 +1003,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "DIVUI R1 R2 #0");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
         CHECK(proc.IsHalted());
@@ -1014,7 +1014,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SLL R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -1032,7 +1032,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SLLI R1 R2 #2");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -1048,7 +1048,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SRL R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -1076,7 +1076,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SRLI R1 R2 #2");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -1100,7 +1100,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SLA R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -1118,7 +1118,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SLAI R1 R2 #2");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -1134,7 +1134,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SRA R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2,
@@ -1166,7 +1166,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SRAI R1 R2 #1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2,
@@ -1194,7 +1194,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "AND R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
@@ -1212,7 +1212,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "ANDI R1 R2 #5");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
@@ -1228,7 +1228,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "OR R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
@@ -1246,7 +1246,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "ORI R1 R2 #8");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
@@ -1262,7 +1262,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "XOR R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
@@ -1280,7 +1280,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "XORI R1 R2 #7");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
@@ -1296,7 +1296,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SLT R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1324,7 +1324,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SLTI R1 R2 #3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -1348,7 +1348,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SGT R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1376,7 +1376,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SGTI R1 R2 #3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 4);
@@ -1400,7 +1400,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SLE R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -1438,7 +1438,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SLEI R1 R2 #3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 4);
@@ -1470,7 +1470,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SGE R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1508,7 +1508,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SGEI R1 R2 #3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 4);
@@ -1540,7 +1540,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SEQ R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1568,7 +1568,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SEQI R1 R2 #3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1592,7 +1592,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SNE R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -1620,7 +1620,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SNEI R1 R2 #3");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -1652,7 +1652,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, data);
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 0);
@@ -1681,7 +1681,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, data);
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 5);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
@@ -1710,7 +1710,7 @@ TEST_CASE("Processor instructions")
         res              = dlx::Parser::Parse(lib, data);
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
 
@@ -1731,7 +1731,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, data);
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 2);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 9999999);
@@ -1754,7 +1754,7 @@ TEST_CASE("Processor instructions")
         res              = dlx::Parser::Parse(lib, data);
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R31, 9999999);
@@ -1777,7 +1777,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, data);
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 2);
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 9999999);
@@ -1794,7 +1794,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LB R1 #1000");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
@@ -1808,7 +1808,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LB R1 1000(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
@@ -1825,7 +1825,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LBU R1 #1000");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
@@ -1839,7 +1839,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LBU R1 1000(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
@@ -1856,7 +1856,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LH R1 #1000");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
@@ -1870,7 +1870,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LH R1 1000(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
@@ -1887,7 +1887,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LHU R1 #1000");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
@@ -1901,7 +1901,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LHU R1 1000(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
@@ -1918,7 +1918,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LW R1 #1000");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
@@ -1932,7 +1932,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LW R1 1000(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
@@ -1949,7 +1949,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LWU R1 #1000");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
@@ -1963,7 +1963,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "LWU R1 1000(R0)");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
@@ -1980,7 +1980,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SB #1000 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 21);
         proc.ClearMemory();
@@ -1994,7 +1994,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SB 1000(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 21);
         proc.ClearMemory();
@@ -2011,7 +2011,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SBU #1000 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 21u);
         proc.ClearMemory();
@@ -2025,7 +2025,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SBU 1000(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 21u);
         proc.ClearMemory();
@@ -2042,7 +2042,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SH #1000 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 21);
         proc.ClearMemory();
@@ -2056,7 +2056,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SH 1000(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 21);
         proc.ClearMemory();
@@ -2073,7 +2073,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SHU #1000 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 21u);
         proc.ClearMemory();
@@ -2087,7 +2087,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SHU 1000(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 21u);
         proc.ClearMemory();
@@ -2104,7 +2104,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SW #1000 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 21);
         proc.ClearMemory();
@@ -2118,7 +2118,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SW 1000(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 21);
         proc.ClearMemory();
@@ -2135,7 +2135,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SWU #1000 R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 21u);
         proc.ClearMemory();
@@ -2149,7 +2149,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "SWU 1000(R0) R1");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 21u);
         proc.ClearMemory();
@@ -2166,7 +2166,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "TRAP");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -2178,7 +2178,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "HALT");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -2190,7 +2190,7 @@ TEST_CASE("Processor instructions")
         res = dlx::Parser::Parse(lib, "NOP");
         REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(&res);
+        proc.LoadProgram(res);
 
         proc.ExecuteCurrentProgram();
 
@@ -2207,7 +2207,7 @@ TEST_CASE("R0 is read only")
     res = dlx::Parser::Parse(lib, "ADDI R0 R0 #4");
     REQUIRE(res.m_ParseErrors.empty());
 
-    proc.LoadProgram(&res);
+    proc.LoadProgram(res);
 
     proc.ExecuteCurrentProgram();
 

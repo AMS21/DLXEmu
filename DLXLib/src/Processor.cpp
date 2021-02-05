@@ -72,9 +72,9 @@ namespace dlx
         inst.Execute(*this);
     }
 
-    void Processor::LoadProgram(ParsedProgram* programm)
+    void Processor::LoadProgram(ParsedProgram& programm)
     {
-        m_CurrentProgram = programm;
+        m_CurrentProgram = &programm;
 
         m_ProgramCounter = 0u;
         m_Halted         = false;

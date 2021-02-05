@@ -16,7 +16,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     dlx::ParsedProgram program = dlx::Parser::Parse(lib, source);
 
     // Run it
-    processor.LoadProgram(&program);
+    processor.LoadProgram(program);
     processor.ExecuteCurrentProgram();
 
     return 0;
