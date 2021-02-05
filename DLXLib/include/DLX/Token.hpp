@@ -1,9 +1,9 @@
 #pragma once
 
 #include "DLX/OpCode.hpp"
+#include <Phi/Core/Types.hpp>
 #include <string>
 #include <string_view>
-#include <Phi/Core/Types.hpp>
 
 namespace dlx
 {
@@ -26,15 +26,15 @@ namespace dlx
         };
 
     public:
-        Token(Type type, std::string_view text, phi::u32 line_number, phi::u32 column);
+        Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column);
 
         [[nodiscard]] Type GetType() const noexcept;
 
         [[nodiscard]] std::string_view GetTypeName() const noexcept;
 
-        [[nodiscard]] phi::u32 GetLineNumber() const noexcept;
+        [[nodiscard]] phi::u64 GetLineNumber() const noexcept;
 
-        [[nodiscard]] phi::u32 GetColumn() const noexcept;
+        [[nodiscard]] phi::u64 GetColumn() const noexcept;
 
         [[nodiscard]] phi::usize GetLength() const noexcept;
 
@@ -47,7 +47,7 @@ namespace dlx
     private:
         Type             m_Type;
         std::string_view m_Text;
-        phi::u32         m_LineNumber;
-        phi::u32         m_Column;
+        phi::u64         m_LineNumber;
+        phi::u64         m_Column;
     };
 } // namespace dlx

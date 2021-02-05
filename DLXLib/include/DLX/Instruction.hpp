@@ -11,7 +11,7 @@ namespace dlx
     public:
         explicit Instruction(const InstructionInfo& info);
 
-        void SetArgument(phi::usize argument_number, InstructionArg argument);
+        void SetArgument(phi::u8 argument_number, InstructionArg argument);
 
         std::string DebugInfo() const noexcept;
 

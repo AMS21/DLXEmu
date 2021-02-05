@@ -9,12 +9,7 @@
 #include <algorithm>
 #include <optional>
 
-#undef PHI_LOG_ERROR
-#undef PHI_LOG_INFO
-#undef PHI_LOG_DEBUG
-#define PHI_LOG_ERROR(...) PHI_EMPTY_MACRO()
-#define PHI_LOG_INFO(...)  PHI_EMPTY_MACRO()
-#define PHI_LOG_DEBUG(...) PHI_EMPTY_MACRO()
+using namespace phi::literals;
 
 namespace dlx
 {
@@ -61,7 +56,7 @@ namespace dlx
         return true;
     }
 
-    Token ParseToken(std::string_view token, phi::u32 line_number, phi::u32 column)
+    Token ParseToken(std::string_view token, phi::u64 line_number, phi::u64 column)
     {
         if (token.at(0) == '#' && token.size() > 1)
         {
@@ -87,8 +82,8 @@ namespace dlx
         std::string current_token;
         current_token.reserve(10);
 
-        phi::u32 current_line_number{1u};
-        phi::u32 token_begin{0u};
+        phi::u64 current_line_number{1u};
+        phi::u64 token_begin{0u};
 
         phi::Boolean parsing_comment{false};
 
@@ -107,11 +102,11 @@ namespace dlx
                 }
 
                 // Otherwise a new line separates tokens
-                tokens.emplace_back(ParseToken(
-                        str.substr(token_begin.get(), current_token.length()), current_line_number,
-                        static_cast<std::uint32_t>(token_begin.get())));
+                tokens.emplace_back(
+                        ParseToken(str.substr(token_begin.get(), current_token.length()),
+                                   current_line_number, token_begin));
 
-                token_begin = static_cast<std::uint32_t>(i.get());
+                token_begin = i;
 
                 tokens.emplace_back(Token::Type::NewLine, str.substr(token_begin.get(), 1),
                                     current_line_number, token_begin);
@@ -125,7 +120,7 @@ namespace dlx
             {
                 if (current_token.empty())
                 {
-                    token_begin = static_cast<std::uint32_t>(i.get());
+                    token_begin = i;
                 }
 
                 parsing_comment = true;
@@ -171,7 +166,7 @@ namespace dlx
                         else
                         {
                             // Orphan colon
-                            token_begin = static_cast<std::uint32_t>(i.get());
+                            token_begin = i;
 
                             tokens.emplace_back(Token::Type::Colon,
                                                 str.substr(token_begin.get(), 1),
@@ -205,7 +200,7 @@ namespace dlx
                                 break;
                         }
 
-                        token_begin = static_cast<std::uint32_t>(i.get());
+                        token_begin = i;
 
                         tokens.emplace_back(type, str.substr(token_begin.get(), 1),
                                             current_line_number, token_begin);
@@ -214,7 +209,7 @@ namespace dlx
                     default:
                         if (current_token.empty())
                         {
-                            token_begin = static_cast<std::uint32_t>(i.get());
+                            token_begin = i;
                         }
 
                         // simply append the character
@@ -285,7 +280,8 @@ namespace dlx
         switch (token.GetType())
         {
             case Token::Type::IntegerLiteral: {
-                if (!static_cast<int>(expected_argument_type & ArgumentType::AddressDisplacement))
+                if (!ArgumentTypeIncludes(expected_argument_type,
+                                          ArgumentType::AddressDisplacement))
                 {
                     AddParseError(program,
                                   fmt::format("Expected {} but got address displacement",
@@ -328,7 +324,7 @@ namespace dlx
                     return {};
                 }
 
-                // second token is the address
+                // Second token is the address
                 IntRegisterID reg_id = StringToIntRegister(
                         {second_token.GetText().data(), second_token.GetText().size()});
 
@@ -344,13 +340,6 @@ namespace dlx
                     return {};
                 }
 
-                if (!static_cast<int>(expected_argument_type & ArgumentType::AddressDisplacement))
-                {
-                    AddParseError(program,
-                                  "Parsed address displacement but expected something else");
-                    return {};
-                }
-
                 index += 3u;
 
                 PHI_LOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
@@ -363,7 +352,7 @@ namespace dlx
 
                 if (reg_id != IntRegisterID::None)
                 {
-                    if (!static_cast<int>(expected_argument_type & ArgumentType::IntRegister))
+                    if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::IntRegister))
                     {
                         AddParseError(program,
                                       fmt::format("Got IntRegister but expected '{}'",
@@ -378,7 +367,7 @@ namespace dlx
                 }
 
                 // Parse as Label
-                if (!static_cast<int>(expected_argument_type & ArgumentType::Label))
+                if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::Label))
                 {
                     AddParseError(program,
                                   fmt::format("Got Label but expected '{}'",
@@ -399,7 +388,7 @@ namespace dlx
                 return ConstructInstructionArgLabel(token.GetText());
             }
             case Token::Type::ImmediateInteger: {
-                if (!static_cast<int>(expected_argument_type & ArgumentType::ImmediateInteger))
+                if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::ImmediateInteger))
                 {
                     AddParseError(program,
                                   fmt::format("Got ImmediateInteger but expected '{}'",
@@ -506,15 +495,12 @@ namespace dlx
                     const InstructionInfo& info = lib.LookUp(opcode);
 
                     // Make sure we got no problems here
-                    PHI_ASSERT(info.GetArgumentType(static_cast<std::uint8_t>(0)) !=
-                               ArgumentType::Unknown);
-                    PHI_ASSERT(info.GetArgumentType(static_cast<std::uint8_t>(0)) !=
-                               ArgumentType::Unknown);
-                    PHI_ASSERT(info.GetArgumentType(static_cast<std::uint8_t>(0)) !=
-                               ArgumentType::Unknown);
+                    PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
+                    PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
+                    PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
                     PHI_ASSERT(info.GetExecutor());
 
-                    phi::u32 number_of_argument_required = info.GetNumberOfRequiredArguments();
+                    phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
                     PHI_LOG_INFO("Instruction requires {} arguments",
                                  number_of_argument_required.get());
 
@@ -522,8 +508,7 @@ namespace dlx
                     Instruction instruction(info);
 
                     // Parse arguments
-                    for (phi::u8 argument_num{static_cast<std::uint8_t>(0u)};
-                         argument_num < number_of_argument_required;)
+                    for (phi::u8 argument_num{0_u8}; argument_num < number_of_argument_required;)
                     {
                         // Get next token
                         if (!has_one_more_token(tokens, index))

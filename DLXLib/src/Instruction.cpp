@@ -1,7 +1,7 @@
 #include "DLX/Instruction.hpp"
 
-#include <Phi/Core/Assert.hpp>
 #include "DLX/InstructionArg.hpp"
+#include <Phi/Core/Assert.hpp>
 
 namespace dlx
 {
@@ -9,7 +9,7 @@ namespace dlx
         : m_Info(info)
     {}
 
-    void Instruction::SetArgument(phi::usize argument_number, InstructionArg argument)
+    void Instruction::SetArgument(phi::u8 argument_number, InstructionArg argument)
     {
         PHI_ASSERT(argument_number < 3u);
 
@@ -18,10 +18,10 @@ namespace dlx
             case 0u:
                 m_Arg1 = argument;
                 break;
-            case 1:
+            case 1u:
                 m_Arg2 = argument;
                 break;
-            case 2:
+            case 2u:
                 m_Arg3 = argument;
                 break;
             default:

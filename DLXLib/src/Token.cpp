@@ -1,11 +1,11 @@
 #include "DLX/Token.hpp"
 
-#include <string>
 #include <magic_enum.hpp>
+#include <string>
 
 namespace dlx
 {
-    Token::Token(Type type, std::string_view text, phi::u32 line_number, phi::u32 column)
+    Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column)
         : m_Type{type}
         , m_Text{text}
         , m_LineNumber{line_number}
@@ -22,12 +22,12 @@ namespace dlx
         return magic_enum::enum_name(m_Type);
     }
 
-    phi::u32 Token::GetLineNumber() const noexcept
+    phi::u64 Token::GetLineNumber() const noexcept
     {
         return m_LineNumber;
     }
 
-    phi::u32 Token::GetColumn() const noexcept
+    phi::u64 Token::GetColumn() const noexcept
     {
         return m_Column;
     }
@@ -49,8 +49,8 @@ namespace dlx
 
     std::string Token::DebugInfo() const noexcept
     {
-        std::string pos_info =
-                "(" + std::to_string(GetLineNumber().get()) + ":" + std::to_string(GetColumn().get()) + ")";
+        std::string pos_info = "(" + std::to_string(GetLineNumber().get()) + ":" +
+                               std::to_string(GetColumn().get()) + ")";
 
         switch (m_Type)
         {

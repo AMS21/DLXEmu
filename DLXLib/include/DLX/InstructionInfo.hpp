@@ -45,6 +45,13 @@ namespace dlx
                                          static_cast<underlying_t>(rhs));
     }
 
+    constexpr phi::Boolean ArgumentTypeIncludes(ArgumentType type, ArgumentType test) noexcept
+    {
+        using underlying_t = std::underlying_type_t<ArgumentType>;
+
+        return static_cast<underlying_t>(type & test) != 0;
+    }
+
     using InstructionExecutor =
             std::add_pointer_t<void(Processor& processor, const InstructionArg& arg1,
                                     const InstructionArg& arg2, const InstructionArg& arg3)>;
