@@ -137,6 +137,9 @@ namespace dlx
 
         switch (exception)
         {
+            case Exception::None:
+                PHI_ASSERT_NOT_REACHED();
+                return;
             case Exception::DivideByZero:
                 m_Halted = true;
                 PHI_LOG_ERROR("Division through zero");
