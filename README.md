@@ -10,3 +10,4 @@
 [![codecov](https://codecov.io/gh/AMS21/DLXEmu/branch/main/graph/badge.svg?token=NXREAITGZL)](https://codecov.io/gh/AMS21/DLXEmu)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a755d342cc6c43a29f47c09fe9d5a9df)](https://www.codacy.com/gh/AMS21/DLXEmu/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AMS21/DLXEmu&amp;utm_campaign=Badge_Grade)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/AMS21/DLXEmu.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/AMS21/DLXEmu/context:cpp)
+![Coverity Scan](https://img.shields.io/coverity/scan/22573)
