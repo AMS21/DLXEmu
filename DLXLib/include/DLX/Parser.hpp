@@ -16,10 +16,9 @@ namespace dlx
 
     struct ParsedProgram
     {
-        std::vector<Instruction>                     m_Instructions;
-        // TODO: Do we really need to have a string as the key? Would a string_view be enough
-        std::unordered_map<std::string, std::size_t> m_JumpData;
-        std::vector<ParseError>                      m_ParseErrors;
+        std::vector<Instruction>                            m_Instructions;
+        std::unordered_map<std::string_view, std::uint32_t> m_JumpData;
+        std::vector<ParseError>                             m_ParseErrors;
     };
 
     class Parser

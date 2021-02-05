@@ -62,8 +62,8 @@ namespace dlx
 
         MemoryBlock m_MemoryBlock;
 
-        phi::usize m_ProgramCounter{0u};
-        phi::usize m_NextProgramCounter{0u};
+        phi::u32 m_ProgramCounter{0u};
+        phi::u32 m_NextProgramCounter{0u};
         phi::usize m_MaxNumberOfSteps{10'000u};
 
     private:
@@ -74,5 +74,7 @@ namespace dlx
         Exception m_LastRaisedException{Exception::None};
 
         phi::Boolean m_Halted{false};
+
+        RegisterAccessType m_CurrentInstructionAccessType{RegisterAccessType::Ignored};
     };
 } // namespace dlx

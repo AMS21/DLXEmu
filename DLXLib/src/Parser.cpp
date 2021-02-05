@@ -468,10 +468,10 @@ namespace dlx
                     // Check if the last character of the identifier is a colon
                     if (current_token.GetText().at(current_token.GetText().size() - 1) == ':')
                     {
-                        std::string label_name = current_token.GetTextString().substr(
+                        std::string_view label_name = current_token.GetText().substr(
                                 0, current_token.GetText().size() - 1);
 
-                        program.m_JumpData[label_name] = program.m_Instructions.size();
+                        program.m_JumpData[label_name] = static_cast<std::uint32_t>(program.m_Instructions.size());
 
                         PHI_LOG_INFO("Added jump label {} -> {}", label_name,
                                      program.m_Instructions.size());

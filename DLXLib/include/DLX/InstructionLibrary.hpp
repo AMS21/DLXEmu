@@ -18,9 +18,9 @@ namespace dlx
 
         const InstructionInfo& LookUp(OpCode instruction) const noexcept;
 
-    private:
+    protected:
         void InitInstruction(OpCode opcode, ArgumentType arg1, ArgumentType arg2, ArgumentType arg3,
-                             InstructionExecutor executor);
+                             RegisterAccessType register_access_type, InstructionExecutor executor);
 
     private:
         std::array<InstructionInfo, static_cast<std::size_t>(OpCode::NUMBER_OF_ELEMENTS)>

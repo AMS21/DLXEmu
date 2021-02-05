@@ -2163,7 +2163,7 @@ TEST_CASE("Processor instructions")
 
     SECTION("TRAP")
     {
-        res = dlx::Parser::Parse(lib, "TRAP");
+        res = dlx::Parser::Parse(lib, "TRAP #1");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);

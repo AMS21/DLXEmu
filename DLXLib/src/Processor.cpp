@@ -4,6 +4,22 @@
 
 namespace dlx
 {
+    static phi::Boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
+                                                  RegisterAccessType access)
+    {
+        PHI_ASSERT(access == RegisterAccessType::Signed || access == RegisterAccessType::Unsigned);
+
+        switch (expected_access)
+        {
+            case RegisterAccessType::Ignored:
+                return true;
+            case RegisterAccessType::None:
+                return false;
+            default:
+                return expected_access == access;
+        }
+    }
+
     Processor::Processor()
         : m_MemoryBlock(1000u, 1000u)
     {
@@ -35,16 +51,31 @@ namespace dlx
 
     phi::i32 Processor::IntRegisterGetSignedValue(IntRegisterID id) const
     {
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Signed))
+        {
+            PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
         return GetIntRegister(id).GetSignedValue();
     }
 
     phi::u32 Processor::IntRegisterGetUnsignedValue(IntRegisterID id) const
     {
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Unsigned))
+        {
+            PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
         return GetIntRegister(id).GetUnsignedValue();
     }
 
     void Processor::IntRegisterSetSignedValue(IntRegisterID id, phi::i32 value)
     {
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Signed))
+        {
+            PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
         IntRegister& reg = GetIntRegister(id);
 
         if (reg.IsReadOnly())
@@ -57,6 +88,11 @@ namespace dlx
 
     void Processor::IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value)
     {
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Unsigned))
+        {
+            PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
         IntRegister& reg = GetIntRegister(id);
 
         if (reg.IsReadOnly())
@@ -69,6 +105,8 @@ namespace dlx
 
     void Processor::ExecuteInstruction(const Instruction& inst)
     {
+        m_CurrentInstructionAccessType = inst.m_Info.GetRegisterAccessType();
+
         inst.Execute(*this);
     }
 
@@ -78,6 +116,7 @@ namespace dlx
 
         m_ProgramCounter = 0u;
         m_Halted         = false;
+        m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
     }
 
     phi::ObserverPtr<ParsedProgram> Processor::GetCurrentProgramm() const noexcept

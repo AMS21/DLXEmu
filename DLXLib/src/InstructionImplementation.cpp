@@ -35,17 +35,17 @@ namespace dlx
 
     static void JumpToRegister(Processor& processor, IntRegisterID reg_id)
     {
-        phi::i32 address = processor.IntRegisterGetSignedValue(reg_id);
+        phi::u32 address = processor.IntRegisterGetUnsignedValue(reg_id);
 
-        phi::i32 max_address =
-                static_cast<std::int32_t>(processor.GetCurrentProgramm()->m_Instructions.size());
-        if (address < 0 || address >= max_address)
+        phi::u32 max_address =
+                static_cast<std::uint32_t>(processor.GetCurrentProgramm()->m_Instructions.size());
+        if (address >= max_address)
         {
             processor.Raise(Exception::AddressOutOfBounds);
             return;
         }
 
-        processor.m_NextProgramCounter = static_cast<std::size_t>(address.get());
+        processor.m_NextProgramCounter = address.get();
     }
 
     static std::optional<phi::i32> CalculateDisplacementAddress(
@@ -1099,9 +1099,9 @@ namespace dlx
 
             const auto& jump_label = arg1.AsLabel();
 
-            processor.IntRegisterSetSignedValue(
+            processor.IntRegisterSetUnsignedValue(
                     IntRegisterID::R31,
-                    static_cast<std::int32_t>(processor.m_NextProgramCounter.get()));
+                    static_cast<std::uint32_t>(processor.m_NextProgramCounter.get()));
 
             JumpToLabel(processor, jump_label.label_name);
         }
@@ -1115,9 +1115,9 @@ namespace dlx
 
             const auto& jump_register = arg1.AsRegisterInt();
 
-            processor.IntRegisterSetSignedValue(
+            processor.IntRegisterSetUnsignedValue(
                     IntRegisterID::R31,
-                    static_cast<std::int32_t>(processor.m_NextProgramCounter.get()));
+                    static_cast<std::uint32_t>(processor.m_NextProgramCounter.get()));
 
             JumpToRegister(processor, jump_register.register_id);
         }
@@ -1526,7 +1526,7 @@ namespace dlx
         void TRAP(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                   const InstructionArg& arg3)
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::None);
+            PHI_ASSERT(arg1.GetType() == ArgumentType::ImmediateInteger);
             PHI_ASSERT(arg2.GetType() == ArgumentType::None);
             PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 

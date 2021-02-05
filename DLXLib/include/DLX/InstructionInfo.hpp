@@ -52,6 +52,14 @@ namespace dlx
         return static_cast<underlying_t>(type & test) != 0;
     }
 
+    enum class RegisterAccessType
+    {
+        None,
+        Signed,
+        Unsigned,
+        Ignored,
+    };
+
     using InstructionExecutor =
             std::add_pointer_t<void(Processor& processor, const InstructionArg& arg1,
                                     const InstructionArg& arg2, const InstructionArg& arg3)>;
@@ -65,15 +73,18 @@ namespace dlx
             , m_Arg1Type(ArgumentType::Unknown)
             , m_Arg2Type(ArgumentType::Unknown)
             , m_Arg3Type(ArgumentType::Unknown)
+            , m_RegisterAccessType(RegisterAccessType::None)
             , m_Executor(nullptr)
         {}
 
         constexpr InstructionInfo(OpCode opcode, ArgumentType arg1, ArgumentType arg2,
-                                  ArgumentType arg3, InstructionExecutor executor) noexcept
+                                  ArgumentType arg3, RegisterAccessType register_access_type,
+                                  InstructionExecutor executor) noexcept
             : m_OpCode(opcode)
             , m_Arg1Type(arg1)
             , m_Arg2Type(arg2)
             , m_Arg3Type(arg3)
+            , m_RegisterAccessType(register_access_type)
             , m_Executor(executor)
         {}
 
@@ -121,6 +132,11 @@ namespace dlx
             return number_of_argument_required;
         }
 
+        [[nodiscard]] constexpr RegisterAccessType GetRegisterAccessType() const noexcept
+        {
+            return m_RegisterAccessType;
+        }
+
         [[nodiscard]] constexpr InstructionExecutor GetExecutor() const noexcept
         {
             return m_Executor;
@@ -134,6 +150,7 @@ namespace dlx
         ArgumentType        m_Arg1Type;
         ArgumentType        m_Arg2Type;
         ArgumentType        m_Arg3Type;
+        RegisterAccessType  m_RegisterAccessType;
         InstructionExecutor m_Executor;
     };
 } // namespace dlx

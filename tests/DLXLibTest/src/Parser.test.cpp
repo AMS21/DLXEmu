@@ -221,7 +221,7 @@ TEST_CASE("Parser")
 
         REQUIRE(res.m_JumpData.size() == 1);
         REQUIRE(res.m_JumpData.find("start") != res.m_JumpData.end());
-        CHECK(res.m_JumpData.at("start") == 0);
+        CHECK(res.m_JumpData.at("start") == 0u);
 
         res = dlx::Parser::Parse(lib, "a:\nb:\nc:");
         CHECK(res.m_Instructions.empty());
@@ -229,13 +229,13 @@ TEST_CASE("Parser")
         REQUIRE(res.m_JumpData.size() == 3);
 
         REQUIRE(res.m_JumpData.find("a") != res.m_JumpData.end());
-        CHECK(res.m_JumpData.at("a") == 0);
+        CHECK(res.m_JumpData.at("a") == 0u);
 
         REQUIRE(res.m_JumpData.find("b") != res.m_JumpData.end());
-        CHECK(res.m_JumpData.at("b") == 0);
+        CHECK(res.m_JumpData.at("b") == 0u);
 
         REQUIRE(res.m_JumpData.find("c") != res.m_JumpData.end());
-        CHECK(res.m_JumpData.at("c") == 0);
+        CHECK(res.m_JumpData.at("c") == 0u);
 
         res = dlx::Parser::Parse(lib, "a: ADD R1 R1 R1\nb: ADD R1 R1 R2\nc:ADD R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
@@ -243,13 +243,13 @@ TEST_CASE("Parser")
         REQUIRE(res.m_JumpData.size() == 3);
 
         REQUIRE(res.m_JumpData.find("a") != res.m_JumpData.end());
-        CHECK(res.m_JumpData.at("a") == 0);
+        CHECK(res.m_JumpData.at("a") == 0u);
 
         REQUIRE(res.m_JumpData.find("b") != res.m_JumpData.end());
-        CHECK(res.m_JumpData.at("b") == 1);
+        CHECK(res.m_JumpData.at("b") == 1u);
 
         REQUIRE(res.m_JumpData.find("c") != res.m_JumpData.end());
-        CHECK(res.m_JumpData.at("c") == 2);
+        CHECK(res.m_JumpData.at("c") == 2u);
     }
 
     SECTION("Correct instructions")
@@ -1011,11 +1011,11 @@ TEST_CASE("Parser")
         // Other
         SECTION("TRAP")
         {
-            res = dlx::Parser::Parse(lib, "TRAP");
+            res = dlx::Parser::Parse(lib, "TRAP #1");
             REQUIRE(res.m_Instructions.size() == 1);
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::TRAP,
-                                     dlx::InstructionArg(), dlx::InstructionArg(),
-                                     dlx::InstructionArg()));
+                                     dlx::ConstructInstructionArgImmediateValue(1),
+                                     dlx::InstructionArg(), dlx::InstructionArg()));
         }
 
         SECTION("HALT")
