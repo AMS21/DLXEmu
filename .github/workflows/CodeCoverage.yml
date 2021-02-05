@@ -72,6 +72,7 @@ jobs:
           lcov --directory build --capture --output-file coverage.info --gcov-tool gcov-${{ env.GCC_VERSION }} # capture coverage info
           lcov --remove coverage.info "/usr/*" --output-file coverage.info # filter out system
           lcov --remove coverage.info "$(readlink -f external)/*" --output-file coverage.info # filter out third party libraries
+          lcov --remove coverage.info "$(readlink -f tests/Fuzzing)/*" --output-file coverage.info # filter out fuzzing targets
 
           # List debug info
           lcov --list coverage.info # debug info
@@ -101,11 +102,13 @@ jobs:
         run: |
           cd build-clang
 
+          files=$(find DLXLib tests/DLXLibTest -iname "*.hpp" -or -iname "*.cpp" -printf "%p ")
+
           llvm-profdata-${{ env.LLVM_VERSION }} merge -sparse $(find . -iname "*.profraw" -type f) -o coverage.profdata
-          find bin -type f -exec bash -c 'llvm-cov-${{ env.LLVM_VERSION }} show ${0} -instr-profile=coverage.profdata -show-expansions -show-regions -show-line-counts -use-color=false >> coverage.info' {} \;
+          find bin -type f -exec bash -c 'llvm-cov-${{ env.LLVM_VERSION }} show ${0} $files -instr-profile=coverage.profdata -show-expansions -show-regions -show-line-counts -use-color=false >> coverage.info' {} \;
 
           # List coverage data
-          find bin -type f -exec bash -c 'echo ${0}; llvm-cov-${{ env.LLVM_VERSION }} report ${0} -instr-profile=coverage.profdata' {} \;
+          find bin -type f -exec bash -c 'echo ${0}; llvm-cov-${{ env.LLVM_VERSION }} report ${0} $files -instr-profile=coverage.profdata' {} \;
           cat coverage.info
 
       - name: Upload coverage data (Clang)
@@ -120,7 +123,7 @@ jobs:
     runs-on: macos-latest
     env:
       GCC_VERSION: "10"
-      XCODE_VERSION: "11.6"
+      XCODE_VERSION: "12.3"
       LLVM_PROFILE_FILE: "profile-%p.profraw"
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
       CTEST_PARALLEL_LEVEL: "2"
@@ -167,6 +170,7 @@ jobs:
           lcov --remove coverage.info "/usr/*" --output-file coverage.info # filter out system
           lcov --remove coverage.info "/Applications/*" --output-file coverage.info # filter out XCode headers
           lcov --remove coverage.info "*/DLXEmu/external/*" --output-file coverage.info # filter out third party libraries
+          lcov --remove coverage.info "$(readlink -f tests/Fuzzing)/*" --output-file coverage.info # filter out fuzzing targets
 
           # List debug info
           lcov --list coverage.info # debug info
@@ -196,11 +200,13 @@ jobs:
         run: |
           cd build-clang
 
+          files=$(find DLXLib tests/DLXLibTest -iname "*.hpp" -or -iname "*.cpp" -printf "%p ")
+
           xcrun llvm-profdata merge -sparse $(find . -iname "*.profraw" -type f) -o coverage.profdata
-          find bin -type f -exec bash -c 'xcrun llvm-cov show ${0} -instr-profile=coverage.profdata -show-expansions -show-regions -show-line-counts -use-color=false >> coverage.info' {} \;
+          find bin -type f -exec bash -c 'xcrun llvm-cov show ${0} $files -instr-profile=coverage.profdata -show-expansions -show-regions -show-line-counts -use-color=false >> coverage.info' {} \;
 
           # List coverage data
-          find bin -type f -exec bash -c 'echo ${0}; xcrun llvm-cov report ${0} -instr-profile=coverage.profdata' {} \;
+          find bin -type f -exec bash -c 'echo ${0}; xcrun llvm-cov report ${0} $files -instr-profile=coverage.profdata' {} \;
           cat coverage.info
 
       - name: Upload coverage data (Clang)
@@ -260,11 +266,13 @@ jobs:
         run: |
           cd build
 
+          files=$(find DLXLib tests/DLXLibTest -iname "*.hpp" -or -iname "*.cpp" -printf "%p ")
+
           llvm-profdata merge -sparse $(find . -iname "*.profraw" -type f) -o coverage.profdata
-          find bin -type f -iname '*.exe' -exec bash -c 'llvm-cov show ${0} -instr-profile=coverage.profdata -show-expansions -show-regions -show-line-counts -use-color=false >> coverage.info' {} \;
+          find bin -type f -iname '*.exe' -exec bash -c 'llvm-cov show ${0} $files -instr-profile=coverage.profdata -show-expansions -show-regions -show-line-counts -use-color=false >> coverage.info' {} \;
 
           # List coverage data
-          find bin -type f -iname '*.exe' -exec bash -c 'echo ${0}; llvm-cov report ${0} -instr-profile=coverage.profdata' {} \;
+          find bin -type f -iname '*.exe' -exec bash -c 'echo ${0}; llvm-cov report ${0} $files -instr-profile=coverage.profdata' {} \;
           cat coverage.info
 
       - name: Upload coverage data
