@@ -245,7 +245,7 @@ jobs:
               git add ${{ matrix.fuzz_target }}
               git status
               git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" --file $FUZZING_DIR/commit_message
-              git push -u origin main || true
+              git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
                 echo "Sucessfully pushed after $i tries"
@@ -331,7 +331,7 @@ jobs:
               git add ${{ matrix.fuzz_target }}
               git status
               git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Corpus] '$(date)' Automatic corpus update"
-              git push -u origin main || true
+              git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
                 echo "Sucessfully pushed after $i tries"
@@ -386,7 +386,7 @@ jobs:
               git add ${{ matrix.fuzz_target }}
               git status
               git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Coverage] '$(date)' Automatic coverage update"
-              git push -u origin main || true
+              git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
                 echo "Sucessfully pushed after $i tries"
