@@ -236,7 +236,8 @@ jobs:
             for i in {1..5}; do
               echo "Push try $i"
 
-              git reset --hard $GITHUB_SHA
+              git fetch origin
+              git reset --hard origin/main
               git pull -ff
 
               # Copy minimized crash to Corpus
@@ -311,7 +312,8 @@ jobs:
           for i in {1..5}; do
             echo "Push try $i"
 
-            git reset --hard $GITHUB_SHA
+            git fetch origin
+            1 --hard origin/main
             git pull -ff
 
             # Remove all old files
@@ -372,7 +374,8 @@ jobs:
           for i in {1..5}; do
             echo "Push try $i"
 
-            git reset --hard $GITHUB_SHA
+            git fetch origin
+            git reset --hard origin/main
             git pull -ff
 
             # Copy coverage files
