@@ -313,7 +313,7 @@ jobs:
             echo "Push try $i"
 
             git fetch origin
-            1 --hard origin/main
+            git reset --hard origin/main
             git pull -ff
 
             # Remove all old files
