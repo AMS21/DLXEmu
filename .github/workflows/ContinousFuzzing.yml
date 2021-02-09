@@ -299,15 +299,11 @@ jobs:
             # Make API call
             curl -u "AMS21Bot:${{ secrets.PAT }}" -X POST -H "Accept: application/vnd.github.v3+json" $GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues -d "$data"
 
-      - name: Merge corpus
+      - name: Update corpus
         run: |
-          mkdir -p $FUZZING_DIR/MergeCorpus
-
-          # Merge all our corpuses
-          $FUZZER $FUZZING_DIR/MergeCorpus $FUZZING_DIR/TempCorpus $INPUT_CORPUS -merge=1
-
-          # Update
           cd $CORPUS_ROOT_DIR
+
+          mkdir -p $LOCAL_CORPUS_DIR/Corpus
 
           for i in {1..5}; do
             echo "Push try $i"
@@ -316,12 +312,8 @@ jobs:
             git reset --hard origin/main
             git pull -ff
 
-            # Remove all old files
-            mkdir -p $LOCAL_CORPUS_DIR/Corpus
-            rm $LOCAL_CORPUS_DIR/Corpus/* -v || true
-
             # Copy merged files
-            cp $FUZZING_DIR/MergeCorpus/* --target-directory $LOCAL_CORPUS_DIR/Corpus --force || true
+            cp $FUZZING_DIR/TempCorpus/* --target-directory $LOCAL_CORPUS_DIR/Corpus --force || true
 
             git status
 
@@ -358,7 +350,7 @@ jobs:
           cmake --build . --clean-first --target ${{ matrix.fuzz_target }}
 
           # Generate coverage data
-          find $LOCAL_CORPUS_DIR -type f -exec bash -c '$FUZZER ${0}' {} \;
+          find $CORPUS_ROOT_DIR -type f -exec bash -c '$FUZZER ${0}' {} \;
 
           llvm-profdata-${{ env.LLVM_VERSION }} merge -sparse $(find . -iname "*.profraw" -type f) -o coverage.profdata
 
