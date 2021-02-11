@@ -40,7 +40,7 @@ jobs:
           mv bin/DLXEmu.html bin/index.html
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v3.0.2
+        uses: crazy-max/ghaction-import-gpg@v3.1.0
         with:
           gpg-private-key: ${{ secrets.BOT_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_KEY_PASSPHRASE }}
