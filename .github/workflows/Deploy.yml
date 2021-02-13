@@ -50,7 +50,7 @@ jobs:
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.0.0
         with:
-          BRANCH: gh-pages
-          FOLDER: build/bin
-          GIT_CONFIG_NAME: AMS21Bot
-          GIT_CONFIG_EMAIL: AMS21Bot.github@gmail.com
+          branch: gh-pages
+          folder: build/bin
+          git-config-name: AMS21Bot
+          git-config-email: AMS21Bot.github@gmail.com
