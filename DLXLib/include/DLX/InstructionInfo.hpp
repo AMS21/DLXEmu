@@ -57,6 +57,8 @@ namespace dlx
         None,
         Signed,
         Unsigned,
+        Float,
+        Double,
         Ignored,
     };
 

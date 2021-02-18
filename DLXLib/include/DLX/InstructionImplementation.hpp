@@ -224,7 +224,7 @@ namespace dlx
 
         // Load unsigned half word (2 bytes)
         void LHU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
-                const InstructionArg& arg3);
+                 const InstructionArg& arg3);
 
         // Load word (4 bytes)
         void LW(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -232,7 +232,7 @@ namespace dlx
 
         // Load unsigned word (4 bytes)
         void LWU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
-                const InstructionArg& arg3);
+                 const InstructionArg& arg3);
 
         /* Storing data */
 
@@ -242,7 +242,7 @@ namespace dlx
 
         // Store unsigned byte
         void SBU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
-                const InstructionArg& arg3);
+                 const InstructionArg& arg3);
 
         // Store half word (2 bytes)
         void SH(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -250,7 +250,7 @@ namespace dlx
 
         // Store unsigned half word (2 bytes)
         void SHU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
-                const InstructionArg& arg3);
+                 const InstructionArg& arg3);
 
         // Store word (4 bytes)
         void SW(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -258,7 +258,13 @@ namespace dlx
 
         // Store unsigned word (4 bytes)
         void SWU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
-                const InstructionArg& arg3);
+                 const InstructionArg& arg3);
+
+        /* FLoating Point */
+
+        // Add float
+        void ADDF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3);
 
         /* Special */
 

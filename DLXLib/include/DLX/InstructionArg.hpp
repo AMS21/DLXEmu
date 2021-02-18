@@ -15,6 +15,11 @@ namespace dlx
             IntRegisterID register_id{IntRegisterID::None};
         };
 
+        struct RegisterFloat
+        {
+            FloatRegisterID register_id{FloatRegisterID::None};
+        };
+
         struct ImmediateValue
         {
             union
@@ -51,11 +56,14 @@ namespace dlx
         ArgumentType m_Type;
 
         [[nodiscard]] const RegisterInt&         AsRegisterInt() const;
+        [[nodiscard]] const RegisterFloat&       AsRegisterFloat() const;
         [[nodiscard]] const ImmediateValue&      AsImmediateValue() const;
         [[nodiscard]] const AddressDisplacement& AsAddressDisplacement() const;
         [[nodiscard]] const Label&               AsLabel() const;
 
         friend InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id);
+
+        friend InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id);
 
         friend InstructionArg ConstructInstructionArgImmediateValue(phi::i32 value);
 
@@ -68,6 +76,7 @@ namespace dlx
         union
         {
             RegisterInt         register_int;
+            RegisterFloat       register_float;
             ImmediateValue      immediate_value;
             AddressDisplacement address_displacement;
             Label               label;
@@ -79,6 +88,8 @@ namespace dlx
     phi::Boolean operator!=(const InstructionArg& lhs, const InstructionArg& rhs);
 
     InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id);
+
+    InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id);
 
     InstructionArg ConstructInstructionArgImmediateValue(phi::i32 value);
 

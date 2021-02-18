@@ -1,7 +1,7 @@
 #include "DLX/OpCode.hpp"
 
-#include <algorithm>
 #include <magic_enum.hpp>
+#include <algorithm>
 
 namespace dlx
 {

@@ -131,7 +131,7 @@ namespace dlx
         //MOVI2FP,
 
         /* Floating pointer operations */
-        //ADDF,
+        ADDF,
         //ADDD,
         //SUBF,
         //SUBD,

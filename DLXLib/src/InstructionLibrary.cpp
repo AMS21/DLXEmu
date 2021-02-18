@@ -236,6 +236,10 @@ namespace dlx
                         ArgumentType::IntRegister, ArgumentType::None, RegisterAccessType::Unsigned,
                         impl::SWU);
 
+        /* Floating pointer operations */
+        InitInstruction(OpCode::ADDF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::FloatRegister, RegisterAccessType::Float, impl::ADDF);
+
         /* Special */
 
         // Trap

@@ -1523,6 +1523,14 @@ namespace dlx
             }
         }
 
+        void ADDF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+        }
+
         void TRAP(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                   const InstructionArg& arg3)
         {

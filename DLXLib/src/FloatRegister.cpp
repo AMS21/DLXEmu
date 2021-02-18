@@ -2,7 +2,6 @@
 
 namespace dlx
 {
-
     void FloatRegister::SetValue(const phi::f32 val)
     {
         m_Value = val;

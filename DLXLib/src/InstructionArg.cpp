@@ -24,6 +24,13 @@ namespace dlx
         return register_int;
     }
 
+    const InstructionArg::RegisterFloat& InstructionArg::AsRegisterFloat() const
+    {
+        PHI_ASSERT(m_Type == ArgumentType::FloatRegister);
+
+        return register_float;
+    }
+
     const InstructionArg::ImmediateValue& InstructionArg::AsImmediateValue() const
     {
         PHI_ASSERT(m_Type == ArgumentType::ImmediateInteger);
@@ -63,6 +70,8 @@ namespace dlx
                 return lhs.AsImmediateValue().signed_value == rhs.AsImmediateValue().signed_value;
             case ArgumentType::IntRegister:
                 return lhs.AsRegisterInt().register_id == rhs.AsRegisterInt().register_id;
+            case ArgumentType::FloatRegister:
+                return lhs.AsRegisterFloat().register_id == rhs.AsRegisterFloat().register_id;
             case ArgumentType::Label:
                 return lhs.AsLabel().label_name == rhs.AsLabel().label_name;
             case ArgumentType::None:
@@ -86,6 +95,14 @@ namespace dlx
         InstructionArg arg;
         arg.m_Type                   = ArgumentType::IntRegister;
         arg.register_int.register_id = id;
+        return arg;
+    }
+
+    InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id)
+    {
+        InstructionArg arg;
+        arg.m_Type                     = ArgumentType::FloatRegister;
+        arg.register_float.register_id = id;
         return arg;
     }
 

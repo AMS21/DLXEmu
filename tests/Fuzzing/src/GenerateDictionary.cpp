@@ -37,16 +37,28 @@ int main(int argc, char* argv[])
         file_log->info(R"(opcode_{0}="{0}")", opcode);
     }
 
-    // Write all registers
+    // Write all int registers
     for (const auto& reg : magic_enum::enum_names<dlx::IntRegisterID>())
     {
-        // Skip non registers
+        // Skip none registers
         if (reg == "None")
         {
             continue;
         }
 
         file_log->info(R"(int_register_id_{0}="{0}")", reg);
+    }
+
+    // Write all float registers
+    for (const auto& reg : magic_enum::enum_names<dlx::FloatRegisterID>())
+    {
+        // Skip none registers
+        if (reg == "None")
+        {
+            continue;
+        }
+
+        file_log->info(R"(float_register_id_{0}="{0}")", reg);
     }
 
     // Write normal tokens

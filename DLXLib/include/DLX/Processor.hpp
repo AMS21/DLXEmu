@@ -62,8 +62,8 @@ namespace dlx
 
         MemoryBlock m_MemoryBlock;
 
-        phi::u32 m_ProgramCounter{0u};
-        phi::u32 m_NextProgramCounter{0u};
+        phi::u32   m_ProgramCounter{0u};
+        phi::u32   m_NextProgramCounter{0u};
         phi::usize m_MaxNumberOfSteps{10'000u};
 
     private:

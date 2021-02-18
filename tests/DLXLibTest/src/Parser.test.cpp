@@ -1008,6 +1008,16 @@ TEST_CASE("Parser")
                     dlx::InstructionArg()));
         }
 
+        // Floating Point
+        SECTION("ADDF")
+        {
+            res = dlx::Parser::Parse(lib, "ADDF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADDF, dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0), dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1), dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
         // Other
         SECTION("TRAP")
         {

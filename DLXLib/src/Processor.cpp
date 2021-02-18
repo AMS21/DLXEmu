@@ -61,7 +61,8 @@ namespace dlx
 
     phi::u32 Processor::IntRegisterGetUnsignedValue(IntRegisterID id) const
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Unsigned))
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                       RegisterAccessType::Unsigned))
         {
             PHI_LOG_WARN("Mismatch for instruction access type");
         }
@@ -88,7 +89,8 @@ namespace dlx
 
     void Processor::IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value)
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Unsigned))
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                       RegisterAccessType::Unsigned))
         {
             PHI_LOG_WARN("Mismatch for instruction access type");
         }
@@ -114,8 +116,8 @@ namespace dlx
     {
         m_CurrentProgram = &programm;
 
-        m_ProgramCounter = 0u;
-        m_Halted         = false;
+        m_ProgramCounter               = 0u;
+        m_Halted                       = false;
         m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
     }
 

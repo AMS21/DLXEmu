@@ -366,6 +366,25 @@ namespace dlx
                     return ConstructInstructionArgRegisterInt(reg_id);
                 }
 
+                // Try parsing as FloatRegister
+                FloatRegisterID float_reg_id = StringToFloatRegister(token.GetTextString());
+
+                if (float_reg_id != FloatRegisterID::None)
+                {
+                    if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::FloatRegister))
+                    {
+                        AddParseError(program,
+                                      fmt::format("Got FloatRegister but expected '{}'",
+                                                  magic_enum::enum_name(expected_argument_type)));
+                        return {};
+                    }
+
+                    PHI_LOG_INFO("Parsed identifier as float register {}",
+                                 magic_enum::enum_name(float_reg_id));
+
+                    return ConstructInstructionArgRegisterFloat(float_reg_id);
+                }
+
                 // Parse as Label
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::Label))
                 {
@@ -471,7 +490,8 @@ namespace dlx
                         std::string_view label_name = current_token.GetText().substr(
                                 0, current_token.GetText().size() - 1);
 
-                        program.m_JumpData[label_name] = static_cast<std::uint32_t>(program.m_Instructions.size());
+                        program.m_JumpData[label_name] =
+                                static_cast<std::uint32_t>(program.m_Instructions.size());
 
                         PHI_LOG_INFO("Added jump label {} -> {}", label_name,
                                      program.m_Instructions.size());
