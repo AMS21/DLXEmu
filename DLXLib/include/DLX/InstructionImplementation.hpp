@@ -260,7 +260,7 @@ namespace dlx
         void SWU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3);
 
-        /* FLoating Point */
+        /* Floating Point */
 
         // Add float
         void ADDF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,

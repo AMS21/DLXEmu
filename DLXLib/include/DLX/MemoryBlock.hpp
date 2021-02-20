@@ -10,7 +10,7 @@ namespace dlx
     {
         struct MemoryByte
         {
-            MemoryByte()
+            constexpr MemoryByte() noexcept
                 : signed_value(0)
             {}
 

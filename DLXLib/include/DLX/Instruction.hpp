@@ -17,7 +17,15 @@ namespace dlx
 
         void Execute(Processor& processor) const noexcept;
 
-    public:
+        [[nodiscard]] const InstructionInfo& GetInfo() const;
+
+        [[nodiscard]] const InstructionArg& GetArg1() const;
+
+        [[nodiscard]] const InstructionArg& GetArg2() const;
+
+        [[nodiscard]] const InstructionArg& GetArg3() const;
+
+    private:
         const InstructionInfo& m_Info;
 
         InstructionArg m_Arg1;

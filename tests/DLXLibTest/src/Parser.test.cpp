@@ -157,22 +157,22 @@ phi::Boolean InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcod
                                 dlx::InstructionArg arg1, dlx::InstructionArg arg2,
                                 dlx::InstructionArg arg3)
 {
-    if (instr.m_Info.GetOpCode() != opcode)
+    if (instr.GetInfo().GetOpCode() != opcode)
     {
         return false;
     }
 
-    if (instr.m_Arg1 != arg1)
+    if (instr.GetArg1() != arg1)
     {
         return false;
     }
 
-    if (instr.m_Arg2 != arg2)
+    if (instr.GetArg2() != arg2)
     {
         return false;
     }
 
-    if (instr.m_Arg3 != arg3)
+    if (instr.GetArg3() != arg3)
     {
         return false;
     }

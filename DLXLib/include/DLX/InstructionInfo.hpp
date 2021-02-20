@@ -113,7 +113,7 @@ namespace dlx
             }
         }
 
-        constexpr phi::u8 GetNumberOfRequiredArguments() const noexcept
+        [[nodiscard]] constexpr phi::u8 GetNumberOfRequiredArguments() const noexcept
         {
             phi::u8 number_of_argument_required = static_cast<std::uint8_t>(0u);
 

@@ -5,9 +5,6 @@ namespace dlx
 {
     enum class OpCode
     {
-        // Not an actual instruction
-        NONE = 0,
-
         /* Arithmetic */
 
         // Add
@@ -133,11 +130,11 @@ namespace dlx
         /* Floating pointer operations */
         ADDF,
         //ADDD,
-        //SUBF,
+        SUBF,
         //SUBD,
-        //MULTF,
+        MULTF,
         //MULTD,
-        //DIVF,
+        DIVF,
         //DIVD,
 
         /* Floating pointer conversions */
@@ -169,7 +166,10 @@ namespace dlx
         NOP,
 
         // Special
-        NUMBER_OF_ELEMENTS, // Always keep this element last
+        NUMBER_OF_ELEMENTS, // Always keep this element after all instructions
+
+        // Not an actual instruction
+        NONE,
     };
 
     OpCode StringToOpCode(std::string token);

@@ -38,4 +38,24 @@ namespace dlx
     {
         m_Info.Execute(processor, m_Arg1, m_Arg2, m_Arg3);
     }
+
+    const InstructionInfo& Instruction::GetInfo() const
+    {
+        return m_Info;
+    }
+
+    const InstructionArg& Instruction::GetArg1() const
+    {
+        return m_Arg1;
+    }
+
+    const InstructionArg& Instruction::GetArg2() const
+    {
+        return m_Arg2;
+    }
+
+    const InstructionArg& Instruction::GetArg3() const
+    {
+        return m_Arg3;
+    }
 } // namespace dlx

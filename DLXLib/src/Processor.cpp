@@ -107,7 +107,7 @@ namespace dlx
 
     void Processor::ExecuteInstruction(const Instruction& inst)
     {
-        m_CurrentInstructionAccessType = inst.m_Info.GetRegisterAccessType();
+        m_CurrentInstructionAccessType = inst.GetInfo().GetRegisterAccessType();
 
         inst.Execute(*this);
     }

@@ -53,8 +53,6 @@ namespace dlx
 
         std::string DebugInfo() const;
 
-        ArgumentType m_Type;
-
         [[nodiscard]] const RegisterInt&         AsRegisterInt() const;
         [[nodiscard]] const RegisterFloat&       AsRegisterFloat() const;
         [[nodiscard]] const ImmediateValue&      AsImmediateValue() const;
@@ -81,6 +79,8 @@ namespace dlx
             AddressDisplacement address_displacement;
             Label               label;
         };
+
+        ArgumentType m_Type;
     };
 
     phi::Boolean operator==(const InstructionArg& lhs, const InstructionArg& rhs);

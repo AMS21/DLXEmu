@@ -5,9 +5,6 @@
 
 namespace dlx
 {
-    class Processor;
-    class InstructionArg;
-
     // Class holding references to the InstructionInfos about each and every instruction
     class InstructionLibrary
     {
