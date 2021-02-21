@@ -2059,6 +2059,175 @@ namespace dlx
             }
         }
 
+        void MOVF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg   = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID source_reg = arg2.AsRegisterFloat().register_id;
+
+            const phi::f32 source_value = processor.FloatRegisterGetFloatValue(source_reg);
+
+            processor.FloatRegisterSetFloatValue(dest_reg, source_value);
+        }
+
+        void MOVD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg   = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID source_reg = arg2.AsRegisterFloat().register_id;
+
+            const phi::f64 source_value = processor.FloatRegisterGetDoubleValue(source_reg);
+
+            processor.FloatRegisterSetDoubleValue(dest_reg, source_value);
+        }
+
+        void MOVFP2I(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                     const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const IntRegisterID   dest_reg   = arg1.AsRegisterInt().register_id;
+            const FloatRegisterID source_reg = arg2.AsRegisterFloat().register_id;
+
+            const float source_value = processor.FloatRegisterGetFloatValue(source_reg).get();
+
+            const std::uint32_t moved_value =
+                    *reinterpret_cast<const std::uint32_t*>(&source_value);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg, moved_value);
+        }
+
+        void MOVI2FP(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                     const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg   = arg1.AsRegisterFloat().register_id;
+            const IntRegisterID   source_reg = arg2.AsRegisterInt().register_id;
+
+            const std::uint32_t source_value =
+                    processor.IntRegisterGetUnsignedValue(source_reg).get();
+
+            const float moved_value = *reinterpret_cast<const float*>(&source_value);
+
+            processor.FloatRegisterSetFloatValue(dest_reg, moved_value);
+        }
+
+        void CVTF2D(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                    const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
+
+            const phi::f32 src_value = processor.FloatRegisterGetFloatValue(src_reg);
+
+            processor.FloatRegisterSetDoubleValue(dest_reg, src_value);
+        }
+
+        void CVTF2I(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                    const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
+
+            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).get();
+            const std::int32_t converted_value_int = static_cast<std::int32_t>(src_value);
+            const float        converted_value_float =
+                    *reinterpret_cast<const float*>(&converted_value_int);
+
+            processor.FloatRegisterSetFloatValue(dest_reg, converted_value_float);
+        }
+
+        void CVTD2F(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                    const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
+
+            const double src_value       = processor.FloatRegisterGetDoubleValue(src_reg).get();
+            const float  converted_value = static_cast<float>(src_value);
+
+            processor.FloatRegisterSetFloatValue(dest_reg, converted_value);
+        }
+
+        void CVTD2I(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                    const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
+
+            const double       src_value = processor.FloatRegisterGetDoubleValue(src_reg).get();
+            const std::int32_t converted_value_int = static_cast<std::int32_t>(src_value);
+            const float        converted_value_float =
+                    *reinterpret_cast<const float*>(&converted_value_int);
+
+            processor.FloatRegisterSetFloatValue(dest_reg, converted_value_float);
+        }
+
+        void CVTI2F(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                    const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
+
+            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).get();
+            const std::int32_t converted_value_int =
+                    *reinterpret_cast<const std::int32_t*>(&src_value);
+            const float converted_value_float = static_cast<float>(converted_value_int);
+
+            processor.FloatRegisterSetFloatValue(dest_reg, converted_value_float);
+        }
+
+        void CVTI2D(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                    const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
+
+            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).get();
+            const std::int32_t converted_value_int =
+                    *reinterpret_cast<const std::int32_t*>(&src_value);
+            const double converted_value_double = static_cast<double>(converted_value_int);
+
+            processor.FloatRegisterSetDoubleValue(dest_reg, converted_value_double);
+        }
+
         void TRAP(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                   const InstructionArg& arg3)
         {

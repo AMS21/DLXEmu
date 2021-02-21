@@ -14,8 +14,6 @@ phi::Boolean TokenMatches(const dlx::Token& token, const std::string& text, dlx:
 
 TEST_CASE("Parser tokenize")
 {
-    //phi::Log::initialize_default_loggers();
-
     std::vector<dlx::Token> res;
     res.reserve(30);
 
@@ -1500,6 +1498,138 @@ TEST_CASE("Parser")
                     res.m_Instructions.at(0), dlx::OpCode::SD,
                     dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
                     dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArg()));
+        }
+
+        // Moving data
+        SECTION("MOVF")
+        {
+            res = dlx::Parser::Parse(lib, "MOVF F0 F1");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::MOVF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("MOVD")
+        {
+            res = dlx::Parser::Parse(lib, "MOVD F0 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::MOVD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("MOVFP2I")
+        {
+            res = dlx::Parser::Parse(lib, "MOVFP2I R1 F1");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::MOVFP2I,
+                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("MOVI2FP")
+        {
+            res = dlx::Parser::Parse(lib, "MOVI2FP F1 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::MOVI2FP,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::InstructionArg()));
+        }
+
+        // Converting data
+        SECTION("CVTF2D")
+        {
+            res = dlx::Parser::Parse(lib, "CVTF2D F0 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::CVTF2D,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("CVTF2I")
+        {
+            res = dlx::Parser::Parse(lib, "CVTF2I F0 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::CVTF2I,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("CVTD2F")
+        {
+            res = dlx::Parser::Parse(lib, "CVTD2F F0 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::CVTD2F,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("CVTF2I")
+        {
+            res = dlx::Parser::Parse(lib, "CVTF2I F0 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::CVTF2I,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("CVTI2F")
+        {
+            res = dlx::Parser::Parse(lib, "CVTI2F F0 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::CVTI2F,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("CVTI2D")
+        {
+            res = dlx::Parser::Parse(lib, "CVTI2D F0 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::CVTI2D,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
                     dlx::InstructionArg()));
         }
 

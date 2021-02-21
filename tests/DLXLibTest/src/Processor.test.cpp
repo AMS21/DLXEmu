@@ -2864,6 +2864,166 @@ TEST_CASE("Processor instructions")
         CHECK(val->get() == 1.0);
     }
 
+    SECTION("MOVF")
+    {
+        res = dlx::Parser::Parse(lib, "MOVF F0 F1");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
+    }
+
+    SECTION("MOVD")
+    {
+        res = dlx::Parser::Parse(lib, "MOVD F0 F2");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F0, -1.0);
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 1.0);
+        CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    }
+
+    SECTION("MOVFP2I")
+    {
+        res = dlx::Parser::Parse(lib, "MOVFP2I R1 F0");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, 1.0f);
+        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, -1);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() != -1);
+    }
+
+    SECTION("MOVI2FP")
+    {
+        res = dlx::Parser::Parse(lib, "MOVI2FP F0 R1");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 1);
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != -1.0f);
+    }
+
+    SECTION("CVTF2D")
+    {
+        res = dlx::Parser::Parse(lib, "CVTF2D F0 F2");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F0, -1.0);
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 1.0);
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    }
+
+    SECTION("CVTF2I")
+    {
+        res = dlx::Parser::Parse(lib, "CVTF2I F0 F2");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != -1.0f);
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    }
+
+    SECTION("CVTD2F")
+    {
+        res = dlx::Parser::Parse(lib, "CVTD2F F0 F2");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0f);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    }
+
+    SECTION("CVTD2I")
+    {
+        res = dlx::Parser::Parse(lib, "CVTD2I F0 F2");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0f);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != -1.0f);
+        CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    }
+
+    SECTION("CVTI2F")
+    {
+        res = dlx::Parser::Parse(lib, "CVTI2F F0 F2");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != -1.0f);
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    }
+
+    SECTION("CVTI2D")
+    {
+        res = dlx::Parser::Parse(lib, "CVTI2D F0 F2");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0f);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != 1.0f);
+        CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    }
+
     SECTION("TRAP")
     {
         res = dlx::Parser::Parse(lib, "TRAP #1");

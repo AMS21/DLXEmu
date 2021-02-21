@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DLX/InstructionArg.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "InstructionLibrary.hpp"
 
@@ -362,6 +363,50 @@ namespace dlx::impl
     // Store double (8 bytes)
     void SD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
             const InstructionArg& arg3);
+
+    /* Moving data */
+
+    // Move float
+    void MOVF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+              const InstructionArg& arg3);
+
+    // Move double
+    void MOVD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+              const InstructionArg& arg3);
+
+    // Move float to int
+    void MOVFP2I(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3);
+
+    // Move int to float
+    void MOVI2FP(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3);
+
+    /* Converting data */
+
+    // Convert float to double
+    void CVTF2D(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3);
+
+    // Convert float to int
+    void CVTF2I(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3);
+
+    // Convert double to float
+    void CVTD2F(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3);
+
+    // Convert double to int
+    void CVTD2I(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3);
+
+    // Convert int to float
+    void CVTI2F(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3);
+
+    // Convert int to double
+    void CVTI2D(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3);
 
     /* Special */
 

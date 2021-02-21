@@ -307,6 +307,50 @@ namespace dlx
                         ArgumentType::FloatRegister, ArgumentType::None, RegisterAccessType::Double,
                         impl::SD);
 
+        /* Moving data */
+
+        // Move float
+        InitInstruction(OpCode::MOVF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::Float, impl::MOVF);
+
+        // Move double
+        InitInstruction(OpCode::MOVD, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::Double, impl::MOVD);
+
+        // Move float to int
+        InitInstruction(OpCode::MOVFP2I, ArgumentType::IntRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::Float, impl::MOVFP2I);
+
+        // Move int to float
+        InitInstruction(OpCode::MOVI2FP, ArgumentType::FloatRegister, ArgumentType::IntRegister,
+                        ArgumentType::None, RegisterAccessType::Float, impl::MOVI2FP);
+
+        /* Converting data */
+
+        // Convert float to double
+        InitInstruction(OpCode::CVTF2D, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::MixedFloatDouble, impl::CVTF2D);
+
+        // Convert float to int
+        InitInstruction(OpCode::CVTF2I, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::Float, impl::CVTF2I);
+
+        // Convert double to float
+        InitInstruction(OpCode::CVTD2F, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::MixedFloatDouble, impl::CVTD2F);
+
+        // Convert double to int
+        InitInstruction(OpCode::CVTD2I, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::MixedFloatDouble, impl::CVTD2I);
+
+        // Convert int to float
+        InitInstruction(OpCode::CVTI2F, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::Float, impl::CVTI2F);
+
+        // Convert int to double
+        InitInstruction(OpCode::CVTI2D, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
+                        ArgumentType::None, RegisterAccessType::MixedFloatDouble, impl::CVTI2D);
+
         /* Special */
 
         // Trap

@@ -140,22 +140,21 @@ namespace dlx
         SD,
 
         /* Moving data */
-        //MOVF,
-        //MOVD,
-        //MOVFP2I,
-        //MOVI2FP,
+        MOVF,
+        MOVD,
+        MOVFP2I,
+        MOVI2FP,
 
         /* Converting data */
-        //CVTF2D,
-        //CVTF2I,
-        //CVTD2F,
-        //CVTD2I,
-        //CVTI2F,
-        //CVTI2D,
+        CVTF2D,
+        CVTF2I,
+        CVTD2F,
+        CVTD2I,
+        CVTI2F,
+        CVTI2D,
 
         /* Other */
         TRAP,
-        //RFE,
         HALT,
         NOP,
 
