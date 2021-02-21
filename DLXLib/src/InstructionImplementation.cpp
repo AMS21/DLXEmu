@@ -6,14 +6,12 @@
 #include "DLX/Processor.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "Phi/Core/Assert.hpp"
+#include "Phi/Core/Boolean.hpp"
 #include "Phi/Core/Types.hpp"
 #include <string_view>
 
 namespace dlx
 {
-    static constexpr float float_true{1.0f};
-    static constexpr float float_false{0.0f};
-
     static std::int32_t clear_top_n_bits(std::int32_t value, std::int32_t n)
     {
         PHI_ASSERT(n > 0 && n < 32, "Would invoke undefined behaviour");
@@ -1008,18 +1006,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            const phi::f32 new_value = (lhs_value < rhs_value) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value < rhs_value);
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void LTD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1027,18 +1024,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            const phi::f32 new_value = (lhs_value < rhs_value) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value < rhs_value);
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void SGT(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1083,18 +1079,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            const phi::f32 new_value = (lhs_value > rhs_value) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value > rhs_value);
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void GTD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1102,18 +1097,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            const phi::f32 new_value = (lhs_value > rhs_value) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value > rhs_value);
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void SLE(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1158,18 +1152,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            const phi::f32 new_value = (lhs_value <= rhs_value) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value <= rhs_value);
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void LED(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1177,18 +1170,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            const phi::f32 new_value = (lhs_value <= rhs_value) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value <= rhs_value);
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void SGE(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1233,18 +1225,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            const phi::f32 new_value = (lhs_value >= rhs_value) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value >= rhs_value);
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void GED(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1252,18 +1243,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            const phi::f32 new_value = (lhs_value >= rhs_value) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value >= rhs_value);
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void SEQ(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1308,19 +1298,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            const phi::f32 new_value =
-                    (lhs_value.get() == rhs_value.get()) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value.get() == rhs_value.get());
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void EQD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1328,19 +1316,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            const phi::f32 new_value =
-                    (lhs_value.get() == rhs_value.get()) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value.get() == rhs_value.get());
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void SNE(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1385,19 +1371,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            const phi::f32 new_value =
-                    (lhs_value.get() != rhs_value.get()) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value.get() != rhs_value.get());
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void NED(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1405,19 +1389,17 @@ namespace dlx
         {
             PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
-            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
-            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            const phi::f32 new_value =
-                    (lhs_value.get() != rhs_value.get()) ? float_true : float_false;
+            const phi::Boolean new_value = (lhs_value.get() != rhs_value.get());
 
-            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+            processor.SetFPSRValue(new_value);
         }
 
         void BEQZ(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1459,16 +1441,15 @@ namespace dlx
         void BFPT(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                   const InstructionArg& arg3)
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::Label);
+            PHI_ASSERT(arg1.GetType() == ArgumentType::Label);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
             PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const auto& test_reg   = arg1.AsRegisterFloat().register_id;
-            const auto& jump_label = arg2.AsLabel();
+            const auto& jump_label = arg1.AsLabel();
 
-            phi::f32 test_value = processor.FloatRegisterGetFloatValue(test_reg);
+            phi::Boolean test_value = processor.GetFPSRValue();
 
-            if (test_value.get() == float_true)
+            if (test_value)
             {
                 JumpToLabel(processor, jump_label.label_name);
             }
@@ -1477,16 +1458,15 @@ namespace dlx
         void BFPF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                   const InstructionArg& arg3)
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::Label);
+            PHI_ASSERT(arg1.GetType() == ArgumentType::Label);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
             PHI_ASSERT(arg3.GetType() == ArgumentType::None);
 
-            const auto& test_reg   = arg1.AsRegisterFloat().register_id;
-            const auto& jump_label = arg2.AsLabel();
+            const auto& jump_label = arg1.AsLabel();
 
-            phi::f32 test_value = processor.FloatRegisterGetFloatValue(test_reg);
+            phi::Boolean test_value = processor.GetFPSRValue();
 
-            if (test_value.get() == float_false)
+            if (!test_value)
             {
                 JumpToLabel(processor, jump_label.label_name);
             }

@@ -1490,56 +1490,56 @@ TEST_CASE("Processor instructions")
 
     SECTION("LTF")
     {
-        res = dlx::Parser::Parse(lib, "LTF F0 F1 F2");
+        res = dlx::Parser::Parse(lib, "LTF F1 F2");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 2.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 2.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
     }
 
     SECTION("LTD")
     {
-        res = dlx::Parser::Parse(lib, "LTD F0 F2 F4");
+        res = dlx::Parser::Parse(lib, "LTD F2 F4");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 2.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
     }
@@ -1598,56 +1598,56 @@ TEST_CASE("Processor instructions")
 
     SECTION("GTF")
     {
-        res = dlx::Parser::Parse(lib, "GTF F0 F1 F2");
+        res = dlx::Parser::Parse(lib, "GTF F1 F2");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 2.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 2.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
     }
 
     SECTION("GTD")
     {
-        res = dlx::Parser::Parse(lib, "GTD F0 F2 F4");
+        res = dlx::Parser::Parse(lib, "GTD F2 F4");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 2.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
     }
@@ -1724,76 +1724,76 @@ TEST_CASE("Processor instructions")
 
     SECTION("LEF")
     {
-        res = dlx::Parser::Parse(lib, "LEF F0 F1 F2");
+        res = dlx::Parser::Parse(lib, "LEF F1 F2");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 2.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 2.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
     }
 
     SECTION("LED")
     {
-        res = dlx::Parser::Parse(lib, "LED F0 F2 F4");
+        res = dlx::Parser::Parse(lib, "LED F2 F4");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 2.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
     }
@@ -1870,76 +1870,76 @@ TEST_CASE("Processor instructions")
 
     SECTION("GEF")
     {
-        res = dlx::Parser::Parse(lib, "GEF F0 F1 F2");
+        res = dlx::Parser::Parse(lib, "GEF F1 F2");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 2.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 2.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
     }
 
     SECTION("GED")
     {
-        res = dlx::Parser::Parse(lib, "GED F0 F2 F4");
+        res = dlx::Parser::Parse(lib, "GED F2 F4");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 2.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
     }
@@ -1998,56 +1998,56 @@ TEST_CASE("Processor instructions")
 
     SECTION("EQF")
     {
-        res = dlx::Parser::Parse(lib, "EQF F0 F1 F2");
+        res = dlx::Parser::Parse(lib, "EQF F1 F2");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 2.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
     }
 
     SECTION("EQD")
     {
-        res = dlx::Parser::Parse(lib, "EQD F0 F2 F4");
+        res = dlx::Parser::Parse(lib, "EQD F2 F4");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 2.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
     }
@@ -2107,56 +2107,56 @@ TEST_CASE("Processor instructions")
 
     SECTION("NEF")
     {
-        res = dlx::Parser::Parse(lib, "NEF F0 F1 F2");
+        res = dlx::Parser::Parse(lib, "NEF F1 F2");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 2.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
         CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
     }
 
     SECTION("NED")
     {
-        res = dlx::Parser::Parse(lib, "NED F0 F2 F4");
+        res = dlx::Parser::Parse(lib, "NED F2 F4");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(false);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+        CHECK(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
 
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.SetFPSRValue(true);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 1.0);
 
         proc.ExecuteCurrentProgram();
 
-        CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 0.0f);
+        CHECK_FALSE(proc.GetFPSRValue());
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
         CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
     }
@@ -2223,7 +2223,7 @@ TEST_CASE("Processor instructions")
     {
         const char* data =
                 R"(
-            BFPT F0 true
+            BFPT true
             HALT
         true:
             ADDI R1 R0 #1
@@ -2234,14 +2234,14 @@ TEST_CASE("Processor instructions")
         proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, 1.0f);
+        proc.SetFPSRValue(true);
 
         proc.ExecuteCurrentProgram();
 
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, 0.0f);
+        proc.SetFPSRValue(false);
 
         proc.ExecuteCurrentProgram();
 
@@ -2252,7 +2252,7 @@ TEST_CASE("Processor instructions")
     {
         const char* data =
                 R"(
-            BFPF F0 false
+            BFPF false
             HALT
         false:
             ADDI R1 R0 #1
@@ -2263,14 +2263,14 @@ TEST_CASE("Processor instructions")
         proc.LoadProgram(res);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, 0.0f);
+        proc.SetFPSRValue(false);
 
         proc.ExecuteCurrentProgram();
 
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
 
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, 1.0f);
+        proc.SetFPSRValue(true);
 
         proc.ExecuteCurrentProgram();
 

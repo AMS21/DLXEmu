@@ -4,6 +4,9 @@
 #include "DLX/Instruction.hpp"
 #include "DLX/IntRegister.hpp"
 #include "DLX/MemoryBlock.hpp"
+#include "DLX/RegisterNames.hpp"
+#include "DLX/StatusRegister.hpp"
+#include "Phi/Core/Boolean.hpp"
 #include <Phi/Core/ObserverPtr.hpp>
 #include <Phi/Core/ScopePtr.hpp>
 #include <array>
@@ -31,6 +34,8 @@ namespace dlx
     public:
         Processor();
 
+        // Registers
+
         [[nodiscard]] IntRegister& GetIntRegister(IntRegisterID id);
 
         [[nodiscard]] const IntRegister& GetIntRegister(IntRegisterID id) const;
@@ -54,6 +59,16 @@ namespace dlx
         void FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value);
 
         void FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value);
+
+        [[nodiscard]] StatusRegister& GetFPSR();
+
+        [[nodiscard]] const StatusRegister& GetFPSR() const;
+
+        [[nodiscard]] phi::Boolean GetFPSRValue() const;
+
+        void SetFPSRValue(phi::Boolean value);
+
+        //
 
         void ExecuteInstruction(const Instruction& inst);
 
@@ -83,6 +98,7 @@ namespace dlx
         phi::ObserverPtr<ParsedProgram> m_CurrentProgram;
         std::array<IntRegister, 32u>    m_IntRegisters;
         std::array<FloatRegister, 32u>  m_FloatRegisters;
+        StatusRegister                  m_FPSR;
 
         Exception m_LastRaisedException{Exception::None};
 

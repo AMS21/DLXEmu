@@ -125,11 +125,9 @@ namespace dlx
         InitInstruction(OpCode::SLTI, ArgumentType::IntRegister, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SLTI);
         InitInstruction(OpCode::LTF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::LTF);
+                        ArgumentType::None, RegisterAccessType::Float, impl::LTF);
         InitInstruction(OpCode::LTD, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::LTD);
+                        ArgumentType::None, RegisterAccessType::Double, impl::LTD);
 
         // Set greater than
         InitInstruction(OpCode::SGT, ArgumentType::IntRegister, ArgumentType::IntRegister,
@@ -137,11 +135,9 @@ namespace dlx
         InitInstruction(OpCode::SGTI, ArgumentType::IntRegister, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SGTI);
         InitInstruction(OpCode::GTF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::GTF);
+                        ArgumentType::None, RegisterAccessType::Float, impl::GTF);
         InitInstruction(OpCode::GTD, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::GTD);
+                        ArgumentType::None, RegisterAccessType::Double, impl::GTD);
 
         // Set less than or equal
         InitInstruction(OpCode::SLE, ArgumentType::IntRegister, ArgumentType::IntRegister,
@@ -149,11 +145,9 @@ namespace dlx
         InitInstruction(OpCode::SLEI, ArgumentType::IntRegister, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SLEI);
         InitInstruction(OpCode::LEF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::LEF);
+                        ArgumentType::None, RegisterAccessType::Float, impl::LEF);
         InitInstruction(OpCode::LED, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::LED);
+                        ArgumentType::None, RegisterAccessType::Double, impl::LED);
 
         // Set greater than or equal
         InitInstruction(OpCode::SGE, ArgumentType::IntRegister, ArgumentType::IntRegister,
@@ -161,11 +155,9 @@ namespace dlx
         InitInstruction(OpCode::SGEI, ArgumentType::IntRegister, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SGEI);
         InitInstruction(OpCode::GEF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::GEF);
+                        ArgumentType::None, RegisterAccessType::Float, impl::GEF);
         InitInstruction(OpCode::GED, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::GED);
+                        ArgumentType::None, RegisterAccessType::Double, impl::GED);
 
         // Set equal
         InitInstruction(OpCode::SEQ, ArgumentType::IntRegister, ArgumentType::IntRegister,
@@ -173,11 +165,9 @@ namespace dlx
         InitInstruction(OpCode::SEQI, ArgumentType::IntRegister, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SEQI);
         InitInstruction(OpCode::EQF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::EQF);
+                        ArgumentType::None, RegisterAccessType::Float, impl::EQF);
         InitInstruction(OpCode::EQD, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::EQD);
+                        ArgumentType::None, RegisterAccessType::Double, impl::EQD);
 
         // Set not equal
         InitInstruction(OpCode::SNE, ArgumentType::IntRegister, ArgumentType::IntRegister,
@@ -185,11 +175,9 @@ namespace dlx
         InitInstruction(OpCode::SNEI, ArgumentType::IntRegister, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SNEI);
         InitInstruction(OpCode::NEF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::NEF);
+                        ArgumentType::None, RegisterAccessType::Float, impl::NEF);
         InitInstruction(OpCode::NED, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
-                        ArgumentType::FloatRegister, RegisterAccessType::MixedFloatDouble,
-                        impl::NED);
+                        ArgumentType::None, RegisterAccessType::Double, impl::NED);
 
         /* Conditional branching */
 
@@ -202,12 +190,12 @@ namespace dlx
                         ArgumentType::None, RegisterAccessType::Ignored, impl::BNEZ);
 
         // Branch floating point true
-        InitInstruction(OpCode::BFPT, ArgumentType::FloatRegister, ArgumentType::Label,
-                        ArgumentType::None, RegisterAccessType::Ignored, impl::BFPT);
+        InitInstruction(OpCode::BFPT, ArgumentType::Label, ArgumentType::None, ArgumentType::None,
+                        RegisterAccessType::Ignored, impl::BFPT);
 
         // Branch floating point false
-        InitInstruction(OpCode::BFPF, ArgumentType::FloatRegister, ArgumentType::Label,
-                        ArgumentType::None, RegisterAccessType::Ignored, impl::BFPF);
+        InitInstruction(OpCode::BFPF, ArgumentType::Label, ArgumentType::None, ArgumentType::None,
+                        RegisterAccessType::Ignored, impl::BFPF);
 
         /* Unconditional branching */
 
@@ -316,8 +304,8 @@ namespace dlx
         // Store double
         InitInstruction(OpCode::SD,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::FloatRegister, ArgumentType::None,
-                        RegisterAccessType::Double, impl::SD);
+                        ArgumentType::FloatRegister, ArgumentType::None, RegisterAccessType::Double,
+                        impl::SD);
 
         /* Special */
 

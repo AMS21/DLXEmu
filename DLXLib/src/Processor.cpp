@@ -3,6 +3,8 @@
 #include "DLX/FloatRegister.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/Parser.hpp"
+#include "DLX/RegisterNames.hpp"
+#include "DLX/StatusRegister.hpp"
 #include "Phi/Core/Log.hpp"
 #include "Phi/Core/Types.hpp"
 
@@ -222,6 +224,30 @@ namespace dlx
         second_reg.SetValue(second_value);
     }
 
+    StatusRegister& Processor::GetFPSR()
+    {
+        return m_FPSR;
+    }
+
+    const StatusRegister& Processor::GetFPSR() const
+    {
+        return m_FPSR;
+    }
+
+    phi::Boolean Processor::GetFPSRValue() const
+    {
+        const StatusRegister& status_reg = GetFPSR();
+
+        return status_reg.Get();
+    }
+
+    void Processor::SetFPSRValue(phi::Boolean value)
+    {
+        StatusRegister& status_reg = GetFPSR();
+
+        status_reg.SetStatus(value);
+    }
+
     void Processor::ExecuteInstruction(const Instruction& inst)
     {
         m_CurrentInstructionAccessType = inst.GetInfo().GetRegisterAccessType();
@@ -285,6 +311,8 @@ namespace dlx
         {
             reg.SetValue(0.0f);
         }
+
+        m_FPSR.SetStatus(false);
     }
 
     void Processor::ClearMemory()

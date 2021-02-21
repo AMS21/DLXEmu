@@ -17,6 +17,7 @@ file(
   "src/Processor.cpp"
   "src/RegisterNames.cpp"
   "src/Parser.cpp"
+  "src/StatusRegister.cpp"
   "src/Token.cpp")
 
 file(
@@ -36,6 +37,7 @@ file(
   "include/DLX/Parser.hpp"
   "include/DLX/Processor.hpp"
   "include/DLX/RegisterNames.hpp"
+  "include/DLX/StatusRegister.hpp"
   "include/DLX/Token.hpp")
 
 add_library(${PROJECT_NAME} STATIC ${DLXLIB_SOURCES} ${DLXLIB_HEADERS})
