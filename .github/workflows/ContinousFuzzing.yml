@@ -378,7 +378,7 @@ jobs:
                 echo "Sucessfully pushed after $i tries"
                 break
               else
-                if [ "$i" = 5]; then
+                if [ "$i" = 5 ]; then
                   echo "Failed to push after 5 retries"
                   exit 1
                 fi
