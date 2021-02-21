@@ -80,7 +80,7 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cat cppcheck_filtered.log | reviewdog -efm="%f:%l:%c: %m" -diff="git diff FETCH_HEAD" -reporter=github-check -name CppCheck -level error
+          cat cppcheck_filtered.log | reviewdog -efm="%f:%l:%c: %m" -diff="git diff FETCH_HEAD" -reporter=github-check -name CppCheck -level warning
 
   clang-tidy:
     runs-on: ubuntu-latest
@@ -139,7 +139,7 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cat build/clang_tidy_output.log | reviewdog -efm="%f:%l:%c: warning: %m" -diff="git diff FETCH_HEAD" -reporter=github-check -name Clang-Tidy -level error
+          cat build/clang_tidy_output.log | reviewdog -efm="%f:%l:%c: warning: %m" -diff="git diff FETCH_HEAD" -reporter=github-check -name Clang-Tidy -level warning
 
   include-what-you-use:
     runs-on: ubuntu-latest
@@ -216,7 +216,7 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cat build/iwyu_filtered.log | reviewdog -efm="%Z%A%f:%l:%c: error: %m" -efm="%C%m" -diff="git diff FETCH_HEAD" -reporter=github-check -name include-what-you-use -level error
+          cat build/iwyu_filtered.log | reviewdog -efm="%Z%A%f:%l:%c: error: %m" -efm="%C%m" -diff="git diff FETCH_HEAD" -reporter=github-check -name include-what-you-use -level warning
 
   cmake-lint:
     runs-on: ubuntu-latest
@@ -252,4 +252,4 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cat cmake_lint.log | reviewdog -efm="%f:%l: %m" -diff="git diff FETCH_HEAD" -reporter=github-check -name cmake-lint -level error
+          cat cmake_lint.log | reviewdog -efm="%f:%l: %m" -diff="git diff FETCH_HEAD" -reporter=github-check -name cmake-lint -level warning
