@@ -705,6 +705,12 @@ namespace dlx
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
+            if (rhs_value.get() == 0.0f)
+            {
+                processor.Raise(Exception::DivideByZero);
+                return;
+            }
+
             const phi::f32 new_value = lhs_value / rhs_value;
 
             processor.FloatRegisterSetFloatValue(dest_reg, new_value);
@@ -723,6 +729,12 @@ namespace dlx
 
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            if (rhs_value.get() == 0.0)
+            {
+                processor.Raise(Exception::DivideByZero);
+                return;
+            }
 
             const phi::f64 new_value = lhs_value / rhs_value;
 

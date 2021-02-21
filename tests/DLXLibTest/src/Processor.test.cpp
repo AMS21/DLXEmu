@@ -384,6 +384,38 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.IsHalted());
     }
 
+    SECTION("Float division by zero")
+    {
+        res = dlx::Parser::Parse(lib, "DIVF F0 F2 F4");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 2.0f);
+        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F4, 0.0f);
+
+        proc.ExecuteCurrentProgram();
+        CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
+        CHECK(proc.IsHalted());
+    }
+
+    SECTION("Double division by zero")
+    {
+        res = dlx::Parser::Parse(lib, "DIVD F0 F2 F4");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F0, -1.0f);
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0f);
+        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 0.0f);
+
+        proc.ExecuteCurrentProgram();
+        CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
+        CHECK(proc.IsHalted());
+    }
+
     SECTION("Shift left bad shift")
     {
         // Logical
