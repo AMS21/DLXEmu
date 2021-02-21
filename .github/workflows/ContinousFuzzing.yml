@@ -40,12 +40,6 @@ jobs:
           path: DLXEmu-App
           token: ${{ secrets.PAT }}
 
-      - name: Display last commit
-        run: |
-          cd DLXEmu-App
-
-          git log --max-count=1
-
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2
 
@@ -150,9 +144,6 @@ jobs:
           # Fuzz the target
           $FUZZER TempCorpus $INPUT_CORPUS $FUZZ_ARGUMENTS |& tee fuzz_run.log
           exit ${PIPESTATUS[0]}
-
-      - name: Print fuzz_run.log
-        run: cat $FUZZING_DIR/fuzz_run.log
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v3.1.0
