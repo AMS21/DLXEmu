@@ -7,7 +7,9 @@
 #include <Phi/Core/Log.hpp>
 #include <magic_enum.hpp>
 #include <algorithm>
+#include <limits>
 #include <optional>
+#include <stdexcept>
 
 using namespace phi::literals;
 
@@ -415,10 +417,18 @@ namespace dlx
                     return {};
                 }
 
-                std::int32_t value{0};
+                std::int16_t value{0};
                 try
                 {
-                    value = std::stoi(token.GetTextString().substr(1));
+                    std::int32_t parsed_value = std::stoi(token.GetTextString().substr(1));
+
+                    if (parsed_value > std::numeric_limits<std::int16_t>::max() ||
+                        parsed_value < std::numeric_limits<std::int16_t>::min())
+                    {
+                        throw std::out_of_range("Value out of range");
+                    }
+
+                    value = parsed_value;
                 }
                 catch (std::invalid_argument& /*e*/)
                 {

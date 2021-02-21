@@ -106,7 +106,7 @@ namespace dlx
         return arg;
     }
 
-    InstructionArg ConstructInstructionArgImmediateValue(phi::i32 value)
+    InstructionArg ConstructInstructionArgImmediateValue(std::int16_t value)
     {
         InstructionArg arg;
         arg.m_Type                       = ArgumentType::ImmediateInteger;

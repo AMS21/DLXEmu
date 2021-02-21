@@ -1528,6 +1528,21 @@ namespace dlx
             JumpToRegister(processor, jump_register.register_id);
         }
 
+        void LHI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::ImmediateInteger);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const IntRegisterID dest_reg  = arg1.AsRegisterInt().register_id;
+            std::int32_t        imm_value = arg2.AsImmediateValue().signed_value.get();
+
+            imm_value = (imm_value << 16) & 0xFFFF0000;
+
+            processor.IntRegisterSetSignedValue(dest_reg, imm_value);
+        }
+
         void LB(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                 const InstructionArg& arg3)
         {

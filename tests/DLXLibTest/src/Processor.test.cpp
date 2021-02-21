@@ -2368,6 +2368,20 @@ TEST_CASE("Processor instructions")
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R31).get() == 1);
     }
 
+    SECTION("LHI")
+    {
+        res = dlx::Parser::Parse(lib, "LHI R1 #1");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == (1 << 16));
+    }
+
     SECTION("LB")
     {
         res = dlx::Parser::Parse(lib, "LB R1 #1000");

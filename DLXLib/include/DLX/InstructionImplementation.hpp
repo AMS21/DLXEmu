@@ -298,6 +298,10 @@ namespace dlx::impl
 
     /* Loading data */
 
+    // Load high immediate
+    void LHI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+             const InstructionArg& arg3);
+
     // Load byte
     void LB(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
             const InstructionArg& arg3);

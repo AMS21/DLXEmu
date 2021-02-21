@@ -217,6 +217,10 @@ namespace dlx
 
         /* Loading data */
 
+        // Load high immediate
+        InitInstruction(OpCode::LHI, ArgumentType::IntRegister, ArgumentType::ImmediateInteger,
+                        ArgumentType::None, RegisterAccessType::Signed, impl::LHI);
+
         // Load byte
         InitInstruction(OpCode::LB, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,

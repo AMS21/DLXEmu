@@ -1140,6 +1140,18 @@ TEST_CASE("Parser")
         }
 
         // Loading data
+        SECTION("LHI")
+        {
+            res = dlx::Parser::Parse(lib, "LHI R21 #1");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LHI,
+                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgImmediateValue(1), dlx::InstructionArg()));
+        }
+
         SECTION("LB")
         {
             res = dlx::Parser::Parse(lib, "LB, R21, #1000");

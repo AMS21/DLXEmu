@@ -120,6 +120,7 @@ namespace dlx
         JALR,
 
         /* Loading data */
+        LHI,
         LB,
         LBU,
         LH,
