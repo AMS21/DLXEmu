@@ -23,6 +23,7 @@ namespace dlx
         UnknownLabel,
         BadShift,
         AddressOutOfBounds,
+        RegisterOutOfBounds,
     };
 
     class Processor
@@ -30,9 +31,9 @@ namespace dlx
     public:
         Processor();
 
-        IntRegister& GetIntRegister(IntRegisterID id);
+        [[nodiscard]] IntRegister& GetIntRegister(IntRegisterID id);
 
-        const IntRegister& GetIntRegister(IntRegisterID id) const;
+        [[nodiscard]] const IntRegister& GetIntRegister(IntRegisterID id) const;
 
         [[nodiscard]] phi::i32 IntRegisterGetSignedValue(IntRegisterID id) const;
 
@@ -41,6 +42,18 @@ namespace dlx
         void IntRegisterSetSignedValue(IntRegisterID id, phi::i32 value);
 
         void IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value);
+
+        [[nodiscard]] FloatRegister& GetFloatRegister(FloatRegisterID id);
+
+        [[nodiscard]] const FloatRegister& GetFloatRegister(FloatRegisterID id) const;
+
+        [[nodiscard]] phi::f32 FloatRegisterGetFloatValue(FloatRegisterID id) const;
+
+        [[nodiscard]] phi::f64 FloatRegisterGetDoubleValue(FloatRegisterID id);
+
+        void FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value);
+
+        void FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value);
 
         void ExecuteInstruction(const Instruction& inst);
 
@@ -69,7 +82,7 @@ namespace dlx
     private:
         phi::ObserverPtr<ParsedProgram> m_CurrentProgram;
         std::array<IntRegister, 32u>    m_IntRegisters;
-        // std::array<Register, 32> m_FloatRegisters;
+        std::array<FloatRegister, 32u>  m_FloatRegisters;
 
         Exception m_LastRaisedException{Exception::None};
 

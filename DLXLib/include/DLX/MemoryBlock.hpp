@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Phi/Core/Boolean.hpp"
 #include <Phi/Core/Types.hpp>
 #include <optional>
 #include <vector>
@@ -31,6 +32,8 @@ namespace dlx
         std::optional<phi::u16> LoadUnsignedHalfWord(phi::usize address) const;
         std::optional<phi::i32> LoadWord(phi::usize address) const;
         std::optional<phi::u32> LoadUnsignedWord(phi::usize address) const;
+        std::optional<phi::f32> LoadFloat(phi::usize address) const;
+        std::optional<phi::f64> LoadDouble(phi::usize address) const;
 
         // Storing
         phi::Boolean StoreByte(phi::usize address, phi::i8 value);
@@ -39,11 +42,14 @@ namespace dlx
         phi::Boolean StoreUnsignedHalfWord(phi::usize address, phi::u16 value);
         phi::Boolean StoreWord(phi::usize address, phi::i32 value);
         phi::Boolean StoreUnsignedWord(phi::usize address, phi::u32 value);
+        phi::Boolean StoreFloat(phi::usize address, phi::f32 value);
+        phi::Boolean StoreDouble(phi::usize address, phi::f64 value);
 
         phi::Boolean IsAddressValid(phi::usize address, phi::usize size) const;
 
         void Clear();
 
+    private:
         std::vector<MemoryByte> m_Values;
         phi::usize              m_StartingAddress;
     };

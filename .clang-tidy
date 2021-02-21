@@ -1,5 +1,5 @@
 ---
-Checks:                'clang-diagnostic-*,clang-analyzer-*,bugprone-*,cert-*,cppcoreguidelines-*,hicpp-*,misc-*,modernize-*,performance-*,portability-*,readability-*,-modernize-use-trailing-return-type,-hicpp-no-array-decay,-*-uppercase-literal-suffix,-*-unused-parameters,-cppcoreguidelines-avoid-magic-numbers,-*-avoid-c-arrays,-*-use-auto,-cert-dcl16-c,-cppcoreguidelines-macro-usage,-cppcoreguidelines-pro-type-union-access'
+Checks:                'clang-diagnostic-*,clang-analyzer-*,bugprone-*,cert-*,cppcoreguidelines-*,hicpp-*,misc-*,modernize-*,performance-*,portability-*,readability-*,-modernize-use-trailing-return-type,-hicpp-no-array-decay,-*-uppercase-literal-suffix,-*-unused-parameters,-cppcoreguidelines-avoid-magic-numbers,-*-avoid-c-arrays,-*-use-auto,-cert-dcl16-c,-cppcoreguidelines-macro-usage,-cppcoreguidelines-pro-type-union-access,-cppcoreguidelines-pro-type-reinterpret-cast'
 WarningsAsErrors:      ''
 HeaderFilterRegex:     '*.hpp'
 AnalyzeTemporaryDtors: false

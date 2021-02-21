@@ -7,7 +7,7 @@ namespace dlx
         m_Value = val;
     }
 
-    phi::f32 FloatRegister::GetValue()
+    phi::f32 FloatRegister::GetValue() const
     {
         return m_Value;
     }

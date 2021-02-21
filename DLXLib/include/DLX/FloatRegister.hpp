@@ -9,9 +9,9 @@ namespace dlx
     public:
         void SetValue(phi::f32 val);
 
-        phi::f32 GetValue();
+        [[nodiscard]] phi::f32 GetValue() const;
 
     private:
-        phi::f32 m_Value;
+        phi::f32 m_Value{0.0f};
     };
 } // namespace dlx

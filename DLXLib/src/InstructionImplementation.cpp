@@ -1,13 +1,19 @@
 #include "DLX/InstructionImplementation.hpp"
 
 #include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionInfo.hpp"
 #include "DLX/Parser.hpp"
 #include "DLX/Processor.hpp"
 #include "DLX/RegisterNames.hpp"
+#include "Phi/Core/Assert.hpp"
+#include "Phi/Core/Types.hpp"
 #include <string_view>
 
 namespace dlx
 {
+    static constexpr float float_true{1.0f};
+    static constexpr float float_false{0.0f};
+
     static std::int32_t clear_top_n_bits(std::int32_t value, std::int32_t n)
     {
         PHI_ASSERT(n > 0 && n < 32, "Would invoke undefined behaviour");
@@ -369,6 +375,44 @@ namespace dlx
             Addition(processor, dest_reg.register_id, src_value, imm_value.unsigned_value);
         }
 
+        void ADDF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const auto& dest_reg = arg1.AsRegisterFloat().register_id;
+            const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value = lhs_value + rhs_value;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void ADDD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const auto& dest_reg = arg1.AsRegisterFloat().register_id;
+            const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f64 new_value = lhs_value + rhs_value;
+
+            processor.FloatRegisterSetDoubleValue(dest_reg, new_value);
+        }
+
         void SUB(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3)
         {
@@ -433,6 +477,44 @@ namespace dlx
             phi::u32 src_value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
 
             Subtraction(processor, dest_reg.register_id, src_value, imm_value.unsigned_value);
+        }
+
+        void SUBF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const auto& dest_reg = arg1.AsRegisterFloat().register_id;
+            const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value = lhs_value - rhs_value;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void SUBD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const auto& dest_reg = arg1.AsRegisterFloat().register_id;
+            const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f64 new_value = lhs_value - rhs_value;
+
+            processor.FloatRegisterSetDoubleValue(dest_reg, new_value);
         }
 
         void MULT(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -501,6 +583,44 @@ namespace dlx
             Multiplication(processor, dest_reg.register_id, src_value, imm_value.unsigned_value);
         }
 
+        void MULTF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                   const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const auto& dest_reg = arg1.AsRegisterFloat().register_id;
+            const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value = lhs_value * rhs_value;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void MULTD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                   const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const auto& dest_reg = arg1.AsRegisterFloat().register_id;
+            const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f64 new_value = lhs_value * rhs_value;
+
+            processor.FloatRegisterSetDoubleValue(dest_reg, new_value);
+        }
+
         void DIV(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3)
         {
@@ -565,6 +685,44 @@ namespace dlx
             phi::u32 src_value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
 
             Division(processor, dest_reg.register_id, src_value, imm_value.unsigned_value);
+        }
+
+        void DIVF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const auto& dest_reg = arg1.AsRegisterFloat().register_id;
+            const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value = lhs_value / rhs_value;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void DIVD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const auto& dest_reg = arg1.AsRegisterFloat().register_id;
+            const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f64 new_value = lhs_value / rhs_value;
+
+            processor.FloatRegisterSetDoubleValue(dest_reg, new_value);
         }
 
         void SLL(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -845,6 +1003,44 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
 
+        void LTF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value = (lhs_value < rhs_value) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void LTD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f32 new_value = (lhs_value < rhs_value) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
         void SGT(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3)
         {
@@ -880,6 +1076,44 @@ namespace dlx
             const phi::i32 new_value = (src_value > imm_value.signed_value ? 1 : 0);
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
+        }
+
+        void GTF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value = (lhs_value > rhs_value) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void GTD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f32 new_value = (lhs_value > rhs_value) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
         }
 
         void SLE(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -919,6 +1153,44 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
 
+        void LEF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value = (lhs_value <= rhs_value) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void LED(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f32 new_value = (lhs_value <= rhs_value) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
         void SGE(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3)
         {
@@ -954,6 +1226,44 @@ namespace dlx
             const phi::i32 new_value = (src_value >= imm_value.signed_value ? 1 : 0);
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
+        }
+
+        void GEF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value = (lhs_value >= rhs_value) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void GED(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f32 new_value = (lhs_value >= rhs_value) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
         }
 
         void SEQ(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -993,6 +1303,46 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
 
+        void EQF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value =
+                    (lhs_value.get() == rhs_value.get()) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void EQD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f32 new_value =
+                    (lhs_value.get() == rhs_value.get()) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
         void SNE(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3)
         {
@@ -1030,6 +1380,46 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
 
+        void NEF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
+            const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
+
+            const phi::f32 new_value =
+                    (lhs_value.get() != rhs_value.get()) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
+        void NED(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                 const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+
+            const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
+            const FloatRegisterID lhs_reg  = arg2.AsRegisterFloat().register_id;
+            const FloatRegisterID rhs_reg  = arg3.AsRegisterFloat().register_id;
+
+            const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
+            const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
+
+            const phi::f32 new_value =
+                    (lhs_value.get() != rhs_value.get()) ? float_true : float_false;
+
+            processor.FloatRegisterSetFloatValue(dest_reg, new_value);
+        }
+
         void BEQZ(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                   const InstructionArg& arg3)
         {
@@ -1061,6 +1451,42 @@ namespace dlx
             phi::i32 test_value = processor.IntRegisterGetSignedValue(test_reg.register_id);
 
             if (test_value != 0)
+            {
+                JumpToLabel(processor, jump_label.label_name);
+            }
+        }
+
+        void BFPT(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::Label);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const auto& test_reg   = arg1.AsRegisterFloat().register_id;
+            const auto& jump_label = arg2.AsLabel();
+
+            phi::f32 test_value = processor.FloatRegisterGetFloatValue(test_reg);
+
+            if (test_value.get() == float_true)
+            {
+                JumpToLabel(processor, jump_label.label_name);
+            }
+        }
+
+        void BFPF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::Label);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const auto& test_reg   = arg1.AsRegisterFloat().register_id;
+            const auto& jump_label = arg2.AsLabel();
+
+            phi::f32 test_value = processor.FloatRegisterGetFloatValue(test_reg);
+
+            if (test_value.get() == float_false)
             {
                 JumpToLabel(processor, jump_label.label_name);
             }
@@ -1328,6 +1754,72 @@ namespace dlx
             processor.IntRegisterSetUnsignedValue(dest_reg.register_id, optional_value.value());
         }
 
+        void LF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
+                       arg2.GetType() == ArgumentType::ImmediateInteger);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const auto& dest_reg = arg1.AsRegisterFloat();
+
+            auto optional_address = GetLoadStoreAddress(processor, arg2);
+
+            if (!optional_address.has_value())
+            {
+                processor.Raise(Exception::AddressOutOfBounds);
+                return;
+            }
+
+            phi::i32 address = optional_address.value();
+
+            auto optional_value =
+                    processor.m_MemoryBlock.LoadFloat(static_cast<std::size_t>(address.get()));
+
+            if (!optional_value.has_value())
+            {
+                processor.Raise(Exception::AddressOutOfBounds);
+                PHI_LOG_ERROR("Failed to load float at address {}", address.get());
+                return;
+            }
+
+            processor.FloatRegisterSetFloatValue(dest_reg.register_id, optional_value.value());
+        }
+
+        void LD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
+                       arg2.GetType() == ArgumentType::ImmediateInteger);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            const auto& dest_reg = arg1.AsRegisterFloat();
+
+            auto optional_address = GetLoadStoreAddress(processor, arg2);
+
+            if (!optional_address.has_value())
+            {
+                processor.Raise(Exception::AddressOutOfBounds);
+                return;
+            }
+
+            phi::i32 address = optional_address.value();
+
+            auto optional_value =
+                    processor.m_MemoryBlock.LoadDouble(static_cast<std::size_t>(address.get()));
+
+            if (!optional_value.has_value())
+            {
+                processor.Raise(Exception::AddressOutOfBounds);
+                PHI_LOG_ERROR("Failed to load double at address {}", address.get());
+                return;
+            }
+
+            processor.FloatRegisterSetDoubleValue(dest_reg.register_id, optional_value.value());
+        }
+
         void SB(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                 const InstructionArg& arg3)
         {
@@ -1523,12 +2015,68 @@ namespace dlx
             }
         }
 
-        void ADDF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
-                  const InstructionArg& arg3)
+        void SF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3)
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
+                       arg1.GetType() == ArgumentType::ImmediateInteger);
             PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            auto optional_address = GetLoadStoreAddress(processor, arg1);
+
+            if (!optional_address.has_value())
+            {
+                processor.Raise(Exception::AddressOutOfBounds);
+                return;
+            }
+
+            phi::i32 address = optional_address.value();
+
+            const auto& src_reg = arg2.AsRegisterFloat();
+
+            phi::f32 value = processor.FloatRegisterGetFloatValue(src_reg.register_id);
+
+            phi::Boolean success = processor.m_MemoryBlock.StoreFloat(
+                    static_cast<std::size_t>(address.get()), value);
+
+            if (!success)
+            {
+                processor.Raise(Exception::AddressOutOfBounds);
+                PHI_LOG_ERROR("Failed to store float at address {}", address.get());
+            }
+        }
+
+        void SD(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
+                       arg1.GetType() == ArgumentType::ImmediateInteger);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
+
+            auto optional_address = GetLoadStoreAddress(processor, arg1);
+
+            if (!optional_address.has_value())
+            {
+                processor.Raise(Exception::AddressOutOfBounds);
+                return;
+            }
+
+            phi::i32 address = optional_address.value();
+
+            const auto& src_reg = arg2.AsRegisterFloat();
+
+            phi::f64 value = processor.FloatRegisterGetDoubleValue(src_reg.register_id);
+
+            phi::Boolean success = processor.m_MemoryBlock.StoreDouble(
+                    static_cast<std::size_t>(address.get()), value);
+
+            if (!success)
+            {
+                processor.Raise(Exception::AddressOutOfBounds);
+                PHI_LOG_ERROR("Failed to store float at address {}", address.get());
+            }
         }
 
         void TRAP(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,

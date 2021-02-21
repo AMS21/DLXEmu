@@ -1,10 +1,10 @@
 #include <DLX/OpCode.hpp>
 #include <DLX/RegisterNames.hpp>
 #include <Phi/Core/Log.hpp>
-#include <iostream>
 #include <magic_enum.hpp>
-#include <memory>
 #include <spdlog/sinks/basic_file_sink.h>
+#include <iostream>
+#include <memory>
 
 int main(int argc, char* argv[])
 {

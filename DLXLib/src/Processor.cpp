@@ -1,13 +1,18 @@
 #include "DLX/Processor.hpp"
 
+#include "DLX/FloatRegister.hpp"
+#include "DLX/InstructionInfo.hpp"
 #include "DLX/Parser.hpp"
+#include "Phi/Core/Log.hpp"
+#include "Phi/Core/Types.hpp"
 
 namespace dlx
 {
     static phi::Boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
                                                   RegisterAccessType access)
     {
-        PHI_ASSERT(access == RegisterAccessType::Signed || access == RegisterAccessType::Unsigned);
+        PHI_ASSERT(access == RegisterAccessType::Signed || access == RegisterAccessType::Unsigned ||
+                   access == RegisterAccessType::Float || access == RegisterAccessType::Double);
 
         switch (expected_access)
         {
@@ -15,6 +20,8 @@ namespace dlx
                 return true;
             case RegisterAccessType::None:
                 return false;
+            case RegisterAccessType::MixedFloatDouble:
+                return access == RegisterAccessType::Float || access == RegisterAccessType::Double;
             default:
                 return expected_access == access;
         }
@@ -105,6 +112,116 @@ namespace dlx
         reg.SetUnsignedValue(value);
     }
 
+    FloatRegister& Processor::GetFloatRegister(FloatRegisterID id)
+    {
+        PHI_ASSERT(id != FloatRegisterID::None);
+        std::underlying_type_t<FloatRegisterID> id_value =
+                static_cast<std::underlying_type_t<FloatRegisterID>>(id);
+
+        PHI_ASSERT(id_value >= 0 && id_value <= 31);
+
+        return m_FloatRegisters.at(id_value);
+    }
+
+    const FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) const
+    {
+        PHI_ASSERT(id != FloatRegisterID::None);
+        std::underlying_type_t<FloatRegisterID> id_value =
+                static_cast<std::underlying_type_t<FloatRegisterID>>(id);
+
+        PHI_ASSERT(id_value >= 0 && id_value <= 31);
+
+        return m_FloatRegisters.at(id_value);
+    }
+
+    [[nodiscard]] phi::f32 Processor::FloatRegisterGetFloatValue(FloatRegisterID id) const
+    {
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Float))
+        {
+            PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
+        const FloatRegister& reg = GetFloatRegister(id);
+
+        return reg.GetValue();
+    }
+
+    [[nodiscard]] phi::f64 Processor::FloatRegisterGetDoubleValue(FloatRegisterID id)
+    {
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Double))
+        {
+            PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
+        if (id == FloatRegisterID::F31)
+        {
+            Raise(Exception::RegisterOutOfBounds);
+            return phi::f64(0.0);
+        }
+
+        const FloatRegister& first_reg = GetFloatRegister(id);
+        const FloatRegister& second_reg =
+                GetFloatRegister(static_cast<FloatRegisterID>(static_cast<std::size_t>(id) + 1));
+
+        const float first_value  = first_reg.GetValue().get();
+        const float second_value = second_reg.GetValue().get();
+
+        const std::uint32_t first_value_bits =
+                *reinterpret_cast<const std::uint32_t*>(&first_value);
+        const std::uint32_t second_value_bits =
+                *reinterpret_cast<const std::uint32_t*>(&second_value);
+
+        std::uint64_t final_value_bits =
+                static_cast<std::uint64_t>(second_value_bits) << 32u | first_value_bits;
+
+        return *reinterpret_cast<double*>(&final_value_bits);
+    }
+
+    void Processor::FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value)
+    {
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Float))
+        {
+            PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
+        FloatRegister& reg = GetFloatRegister(id);
+
+        reg.SetValue(value);
+    }
+
+    void Processor::FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value)
+    {
+        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Double))
+        {
+            PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
+        if (id == FloatRegisterID::F31)
+        {
+            Raise(Exception::RegisterOutOfBounds);
+            return;
+        }
+
+        const constexpr std::uint64_t first_32_bits  = 0b11111111'11111111'11111111'11111111;
+        const constexpr std::uint64_t second_32_bits = first_32_bits << 32u;
+
+        double              value_raw  = value.get();
+        const std::uint64_t value_bits = *reinterpret_cast<std::uint64_t*>(&value_raw);
+
+        const std::uint32_t first_bits  = value_bits & first_32_bits;
+        const std::uint32_t second_bits = (value_bits & second_32_bits) >> 32u;
+
+        const float first_value  = *reinterpret_cast<const float*>(&first_bits);
+        const float second_value = *reinterpret_cast<const float*>(&second_bits);
+
+        FloatRegister& first_reg = GetFloatRegister(id);
+        FloatRegister& second_reg =
+                GetFloatRegister(static_cast<FloatRegisterID>(static_cast<std::size_t>(id) + 1));
+
+        first_reg.SetValue(first_value);
+        second_reg.SetValue(second_value);
+    }
+
     void Processor::ExecuteInstruction(const Instruction& inst)
     {
         m_CurrentInstructionAccessType = inst.GetInfo().GetRegisterAccessType();
@@ -163,6 +280,11 @@ namespace dlx
         {
             reg.SetSignedValue(0);
         }
+
+        for (auto& reg : m_FloatRegisters)
+        {
+            reg.SetValue(0.0f);
+        }
     }
 
     void Processor::ClearMemory()
@@ -207,6 +329,10 @@ namespace dlx
                 return;
             case Exception::AddressOutOfBounds:
                 PHI_LOG_ERROR("Address out of bounds");
+                m_Halted = true;
+                return;
+            case Exception::RegisterOutOfBounds:
+                PHI_LOG_ERROR("Register out of bounds");
                 m_Halted = true;
                 return;
         }

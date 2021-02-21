@@ -12,24 +12,32 @@ namespace dlx
         ADDI,
         ADDU,
         ADDUI,
+        ADDF,
+        ADDD,
 
         // Sub
         SUB,
         SUBI,
         SUBU,
         SUBUI,
+        SUBF,
+        SUBD,
 
         // Multiplication
         MULT,
         MULTI,
         MULTU,
         MULTUI,
+        MULTF,
+        MULTD,
 
         // Division
         DIV,
         DIVI,
         DIVU,
         DIVUI,
+        DIVF,
+        DIVD,
 
         // Shift left (logical)
         SLL,
@@ -66,32 +74,44 @@ namespace dlx
         // Less than
         SLT,
         SLTI,
+        LTF,
+        LTD,
 
         // Greater than
         SGT,
         SGTI,
+        GTF,
+        GTD,
 
         // Less than or equal
         SLE,
         SLEI,
+        LEF,
+        LED,
 
         // Greater than or equal
         SGE,
         SGEI,
+        GEF,
+        GED,
 
         // Equal
         SEQ,
         SEQI,
+        EQF,
+        EQD,
 
         // Not equal
         SNE,
         SNEI,
+        NEF,
+        NED,
 
         /* Conditional branching */
         BEQZ,
         BNEZ,
-        //BFPT,
-        //BFPF,
+        BFPT,
+        BFPF,
 
         /* Unconditional branching */
         J,
@@ -106,8 +126,8 @@ namespace dlx
         LHU,
         LW,
         LWU,
-        //LF,
-        //LD,
+        LF,
+        LD,
 
         /* Storing data */
         SB,
@@ -116,48 +136,22 @@ namespace dlx
         SHU,
         SW,
         SWU,
-        //SF,
-        //SD,
+        SF,
+        SD,
 
         /* Moving data */
-        //MOVI2S,
-        //MOVS2I,
         //MOVF,
         //MOVD,
         //MOVFP2I,
         //MOVI2FP,
 
-        /* Floating pointer operations */
-        ADDF,
-        //ADDD,
-        SUBF,
-        //SUBD,
-        MULTF,
-        //MULTD,
-        DIVF,
-        //DIVD,
-
-        /* Floating pointer conversions */
+        /* Converting data */
         //CVTF2D,
         //CVTF2I,
         //CVTD2F,
         //CVTD2I,
         //CVTI2F,
         //CVTI2D,
-
-        /* Floating pointer comparison */
-        //LTF,
-        //LTD,
-        //GTF,
-        //GTD,
-        //LEF,
-        //LED,
-        //GEF,
-        //GED,
-        //EQF,
-        //EQD,
-        //NEF,
-        //NED,
 
         /* Other */
         TRAP,

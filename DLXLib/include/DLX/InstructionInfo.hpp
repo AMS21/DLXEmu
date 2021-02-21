@@ -59,6 +59,7 @@ namespace dlx
         Unsigned,
         Float,
         Double,
+        MixedFloatDouble,
         Ignored,
     };
 

@@ -1,3 +1,6 @@
+#include "DLX/InstructionArg.hpp"
+#include "DLX/OpCode.hpp"
+#include "DLX/RegisterNames.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 #include <DLX/Parser.hpp>
@@ -257,7 +260,9 @@ TEST_CASE("Parser")
         SECTION("Is case insensitive")
         {
             res = dlx::Parser::Parse(lib, "add, r2, r4, r29");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADD,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
@@ -265,7 +270,9 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
 
             res = dlx::Parser::Parse(lib, "aDd, r2, r4, R29");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADD,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
@@ -273,7 +280,9 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
 
             res = dlx::Parser::Parse(lib, "AdD, r2, r4, R29");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADD,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
@@ -285,7 +294,9 @@ TEST_CASE("Parser")
         SECTION("ADD")
         {
             res = dlx::Parser::Parse(lib, "ADD, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADD,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -296,7 +307,9 @@ TEST_CASE("Parser")
         SECTION("ADDI")
         {
             res = dlx::Parser::Parse(lib, "ADDI, R1, R2, #25");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADDI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -307,7 +320,9 @@ TEST_CASE("Parser")
         SECTION("ADDU")
         {
             res = dlx::Parser::Parse(lib, "ADDU, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADDU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -318,7 +333,9 @@ TEST_CASE("Parser")
         SECTION("ADDUI")
         {
             res = dlx::Parser::Parse(lib, "ADDUI, R1, R2, #25");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADDUI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -326,10 +343,38 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(25)));
         }
 
+        SECTION("ADDF")
+        {
+            res = dlx::Parser::Parse(lib, "ADDF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::ADDF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("ADDD")
+        {
+            res = dlx::Parser::Parse(lib, "ADDD F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::ADDD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         SECTION("SUB")
         {
             res = dlx::Parser::Parse(lib, "SUB, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUB,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -340,7 +385,9 @@ TEST_CASE("Parser")
         SECTION("SUBI")
         {
             res = dlx::Parser::Parse(lib, "SUBI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUBI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -351,7 +398,9 @@ TEST_CASE("Parser")
         SECTION("SUBU")
         {
             res = dlx::Parser::Parse(lib, "SUBU, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUBU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -362,7 +411,9 @@ TEST_CASE("Parser")
         SECTION("SUBUI")
         {
             res = dlx::Parser::Parse(lib, "SUBUI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUBUI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -370,10 +421,38 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(21)));
         }
 
+        SECTION("SUBF")
+        {
+            res = dlx::Parser::Parse(lib, "SUBF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::SUBF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("SUBD")
+        {
+            res = dlx::Parser::Parse(lib, "SUBD F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::SUBD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         SECTION("MULT")
         {
             res = dlx::Parser::Parse(lib, "MULT, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULT,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -384,7 +463,9 @@ TEST_CASE("Parser")
         SECTION("MULTI")
         {
             res = dlx::Parser::Parse(lib, "MULTI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULTI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -395,7 +476,9 @@ TEST_CASE("Parser")
         SECTION("MULTU")
         {
             res = dlx::Parser::Parse(lib, "MULTU, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULTU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -406,7 +489,9 @@ TEST_CASE("Parser")
         SECTION("MULTUI")
         {
             res = dlx::Parser::Parse(lib, "MULTUI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULTUI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -414,10 +499,38 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(21)));
         }
 
+        SECTION("MULTF")
+        {
+            res = dlx::Parser::Parse(lib, "MULTF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::MULTF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("MULTD")
+        {
+            res = dlx::Parser::Parse(lib, "MULTD F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::MULTD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         SECTION("DIV")
         {
             res = dlx::Parser::Parse(lib, "DIV, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIV,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -428,7 +541,9 @@ TEST_CASE("Parser")
         SECTION("DIVI")
         {
             res = dlx::Parser::Parse(lib, "DIVI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIVI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -439,7 +554,9 @@ TEST_CASE("Parser")
         SECTION("DIVU")
         {
             res = dlx::Parser::Parse(lib, "DIVU, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIVU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -450,7 +567,9 @@ TEST_CASE("Parser")
         SECTION("DIVUI")
         {
             res = dlx::Parser::Parse(lib, "DIVUI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIVUI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -458,10 +577,38 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(21)));
         }
 
+        SECTION("DIVF")
+        {
+            res = dlx::Parser::Parse(lib, "DIVF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::DIVF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("DIVD")
+        {
+            res = dlx::Parser::Parse(lib, "DIVD F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::DIVD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         SECTION("SLL")
         {
             res = dlx::Parser::Parse(lib, "SLL, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLL,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -472,7 +619,9 @@ TEST_CASE("Parser")
         SECTION("SLLI")
         {
             res = dlx::Parser::Parse(lib, "SLLI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLLI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -483,7 +632,9 @@ TEST_CASE("Parser")
         SECTION("SRL")
         {
             res = dlx::Parser::Parse(lib, "SRL, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SRL,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -494,7 +645,9 @@ TEST_CASE("Parser")
         SECTION("SRLI")
         {
             res = dlx::Parser::Parse(lib, "SRLI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SRLI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -505,7 +658,9 @@ TEST_CASE("Parser")
         SECTION("SLA")
         {
             res = dlx::Parser::Parse(lib, "SLA, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLA,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -516,7 +671,9 @@ TEST_CASE("Parser")
         SECTION("SLAI")
         {
             res = dlx::Parser::Parse(lib, "SLAI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLAI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -527,7 +684,9 @@ TEST_CASE("Parser")
         SECTION("SRA")
         {
             res = dlx::Parser::Parse(lib, "SRA, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SRA,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -538,7 +697,9 @@ TEST_CASE("Parser")
         SECTION("SRAI")
         {
             res = dlx::Parser::Parse(lib, "SRAI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SRAI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -550,7 +711,9 @@ TEST_CASE("Parser")
         SECTION("AND")
         {
             res = dlx::Parser::Parse(lib, "AND, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::AND,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -561,7 +724,9 @@ TEST_CASE("Parser")
         SECTION("ANDI")
         {
             res = dlx::Parser::Parse(lib, "ANDI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ANDI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -572,7 +737,9 @@ TEST_CASE("Parser")
         SECTION("OR")
         {
             res = dlx::Parser::Parse(lib, "OR, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::OR,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -583,7 +750,9 @@ TEST_CASE("Parser")
         SECTION("ORI")
         {
             res = dlx::Parser::Parse(lib, "ORI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ORI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -594,7 +763,9 @@ TEST_CASE("Parser")
         SECTION("XOR")
         {
             res = dlx::Parser::Parse(lib, "XOR, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::XOR,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -605,7 +776,9 @@ TEST_CASE("Parser")
         SECTION("XORI")
         {
             res = dlx::Parser::Parse(lib, "XORI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::XORI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -617,7 +790,9 @@ TEST_CASE("Parser")
         SECTION("SLT")
         {
             res = dlx::Parser::Parse(lib, "SLT, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLT,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -628,7 +803,9 @@ TEST_CASE("Parser")
         SECTION("SLTI")
         {
             res = dlx::Parser::Parse(lib, "SLTI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLTI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -636,10 +813,38 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(21)));
         }
 
+        SECTION("LTF")
+        {
+            res = dlx::Parser::Parse(lib, "LTF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LTF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("LTD")
+        {
+            res = dlx::Parser::Parse(lib, "LTF F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LTF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         SECTION("SGT")
         {
             res = dlx::Parser::Parse(lib, "SGT, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SGT,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -650,7 +855,9 @@ TEST_CASE("Parser")
         SECTION("SGTI")
         {
             res = dlx::Parser::Parse(lib, "SGTI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SGTI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -658,10 +865,38 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(21)));
         }
 
+        SECTION("GTF")
+        {
+            res = dlx::Parser::Parse(lib, "GTF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::GTF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("GTD")
+        {
+            res = dlx::Parser::Parse(lib, "GTD F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::GTD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         SECTION("SLE")
         {
             res = dlx::Parser::Parse(lib, "SLE, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLE,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -672,7 +907,9 @@ TEST_CASE("Parser")
         SECTION("SLEI")
         {
             res = dlx::Parser::Parse(lib, "SLEI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLEI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -680,10 +917,38 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(21)));
         }
 
+        SECTION("LEF")
+        {
+            res = dlx::Parser::Parse(lib, "LEF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LEF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("LED")
+        {
+            res = dlx::Parser::Parse(lib, "LED F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LED,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         SECTION("SEQ")
         {
             res = dlx::Parser::Parse(lib, "SEQ, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SEQ,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -694,7 +959,9 @@ TEST_CASE("Parser")
         SECTION("SEQI")
         {
             res = dlx::Parser::Parse(lib, "SEQI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SEQI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -702,10 +969,38 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(21)));
         }
 
+        SECTION("EQF")
+        {
+            res = dlx::Parser::Parse(lib, "EQF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::EQF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("EQD")
+        {
+            res = dlx::Parser::Parse(lib, "EQD F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::EQD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         SECTION("SNE")
         {
             res = dlx::Parser::Parse(lib, "SNE, R1, R2, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SNE,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -716,7 +1011,9 @@ TEST_CASE("Parser")
         SECTION("SNEI")
         {
             res = dlx::Parser::Parse(lib, "SNEI, R1, R2, #21");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SNEI,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
@@ -724,11 +1021,39 @@ TEST_CASE("Parser")
                     dlx::ConstructInstructionArgImmediateValue(21)));
         }
 
+        SECTION("NEF")
+        {
+            res = dlx::Parser::Parse(lib, "NEF F0 F1 F2");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::NEF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+        }
+
+        SECTION("NED")
+        {
+            res = dlx::Parser::Parse(lib, "NED F0 F2 F4");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::NED,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+        }
+
         // Conditional branching
         SECTION("BEQZ")
         {
             res = dlx::Parser::Parse(lib, "BEQZ, R5, jump_label");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::BEQZ,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R5),
@@ -738,10 +1063,36 @@ TEST_CASE("Parser")
         SECTION("BNEZ")
         {
             res = dlx::Parser::Parse(lib, "BNEZ, R5, jump_label");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::BNEZ,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R5),
+                    dlx::ConstructInstructionArgLabel("jump_label"), dlx::InstructionArg()));
+        }
+
+        SECTION("BFPT")
+        {
+            res = dlx::Parser::Parse(lib, "BFPT F1 jump_label");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::BFPT,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgLabel("jump_label"), dlx::InstructionArg()));
+        }
+
+        SECTION("BFPF")
+        {
+            res = dlx::Parser::Parse(lib, "BFPF F1 jump_label");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::BFPF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
                     dlx::ConstructInstructionArgLabel("jump_label"), dlx::InstructionArg()));
         }
 
@@ -749,7 +1100,9 @@ TEST_CASE("Parser")
         SECTION("J")
         {
             res = dlx::Parser::Parse(lib, "J, jump_label");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::J,
                                      dlx::ConstructInstructionArgLabel("jump_label"),
                                      dlx::InstructionArg(), dlx::InstructionArg()));
@@ -758,7 +1111,9 @@ TEST_CASE("Parser")
         SECTION("JR")
         {
             res = dlx::Parser::Parse(lib, "JR, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::JR,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3),
@@ -768,7 +1123,9 @@ TEST_CASE("Parser")
         SECTION("JAL")
         {
             res = dlx::Parser::Parse(lib, "JAL, jump_label");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::JAL,
                                      dlx::ConstructInstructionArgLabel("jump_label"),
                                      dlx::InstructionArg(), dlx::InstructionArg()));
@@ -777,7 +1134,9 @@ TEST_CASE("Parser")
         SECTION("JALR")
         {
             res = dlx::Parser::Parse(lib, "JALR, R3");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::JALR,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3),
@@ -788,14 +1147,18 @@ TEST_CASE("Parser")
         SECTION("LB")
         {
             res = dlx::Parser::Parse(lib, "LB, R21, #1000");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LB,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
                     dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "LB, R21, 1000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LB,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
@@ -806,14 +1169,18 @@ TEST_CASE("Parser")
         SECTION("LBU")
         {
             res = dlx::Parser::Parse(lib, "LBU, R21, #1000");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LBU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
                     dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "LBU, R21, 1000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LBU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
@@ -824,14 +1191,18 @@ TEST_CASE("Parser")
         SECTION("LH")
         {
             res = dlx::Parser::Parse(lib, "LH, R21, #1000");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LH,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
                     dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "LH, R21, 1000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LH,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
@@ -842,14 +1213,18 @@ TEST_CASE("Parser")
         SECTION("LHU")
         {
             res = dlx::Parser::Parse(lib, "LHU, R21, #1000");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LHU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
                     dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "LHU, R21, 1000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LHU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
@@ -860,14 +1235,18 @@ TEST_CASE("Parser")
         SECTION("LW")
         {
             res = dlx::Parser::Parse(lib, "LW, R21, #1000");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LW,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
                     dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "LW, R21, 1000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LW,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
@@ -878,17 +1257,65 @@ TEST_CASE("Parser")
         SECTION("LWU")
         {
             res = dlx::Parser::Parse(lib, "LWU, R21, #1000");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LWU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
                     dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "LWU, R21, 1000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LWU,
                     dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("LF")
+        {
+            res = dlx::Parser::Parse(lib, "LF F0 #1000");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+
+            res = dlx::Parser::Parse(lib, "LF F0 1000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LF,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
+                    dlx::InstructionArg()));
+        }
+
+        SECTION("LD")
+        {
+            res = dlx::Parser::Parse(lib, "LD F0 #1000");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+
+            res = dlx::Parser::Parse(lib, "LD F0 1000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::LD,
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
                     dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
                     dlx::InstructionArg()));
         }
@@ -897,7 +1324,9 @@ TEST_CASE("Parser")
         SECTION("SB")
         {
             res = dlx::Parser::Parse(lib, "SB, #1000, R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SB,
                     dlx::ConstructInstructionArgImmediateValue(1000),
@@ -905,7 +1334,9 @@ TEST_CASE("Parser")
                     dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "SB, 1000(R0), R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SB,
                     dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
@@ -916,7 +1347,9 @@ TEST_CASE("Parser")
         SECTION("SBU")
         {
             res = dlx::Parser::Parse(lib, "SBU, #1000, R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SBU,
                     dlx::ConstructInstructionArgImmediateValue(1000),
@@ -924,7 +1357,9 @@ TEST_CASE("Parser")
                     dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "SBU, 1000(R0), R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SBU,
                     dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
@@ -935,7 +1370,9 @@ TEST_CASE("Parser")
         SECTION("SH")
         {
             res = dlx::Parser::Parse(lib, "SH, #1000, R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SH,
                     dlx::ConstructInstructionArgImmediateValue(1000),
@@ -943,7 +1380,9 @@ TEST_CASE("Parser")
                     dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "SH, 1000(R0), R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SH,
                     dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
@@ -954,7 +1393,9 @@ TEST_CASE("Parser")
         SECTION("SHU")
         {
             res = dlx::Parser::Parse(lib, "SHU, #1000, R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SHU,
                     dlx::ConstructInstructionArgImmediateValue(1000),
@@ -962,7 +1403,9 @@ TEST_CASE("Parser")
                     dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "SHU, 1000(R0), R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SHU,
                     dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
@@ -973,7 +1416,9 @@ TEST_CASE("Parser")
         SECTION("SW")
         {
             res = dlx::Parser::Parse(lib, "SW, #1000, R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SW,
                     dlx::ConstructInstructionArgImmediateValue(1000),
@@ -981,7 +1426,9 @@ TEST_CASE("Parser")
                     dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "SW, 1000(R0), R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SW,
                     dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
@@ -992,7 +1439,9 @@ TEST_CASE("Parser")
         SECTION("SWU")
         {
             res = dlx::Parser::Parse(lib, "SWU, #1000, R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SWU,
                     dlx::ConstructInstructionArgImmediateValue(1000),
@@ -1000,7 +1449,9 @@ TEST_CASE("Parser")
                     dlx::InstructionArg()));
 
             res = dlx::Parser::Parse(lib, "SWU, 1000(R0), R12");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SWU,
                     dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
@@ -1008,21 +1459,59 @@ TEST_CASE("Parser")
                     dlx::InstructionArg()));
         }
 
-        // Floating Point
-        SECTION("ADDF")
+        SECTION("SF")
         {
-            res = dlx::Parser::Parse(lib, "ADDF F0 F1 F2");
+            res = dlx::Parser::Parse(lib, "SF #1000 F0");
             REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
 
-            CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADDF, dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0), dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1), dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::SF,
+                    dlx::ConstructInstructionArgImmediateValue(1000),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArg()));
+
+            res = dlx::Parser::Parse(lib, "SF 1000(R0) F0");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::SF,
+                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArg()));
         }
 
-        // Other
+        SECTION("SD")
+        {
+            res = dlx::Parser::Parse(lib, "SD #1000 F0");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::SD,
+                    dlx::ConstructInstructionArgImmediateValue(1000),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArg()));
+
+            res = dlx::Parser::Parse(lib, "SD 1000(R0) F0");
+            REQUIRE(res.m_ParseErrors.empty());
+            REQUIRE(res.m_Instructions.size() == 1);
+
+            CHECK(InstructionMatches(
+                    res.m_Instructions.at(0), dlx::OpCode::SD,
+                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
+                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArg()));
+        }
+
+        // Special
         SECTION("TRAP")
         {
             res = dlx::Parser::Parse(lib, "TRAP #1");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::TRAP,
                                      dlx::ConstructInstructionArgImmediateValue(1),
                                      dlx::InstructionArg(), dlx::InstructionArg()));
@@ -1031,7 +1520,9 @@ TEST_CASE("Parser")
         SECTION("HALT")
         {
             res = dlx::Parser::Parse(lib, "HALT");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::HALT,
                                      dlx::InstructionArg(), dlx::InstructionArg(),
                                      dlx::InstructionArg()));
@@ -1040,7 +1531,9 @@ TEST_CASE("Parser")
         SECTION("NOP")
         {
             res = dlx::Parser::Parse(lib, "NOP");
+            REQUIRE(res.m_ParseErrors.empty());
             REQUIRE(res.m_Instructions.size() == 1);
+
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::NOP,
                                      dlx::InstructionArg(), dlx::InstructionArg(),
                                      dlx::InstructionArg()));
