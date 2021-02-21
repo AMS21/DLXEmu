@@ -82,15 +82,14 @@ namespace dlx
 
             return imm_value.signed_value;
         }
-        else if (argument.GetType() == ArgumentType::AddressDisplacement)
+
+        if (argument.GetType() == ArgumentType::AddressDisplacement)
         {
             const auto& adr_displacement = argument.AsAddressDisplacement();
             return CalculateDisplacementAddress(processor, adr_displacement);
         }
-        else
-        {
-            PHI_ASSERT_NOT_REACHED();
-        }
+
+        PHI_ASSERT_NOT_REACHED();
     }
 
     static void SafeWriteInteger(Processor& processor, IntRegisterID dest_reg, phi::i64 value)
@@ -232,12 +231,15 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg, 0);
             return;
         }
-        else if (shift == 0)
+
+        // Do nothing when shifting by zero to prevent undefined behavior
+        if (shift == 0)
         {
-            // Do nothing when shifting by zero to prevent undefined behavior
             return;
         }
-        else if (shift < 0)
+
+        // Negative shifts are undefiend behaviour
+        if (shift < 0)
         {
             processor.Raise(Exception::BadShift);
             return;
@@ -271,7 +273,9 @@ namespace dlx
             }
             return;
         }
-        else if (shift < 0)
+
+        // Negative shifts are undefined behaviour
+        if (shift < 0)
         {
             processor.Raise(Exception::BadShift);
             return;
@@ -294,7 +298,9 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg, 0);
             return;
         }
-        else if (shift < 0)
+
+        // Negative shifts are undefined behaviour
+        if (shift < 0)
         {
             processor.Raise(Exception::BadShift);
             return;
