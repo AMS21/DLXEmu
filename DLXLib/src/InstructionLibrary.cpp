@@ -121,9 +121,13 @@ namespace dlx
 
         // Set less than
         InitInstruction(OpCode::SLT, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::IntRegister, RegisterAccessType::Ignored, impl::SLT);
+                        ArgumentType::IntRegister, RegisterAccessType::Signed, impl::SLT);
         InitInstruction(OpCode::SLTI, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SLTI);
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Signed, impl::SLTI);
+        InitInstruction(OpCode::SLTU, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::IntRegister, RegisterAccessType::Unsigned, impl::SLTU);
+        InitInstruction(OpCode::SLTUI, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Unsigned, impl::SLTUI);
         InitInstruction(OpCode::LTF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
                         ArgumentType::None, RegisterAccessType::Float, impl::LTF);
         InitInstruction(OpCode::LTD, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
@@ -131,9 +135,13 @@ namespace dlx
 
         // Set greater than
         InitInstruction(OpCode::SGT, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::IntRegister, RegisterAccessType::Ignored, impl::SGT);
+                        ArgumentType::IntRegister, RegisterAccessType::Signed, impl::SGT);
         InitInstruction(OpCode::SGTI, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SGTI);
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Signed, impl::SGTI);
+        InitInstruction(OpCode::SGTU, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::IntRegister, RegisterAccessType::Unsigned, impl::SGTU);
+        InitInstruction(OpCode::SGTUI, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Unsigned, impl::SGTUI);
         InitInstruction(OpCode::GTF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
                         ArgumentType::None, RegisterAccessType::Float, impl::GTF);
         InitInstruction(OpCode::GTD, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
@@ -141,9 +149,13 @@ namespace dlx
 
         // Set less than or equal
         InitInstruction(OpCode::SLE, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::IntRegister, RegisterAccessType::Ignored, impl::SLE);
+                        ArgumentType::IntRegister, RegisterAccessType::Signed, impl::SLE);
         InitInstruction(OpCode::SLEI, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SLEI);
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Signed, impl::SLEI);
+        InitInstruction(OpCode::SLEU, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::IntRegister, RegisterAccessType::Unsigned, impl::SLEU);
+        InitInstruction(OpCode::SLEUI, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Unsigned, impl::SLEUI);
         InitInstruction(OpCode::LEF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
                         ArgumentType::None, RegisterAccessType::Float, impl::LEF);
         InitInstruction(OpCode::LED, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
@@ -151,9 +163,13 @@ namespace dlx
 
         // Set greater than or equal
         InitInstruction(OpCode::SGE, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::IntRegister, RegisterAccessType::Ignored, impl::SGE);
+                        ArgumentType::IntRegister, RegisterAccessType::Signed, impl::SGE);
         InitInstruction(OpCode::SGEI, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SGEI);
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Signed, impl::SGEI);
+        InitInstruction(OpCode::SGEU, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::IntRegister, RegisterAccessType::Unsigned, impl::SGEU);
+        InitInstruction(OpCode::SGEUI, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Unsigned, impl::SGEUI);
         InitInstruction(OpCode::GEF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
                         ArgumentType::None, RegisterAccessType::Float, impl::GEF);
         InitInstruction(OpCode::GED, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
@@ -161,9 +177,13 @@ namespace dlx
 
         // Set equal
         InitInstruction(OpCode::SEQ, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::IntRegister, RegisterAccessType::Ignored, impl::SEQ);
+                        ArgumentType::IntRegister, RegisterAccessType::Signed, impl::SEQ);
         InitInstruction(OpCode::SEQI, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SEQI);
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Signed, impl::SEQI);
+        InitInstruction(OpCode::SEQU, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::IntRegister, RegisterAccessType::Unsigned, impl::SEQU);
+        InitInstruction(OpCode::SEQUI, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Unsigned, impl::SEQUI);
         InitInstruction(OpCode::EQF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
                         ArgumentType::None, RegisterAccessType::Float, impl::EQF);
         InitInstruction(OpCode::EQD, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
@@ -171,9 +191,13 @@ namespace dlx
 
         // Set not equal
         InitInstruction(OpCode::SNE, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::IntRegister, RegisterAccessType::Ignored, impl::SNE);
+                        ArgumentType::IntRegister, RegisterAccessType::Signed, impl::SNE);
         InitInstruction(OpCode::SNEI, ArgumentType::IntRegister, ArgumentType::IntRegister,
-                        ArgumentType::ImmediateInteger, RegisterAccessType::Ignored, impl::SNEI);
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Signed, impl::SNEI);
+        InitInstruction(OpCode::SNEU, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::IntRegister, RegisterAccessType::Unsigned, impl::SNEU);
+        InitInstruction(OpCode::SNEUI, ArgumentType::IntRegister, ArgumentType::IntRegister,
+                        ArgumentType::ImmediateInteger, RegisterAccessType::Unsigned, impl::SNEUI);
         InitInstruction(OpCode::NEF, ArgumentType::FloatRegister, ArgumentType::FloatRegister,
                         ArgumentType::None, RegisterAccessType::Float, impl::NEF);
         InitInstruction(OpCode::NED, ArgumentType::FloatRegister, ArgumentType::FloatRegister,

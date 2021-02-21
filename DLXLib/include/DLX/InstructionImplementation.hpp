@@ -172,6 +172,14 @@ namespace dlx::impl
     void SLTI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
               const InstructionArg& arg3);
 
+    // Less than unsigned
+    void SLTU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+              const InstructionArg& arg3);
+
+    // Less than unsigned iimmediate
+    void SLTUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+               const InstructionArg& arg3);
+
     // Less than float
     void LTF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
              const InstructionArg& arg3);
@@ -187,6 +195,14 @@ namespace dlx::impl
     // Greater than immediate
     void SGTI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
               const InstructionArg& arg3);
+
+    // Greater than unsigned
+    void SGTU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+              const InstructionArg& arg3);
+
+    // Greater than unsigned immediate
+    void SGTUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+               const InstructionArg& arg3);
 
     // Greater than float
     void GTF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -204,6 +220,14 @@ namespace dlx::impl
     void SLEI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
               const InstructionArg& arg3);
 
+    // Less than or equal unsigned
+    void SLEU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+              const InstructionArg& arg3);
+
+    // Less than or equal unsigned immediate
+    void SLEUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+               const InstructionArg& arg3);
+
     // Less than or equal float
     void LEF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
              const InstructionArg& arg3);
@@ -220,6 +244,14 @@ namespace dlx::impl
     void SGEI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
               const InstructionArg& arg3);
 
+    // Greater than or equal unsigned
+    void SGEU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+              const InstructionArg& arg3);
+
+    // Greater than or equal unsigned immediate
+    void SGEUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+               const InstructionArg& arg3);
+
     // Greater than or equal float
     void GEF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
              const InstructionArg& arg3);
@@ -235,6 +267,14 @@ namespace dlx::impl
     // Equal immediate
     void SEQI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
               const InstructionArg& arg3);
+
+    // Equal unsigned
+    void SEQU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+              const InstructionArg& arg3);
+
+    // Equal unsigned immediate
+    void SEQUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+               const InstructionArg& arg3);
 
     // Equal float
     void EQF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -259,6 +299,14 @@ namespace dlx::impl
     // Not equal double
     void NED(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
              const InstructionArg& arg3);
+
+    // Not equal unsigned
+    void SNEU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+              const InstructionArg& arg3);
+
+    // No equal unsigned immediate
+    void SNEUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+               const InstructionArg& arg3);
 
     /* Conditional branching */
 

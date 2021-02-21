@@ -1001,6 +1001,43 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
 
+        void SLTU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
+
+            const auto& dest_reg = arg1.AsRegisterInt();
+            const auto& lhs_reg  = arg2.AsRegisterInt();
+            const auto& rhs_reg  = arg3.AsRegisterInt();
+
+            const phi::u32 lhs_value = processor.IntRegisterGetUnsignedValue(lhs_reg.register_id);
+            const phi::u32 rhs_value = processor.IntRegisterGetUnsignedValue(rhs_reg.register_id);
+
+            const phi::u32 new_value = (lhs_value < rhs_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SLTUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                   const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
+
+            const auto& dest_reg  = arg1.AsRegisterInt();
+            const auto& src_reg   = arg2.AsRegisterInt();
+            const auto& imm_value = arg3.AsImmediateValue();
+
+            const phi::u32 src_value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
+
+            const phi::u32 new_value = (src_value < imm_value.unsigned_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
         void LTF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3)
         {
@@ -1072,6 +1109,43 @@ namespace dlx
             const phi::i32 new_value = (src_value > imm_value.signed_value ? 1 : 0);
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SGTU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
+
+            const auto& dest_reg = arg1.AsRegisterInt();
+            const auto& lhs_reg  = arg2.AsRegisterInt();
+            const auto& rhs_reg  = arg3.AsRegisterInt();
+
+            const phi::u32 lhs_value = processor.IntRegisterGetUnsignedValue(lhs_reg.register_id);
+            const phi::u32 rhs_value = processor.IntRegisterGetUnsignedValue(rhs_reg.register_id);
+
+            const phi::u32 new_value = (lhs_value > rhs_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SGTUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                   const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
+
+            const auto& dest_reg  = arg1.AsRegisterInt();
+            const auto& src_reg   = arg2.AsRegisterInt();
+            const auto& imm_value = arg3.AsImmediateValue();
+
+            const phi::u32 src_value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
+
+            const phi::u32 new_value = (src_value > imm_value.unsigned_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
         }
 
         void GTF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1147,6 +1221,43 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
 
+        void SLEU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
+
+            const auto& dest_reg = arg1.AsRegisterInt();
+            const auto& lhs_reg  = arg2.AsRegisterInt();
+            const auto& rhs_reg  = arg3.AsRegisterInt();
+
+            const phi::u32 lhs_value = processor.IntRegisterGetUnsignedValue(lhs_reg.register_id);
+            const phi::u32 rhs_value = processor.IntRegisterGetUnsignedValue(rhs_reg.register_id);
+
+            const phi::u32 new_value = (lhs_value <= rhs_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SLEUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                   const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
+
+            const auto& dest_reg  = arg1.AsRegisterInt();
+            const auto& src_reg   = arg2.AsRegisterInt();
+            const auto& imm_value = arg3.AsImmediateValue();
+
+            const phi::u32 src_value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
+
+            const phi::u32 new_value = (src_value <= imm_value.unsigned_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
         void LEF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3)
         {
@@ -1218,6 +1329,43 @@ namespace dlx
             const phi::i32 new_value = (src_value >= imm_value.signed_value ? 1 : 0);
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SGEU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
+
+            const auto& dest_reg = arg1.AsRegisterInt();
+            const auto& lhs_reg  = arg2.AsRegisterInt();
+            const auto& rhs_reg  = arg3.AsRegisterInt();
+
+            const phi::u32 lhs_value = processor.IntRegisterGetUnsignedValue(lhs_reg.register_id);
+            const phi::u32 rhs_value = processor.IntRegisterGetUnsignedValue(rhs_reg.register_id);
+
+            const phi::u32 new_value = (lhs_value >= rhs_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SGEUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                   const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
+
+            const auto& dest_reg  = arg1.AsRegisterInt();
+            const auto& src_reg   = arg2.AsRegisterInt();
+            const auto& imm_value = arg3.AsImmediateValue();
+
+            const phi::u32 src_value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
+
+            const phi::u32 new_value = (src_value >= imm_value.unsigned_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
         }
 
         void GEF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
@@ -1293,6 +1441,43 @@ namespace dlx
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
 
+        void SEQU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
+
+            const auto& dest_reg = arg1.AsRegisterInt();
+            const auto& lhs_reg  = arg2.AsRegisterInt();
+            const auto& rhs_reg  = arg3.AsRegisterInt();
+
+            const phi::u32 lhs_value = processor.IntRegisterGetUnsignedValue(lhs_reg.register_id);
+            const phi::u32 rhs_value = processor.IntRegisterGetUnsignedValue(rhs_reg.register_id);
+
+            const phi::u32 new_value = (lhs_value == rhs_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SEQUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                   const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
+
+            const auto& dest_reg  = arg1.AsRegisterInt();
+            const auto& src_reg   = arg2.AsRegisterInt();
+            const auto& imm_value = arg3.AsImmediateValue();
+
+            const phi::u32 src_value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
+
+            const phi::u32 new_value = (src_value == imm_value.unsigned_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
         void EQF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
                  const InstructionArg& arg3)
         {
@@ -1364,6 +1549,43 @@ namespace dlx
             const phi::i32 new_value = (src_value != imm_value.signed_value ? 1 : 0);
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SNEU(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                  const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
+
+            const auto& dest_reg = arg1.AsRegisterInt();
+            const auto& lhs_reg  = arg2.AsRegisterInt();
+            const auto& rhs_reg  = arg3.AsRegisterInt();
+
+            const phi::u32 lhs_value = processor.IntRegisterGetUnsignedValue(lhs_reg.register_id);
+            const phi::u32 rhs_value = processor.IntRegisterGetUnsignedValue(rhs_reg.register_id);
+
+            const phi::u32 new_value = (lhs_value != rhs_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
+        }
+
+        void SNEUI(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
+                   const InstructionArg& arg3)
+        {
+            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
+            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
+
+            const auto& dest_reg  = arg1.AsRegisterInt();
+            const auto& src_reg   = arg2.AsRegisterInt();
+            const auto& imm_value = arg3.AsImmediateValue();
+
+            const phi::u32 src_value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
+
+            const phi::u32 new_value = (src_value != imm_value.unsigned_value ? 1u : 0u);
+
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, new_value);
         }
 
         void NEF(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,

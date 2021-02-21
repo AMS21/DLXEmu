@@ -74,36 +74,48 @@ namespace dlx
         // Less than
         SLT,
         SLTI,
+        SLTU,
+        SLTUI,
         LTF,
         LTD,
 
         // Greater than
         SGT,
         SGTI,
+        SGTU,
+        SGTUI,
         GTF,
         GTD,
 
         // Less than or equal
         SLE,
         SLEI,
+        SLEU,
+        SLEUI,
         LEF,
         LED,
 
         // Greater than or equal
         SGE,
         SGEI,
+        SGEU,
+        SGEUI,
         GEF,
         GED,
 
         // Equal
         SEQ,
         SEQI,
+        SEQU,
+        SEQUI,
         EQF,
         EQD,
 
         // Not equal
         SNE,
         SNEI,
+        SNEU,
+        SNEUI,
         NEF,
         NED,
 

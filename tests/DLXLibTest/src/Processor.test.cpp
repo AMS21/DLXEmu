@@ -1488,6 +1488,58 @@ TEST_CASE("Processor instructions")
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 4);
     }
 
+    SECTION("SLTU")
+    {
+        res = dlx::Parser::Parse(lib, "SLTU R1 R2 R3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 5u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 5u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    }
+
+    SECTION("SLTUI")
+    {
+        res = dlx::Parser::Parse(lib, "SLTUI R1 R2 #3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 4u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 4u);
+    }
+
     SECTION("LTF")
     {
         res = dlx::Parser::Parse(lib, "LTF F1 F2");
@@ -1594,6 +1646,58 @@ TEST_CASE("Processor instructions")
 
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    }
+
+    SECTION("SGTU")
+    {
+        res = dlx::Parser::Parse(lib, "SGTU R1 R2 R3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 2u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 2u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    }
+
+    SECTION("SGTUI")
+    {
+        res = dlx::Parser::Parse(lib, "SGTUI R1 R2 #3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 4u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 4u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
     }
 
     SECTION("GTF")
@@ -1720,6 +1824,76 @@ TEST_CASE("Processor instructions")
 
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    }
+
+    SECTION("SLEU")
+    {
+        res = dlx::Parser::Parse(lib, "SLEU R1 R2 R3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 5u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    }
+
+    SECTION("SLEI")
+    {
+        res = dlx::Parser::Parse(lib, "SLEI R1 R2 #3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 4u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 4u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
     }
 
     SECTION("LEF")
@@ -1868,6 +2042,76 @@ TEST_CASE("Processor instructions")
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
     }
 
+    SECTION("SGEU")
+    {
+        res = dlx::Parser::Parse(lib, "SGEU R1 R2 R3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 2u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 2u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 5u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
+    }
+
+    SECTION("SGEUI")
+    {
+        res = dlx::Parser::Parse(lib, "SGEUI R1 R2 #3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 4u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 4u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    }
+
     SECTION("GEF")
     {
         res = dlx::Parser::Parse(lib, "GEF F1 F2");
@@ -1996,6 +2240,58 @@ TEST_CASE("Processor instructions")
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
     }
 
+    SECTION("SEQU")
+    {
+        res = dlx::Parser::Parse(lib, "SEQU R1 R2 R3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    }
+
+    SECTION("SEQUI")
+    {
+        res = dlx::Parser::Parse(lib, "SEQUI R1 R2 #3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    }
+
     SECTION("EQF")
     {
         res = dlx::Parser::Parse(lib, "EQF F1 F2");
@@ -2103,6 +2399,59 @@ TEST_CASE("Processor instructions")
 
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
+    }
+
+    SECTION("SNEU")
+    {
+        res = dlx::Parser::Parse(lib, "SNEU R1 R2 R3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    }
+
+    SECTION("SNEUI")
+    {
+        res = dlx::Parser::Parse(lib, "SNEUI R1 R2 #3");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
+        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
     }
 
     SECTION("NEF")
