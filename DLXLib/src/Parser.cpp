@@ -2,6 +2,8 @@
 
 #include "DLX/InstructionArg.hpp"
 #include "DLX/RegisterNames.hpp"
+#include "Phi/Core/Assert.hpp"
+#include <DLX/ParserUtils.hpp>
 #include <Phi/Config/FunctionLikeMacro.hpp>
 #include <Phi/Core/Conversion.hpp>
 #include <Phi/Core/Log.hpp>
@@ -15,60 +17,19 @@ using namespace phi::literals;
 
 namespace dlx
 {
-    phi::Boolean CharIsValidForIdentifer(const char c)
-    {
-        if (std::isalpha(c) || std::isdigit(c))
-        {
-            return true;
-        }
-
-        switch (c)
-        {
-            case '_':
-                return true;
-
-            default:
-                return false;
-        }
-    }
-
-    static phi::Boolean is_integer_literal(std::string_view token)
-    {
-        if (token.length() == 0)
-        {
-            return false;
-        }
-
-        // First character need to a plus sign a minus sign or a digit but only if theres a digit after that
-        if (!std::isdigit(token.at(0)) &&
-            !(token.length() > 1 && (token.at(0) == '+' || token.at(0) == '-')))
-        {
-            return false;
-        }
-
-        // Check that the rest of the token is only made up of numbers
-        for (phi::usize i{1u}; i < token.length(); ++i)
-        {
-            if (!std::isdigit(token.at(i.get())))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     Token ParseToken(std::string_view token, phi::u64 line_number, phi::u64 column)
     {
         if (token.at(0) == '#' && token.size() > 1)
         {
             return Token(Token::Type::ImmediateInteger, token, line_number, column);
         }
-        else if (token.at(0) == '/' || token.at(0) == ';')
+
+        if (token.at(0) == '/' || token.at(0) == ';')
         {
             return Token(Token::Type::Comment, token, line_number, column);
         }
-        else if (is_integer_literal(token))
+
+        if (ParseNumber(token).has_value())
         {
             return Token(Token::Type::IntegerLiteral, token, line_number, column);
         }
@@ -200,6 +161,9 @@ namespace dlx
                             case ')':
                                 type = Token::Type::ClosingBracket;
                                 break;
+                            default:
+                                PHI_ASSERT_NOT_REACHED();
+                                break;
                         }
 
                         token_begin = i;
@@ -292,22 +256,14 @@ namespace dlx
                 }
 
                 // Parse address displacement
-                std::int32_t displacement_value{0};
-                try
-                {
-                    displacement_value = std::stoi(token.GetTextString());
-                }
-                catch (std::invalid_argument& /*e*/)
+                auto displacement_value = ParseNumber(token.GetText());
+                if (!displacement_value)
                 {
                     AddParseError(program,
                                   "Failed to parse displacement value for Address displacement");
                     return {};
                 }
-                catch (std::out_of_range& /*e*/)
-                {
-                    AddParseError(program, "Value is out of range");
-                    return {};
-                }
+                std::int16_t value = displacement_value.value().get();
 
                 if (!has_x_more_tokens(tokens, index, 3u))
                 {
@@ -345,9 +301,9 @@ namespace dlx
                 index += 3u;
 
                 PHI_LOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
-                             displacement_value, magic_enum::enum_name(reg_id));
+                             value, magic_enum::enum_name(reg_id));
 
-                return ConstructInstructionArgAddressDisplacement(reg_id, displacement_value);
+                return ConstructInstructionArgAddressDisplacement(reg_id, value);
             }
             case Token::Type::Identifier: {
                 IntRegisterID reg_id = StringToIntRegister(token.GetTextString());
@@ -396,8 +352,7 @@ namespace dlx
                     return {};
                 }
 
-                if (!std::all_of(token.GetText().begin(), token.GetText().end(),
-                                 CharIsValidForIdentifer))
+                if (!IsValidIdentifier(token.GetText()))
                 {
                     AddParseError(program, fmt::format("Invalid label identifier found {}",
                                                        token.GetText()));
@@ -417,33 +372,16 @@ namespace dlx
                     return {};
                 }
 
-                std::int16_t value{0};
-                try
-                {
-                    std::int32_t parsed_value = std::stoi(token.GetTextString().substr(1));
-
-                    if (parsed_value > std::numeric_limits<std::int16_t>::max() ||
-                        parsed_value < std::numeric_limits<std::int16_t>::min())
-                    {
-                        throw std::out_of_range("Value out of range");
-                    }
-
-                    value = parsed_value;
-                }
-                catch (std::invalid_argument& /*e*/)
+                auto parsed_value = ParseNumber(token.GetText().substr(1));
+                if (!parsed_value)
                 {
                     AddParseError(program, "Failed to parse immediate Integer value");
                     return {};
                 }
-                catch (std::out_of_range& /*e*/)
-                {
-                    AddParseError(program, "Value is out of range");
-                    return {};
-                }
 
-                PHI_LOG_INFO("Parsed Immediate Integer with value {}", value);
+                PHI_LOG_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
 
-                return ConstructInstructionArgImmediateValue(value);
+                return ConstructInstructionArgImmediateValue(parsed_value.value().get());
             }
             default:
                 AddParseError(program,

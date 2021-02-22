@@ -1,6 +1,7 @@
 #include "DLX/InstructionArg.hpp"
 #include "DLX/OpCode.hpp"
 #include "DLX/RegisterNames.hpp"
+#include "DLX/Token.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 #include <DLX/Parser.hpp>
@@ -142,6 +143,10 @@ TEST_CASE("Parser tokenize")
         REQUIRE(res.size() == 2);
         CHECK(TokenMatches(res.at(0), "J", dlx::Token::Type::Identifier));
         CHECK(TokenMatches(res.at(1), "label", dlx::Token::Type::Identifier));
+
+        res = dlx::Parser::Tokenize("_1");
+        REQUIRE(res.size() == 1);
+        CHECK(TokenMatches(res.at(0), "_1", dlx::Token::Type::Identifier));
     }
 }
 

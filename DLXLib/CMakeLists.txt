@@ -35,6 +35,7 @@ file(
   "include/DLX/MemoryBlock.hpp"
   "include/DLX/OpCode.hpp"
   "include/DLX/Parser.hpp"
+  "include/DLX/ParserUtils.hpp"
   "include/DLX/Processor.hpp"
   "include/DLX/RegisterNames.hpp"
   "include/DLX/StatusRegister.hpp"
