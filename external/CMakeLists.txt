@@ -1,12 +1,49 @@
+# Phi
 add_subdirectory(Phi)
 
-# ImGui add_library("ImGui" STATIC "imgui/imgui.cpp" "imgui/imgui_demo.cpp"
-# "imgui/imgui_draw.cpp" "imgui/imgui_widgets.cpp")
+include(Phi/scripts/cmake/Environment.cmake)
 
-# target_include_directories("ImGui" PUBLIC "extlib/imgui")
+# glad
+add_subdirectory(glad)
 
-# OpenGL set(OpenGL_GL_PREFERENCE "GLVND")
+# glfw
+if (NOT PHI_PLATFORM_EMSCRIPTEN)
+    add_subdirectory(glfw)
+endif()
 
-# find_package(OpenGL REQUIRED)
+# ImGui
+add_library("ImGui" STATIC "imgui/imgui.cpp" "imgui/imgui_demo.cpp"
+"imgui/imgui_draw.cpp" "imgui/imgui_tables.cpp" "imgui/imgui_widgets.cpp" "imgui/backends/imgui_impl_opengl3.cpp")
 
+if (NOT PHI_PLATFORM_EMSCRIPTEN)
+    target_sources("ImGui" PRIVATE "imgui/backends/imgui_impl_glfw.cpp")
+endif()
+
+target_include_directories("ImGui" PUBLIC "imgui")
+
+target_compile_definitions("ImGui" PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD")
+
+target_link_libraries("ImGui" PUBLIC glad)
+if (NOT PHI_PLATFORM_EMSCRIPTEN)
+    target_link_libraries("ImGui" PUBLIC glfw)
+endif()
+
+# ImGuiFilebrowser
+add_library("ImGuiFilebrowser" INTERFACE)
+
+target_include_directories("ImGuiFilebrowser" INTERFACE "imgui-filebrowser")
+
+# ImGuiColorTextEdit
+add_library("ImGuiColorTextEdit" STATIC "ImGuiColorTextEdit/TextEditor.cpp")
+
+target_include_directories("ImGuiColorTextEdit" PUBLIC "ImGuiColorTextEdit")
+
+target_link_libraries("ImGuiColorTextEdit" PUBLIC ImGui)
+
+# OpenGL
+set(OpenGL_GL_PREFERENCE "GLVND")
+
+find_package(OpenGL REQUIRED)
+
+# magic_enum
 add_subdirectory(magic_enum)

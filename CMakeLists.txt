@@ -53,7 +53,7 @@ add_subdirectory(DLXLib)
 add_subdirectory(DLXEmu)
 
 # Tests
-if(${DLXEMU_BUILD_TESTS})
+if(${DLXEMU_BUILD_TESTS} AND NOT PHI_PLATFORM_EMSCRIPTEN)
   enable_testing()
 
   add_subdirectory(tests)
