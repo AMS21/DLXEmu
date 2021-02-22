@@ -4,6 +4,7 @@
 #include "Phi/Core/Boolean.hpp"
 #include <Phi/Core/Types.hpp>
 #include <limits>
+#include <optional>
 #include <string_view>
 
 namespace dlx
