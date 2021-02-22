@@ -12,18 +12,22 @@ if (NOT PHI_PLATFORM_EMSCRIPTEN)
 endif()
 
 # ImGui
-add_library("ImGui" STATIC "imgui/imgui.cpp" "imgui/imgui_demo.cpp"
-"imgui/imgui_draw.cpp" "imgui/imgui_tables.cpp" "imgui/imgui_widgets.cpp" "imgui/backends/imgui_impl_opengl3.cpp")
+add_library(
+  "ImGui" STATIC
+  "imgui/imgui.cpp" "imgui/imgui_demo.cpp" "imgui/imgui_draw.cpp" "imgui/imgui_tables.cpp"
+  "imgui/imgui_widgets.cpp" "imgui/backends/imgui_impl_glfw.cpp")
 
-if (NOT PHI_PLATFORM_EMSCRIPTEN)
-    target_sources("ImGui" PRIVATE "imgui/backends/imgui_impl_glfw.cpp")
+if(PHI_PLATFORM_EMSCRIPTEN)
+  target_sources("ImGui" PRIVATE "imgui/backends/imgui_impl_wgpu.cpp")
+else()
+  target_sources("ImGui" PRIVATE "imgui/backends/imgui_impl_opengl3.cpp")
+  target_compile_definitions("ImGui" PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD")
 endif()
 
 target_include_directories("ImGui" PUBLIC "imgui")
 
-target_compile_definitions("ImGui" PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD")
-
 target_link_libraries("ImGui" PUBLIC glad)
+
 if (NOT PHI_PLATFORM_EMSCRIPTEN)
     target_link_libraries("ImGui" PUBLIC glfw)
 endif()

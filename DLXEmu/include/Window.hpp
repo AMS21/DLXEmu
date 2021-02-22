@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Phi/Config/Platform.hpp>
 #include <Phi/Core/Boolean.hpp>
 
 struct GLFWwindow;
@@ -12,11 +11,7 @@ namespace dlxemu
     public:
         phi::Boolean Initialize();
 
-        void InitializeImGui();
-
         void Shutdown();
-
-        static void ShutdownImGui();
 
         [[nodiscard]] phi::Boolean IsOpen() const;
 
@@ -25,8 +20,10 @@ namespace dlxemu
         void EndFrame();
 
     private:
-#if PHI_PLATFORM_IS_NOT(WEB)
+        void InitializeImGui();
+
+        static void ShutdownImGui();
+
         GLFWwindow* m_Window;
-#endif
     };
 } // namespace dlxemu

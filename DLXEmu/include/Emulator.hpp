@@ -8,6 +8,8 @@ namespace dlxemu
     class Emulator
     {
     public:
+        ~Emulator();
+
         phi::Boolean Initialize();
 
         void Shutdown();
@@ -15,9 +17,6 @@ namespace dlxemu
         [[nodiscard]] phi::Boolean IsRunning() const noexcept;
 
         void MainLoop();
-
-    private:
-        static void glfw_error_callback(int error, const char* description);
 
     private:
         Window m_Window;

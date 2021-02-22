@@ -9,7 +9,7 @@ option(DLXEMU_FUZZ_BUILD "" OFF)
 option(DLXEMU_RUN_FUZZ_TESTS "" ON)
 
 # Project
-project("DLXEmu" CXX)
+project("DLXEmu" CXX C)
 
 # Use latest standard available but at least C++-11
 if(DEFINED CMAKE_CXX20_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX20_EXTENSION_COMPILE_OPTION)
@@ -41,6 +41,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Build html files when using emscripten
 if(PHI_PLATFORM_EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
+  target_link_options(phi_project_options INTERFACE -sUSE_GLFW=3 -sFETCH=1 -sUSE_WEBGPU=1 -sALLOW_MEMORY_GROWTH=1 -sASSERTIONS=1 -sALLOW_MEMORY_GROWTH=1 -sDISABLE_EXCEPTION_CATCHING=1)
 endif()
 
 file(GLOB DLXEMULIB_SOURCES "src/test.cpp")
