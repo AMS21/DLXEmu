@@ -30,6 +30,10 @@ jobs:
           version: ${{ matrix.em_version }}
           actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get install xorg-dev libglu1-mesa-dev xrandr-dev
+
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2
 

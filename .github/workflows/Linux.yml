@@ -46,6 +46,10 @@ jobs:
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get install xorg-dev libglu1-mesa-dev xrandr-dev
+
       - name: Install
         run: |
           # Adding repositories
@@ -159,6 +163,10 @@ jobs:
       - uses: reviewdog/action-setup@v1.0.2
         with:
           reviewdog_version: latest
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install xorg-dev libglu1-mesa-dev xrandr-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2

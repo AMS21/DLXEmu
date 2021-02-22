@@ -31,6 +31,10 @@ jobs:
           repository: "AMS21/DLXEmu-Corpus"
           path: DLXEmu-Corpus
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get install xorg-dev libglu1-mesa-dev xrandr-dev
+
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2
 
