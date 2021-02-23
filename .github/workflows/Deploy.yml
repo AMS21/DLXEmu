@@ -46,8 +46,8 @@ jobs:
           mv bin/DLXEmu.html bin/index.html
 
           # Copy to output directory
-          mkdir -p output
-          cp -r bin/* output
+          mkdir -p $GITHUB_WORKSPACE/output
+          cp -r bin/* $GITHUB_WORKSPACE/output
 
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -68,8 +68,8 @@ jobs:
           mv bin/DLXEmu.html bin/index.html
 
           # Copy to output directory
-          mkdir -p output/staging
-          cp -r bin/* output/staging
+          mkdir -p $GITHUB_WORKSPACE/output/staging
+          cp -r bin/* $GITHUB_WORKSPACE/output/staging
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v3.1.0
