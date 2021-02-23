@@ -15,22 +15,13 @@ endif()
 add_library(
   "ImGui" STATIC
   "imgui/imgui.cpp" "imgui/imgui_demo.cpp" "imgui/imgui_draw.cpp" "imgui/imgui_tables.cpp"
-  "imgui/imgui_widgets.cpp" "imgui/backends/imgui_impl_glfw.cpp")
+  "imgui/imgui_widgets.cpp" "imgui/backends/imgui_impl_glfw.cpp" "imgui/backends/imgui_impl_opengl3.cpp")
 
-if(PHI_PLATFORM_EMSCRIPTEN)
-  target_sources("ImGui" PRIVATE "imgui/backends/imgui_impl_wgpu.cpp")
-else()
-  target_sources("ImGui" PRIVATE "imgui/backends/imgui_impl_opengl3.cpp")
-  target_compile_definitions("ImGui" PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD")
-endif()
+target_compile_definitions("ImGui" PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD" IMGUI_USER_CONFIG="${CMAKE_CURRENT_SOURCE_DIR}/../DLXEmu/include/ImGuiConfig.hpp")
 
 target_include_directories("ImGui" PUBLIC "imgui")
 
-target_link_libraries("ImGui" PUBLIC glad)
-
-if (NOT PHI_PLATFORM_EMSCRIPTEN)
-    target_link_libraries("ImGui" PUBLIC glfw)
-endif()
+target_link_libraries("ImGui" PUBLIC glad glfw Phi::Core)
 
 # ImGuiFilebrowser
 add_library("ImGuiFilebrowser" INTERFACE)

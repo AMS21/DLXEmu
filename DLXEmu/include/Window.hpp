@@ -3,6 +3,7 @@
 #include <Phi/Core/Boolean.hpp>
 
 struct GLFWwindow;
+struct ImGuiContext;
 
 namespace dlxemu
 {
@@ -24,6 +25,7 @@ namespace dlxemu
 
         static void ShutdownImGui();
 
-        GLFWwindow* m_Window;
+        GLFWwindow*   m_Window{nullptr};
+        ImGuiContext* m_ImGuiContext{nullptr};
     };
 } // namespace dlxemu

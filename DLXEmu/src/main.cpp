@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     dlxemu::Emulator emulator{};
     if (!emulator.Initialize())
     {
-        PHI_LOG_ERROR("Failed to Emulator!");
+        PHI_LOG_ERROR("Failed to initialize Emulator!");
         return 1;
     }
 
