@@ -62,7 +62,7 @@ jobs:
           mkdir -p build
           cd build
 
-          emcmake cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Release
+          emcmake cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug
           emmake cmake --build . --clean-first --target DLXEmu
 
           mv bin/DLXEmu.html bin/index.html
