@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
 
 jobs:
   gh_pages:
@@ -18,7 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
         with:
+          ref: main
           submodules: recursive
+          patth: DLXEmu-main
 
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v8
@@ -28,13 +31,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install xorg-dev libglu1-mesa-dev xrandr-dev
+          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2
 
-      - name: Build
+      - name: Build main
         run: |
+          cd DLXEmu-main
           mkdir -p build
           cd build
 
@@ -42,6 +46,32 @@ jobs:
           emmake cmake --build . --clean-first --target DLXEmu
 
           mv bin/DLXEmu.html bin/index.html
+
+          # Copy to output directory
+          mkdir -p $GITHUB_WORKSPACE/output
+          cp -r bin/* $GITHUB_WORKSPACE/output
+
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          ref: develop
+          submodules: recursive
+          patth: DLXEmu-develop
+      
+      - name: Build develop
+        run: |
+          cd DLXEmu-develop
+          mkdir -p build
+          cd build
+
+          emcmake cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Release
+          emmake cmake --build . --clean-first --target DLXEmu
+
+          mv bin/DLXEmu.html bin/index.html
+
+          # Copy to output directory
+          mkdir -p $GITHUB_WORKSPACE/output/staging
+          cp -r bin/* $GITHUB_WORKSPACE/output/staging
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v3.1.0
@@ -55,6 +85,6 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.0.0
         with:
           branch: gh-pages
-          folder: build/bin
+          folder: output
           git-config-name: AMS21Bot
           git-config-email: AMS21Bot.github@gmail.com
