@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install xorg-dev libglu1-mesa-dev xrandr-dev
+          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2
@@ -108,7 +108,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install xorg-dev libglu1-mesa-dev xrandr-dev
+          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2
@@ -172,7 +172,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install xorg-dev libglu1-mesa-dev xrandr-dev
+          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.19.2
