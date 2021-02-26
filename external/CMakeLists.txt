@@ -17,7 +17,7 @@ add_library(
   "imgui/imgui.cpp" "imgui/imgui_demo.cpp" "imgui/imgui_draw.cpp" "imgui/imgui_tables.cpp"
   "imgui/imgui_widgets.cpp" "imgui/backends/imgui_impl_glfw.cpp" "imgui/backends/imgui_impl_opengl3.cpp")
 
-target_compile_definitions("ImGui" PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD" IMGUI_USER_CONFIG="${CMAKE_CURRENT_SOURCE_DIR}/../DLXEmu/include/ImGuiConfig.hpp")
+target_compile_definitions("ImGui" PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD" IMGUI_USER_CONFIG="${CMAKE_CURRENT_SOURCE_DIR}/../DLXEmu/include/dlxemu/ImGuiConfig.hpp")
 
 target_include_directories("ImGui" PUBLIC "imgui")
 
@@ -27,13 +27,6 @@ target_link_libraries("ImGui" PUBLIC glad glfw Phi::Core)
 add_library("ImGuiFilebrowser" INTERFACE)
 
 target_include_directories("ImGuiFilebrowser" INTERFACE "imgui-filebrowser")
-
-# ImGuiColorTextEdit
-add_library("ImGuiColorTextEdit" STATIC "ImGuiColorTextEdit/TextEditor.cpp")
-
-target_include_directories("ImGuiColorTextEdit" PUBLIC "ImGuiColorTextEdit")
-
-target_link_libraries("ImGuiColorTextEdit" PUBLIC ImGui)
 
 # OpenGL
 set(OpenGL_GL_PREFERENCE "GLVND")

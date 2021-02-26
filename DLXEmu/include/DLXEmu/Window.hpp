@@ -10,6 +10,10 @@ namespace dlxemu
     class Window
     {
     public:
+        Window() = default;
+
+        ~Window();
+
         phi::Boolean Initialize();
 
         void Shutdown();

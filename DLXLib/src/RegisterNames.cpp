@@ -3,6 +3,7 @@
 #include "DLX/Containers/LookUpMap.hpp"
 #include <algorithm>
 #include <cctype>
+#include <string_view>
 
 namespace dlx
 {
@@ -37,25 +38,21 @@ namespace dlx
                                  {"F28", FloatRegisterID::F28}, {"F29", FloatRegisterID::F29},
                                  {"F30", FloatRegisterID::F30}, {"F31", FloatRegisterID::F31}}};
 
-    IntRegisterID StringToIntRegister(std::string token)
+    IntRegisterID StringToIntRegister(std::string_view token)
     {
-        std::transform(token.begin(), token.end(), token.begin(), ::toupper);
-
         static constexpr auto map =
                 LookUpMap<std::string_view, IntRegisterID, IntRegisterValues.size()>(
                         IntRegisterValues, IntRegisterID::None);
 
-        return map.at(token.c_str());
+        return map.at(token);
     }
 
-    FloatRegisterID StringToFloatRegister(std::string token)
+    FloatRegisterID StringToFloatRegister(std::string_view token)
     {
-        std::transform(token.begin(), token.end(), token.begin(), ::toupper);
-
         static constexpr auto map =
                 LookUpMap<std::string_view, FloatRegisterID, FloatRegisterValues.size()>(
                         FloatRegisterValues, FloatRegisterID::None);
 
-        return map.at(token.c_str());
+        return map.at(token);
     }
 } // namespace dlx

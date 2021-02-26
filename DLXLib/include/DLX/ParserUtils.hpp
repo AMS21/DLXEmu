@@ -26,17 +26,37 @@ namespace dlx
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
+    constexpr phi::Boolean IsBlank(const char c) noexcept
+    {
+        switch (c)
+        {
+            case ' ':
+            case '\t':
+                return true;
+            default:
+                return false;
+        }
+    }
+
     constexpr phi::Boolean IsSpace(const char c) noexcept
     {
         switch (c)
         {
             case ' ':
             case '\t':
+            case '\n':
             case '\v':
+            case '\f':
+            case '\r':
                 return true;
             default:
                 return false;
         }
+    }
+
+    constexpr phi::Boolean IsAlphaNumeric(const char c) noexcept
+    {
+        return IsDigit(c) || IsAlpha(c);
     }
 
     constexpr phi::Boolean IsBinaryChar(const char c) noexcept

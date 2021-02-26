@@ -13,7 +13,11 @@ namespace dlx
         enum class Type
         {
             Comment,
-            Identifier,
+            OpCode,
+            LabelIdentifier,
+            RegisterInt,
+            RegisterFloat,
+            RegisterStatus,
             Comma,
             Colon,
             OpenBracket,
@@ -26,7 +30,8 @@ namespace dlx
         };
 
     public:
-        Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column);
+        Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
+              std::uint32_t hint = 0u);
 
         [[nodiscard]] Type GetType() const noexcept;
 
@@ -42,6 +47,8 @@ namespace dlx
 
         [[nodiscard]] std::string GetTextString() const noexcept;
 
+        [[nodiscard]] std::uint32_t GetHint() const noexcept;
+
         [[nodiscard]] std::string DebugInfo() const noexcept;
 
     private:
@@ -49,5 +56,6 @@ namespace dlx
         std::string_view m_Text;
         phi::u64         m_LineNumber;
         phi::u64         m_Column;
+        std::uint32_t    m_Hint;
     };
 } // namespace dlx

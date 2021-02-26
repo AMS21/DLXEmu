@@ -1,4 +1,4 @@
-#include "Emulator.hpp"
+#include "DLXEmu/Emulator.hpp"
 
 #include <Phi/Config/Platform.hpp>
 #include <Phi/Core/Log.hpp>
@@ -6,10 +6,9 @@
 
 namespace dlxemu
 {
-    Emulator::~Emulator()
-    {
-        Shutdown();
-    }
+    Emulator::Emulator() noexcept
+        : m_CodeEditor(this)
+    {}
 
     phi::Boolean Emulator::Initialize()
     {
@@ -21,11 +20,6 @@ namespace dlxemu
         }
 
         return true;
-    }
-
-    void Emulator::Shutdown()
-    {
-        m_Window.Shutdown();
     }
 
     phi::Boolean Emulator::IsRunning() const noexcept
@@ -42,10 +36,33 @@ namespace dlxemu
         ImGui::DockSpaceOverViewport(viewport);
 
         // Render our stuff
-
-        static bool show{true};
-        ImGui::ShowDemoWindow(&show);
+        m_CodeEditor.Render();
 
         m_Window.EndFrame();
+    }
+
+    dlx::Processor& Emulator::GetProcessor() noexcept
+    {
+        return m_Processor;
+    }
+
+    const dlx::InstructionLibrary& Emulator::GetInstructionLibrary() const noexcept
+    {
+        return m_InstructionLibrary;
+    }
+
+    const dlx::ParsedProgram& Emulator::GetProgram() const noexcept
+    {
+        return m_DLXProgram;
+    }
+
+    void Emulator::ParseProgram(std::string_view source) noexcept
+    {
+        m_DLXProgram = dlx::Parser::Parse(m_InstructionLibrary, source);
+    }
+
+    void Emulator::ParseProgram(std::vector<dlx::Token> tokens) noexcept
+    {
+        m_DLXProgram = dlx::Parser::Parse(m_InstructionLibrary, tokens);
     }
 } // namespace dlxemu

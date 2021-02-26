@@ -2,7 +2,7 @@ find_package(Threads)
 
 # Dictionary
 add_executable(generate_dictionary_app "src/GenerateDictionary.cpp")
-target_link_libraries(generate_dictionary_app PRIVATE Phi::ProjectOptions DLXEmuLib
+target_link_libraries(generate_dictionary_app PRIVATE Phi::ProjectOptions DLXLib
                                                       Threads::Threads)
 
 add_custom_target(
@@ -12,29 +12,33 @@ add_custom_target(
 
 add_dependencies(generate_dictionary generate_dictionary_app)
 
+# Convert structured text
+add_executable(convert_structured_text "src/ConvertStructuredText.cpp")
+target_link_libraries(convert_structured_text PRIVATE Phi::ProjectOptions DLXLib Threads::Threads)
+target_include_directories(convert_structured_text PRIVATE "include")
+
+# Fuzzers
+function(define_fuzzer name source libraries)
+  add_executable(${name} ${source})
+  target_link_libraries(${name} PRIVATE Phi::ProjectOptions Threads::Threads -fsanitize=fuzzer ${libraries})
+  target_compile_options(${name} PRIVATE -fsanitize=fuzzer)
+  target_include_directories(${name} PRIVATE "include")
+endfunction()
+
 # Parser
-add_executable(fuzz_parser "src/Parser.fuzz.cpp")
-target_link_libraries(fuzz_parser PRIVATE Phi::ProjectOptions DLXEmuLib Threads::Threads
-                                          -fsanitize=fuzzer)
-target_compile_options(fuzz_parser PRIVATE -fsanitize=fuzzer)
+define_fuzzer(fuzz_parser "src/Parser.fuzz.cpp" DLXLib)
 
 # Execution
-add_executable(fuzz_execution "src/Processor.fuzz.cpp")
-target_link_libraries(fuzz_execution PRIVATE Phi::ProjectOptions DLXEmuLib Threads::Threads
-                                             -fsanitize=fuzzer)
-target_compile_options(fuzz_execution PRIVATE -fsanitize=fuzzer)
+define_fuzzer(fuzz_execution "src/Execution.fuzz.cpp" DLXLib)
+
+# Structured Execution
+define_fuzzer(fuzz_structured_execution "src/StructuredExecution.fuzz.cpp" DLXLib)
+
+# Syntax highlighting
+define_fuzzer(fuzz_syntax_highlighting "src/SyntaxHighlighting.fuzz.cpp" DLXEmuLib)
+
+# Structured Syntax highlighting
+define_fuzzer(fuzz_structured_syntax_highlighting "src/StructuredSyntaxHighlighting.fuzz.cpp" DLXEmuLib)
 
 # Regression Test
-add_executable(fuzz_regression "src/RegressionTest.fuzz.cpp")
-target_link_libraries(fuzz_regression PRIVATE Phi::ProjectOptions DLXEmuLib Threads::Threads
-                                              -fsanitize=fuzzer)
-target_compile_options(fuzz_regression PRIVATE -fsanitize=fuzzer)
-
-# Failure
-add_executable(fuzz_failure "src/Failure.fuzz.cpp")
-target_link_libraries(fuzz_failure PRIVATE Phi::ProjectOptions Threads::Threads -fsanitize=fuzzer)
-target_compile_options(fuzz_failure PRIVATE -fsanitize=fuzzer)
-
-add_executable(fuzz_timeout "src/Timeout.fuzz.cpp")
-target_link_libraries(fuzz_timeout PRIVATE Phi::ProjectOptions Threads::Threads -fsanitize=fuzzer)
-target_compile_options(fuzz_timeout PRIVATE -fsanitize=fuzzer)
+define_fuzzer(fuzz_regression "src/RegressionTest.fuzz.cpp" DLXLib)

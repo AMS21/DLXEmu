@@ -1,15 +1,18 @@
 #include "DLX/Token.hpp"
+#include "Phi/Core/Assert.hpp"
 
 #include <magic_enum.hpp>
 #include <string>
 
 namespace dlx
 {
-    Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column)
+    Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
+                 std::uint32_t hint)
         : m_Type{type}
         , m_Text{text}
         , m_LineNumber{line_number}
         , m_Column{column}
+        , m_Hint{hint}
     {}
 
     Token::Type Token::GetType() const noexcept
@@ -47,6 +50,14 @@ namespace dlx
         return std::string(m_Text.data(), m_Text.length());
     }
 
+    std::uint32_t Token::GetHint() const noexcept
+    {
+        PHI_ASSERT(m_Type == Type::RegisterInt || m_Type == Type::RegisterFloat ||
+                   m_Type == Type::IntegerLiteral || m_Type == Type::OpCode);
+
+        return m_Hint;
+    }
+
     std::string Token::DebugInfo() const noexcept
     {
         std::string pos_info = "(" + std::to_string(GetLineNumber().get()) + ":" +
@@ -60,14 +71,22 @@ namespace dlx
                 return "Token[Comma]" + pos_info;
             case Type::Comment:
                 return "Token[Comment]" + pos_info + ": '" + GetTextString() + "'";
-            case Type::Identifier:
-                return "Token[Identifier]" + pos_info + ": '" + GetTextString() + "'";
+            case Type::OpCode:
+                return "Token[OpCode]" + pos_info + ": '" + GetTextString() + "'";
+            case Type::RegisterInt:
+                return "Token[RegisterInt]" + pos_info + ": '" + GetTextString() + "'";
+            case Type::RegisterFloat:
+                return "Token[RegisterFloat]" + pos_info + ": '" + GetTextString() + "'";
+            case Type::RegisterStatus:
+                return "Token[RegisterStatus]" + pos_info + ": '" + GetTextString() + "'";
+            case Type::LabelIdentifier:
+                return "Token[LabelIdentifier]" + pos_info + ": '" + GetTextString() + "'";
             case Type::NewLine:
                 return "Token[NewLine]" + pos_info;
             case Type::OpenBracket:
                 return "Token[OpenBracket]" + pos_info;
             case Type::ClosingBracket:
-                return "Token[OpenBracket]" + pos_info;
+                return "Token[ClosingBracket]" + pos_info;
             case Type::IntegerLiteral:
                 return "Token[IntegerLiteral]" + pos_info + ": '" + GetTextString() + "'";
             case Type::ImmediateInteger:

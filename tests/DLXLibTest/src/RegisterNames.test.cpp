@@ -38,9 +38,6 @@ TEST_CASE("StringToIntRegister")
     CHECK(dlx::StringToIntRegister("R30") == dlx::IntRegisterID::R30);
     CHECK(dlx::StringToIntRegister("R31") == dlx::IntRegisterID::R31);
 
-    // Case insensitive
-    CHECK(dlx::StringToIntRegister("r0") == dlx::IntRegisterID::R0);
-
     // Invalid registers
     CHECK(dlx::StringToIntRegister("R") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("R32") == dlx::IntRegisterID::None);
@@ -93,9 +90,6 @@ TEST_CASE("StringToFloatRegister")
     CHECK(dlx::StringToFloatRegister("F29") == dlx::FloatRegisterID::F29);
     CHECK(dlx::StringToFloatRegister("F30") == dlx::FloatRegisterID::F30);
     CHECK(dlx::StringToFloatRegister("F31") == dlx::FloatRegisterID::F31);
-
-    // Case sensitivity
-    CHECK(dlx::StringToFloatRegister("f1") == dlx::FloatRegisterID::F1);
 
     // Invalid registers
     CHECK(dlx::StringToFloatRegister("F") == dlx::FloatRegisterID::None);

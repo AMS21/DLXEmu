@@ -1,4 +1,4 @@
-#include "CommandLineArgs.hpp"
+#include "DLXEmu/CommandLineArgs.hpp"
 
 namespace dlxemu
 {}

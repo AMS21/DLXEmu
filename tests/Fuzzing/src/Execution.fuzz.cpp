@@ -2,7 +2,7 @@
 #include <DLX/Processor.hpp>
 #include <cstddef>
 #include <cstdint>
-#include <string>
+#include <string_view>
 
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
@@ -19,7 +19,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     processor.ClearRegisters();
     processor.ClearMemory();
 
-    // Run it
+    // Execute
     processor.LoadProgram(program);
     processor.ExecuteCurrentProgram();
 

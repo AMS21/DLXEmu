@@ -1,4 +1,4 @@
-#include "Window.hpp"
+#include "DLXEmu/Window.hpp"
 
 #include <Phi/Core/Boolean.hpp>
 #include <Phi/Core/Log.hpp>
@@ -14,11 +14,19 @@ extern "C" void* emscripten_GetProcAddress(const char* name_);
 // GLFW needs to be included after opengl
 #include <GLFW/glfw3.h>
 
+static bool glfw_initialized{false};
+static bool imgui_initialized{false};
+
 namespace dlxemu
 {
     static void glfw_error_callback(int error, const char* message)
     {
         PHI_LOG_ERROR("GLFW error {}: {}", error, message);
+    }
+
+    Window::~Window()
+    {
+        Shutdown();
     }
 
     phi::Boolean Window::Initialize()
@@ -31,6 +39,8 @@ namespace dlxemu
             PHI_LOG_ERROR("Failed to initialize GLFW!");
             return false;
         }
+
+        glfw_initialized = true;
 
         // Decide GL versions
 #if PHI_PLATFORM_IS(MACOS)
@@ -63,7 +73,7 @@ namespace dlxemu
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(1); // Enable vsync
 
-// Initilaize OpenGL using glad
+        // Initilaize OpenGL using glad
 #if PHI_PLATFORM_IS(WEB)
         if (!gladLoadGLLoader((GLADloadproc)emscripten_GetProcAddress))
 #else
@@ -83,15 +93,20 @@ namespace dlxemu
 
     void Window::Shutdown()
     {
-        ShutdownImGui();
-        ImGui::DestroyContext();
+        if (imgui_initialized)
+        {
+            ShutdownImGui();
+        }
 
-        if (m_Window)
+        if (m_Window != nullptr)
         {
             glfwDestroyWindow(m_Window);
         }
 
-        glfwTerminate();
+        if (glfw_initialized)
+        {
+            glfwTerminate();
+        }
     }
 
     phi::Boolean Window::IsOpen() const
@@ -101,8 +116,6 @@ namespace dlxemu
 
     void Window::BeginFrame()
     {
-        PHI_LOG_TRACE("Beginning frame...");
-
         glfwPollEvents();
 
 #if PHI_PLATFORM_IS(WEB)
@@ -146,18 +159,17 @@ namespace dlxemu
         }
 
         glfwSwapBuffers(m_Window);
-
-        PHI_LOG_TRACE("Rendered frame.");
     }
 
     void Window::InitializeImGui()
     {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
-        ImGuiContext* m_ImGuiContext = ImGui::CreateContext();
+        m_ImGuiContext = ImGui::CreateContext();
         if (!m_ImGuiContext)
         {
             PHI_LOG_ERROR("Failed to create ImGuiContext");
+            return;
         }
 
         ImGuiIO& io = ImGui::GetIO();
@@ -171,6 +183,8 @@ namespace dlxemu
 
 #if PHI_PLATFORM_IS(WEB)
         io.IniFilename = nullptr;
+#else
+        io.IniFilename           = "DLXEmu.ini";
 #endif
 
         // Setup Dear ImGui style
@@ -198,14 +212,15 @@ namespace dlxemu
         ImGui_ImplOpenGL3_Init(glsl_version);
 
         PHI_LOG_INFO("Successfully initialized ImGui");
+
+        imgui_initialized = true;
     }
 
     void Window::ShutdownImGui()
     {
         ImGui_ImplGlfw_Shutdown();
-
-#if 0
         ImGui_ImplOpenGL3_Shutdown();
-#endif
+
+        ImGui::DestroyContext();
     }
 } // namespace dlxemu

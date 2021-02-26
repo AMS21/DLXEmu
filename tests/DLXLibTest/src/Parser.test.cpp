@@ -25,7 +25,7 @@ TEST_CASE("Parser tokenize")
 
         res = dlx::Parser::Tokenize("\t  \v\tADD\t  \v");
         REQUIRE(res.size() == 1);
-        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::OpCode));
     }
 
     SECTION("Newlines")
@@ -37,9 +37,11 @@ TEST_CASE("Parser tokenize")
 
         res = dlx::Parser::Tokenize("ADD\n");
         REQUIRE(res.size() == 2);
-        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::OpCode));
         CHECK(TokenMatches(res.at(1), "\n", dlx::Token::Type::NewLine));
     }
+
+    phi::Log::initialize_default_loggers();
 
     SECTION("Comments")
     {
@@ -53,7 +55,7 @@ TEST_CASE("Parser tokenize")
 
         res = dlx::Parser::Tokenize("ADD ; Trailing comments are nice");
         REQUIRE(res.size() == 2);
-        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::OpCode));
         CHECK(TokenMatches(res.at(1), "; Trailing comments are nice", dlx::Token::Type::Comment));
 
         res = dlx::Parser::Tokenize(";One line comment\n;Next line comment\nADD");
@@ -62,7 +64,7 @@ TEST_CASE("Parser tokenize")
         CHECK(TokenMatches(res.at(1), "\n", dlx::Token::Type::NewLine));
         CHECK(TokenMatches(res.at(2), ";Next line comment", dlx::Token::Type::Comment));
         CHECK(TokenMatches(res.at(3), "\n", dlx::Token::Type::NewLine));
-        CHECK(TokenMatches(res.at(4), "ADD", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(4), "ADD", dlx::Token::Type::OpCode));
 
         res = dlx::Parser::Tokenize("; Comment: With (s)peci(a)l chars, /// \\ ;;");
         REQUIRE(res.size() == 1);
@@ -78,7 +80,7 @@ TEST_CASE("Parser tokenize")
 
         res = dlx::Parser::Tokenize("start:");
         REQUIRE(res.size() == 1);
-        CHECK(TokenMatches(res.at(0), "start:", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "start:", dlx::Token::Type::LabelIdentifier));
     }
 
     SECTION("Comma")
@@ -89,23 +91,23 @@ TEST_CASE("Parser tokenize")
 
         res = dlx::Parser::Tokenize("ADD, R1, R3, R2");
         REQUIRE(res.size() == 7);
-        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::OpCode));
         CHECK(TokenMatches(res.at(1), ",", dlx::Token::Type::Comma));
-        CHECK(TokenMatches(res.at(2), "R1", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(2), "R1", dlx::Token::Type::RegisterInt));
         CHECK(TokenMatches(res.at(3), ",", dlx::Token::Type::Comma));
-        CHECK(TokenMatches(res.at(4), "R3", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(4), "R3", dlx::Token::Type::RegisterInt));
         CHECK(TokenMatches(res.at(5), ",", dlx::Token::Type::Comma));
-        CHECK(TokenMatches(res.at(6), "R2", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(6), "R2", dlx::Token::Type::RegisterInt));
 
         res = dlx::Parser::Tokenize("ADD,R1,R3,R2");
         REQUIRE(res.size() == 7);
-        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::OpCode));
         CHECK(TokenMatches(res.at(1), ",", dlx::Token::Type::Comma));
-        CHECK(TokenMatches(res.at(2), "R1", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(2), "R1", dlx::Token::Type::RegisterInt));
         CHECK(TokenMatches(res.at(3), ",", dlx::Token::Type::Comma));
-        CHECK(TokenMatches(res.at(4), "R3", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(4), "R3", dlx::Token::Type::RegisterInt));
         CHECK(TokenMatches(res.at(5), ",", dlx::Token::Type::Comma));
-        CHECK(TokenMatches(res.at(6), "R2", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(6), "R2", dlx::Token::Type::RegisterInt));
     }
 
     SECTION("Brackets")
@@ -122,7 +124,7 @@ TEST_CASE("Parser tokenize")
         REQUIRE(res.size() == 4);
         CHECK(TokenMatches(res.at(0), "1000", dlx::Token::Type::IntegerLiteral));
         CHECK(TokenMatches(res.at(1), "(", dlx::Token::Type::OpenBracket));
-        CHECK(TokenMatches(res.at(2), "R3", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(2), "R3", dlx::Token::Type::RegisterInt));
         CHECK(TokenMatches(res.at(3), ")", dlx::Token::Type::ClosingBracket));
     }
 
@@ -130,23 +132,23 @@ TEST_CASE("Parser tokenize")
     {
         res = dlx::Parser::Tokenize("identifier");
         REQUIRE(res.size() == 1);
-        CHECK(TokenMatches(res.at(0), "identifier", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "identifier", dlx::Token::Type::LabelIdentifier));
 
         res = dlx::Parser::Tokenize("ADD R0 R12 R31");
         REQUIRE(res.size() == 4);
-        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::Identifier));
-        CHECK(TokenMatches(res.at(1), "R0", dlx::Token::Type::Identifier));
-        CHECK(TokenMatches(res.at(2), "R12", dlx::Token::Type::Identifier));
-        CHECK(TokenMatches(res.at(3), "R31", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::OpCode));
+        CHECK(TokenMatches(res.at(1), "R0", dlx::Token::Type::RegisterInt));
+        CHECK(TokenMatches(res.at(2), "R12", dlx::Token::Type::RegisterInt));
+        CHECK(TokenMatches(res.at(3), "R31", dlx::Token::Type::RegisterInt));
 
         res = dlx::Parser::Tokenize("J label");
         REQUIRE(res.size() == 2);
-        CHECK(TokenMatches(res.at(0), "J", dlx::Token::Type::Identifier));
-        CHECK(TokenMatches(res.at(1), "label", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "J", dlx::Token::Type::OpCode));
+        CHECK(TokenMatches(res.at(1), "label", dlx::Token::Type::LabelIdentifier));
 
         res = dlx::Parser::Tokenize("_1");
         REQUIRE(res.size() == 1);
-        CHECK(TokenMatches(res.at(0), "_1", dlx::Token::Type::Identifier));
+        CHECK(TokenMatches(res.at(0), "_1", dlx::Token::Type::LabelIdentifier));
     }
 }
 
@@ -156,7 +158,7 @@ TEST_CASE("Only one instruction per line")
     dlx::InstructionLibrary lib;
 
     res = dlx::Parser::Parse(lib, "ADD R1 R2 R3 ADD R1 R2 R3");
-    CHECK(!res.m_ParseErrors.empty());
+    CHECK_FALSE(res.m_ParseErrors.empty());
 }
 
 phi::Boolean InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcode,

@@ -81,11 +81,42 @@ TEST_CASE("IsAlpha")
     CHECK_FALSE(dlx::IsAlpha('\t'));
 }
 
+TEST_CASE("IsBlank")
+{
+    for (char c{'a'}; c <= 'z'; ++c)
+    {
+        CHECK_FALSE(dlx::IsBlank(c));
+    }
+
+    for (char c{'A'}; c <= 'Z'; ++c)
+    {
+        CHECK_FALSE(dlx::IsBlank(c));
+    }
+
+    for (char c{'0'}; c <= '9'; ++c)
+    {
+        CHECK_FALSE(dlx::IsBlank(c));
+    }
+
+    CHECK_FALSE(dlx::IsBlank('_'));
+    CHECK_FALSE(dlx::IsBlank(';'));
+    CHECK_FALSE(dlx::IsBlank('/'));
+    CHECK_FALSE(dlx::IsBlank('\n'));
+    CHECK(dlx::IsBlank(' '));
+    CHECK(dlx::IsBlank('\t'));
+    CHECK_FALSE(dlx::IsBlank('\v'));
+    CHECK_FALSE(dlx::IsBlank('\f'));
+    CHECK_FALSE(dlx::IsBlank('\r'));
+}
+
 TEST_CASE("IsSpace")
 {
     CHECK(dlx::IsSpace(' '));
     CHECK(dlx::IsSpace('\v'));
     CHECK(dlx::IsSpace('\t'));
+    CHECK(dlx::IsSpace('\v'));
+    CHECK(dlx::IsSpace('\f'));
+    CHECK(dlx::IsSpace('\r'));
 
     CHECK_FALSE(dlx::IsSpace('_'));
     CHECK_FALSE(dlx::IsSpace(';'));
@@ -104,6 +135,35 @@ TEST_CASE("IsSpace")
     for (char c{'0'}; c <= '9'; ++c)
     {
         CHECK_FALSE(dlx::IsSpace(c));
+    }
+}
+
+TEST_CASE("IsAlphaNumeric")
+{
+    CHECK_FALSE(dlx::IsAlphaNumeric(' '));
+    CHECK_FALSE(dlx::IsAlphaNumeric('\v'));
+    CHECK_FALSE(dlx::IsAlphaNumeric('\t'));
+    CHECK_FALSE(dlx::IsAlphaNumeric('\v'));
+    CHECK_FALSE(dlx::IsAlphaNumeric('\f'));
+    CHECK_FALSE(dlx::IsAlphaNumeric('\r'));
+
+    CHECK_FALSE(dlx::IsAlphaNumeric('_'));
+    CHECK_FALSE(dlx::IsAlphaNumeric(';'));
+    CHECK_FALSE(dlx::IsAlphaNumeric('/'));
+
+    for (char c{'a'}; c <= 'z'; ++c)
+    {
+        CHECK(dlx::IsAlphaNumeric(c));
+    }
+
+    for (char c{'A'}; c <= 'Z'; ++c)
+    {
+        CHECK(dlx::IsAlphaNumeric(c));
+    }
+
+    for (char c{'0'}; c <= '9'; ++c)
+    {
+        CHECK(dlx::IsAlphaNumeric(c));
     }
 }
 

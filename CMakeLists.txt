@@ -44,9 +44,6 @@ if(PHI_PLATFORM_EMSCRIPTEN)
   target_link_options(phi_project_options INTERFACE -sUSE_GLFW=3 -sFETCH=1 -sFULL_ES2=1 -sFULL_ES3=1 -sALLOW_MEMORY_GROWTH=1 -sASSERTIONS=1 -sDISABLE_EXCEPTION_CATCHING=1)
 endif()
 
-file(GLOB DLXEMULIB_SOURCES "src/test.cpp")
-file(GLOB DLXEMULIB_HEADERS "")
-
 # Targets DLXLib
 add_subdirectory(DLXLib)
 

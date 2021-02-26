@@ -17,12 +17,12 @@ jobs:
       TOTAL_RUN_TIME: "14400" # 4 Hours
       ASAN_OPTIONS: "strict_string_checks=1:detect_odr_violation=2:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=true:detect_invalid_pointer_pairs=3:detect_leaks=1"
       UBSAN_OPTIONS: "print_stacktrace=1"
-      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,nullability -fno-sanitize-recover=undefined,nullability -g -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,nullability -fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls"
 
     strategy:
       fail-fast: false
       matrix:
-        fuzz_target: ["fuzz_parser", "fuzz_execution"]
+        fuzz_target: ["fuzz_parser", "fuzz_execution", "fuzz_structured_execution", "fuzz_syntax_highlighting", "fuzz_structured_syntax_highlighting"]
 
     steps:
       - name: Setup Git
@@ -116,7 +116,7 @@ jobs:
 
           fuzz_args="-max_total_time=$TOTAL_RUN_TIME -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -dict=Dictionary.txt"
 
-          if [ "${{ matrix.fuzz_target }}" = "fuzz_execution" ]; then
+          if [ "${{ matrix.fuzz_target }}" = "fuzz_execution" ] || [ "${{ matrix.fuzz_target }}" = "fuzz_syntax_highlighting" ]; then
             fuzz_args="$fuzz_args -only_ascii=1"
           fi
 

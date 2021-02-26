@@ -5,9 +5,8 @@
 
 namespace dlx
 {
-    OpCode StringToOpCode(std::string token)
+    OpCode StringToOpCode(std::string_view token)
     {
-        std::transform(token.begin(), token.end(), token.begin(), ::toupper);
         std::optional<OpCode> opcode_casted = magic_enum::enum_cast<OpCode>(token);
         if (opcode_casted.has_value())
         {

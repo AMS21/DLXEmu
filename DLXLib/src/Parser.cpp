@@ -1,16 +1,19 @@
 #include "DLX/Parser.hpp"
 
 #include "DLX/InstructionArg.hpp"
+#include "DLX/OpCode.hpp"
+#include "DLX/ParserUtils.hpp"
 #include "DLX/RegisterNames.hpp"
-#include "Phi/Core/Assert.hpp"
-#include <DLX/ParserUtils.hpp>
+#include "DLX/Token.hpp"
 #include <Phi/Config/FunctionLikeMacro.hpp>
+#include <Phi/Core/Assert.hpp>
 #include <Phi/Core/Conversion.hpp>
 #include <Phi/Core/Log.hpp>
 #include <magic_enum.hpp>
 #include <algorithm>
 #include <limits>
 #include <optional>
+#include <regex>
 #include <stdexcept>
 
 using namespace phi::literals;
@@ -19,6 +22,7 @@ namespace dlx
 {
     Token ParseToken(std::string_view token, phi::u64 line_number, phi::u64 column)
     {
+        // TODO: Parse the given number here directly?
         if (token.at(0) == '#' && token.size() > 1)
         {
             return Token(Token::Type::ImmediateInteger, token, line_number, column);
@@ -29,15 +33,41 @@ namespace dlx
             return Token(Token::Type::Comment, token, line_number, column);
         }
 
-        if (ParseNumber(token).has_value())
+        if (auto number = ParseNumber(token); number.has_value())
         {
-            return Token(Token::Type::IntegerLiteral, token, line_number, column);
+            return Token(Token::Type::IntegerLiteral, token, line_number, column, number->get());
         }
 
-        return Token(Token::Type::Identifier, token, line_number, column);
+        std::string token_upper(token.data(), token.size());
+        std::transform(token_upper.begin(), token_upper.end(), token_upper.begin(), ::toupper);
+
+        if (token_upper == "FPSR")
+        {
+            return Token(Token::Type::RegisterStatus, token, line_number, column);
+        }
+
+        if (IntRegisterID id = StringToIntRegister(token_upper); id != IntRegisterID::None)
+        {
+            return Token(Token::Type::RegisterInt, token, line_number, column,
+                         static_cast<std::uint32_t>(id));
+        }
+
+        if (FloatRegisterID id = StringToFloatRegister(token_upper); id != FloatRegisterID::None)
+        {
+            return Token(Token::Type::RegisterFloat, token, line_number, column,
+                         static_cast<std::uint32_t>(id));
+        }
+
+        if (OpCode opcode = StringToOpCode(token_upper); opcode != OpCode::NONE)
+        {
+            return Token(Token::Type::OpCode, token, line_number, column,
+                         static_cast<std::uint32_t>(opcode));
+        }
+
+        return Token(Token::Type::LabelIdentifier, token, line_number, column);
     }
 
-    std::vector<Token> Parser::Tokenize(std::string_view str)
+    std::vector<Token> Parser::Tokenize(std::string_view source)
     {
         std::vector<Token> tokens{};
         tokens.reserve(5);
@@ -46,37 +76,43 @@ namespace dlx
         current_token.reserve(10);
 
         phi::u64 current_line_number{1u};
+        phi::u64 current_column{1u};
         phi::u64 token_begin{0u};
 
         phi::Boolean parsing_comment{false};
 
-        for (phi::usize i{0u}; i < str.length(); ++i)
+        for (phi::usize i{0u}; i < source.length(); ++i)
         {
-            const char c{str.at(i.get())};
+            const char c{source.at(i.get())};
 
             if (c == '\n')
             {
                 if (current_token.empty())
                 {
-                    tokens.emplace_back(Token::Type::NewLine, str.substr(token_begin.get(), 1),
-                                        current_line_number, token_begin);
                     // Skip empty lines
+                    tokens.emplace_back(Token::Type::NewLine, source.substr(token_begin.get(), 1),
+                                        current_line_number, current_column - 1u);
+
+                    parsing_comment = false;
+                    current_line_number += 1u;
+                    current_column = 1u;
                     continue;
                 }
 
                 // Otherwise a new line separates tokens
                 tokens.emplace_back(
-                        ParseToken(str.substr(token_begin.get(), current_token.length()),
-                                   current_line_number, token_begin));
+                        ParseToken(source.substr(token_begin.get(), current_token.length()),
+                                   current_line_number, current_column - current_token.length()));
 
                 token_begin = i;
 
-                tokens.emplace_back(Token::Type::NewLine, str.substr(token_begin.get(), 1),
-                                    current_line_number, token_begin);
+                tokens.emplace_back(Token::Type::NewLine, source.substr(token_begin.get(), 1),
+                                    current_line_number, current_column - 1u);
 
                 current_token.clear();
                 parsing_comment = false;
                 current_line_number += 1u;
+                current_column = 0u;
             }
             // Comments begin with an '/' or ';' and after that the entire line is treated as part of the comment
             else if (c == '/' || c == ';')
@@ -105,14 +141,15 @@ namespace dlx
                     case '\v':
                         if (current_token.empty())
                         {
+                            current_column += 1u;
                             // We haven't found any usable character for the current token so just skip the whitespace.
                             continue;
                         }
 
                         // Otherwise a whitespace separates tokens
-                        tokens.push_back(
-                                ParseToken(str.substr(token_begin.get(), current_token.length()),
-                                           current_line_number, token_begin));
+                        tokens.emplace_back(ParseToken(
+                                source.substr(token_begin.get(), current_token.length()),
+                                current_line_number, current_column - current_token.length()));
                         current_token.clear();
                         break;
                     case ':':
@@ -121,8 +158,9 @@ namespace dlx
                         {
                             current_token.push_back(c);
                             tokens.emplace_back(ParseToken(
-                                    str.substr(token_begin.get(), current_token.length()),
-                                    current_line_number, token_begin));
+                                    source.substr(token_begin.get(), current_token.length()),
+                                    current_line_number,
+                                    current_column + 1u - current_token.length()));
 
                             current_token.clear();
                         }
@@ -132,9 +170,8 @@ namespace dlx
                             token_begin = i;
 
                             tokens.emplace_back(Token::Type::Colon,
-                                                str.substr(token_begin.get(), 1),
-                                                current_line_number, token_begin);
-                            break;
+                                                source.substr(token_begin.get(), 1),
+                                                current_line_number, current_column);
                         }
                         break;
                     case ',':
@@ -143,8 +180,8 @@ namespace dlx
                         if (!current_token.empty())
                         {
                             tokens.emplace_back(ParseToken(
-                                    str.substr(token_begin.get(), current_token.length()),
-                                    current_line_number, token_begin));
+                                    source.substr(token_begin.get(), current_token.length()),
+                                    current_line_number, current_column - current_token.length()));
 
                             current_token.clear();
                         }
@@ -168,8 +205,8 @@ namespace dlx
 
                         token_begin = i;
 
-                        tokens.emplace_back(type, str.substr(token_begin.get(), 1),
-                                            current_line_number, token_begin);
+                        tokens.emplace_back(type, source.substr(token_begin.get(), 1),
+                                            current_line_number, current_column);
                         break;
 
                     default:
@@ -182,13 +219,16 @@ namespace dlx
                         current_token.push_back(c);
                 }
             }
+
+            current_column += 1u;
         }
 
         // Checked the entire string. Parse whats left if anything
         if (!current_token.empty())
         {
-            tokens.emplace_back(ParseToken(str.substr(token_begin.get(), current_token.length()),
-                                           current_line_number, token_begin));
+            tokens.emplace_back(ParseToken(source.substr(token_begin.get(), current_token.length()),
+                                           current_line_number,
+                                           current_column - current_token.length()));
         }
 
         return tokens;
@@ -231,7 +271,7 @@ namespace dlx
         ParseError err;
         err.message = message;
 
-        PHI_LOG_ERROR("Parsing error: {}", message);
+        //PHI_LOG_ERROR("Parsing error: {}", message);
 
         program.m_ParseErrors.emplace_back(err);
     }
@@ -240,8 +280,8 @@ namespace dlx
             const Token& token, ArgumentType expected_argument_type,
             const std::vector<Token>& tokens, phi::usize& index, ParsedProgram& program)
     {
-        PHI_LOG_INFO("Parsing argument with token '{}' and expected type '{}'", token.DebugInfo(),
-                     magic_enum::enum_name(expected_argument_type));
+        // PHI_LOG_INFO("Parsing argument with token '{}' and expected type '{}'", token.DebugInfo(),
+        //              magic_enum::enum_name(expected_argument_type));
 
         switch (token.GetType())
         {
@@ -282,11 +322,8 @@ namespace dlx
                     return {};
                 }
 
-                // Second token is the address
-                IntRegisterID reg_id = StringToIntRegister(
-                        {second_token.GetText().data(), second_token.GetText().size()});
-
-                if (reg_id == IntRegisterID::None)
+                // Second token is the register
+                if (second_token.GetType() != Token::Type::RegisterInt)
                 {
                     AddParseError(program, "Expected IntRegister");
                     return {};
@@ -300,49 +337,45 @@ namespace dlx
 
                 index += 3u;
 
-                PHI_LOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
-                             value, magic_enum::enum_name(reg_id));
+                //PHI_LOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
+                //             value, magic_enum::enum_name(reg_id));
 
-                return ConstructInstructionArgAddressDisplacement(reg_id, value);
+                return ConstructInstructionArgAddressDisplacement(
+                        static_cast<IntRegisterID>(second_token.GetHint()), value);
             }
-            case Token::Type::Identifier: {
-                IntRegisterID reg_id = StringToIntRegister(token.GetTextString());
-
-                if (reg_id != IntRegisterID::None)
+            case Token::Type::RegisterInt: {
+                if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::IntRegister))
                 {
-                    if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::IntRegister))
-                    {
-                        AddParseError(program,
-                                      fmt::format("Got IntRegister but expected '{}'",
-                                                  magic_enum::enum_name(expected_argument_type)));
-                        return {};
-                    }
-
-                    PHI_LOG_INFO("Parsed identifier as int register {}",
-                                 magic_enum::enum_name(reg_id));
-
-                    return ConstructInstructionArgRegisterInt(reg_id);
+                    AddParseError(program,
+                                  fmt::format("Got IntRegister but expected '{}'",
+                                              magic_enum::enum_name(expected_argument_type)));
+                    return {};
                 }
 
-                // Try parsing as FloatRegister
-                FloatRegisterID float_reg_id = StringToFloatRegister(token.GetTextString());
+                //PHI_LOG_INFO("Parsed identifier as int register {}",
+                //             magic_enum::enum_name(reg_id));
 
-                if (float_reg_id != FloatRegisterID::None)
+                return ConstructInstructionArgRegisterInt(
+                        static_cast<IntRegisterID>(token.GetHint()));
+            }
+            case Token::Type::RegisterFloat: {
+                if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::FloatRegister))
                 {
-                    if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::FloatRegister))
-                    {
-                        AddParseError(program,
-                                      fmt::format("Got FloatRegister but expected '{}'",
-                                                  magic_enum::enum_name(expected_argument_type)));
-                        return {};
-                    }
-
-                    PHI_LOG_INFO("Parsed identifier as float register {}",
-                                 magic_enum::enum_name(float_reg_id));
-
-                    return ConstructInstructionArgRegisterFloat(float_reg_id);
+                    AddParseError(program,
+                                  fmt::format("Got FloatRegister but expected '{}'",
+                                              magic_enum::enum_name(expected_argument_type)));
+                    return {};
                 }
 
+                //PHI_LOG_INFO("Parsed identifier as float register {}",
+                //             magic_enum::enum_name(float_reg_id));
+
+                return ConstructInstructionArgRegisterFloat(
+                        static_cast<FloatRegisterID>(token.GetHint()));
+            }
+            case Token::Type::RegisterStatus: {
+            }
+            case Token::Type::LabelIdentifier: {
                 // Parse as Label
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::Label))
                 {
@@ -359,7 +392,7 @@ namespace dlx
                     return {};
                 }
 
-                PHI_LOG_INFO("Parsed Label identifier as '{}'", token.GetText());
+                //PHI_LOG_INFO("Parsed Label identifier as '{}'", token.GetText());
 
                 return ConstructInstructionArgLabel(token.GetText());
             }
@@ -379,7 +412,7 @@ namespace dlx
                     return {};
                 }
 
-                PHI_LOG_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
+                //PHI_LOG_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
 
                 return ConstructInstructionArgImmediateValue(parsed_value.value().get());
             }
@@ -404,6 +437,8 @@ namespace dlx
     {
         ParsedProgram program;
 
+        program.m_Tokens = tokens;
+
         phi::Boolean line_has_instruction{false};
 
         for (phi::usize index{0u}; index < tokens.size();)
@@ -412,22 +447,22 @@ namespace dlx
 
             consume_current_token(index);
 
-            PHI_LOG_INFO("Parsing '{}'", current_token.DebugInfo());
+            //PHI_LOG_INFO("Parsing '{}'", current_token.DebugInfo());
 
             switch (current_token.GetType())
             {
                 // Ignore comments
                 case Token::Type::Comment:
-                    PHI_LOG_DEBUG("Ignoring comment");
+                    //PHI_LOG_DEBUG("Ignoring comment");
                     break;
                 case Token::Type::NewLine:
-                    PHI_LOG_DEBUG("Ignoring newline");
+                    //PHI_LOG_DEBUG("Ignoring newline");
                     line_has_instruction = false;
                     break;
-                case Token::Type::Identifier: {
+                case Token::Type::LabelIdentifier: {
                     if (line_has_instruction)
                     {
-                        AddParseError(program, "Expected new line but got identifer");
+                        AddParseError(program, "Expected new line but got label identifer");
                         break;
                     }
 
@@ -441,24 +476,27 @@ namespace dlx
                         program.m_JumpData[label_name] =
                                 static_cast<std::uint32_t>(program.m_Instructions.size());
 
-                        PHI_LOG_INFO("Added jump label {} -> {}", label_name,
-                                     program.m_Instructions.size());
+                        //PHI_LOG_INFO("Added jump label {} -> {}", label_name,
+                        //             program.m_Instructions.size());
+                    }
+                    else
+                    {
+                        AddParseError(program, "Label identifier is missing a colon");
+                    }
+
+                    break;
+                }
+                case Token::Type::OpCode: {
+                    if (line_has_instruction)
+                    {
+                        AddParseError(program, "Expected new line but got op code");
                         break;
                     }
 
                     // Handle normal instructions
-                    // First we need to parse the instruction itself so we know how many arguments it expects
-                    OpCode opcode = StringToOpCode(current_token.GetTextString());
+                    OpCode opcode = static_cast<OpCode>(current_token.GetHint());
 
-                    if (opcode == OpCode::NONE)
-                    {
-                        AddParseError(program,
-                                      fmt::format("Failed to parse instruction '{}' not found.",
-                                                  current_token.GetText()));
-                        break;
-                    }
-
-                    PHI_LOG_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
+                    //PHI_LOG_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
 
                     const InstructionInfo& info = lib.LookUp(opcode);
 
@@ -469,8 +507,8 @@ namespace dlx
                     PHI_ASSERT(info.GetExecutor());
 
                     phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
-                    PHI_LOG_INFO("Instruction requires {} arguments",
-                                 number_of_argument_required.get());
+                    //PHI_LOG_INFO("Instruction requires {} arguments",
+                    //             number_of_argument_required.get());
 
                     // Create instruction
                     Instruction instruction(info);
@@ -495,7 +533,7 @@ namespace dlx
                         // Skip commas
                         if (current_token.GetType() == Token::Type::Comma)
                         {
-                            PHI_LOG_DEBUG("Skipping comma");
+                            //PHI_LOG_DEBUG("Skipping comma");
                             continue;
                         }
 
@@ -522,15 +560,15 @@ namespace dlx
                         instruction.SetArgument(argument_num, parsed_argument);
                         argument_num++;
 
-                        PHI_LOG_INFO("Successfully parsed argument {}", argument_num.get());
+                        //PHI_LOG_INFO("Successfully parsed argument {}", argument_num.get());
                     }
 
                     // Only add the instruction if we got no parsing errors
                     if (program.m_ParseErrors.empty())
                     {
-                        PHI_LOG_INFO("Successfully parsed instruction '{}'",
-                                     instruction.DebugInfo());
-                        program.m_Instructions.emplace_back(std::move(instruction));
+                        //PHI_LOG_INFO("Successfully parsed instruction '{}'",
+                        //            instruction.DebugInfo());
+                        program.m_Instructions.emplace_back(instruction);
                         line_has_instruction = true;
                     }
                     break;

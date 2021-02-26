@@ -1,10 +1,10 @@
-#include "Emulator.hpp"
-#include "Phi/Core/Log.hpp"
+#include "DLXEmu/Emulator.hpp"
 #include <Phi/Config/Platform.hpp>
+#include <Phi/Core/Log.hpp>
 #include <cstddef>
 
 #if PHI_PLATFORM_IS(WEB)
-#    include "emscripten.h"
+#    include <emscripten.h>
 #endif
 
 #if PHI_PLATFORM_IS(WEB)
