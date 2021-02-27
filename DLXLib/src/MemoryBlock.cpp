@@ -19,7 +19,8 @@ namespace dlx
             return {};
         }
 
-        return m_Values.at((address - m_StartingAddress).get()).signed_value;
+        std::size_t index = (address - m_StartingAddress).get();
+        return m_Values[index].signed_value;
     }
 
     std::optional<phi::u8> MemoryBlock::LoadUnsignedByte(phi::usize address) const
@@ -30,7 +31,8 @@ namespace dlx
             return {};
         }
 
-        return m_Values.at((address - m_StartingAddress).get()).unsigned_value;
+        std::size_t index = (address - m_StartingAddress).get();
+        return m_Values[index].unsigned_value;
     }
 
     std::optional<phi::i16> MemoryBlock::LoadHalfWord(phi::usize address) const
@@ -41,12 +43,8 @@ namespace dlx
             return {};
         }
 
-        phi::usize   start_address = address - m_StartingAddress;
-        std::int8_t  first_byte    = m_Values.at(start_address.get()).signed_value;
-        std::int8_t  second_byte   = m_Values.at((start_address + 1u).get()).signed_value;
-        std::int16_t result        = first_byte << 8 | second_byte;
-
-        return result;
+        std::size_t index = (address - m_StartingAddress).get();
+        return *reinterpret_cast<const std::int16_t*>(&m_Values[index].signed_value);
     }
 
     std::optional<phi::u16> MemoryBlock::LoadUnsignedHalfWord(phi::usize address) const
@@ -57,12 +55,8 @@ namespace dlx
             return {};
         }
 
-        phi::usize    start_address = address - m_StartingAddress;
-        std::uint8_t  first_byte    = m_Values.at(start_address.get()).unsigned_value;
-        std::uint8_t  second_byte   = m_Values.at((start_address + 1u).get()).unsigned_value;
-        std::uint16_t result        = first_byte << 8 | second_byte;
-
-        return result;
+        std::size_t index = (address - m_StartingAddress).get();
+        return *reinterpret_cast<const std::uint16_t*>(&m_Values[index].unsigned_value);
     }
 
     std::optional<phi::i32> MemoryBlock::LoadWord(phi::usize address) const
@@ -73,14 +67,8 @@ namespace dlx
             return {};
         }
 
-        phi::usize   start_address = address - m_StartingAddress;
-        std::int8_t  first_byte    = m_Values.at(start_address.get()).signed_value;
-        std::int8_t  second_byte   = m_Values.at((start_address + 1u).get()).signed_value;
-        std::int8_t  third_byte    = m_Values.at((start_address + 2u).get()).signed_value;
-        std::int8_t  fourth_byte   = m_Values.at((start_address + 3u).get()).signed_value;
-        std::int32_t result = first_byte << 24 | second_byte << 16 | third_byte << 8 | fourth_byte;
-
-        return result;
+        std::size_t index = (address - m_StartingAddress).get();
+        return *reinterpret_cast<const std::int32_t*>(&m_Values[index].signed_value);
     }
 
     std::optional<phi::u32> MemoryBlock::LoadUnsignedWord(phi::usize address) const
@@ -91,14 +79,8 @@ namespace dlx
             return {};
         }
 
-        phi::usize    start_address = address - m_StartingAddress;
-        std::uint8_t  first_byte    = m_Values.at(start_address.get()).unsigned_value;
-        std::uint8_t  second_byte   = m_Values.at((start_address + 1u).get()).unsigned_value;
-        std::uint8_t  third_byte    = m_Values.at((start_address + 2u).get()).unsigned_value;
-        std::uint8_t  fourth_byte   = m_Values.at((start_address + 3u).get()).unsigned_value;
-        std::uint32_t result = first_byte << 24 | second_byte << 16 | third_byte << 8 | fourth_byte;
-
-        return result;
+        std::size_t index = (address - m_StartingAddress).get();
+        return *reinterpret_cast<const std::uint32_t*>(&m_Values[index].unsigned_value);
     }
 
     std::optional<phi::f32> MemoryBlock::LoadFloat(phi::usize address) const
@@ -109,14 +91,8 @@ namespace dlx
             return {};
         }
 
-        phi::usize    start_address = address - m_StartingAddress;
-        std::uint8_t  first_byte    = m_Values.at(start_address.get()).unsigned_value;
-        std::uint8_t  second_byte   = m_Values.at((start_address + 1u).get()).unsigned_value;
-        std::uint8_t  third_byte    = m_Values.at((start_address + 2u).get()).unsigned_value;
-        std::uint8_t  fourth_byte   = m_Values.at((start_address + 3u).get()).unsigned_value;
-        std::uint32_t result = first_byte << 24 | second_byte << 16 | third_byte << 8 | fourth_byte;
-
-        return *reinterpret_cast<float*>(&result);
+        std::size_t index = (address - m_StartingAddress).get();
+        return *reinterpret_cast<const float*>(&m_Values[index].signed_value);
     }
 
     std::optional<phi::f64> MemoryBlock::LoadDouble(phi::usize address) const
@@ -127,15 +103,8 @@ namespace dlx
             return {};
         }
 
-        phi::f32 first_value  = LoadFloat(address).value();
-        phi::f32 second_value = LoadFloat(address + 4u).value();
-
-        std::uint32_t first_bits  = *reinterpret_cast<std::uint32_t*>(&first_value);
-        std::uint32_t second_bits = *reinterpret_cast<std::uint32_t*>(&second_value);
-
-        std::uint64_t final_bits = (static_cast<std::uint64_t>(second_bits) << 32u) | first_bits;
-
-        return *reinterpret_cast<double*>(&final_bits);
+        std::size_t index = (address - m_StartingAddress).get();
+        return *reinterpret_cast<const double*>(&m_Values[(index)].signed_value);
     }
 
     phi::Boolean MemoryBlock::StoreByte(phi::usize address, phi::i8 value)
@@ -146,7 +115,7 @@ namespace dlx
             return false;
         }
 
-        m_Values.at((address - m_StartingAddress).get()).signed_value = value.get();
+        m_Values[(address - m_StartingAddress).get()].signed_value = value.get();
         return true;
     }
 
@@ -158,7 +127,7 @@ namespace dlx
             return false;
         }
 
-        m_Values.at((address - m_StartingAddress).get()).unsigned_value = value.get();
+        m_Values[(address - m_StartingAddress).get()].unsigned_value = value.get();
         return true;
     }
 
@@ -170,12 +139,8 @@ namespace dlx
             return false;
         }
 
-        phi::usize  start_address = address - m_StartingAddress;
-        std::int8_t first_byte    = (value.get() & 0b11111111'00000000) >> 8;
-        std::int8_t second_byte   = value.get() & 0b00000000'11111111;
-
-        m_Values.at(start_address.get()).signed_value        = first_byte;
-        m_Values.at((start_address + 1u).get()).signed_value = second_byte;
+        std::size_t index = (address - m_StartingAddress).get();
+        *reinterpret_cast<std::int16_t*>(&m_Values[index].signed_value) = value.get();
 
         return true;
     }
@@ -188,12 +153,8 @@ namespace dlx
             return false;
         }
 
-        phi::usize   start_address = address - m_StartingAddress;
-        std::uint8_t first_byte    = (value.get() & 0b11111111'00000000) >> 8;
-        std::uint8_t second_byte   = value.get() & 0b00000000'11111111;
-
-        m_Values.at(start_address.get()).unsigned_value        = first_byte;
-        m_Values.at((start_address + 1u).get()).unsigned_value = second_byte;
+        std::size_t index = (address - m_StartingAddress).get();
+        *reinterpret_cast<std::uint16_t*>(&m_Values[index].unsigned_value) = value.get();
 
         return true;
     }
@@ -206,16 +167,8 @@ namespace dlx
             return false;
         }
 
-        phi::usize  start_address = address - m_StartingAddress;
-        std::int8_t first_byte    = (value.get() & 0b11111111'00000000'00000000'00000000) >> 24;
-        std::int8_t second_byte   = (value.get() & 0b00000000'11111111'00000000'00000000) >> 16;
-        std::int8_t third_byte    = (value.get() & 0b00000000'00000000'11111111'00000000) >> 8;
-        std::int8_t fourth_byte   = value.get() & 0b00000000'00000000'00000000'11111111;
-
-        m_Values.at(start_address.get()).signed_value        = first_byte;
-        m_Values.at((start_address + 1u).get()).signed_value = second_byte;
-        m_Values.at((start_address + 2u).get()).signed_value = third_byte;
-        m_Values.at((start_address + 3u).get()).signed_value = fourth_byte;
+        std::size_t index = (address - m_StartingAddress).get();
+        *reinterpret_cast<std::int32_t*>(&m_Values[index].signed_value) = value.get();
 
         return true;
     }
@@ -228,16 +181,8 @@ namespace dlx
             return false;
         }
 
-        phi::usize   start_address = address - m_StartingAddress;
-        std::uint8_t first_byte    = (value.get() & 0b11111111'00000000'00000000'00000000) >> 24;
-        std::uint8_t second_byte   = (value.get() & 0b00000000'11111111'00000000'00000000) >> 16;
-        std::uint8_t third_byte    = (value.get() & 0b00000000'00000000'11111111'00000000) >> 8;
-        std::uint8_t fourth_byte   = value.get() & 0b00000000'00000000'00000000'11111111;
-
-        m_Values.at(start_address.get()).unsigned_value        = first_byte;
-        m_Values.at((start_address + 1u).get()).unsigned_value = second_byte;
-        m_Values.at((start_address + 2u).get()).unsigned_value = third_byte;
-        m_Values.at((start_address + 3u).get()).unsigned_value = fourth_byte;
+        std::size_t index = (address - m_StartingAddress).get();
+        *reinterpret_cast<std::uint32_t*>(&m_Values[index].unsigned_value) = value.get();
 
         return true;
     }
@@ -250,19 +195,8 @@ namespace dlx
             return false;
         }
 
-        float         value_raw  = value.get();
-        std::uint32_t value_bits = *reinterpret_cast<std::uint32_t*>(&value_raw);
-
-        phi::usize   start_address = address - m_StartingAddress;
-        std::uint8_t first_byte    = (value_bits & 0b11111111'00000000'00000000'00000000) >> 24;
-        std::uint8_t second_byte   = (value_bits & 0b00000000'11111111'00000000'00000000) >> 16;
-        std::uint8_t third_byte    = (value_bits & 0b00000000'00000000'11111111'00000000) >> 8;
-        std::uint8_t fourth_byte   = value_bits & 0b00000000'00000000'00000000'11111111;
-
-        m_Values.at(start_address.get()).unsigned_value        = first_byte;
-        m_Values.at((start_address + 1u).get()).unsigned_value = second_byte;
-        m_Values.at((start_address + 2u).get()).unsigned_value = third_byte;
-        m_Values.at((start_address + 3u).get()).unsigned_value = fourth_byte;
+        std::size_t index = (address - m_StartingAddress).get();
+        *reinterpret_cast<float*>(&m_Values[index].signed_value) = value.get();
 
         return true;
     }
@@ -275,18 +209,8 @@ namespace dlx
             return false;
         }
 
-        double value_raw = value.get();
-
-        std::uint64_t value_bits = *reinterpret_cast<std::uint64_t*>(&value_raw);
-
-        std::uint32_t first_bits = value_bits & 0xFFFFFFFF;
-        std::uint32_t last_bits  = value_bits >> 32;
-
-        float first_value = *reinterpret_cast<float*>(&first_bits);
-        float last_value  = *reinterpret_cast<float*>(&last_bits);
-
-        StoreFloat(address, first_value);
-        StoreFloat(address + 4u, last_value);
+        std::size_t index = (address - m_StartingAddress).get();
+        *reinterpret_cast<double*>(&m_Values[index].signed_value) = value.get();
 
         return true;
     }
