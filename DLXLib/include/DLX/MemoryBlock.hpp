@@ -53,9 +53,9 @@ namespace dlx
 
         void SetStartingAddress(phi::usize new_starting_address) noexcept;
 
-        [[nodiscard]] std::vector<MemoryByte> GetRawMemory() noexcept;
+        [[nodiscard]] std::vector<MemoryByte>& GetRawMemory() noexcept;
 
-        [[nodiscard]] const std::vector<MemoryByte> GetRawMemory() const noexcept;
+        [[nodiscard]] const std::vector<MemoryByte>& GetRawMemory() const noexcept;
 
     private:
         std::vector<MemoryByte> m_Values;

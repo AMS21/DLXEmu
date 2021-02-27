@@ -315,12 +315,12 @@ namespace dlx
         m_StartingAddress = new_starting_address;
     }
 
-    std::vector<MemoryBlock::MemoryByte> MemoryBlock::GetRawMemory() noexcept
+    std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() noexcept
     {
         return m_Values;
     }
 
-    const std::vector<MemoryBlock::MemoryByte> MemoryBlock::GetRawMemory() const noexcept
+    const std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() const noexcept
     {
         return m_Values;
     }
