@@ -304,4 +304,24 @@ namespace dlx
             val.signed_value = 0;
         }
     }
+
+    phi::usize MemoryBlock::GetStartingAddress() const noexcept
+    {
+        return m_StartingAddress;
+    }
+
+    void MemoryBlock::SetStartingAddress(phi::usize new_starting_address) noexcept
+    {
+        m_StartingAddress = new_starting_address;
+    }
+
+    std::vector<MemoryBlock::MemoryByte> MemoryBlock::GetRawMemory() noexcept
+    {
+        return m_Values;
+    }
+
+    const std::vector<MemoryBlock::MemoryByte> MemoryBlock::GetRawMemory() const noexcept
+    {
+        return m_Values;
+    }
 } // namespace dlx

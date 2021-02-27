@@ -26,14 +26,14 @@ namespace dlx
         MemoryBlock(phi::usize start_address, phi::usize starting_size);
 
         // Loading
-        std::optional<phi::i8>  LoadByte(phi::usize address) const;
-        std::optional<phi::u8>  LoadUnsignedByte(phi::usize address) const;
-        std::optional<phi::i16> LoadHalfWord(phi::usize address) const;
-        std::optional<phi::u16> LoadUnsignedHalfWord(phi::usize address) const;
-        std::optional<phi::i32> LoadWord(phi::usize address) const;
-        std::optional<phi::u32> LoadUnsignedWord(phi::usize address) const;
-        std::optional<phi::f32> LoadFloat(phi::usize address) const;
-        std::optional<phi::f64> LoadDouble(phi::usize address) const;
+        [[nodiscard]] std::optional<phi::i8>  LoadByte(phi::usize address) const;
+        [[nodiscard]] std::optional<phi::u8>  LoadUnsignedByte(phi::usize address) const;
+        [[nodiscard]] std::optional<phi::i16> LoadHalfWord(phi::usize address) const;
+        [[nodiscard]] std::optional<phi::u16> LoadUnsignedHalfWord(phi::usize address) const;
+        [[nodiscard]] std::optional<phi::i32> LoadWord(phi::usize address) const;
+        [[nodiscard]] std::optional<phi::u32> LoadUnsignedWord(phi::usize address) const;
+        [[nodiscard]] std::optional<phi::f32> LoadFloat(phi::usize address) const;
+        [[nodiscard]] std::optional<phi::f64> LoadDouble(phi::usize address) const;
 
         // Storing
         phi::Boolean StoreByte(phi::usize address, phi::i8 value);
@@ -45,9 +45,17 @@ namespace dlx
         phi::Boolean StoreFloat(phi::usize address, phi::f32 value);
         phi::Boolean StoreDouble(phi::usize address, phi::f64 value);
 
-        phi::Boolean IsAddressValid(phi::usize address, phi::usize size) const;
+        [[nodiscard]] phi::Boolean IsAddressValid(phi::usize address, phi::usize size) const;
 
         void Clear();
+
+        [[nodiscard]] phi::usize GetStartingAddress() const noexcept;
+
+        void SetStartingAddress(phi::usize new_starting_address) noexcept;
+
+        [[nodiscard]] std::vector<MemoryByte> GetRawMemory() noexcept;
+
+        [[nodiscard]] const std::vector<MemoryByte> GetRawMemory() const noexcept;
 
     private:
         std::vector<MemoryByte> m_Values;
