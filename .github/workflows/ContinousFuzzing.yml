@@ -247,7 +247,7 @@ jobs:
                 echo "Sucessfully pushed after $i tries"
                 break
               else
-                if [ "$i" = 5]; then
+                if [ "$i" = 5 ]; then
                   echo "Failed to push after 5 retries"
                   exit 1
                 fi
@@ -298,14 +298,15 @@ jobs:
         run: |
           cd $CORPUS_ROOT_DIR
 
-          mkdir -p $LOCAL_CORPUS_DIR/Corpus
-
           for i in {1..5}; do
             echo "Push try $i"
 
             git fetch origin
             git reset --hard origin/main
             git pull -ff
+
+            # Create directory if it doesn't exist
+            mkdir -p "$LOCAL_CORPUS_DIR/Corpus"
 
             # Copy merged files
             cp $FUZZING_DIR/TempCorpus/* --target-directory $LOCAL_CORPUS_DIR/Corpus --force || true
@@ -326,7 +327,7 @@ jobs:
                 echo "Sucessfully pushed after $i tries"
                 break
               else
-                if [ "$i" = 5]; then
+                if [ "$i" = 5 ]; then
                   echo "Failed to push after 5 retries"
                   exit 1
                 fi
