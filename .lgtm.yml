@@ -8,3 +8,5 @@ path_classifiers:
 
 queries:
   - include: "*"
+  - exclude: 
+    - "cpp/commented-out-code"
