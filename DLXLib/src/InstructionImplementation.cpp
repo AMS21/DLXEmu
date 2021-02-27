@@ -34,7 +34,7 @@ namespace dlx
         }
 
         // Set program counter
-        processor.m_NextProgramCounter = program->m_JumpData.at(label);
+        processor.SetNextProgramCounter(program->m_JumpData.at(label));
     }
 
     static void JumpToRegister(Processor& processor, IntRegisterID reg_id)
@@ -49,7 +49,7 @@ namespace dlx
             return;
         }
 
-        processor.m_NextProgramCounter = address.get();
+        processor.SetNextProgramCounter(address.get());
     }
 
     static std::optional<phi::i32> CalculateDisplacementAddress(
@@ -1745,9 +1745,8 @@ namespace dlx
 
             const auto& jump_label = arg1.AsLabel();
 
-            processor.IntRegisterSetUnsignedValue(
-                    IntRegisterID::R31,
-                    static_cast<std::uint32_t>(processor.m_NextProgramCounter.get()));
+            processor.IntRegisterSetUnsignedValue(IntRegisterID::R31,
+                                                  processor.GetNextProgramCounter());
 
             JumpToLabel(processor, jump_label.label_name);
         }
@@ -1761,9 +1760,8 @@ namespace dlx
 
             const auto& jump_register = arg1.AsRegisterInt();
 
-            processor.IntRegisterSetUnsignedValue(
-                    IntRegisterID::R31,
-                    static_cast<std::uint32_t>(processor.m_NextProgramCounter.get()));
+            processor.IntRegisterSetUnsignedValue(IntRegisterID::R31,
+                                                  processor.GetNextProgramCounter());
 
             JumpToRegister(processor, jump_register.register_id);
         }
@@ -1804,7 +1802,7 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.m_MemoryBlock.LoadByte(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadByte(static_cast<std::size_t>(address.get()));
 
             if (!optional_value.has_value())
             {
@@ -1838,8 +1836,8 @@ namespace dlx
 
             phi::i32 address = optional_address.value();
 
-            auto optional_value = processor.m_MemoryBlock.LoadUnsignedByte(
-                    static_cast<std::size_t>(address.get()));
+            auto optional_value =
+                    processor.GetMemory().LoadUnsignedByte(static_cast<std::size_t>(address.get()));
 
             if (!optional_value.has_value())
             {
@@ -1874,7 +1872,7 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.m_MemoryBlock.LoadHalfWord(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadHalfWord(static_cast<std::size_t>(address.get()));
 
             if (!optional_value.has_value())
             {
@@ -1908,7 +1906,7 @@ namespace dlx
 
             phi::i32 address = optional_address.value();
 
-            auto optional_value = processor.m_MemoryBlock.LoadUnsignedHalfWord(
+            auto optional_value = processor.GetMemory().LoadUnsignedHalfWord(
                     static_cast<std::size_t>(address.get()));
 
             if (!optional_value.has_value())
@@ -1944,7 +1942,7 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.m_MemoryBlock.LoadWord(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadWord(static_cast<std::size_t>(address.get()));
 
             if (!optional_value.has_value())
             {
@@ -1976,8 +1974,8 @@ namespace dlx
 
             phi::i32 address = optional_address.value();
 
-            auto optional_value = processor.m_MemoryBlock.LoadUnsignedWord(
-                    static_cast<std::size_t>(address.get()));
+            auto optional_value =
+                    processor.GetMemory().LoadUnsignedWord(static_cast<std::size_t>(address.get()));
 
             if (!optional_value.has_value())
             {
@@ -2010,7 +2008,7 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.m_MemoryBlock.LoadFloat(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadFloat(static_cast<std::size_t>(address.get()));
 
             if (!optional_value.has_value())
             {
@@ -2043,7 +2041,7 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.m_MemoryBlock.LoadDouble(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadDouble(static_cast<std::size_t>(address.get()));
 
             if (!optional_value.has_value())
             {
@@ -2077,7 +2075,7 @@ namespace dlx
 
             phi::i32 value = processor.IntRegisterGetSignedValue(src_reg.register_id);
 
-            phi::Boolean success = processor.m_MemoryBlock.StoreByte(
+            phi::Boolean success = processor.GetMemory().StoreByte(
                     static_cast<std::size_t>(address.get()), static_cast<std::int8_t>(value.get()));
 
             if (!success)
@@ -2109,9 +2107,9 @@ namespace dlx
 
             phi::u32 value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
 
-            phi::Boolean success = processor.m_MemoryBlock.StoreUnsignedByte(
-                    static_cast<std::size_t>(address.get()),
-                    static_cast<std::uint8_t>(value.get()));
+            phi::Boolean success =
+                    processor.GetMemory().StoreUnsignedByte(static_cast<std::size_t>(address.get()),
+                                                            static_cast<std::uint8_t>(value.get()));
 
             if (!success)
             {
@@ -2143,8 +2141,8 @@ namespace dlx
             phi::i32 value = processor.IntRegisterGetSignedValue(src_reg.register_id);
 
             phi::Boolean success =
-                    processor.m_MemoryBlock.StoreHalfWord(static_cast<std::size_t>(address.get()),
-                                                          static_cast<std::int16_t>(value.get()));
+                    processor.GetMemory().StoreHalfWord(static_cast<std::size_t>(address.get()),
+                                                        static_cast<std::int16_t>(value.get()));
 
             if (!success)
             {
@@ -2175,7 +2173,7 @@ namespace dlx
 
             phi::u32 value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
 
-            phi::Boolean success = processor.m_MemoryBlock.StoreUnsignedHalfWord(
+            phi::Boolean success = processor.GetMemory().StoreUnsignedHalfWord(
                     static_cast<std::size_t>(address.get()),
                     static_cast<std::uint16_t>(value.get()));
 
@@ -2208,8 +2206,8 @@ namespace dlx
 
             phi::i32 value = processor.IntRegisterGetSignedValue(src_reg.register_id);
 
-            phi::Boolean success = processor.m_MemoryBlock.StoreWord(
-                    static_cast<std::size_t>(address.get()), value);
+            phi::Boolean success =
+                    processor.GetMemory().StoreWord(static_cast<std::size_t>(address.get()), value);
 
             if (!success)
             {
@@ -2240,7 +2238,7 @@ namespace dlx
 
             phi::u32 value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
 
-            phi::Boolean success = processor.m_MemoryBlock.StoreUnsignedWord(
+            phi::Boolean success = processor.GetMemory().StoreUnsignedWord(
                     static_cast<std::size_t>(address.get()), value);
 
             if (!success)
@@ -2272,7 +2270,7 @@ namespace dlx
 
             phi::f32 value = processor.FloatRegisterGetFloatValue(src_reg.register_id);
 
-            phi::Boolean success = processor.m_MemoryBlock.StoreFloat(
+            phi::Boolean success = processor.GetMemory().StoreFloat(
                     static_cast<std::size_t>(address.get()), value);
 
             if (!success)
@@ -2304,7 +2302,7 @@ namespace dlx
 
             phi::f64 value = processor.FloatRegisterGetDoubleValue(src_reg.register_id);
 
-            phi::Boolean success = processor.m_MemoryBlock.StoreDouble(
+            phi::Boolean success = processor.GetMemory().StoreDouble(
                     static_cast<std::size_t>(address.get()), value);
 
             if (!success)

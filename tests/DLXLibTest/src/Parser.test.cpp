@@ -2,11 +2,9 @@
 #include "DLX/OpCode.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/Token.hpp"
-#include <catch2/catch_test_macros.hpp>
-
 #include <DLX/Parser.hpp>
 #include <DLX/Processor.hpp>
-#include <Phi/Core/Log.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 phi::Boolean TokenMatches(const dlx::Token& token, const std::string& text, dlx::Token::Type type)
 {
@@ -40,8 +38,6 @@ TEST_CASE("Parser tokenize")
         CHECK(TokenMatches(res.at(0), "ADD", dlx::Token::Type::OpCode));
         CHECK(TokenMatches(res.at(1), "\n", dlx::Token::Type::NewLine));
     }
-
-    phi::Log::initialize_default_loggers();
 
     SECTION("Comments")
     {
@@ -190,8 +186,6 @@ phi::Boolean InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcod
 
 TEST_CASE("Parser")
 {
-    //phi::Log::initialize_default_loggers();
-
     dlx::ParsedProgram      res;
     dlx::InstructionLibrary lib;
 

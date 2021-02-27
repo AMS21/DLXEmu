@@ -88,17 +88,29 @@ namespace dlx
 
         [[nodiscard]] phi::Boolean IsHalted() const noexcept;
 
-        MemoryBlock m_MemoryBlock;
+        [[nodiscard]] const MemoryBlock& GetMemory() const noexcept;
 
-        phi::u32   m_ProgramCounter{0u};
-        phi::u32   m_NextProgramCounter{0u};
-        phi::usize m_MaxNumberOfSteps{10'000u};
+        [[nodiscard]] MemoryBlock& GetMemory() noexcept;
+
+        [[nodiscard]] phi::u32 GetProgramCounter() const noexcept;
+
+        void SetProgramCounter(phi::u32 new_pc) noexcept;
+
+        [[nodiscard]] phi::u32 GetNextProgramCounter() const noexcept;
+
+        void SetNextProgramCounter(phi::u32 new_npc) noexcept;
 
     private:
         phi::ObserverPtr<ParsedProgram> m_CurrentProgram;
         std::array<IntRegister, 32u>    m_IntRegisters;
         std::array<FloatRegister, 32u>  m_FloatRegisters;
         StatusRegister                  m_FPSR;
+
+        MemoryBlock m_MemoryBlock;
+
+        phi::u32   m_ProgramCounter{0u};
+        phi::u32   m_NextProgramCounter{0u};
+        phi::usize m_MaxNumberOfSteps{10'000u};
 
         Exception m_LastRaisedException{Exception::None};
 

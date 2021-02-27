@@ -2773,7 +2773,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreByte(1000u, static_cast<std::int8_t>(21));
+        proc.GetMemory().StoreByte(1000u, static_cast<std::int8_t>(21));
 
         proc.ExecuteCurrentProgram();
 
@@ -2787,7 +2787,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreByte(1000u, static_cast<std::int8_t>(21));
+        proc.GetMemory().StoreByte(1000u, static_cast<std::int8_t>(21));
 
         proc.ExecuteCurrentProgram();
 
@@ -2804,7 +2804,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreUnsignedByte(1000u, static_cast<std::uint8_t>(21));
+        proc.GetMemory().StoreUnsignedByte(1000u, static_cast<std::uint8_t>(21));
 
         proc.ExecuteCurrentProgram();
 
@@ -2818,7 +2818,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreUnsignedByte(1000u, static_cast<std::uint8_t>(21));
+        proc.GetMemory().StoreUnsignedByte(1000u, static_cast<std::uint8_t>(21));
 
         proc.ExecuteCurrentProgram();
 
@@ -2835,7 +2835,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreHalfWord(1000u, static_cast<std::int16_t>(21));
+        proc.GetMemory().StoreHalfWord(1000u, static_cast<std::int16_t>(21));
 
         proc.ExecuteCurrentProgram();
 
@@ -2849,7 +2849,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreHalfWord(1000u, static_cast<std::int16_t>(21));
+        proc.GetMemory().StoreHalfWord(1000u, static_cast<std::int16_t>(21));
 
         proc.ExecuteCurrentProgram();
 
@@ -2866,7 +2866,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreUnsignedHalfWord(1000u, static_cast<std::uint16_t>(21));
+        proc.GetMemory().StoreUnsignedHalfWord(1000u, static_cast<std::uint16_t>(21));
 
         proc.ExecuteCurrentProgram();
 
@@ -2880,7 +2880,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreUnsignedHalfWord(1000u, static_cast<std::uint16_t>(21));
+        proc.GetMemory().StoreUnsignedHalfWord(1000u, static_cast<std::uint16_t>(21));
 
         proc.ExecuteCurrentProgram();
 
@@ -2897,7 +2897,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreWord(1000u, 21);
+        proc.GetMemory().StoreWord(1000u, 21);
 
         proc.ExecuteCurrentProgram();
 
@@ -2911,7 +2911,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreWord(1000u, 21);
+        proc.GetMemory().StoreWord(1000u, 21);
 
         proc.ExecuteCurrentProgram();
 
@@ -2928,7 +2928,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreUnsignedWord(1000u, 21u);
+        proc.GetMemory().StoreUnsignedWord(1000u, 21u);
 
         proc.ExecuteCurrentProgram();
 
@@ -2942,7 +2942,7 @@ TEST_CASE("Processor instructions")
         proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreUnsignedWord(1000u, 21u);
+        proc.GetMemory().StoreUnsignedWord(1000u, 21u);
 
         proc.ExecuteCurrentProgram();
 
@@ -2959,7 +2959,7 @@ TEST_CASE("Processor instructions")
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreFloat(1000u, 1.0f);
+        proc.GetMemory().StoreFloat(1000u, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
@@ -2973,7 +2973,7 @@ TEST_CASE("Processor instructions")
         proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreFloat(1000u, 1.0f);
+        proc.GetMemory().StoreFloat(1000u, 1.0f);
 
         proc.ExecuteCurrentProgram();
 
@@ -2990,7 +2990,7 @@ TEST_CASE("Processor instructions")
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F0, -1.0);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreDouble(1000u, 1.0);
+        proc.GetMemory().StoreDouble(1000u, 1.0);
 
         proc.ExecuteCurrentProgram();
 
@@ -3004,7 +3004,7 @@ TEST_CASE("Processor instructions")
         proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F0, -1.0);
 
         proc.ClearMemory();
-        proc.m_MemoryBlock.StoreDouble(1000u, 1.0);
+        proc.GetMemory().StoreDouble(1000u, 1.0);
 
         proc.ExecuteCurrentProgram();
 
@@ -3023,7 +3023,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        auto val = proc.m_MemoryBlock.LoadByte(1000u);
+        auto val = proc.GetMemory().LoadByte(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21);
 
@@ -3037,7 +3037,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        val = proc.m_MemoryBlock.LoadByte(1000u);
+        val = proc.GetMemory().LoadByte(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21);
     }
@@ -3054,7 +3054,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        auto val = proc.m_MemoryBlock.LoadUnsignedByte(1000u);
+        auto val = proc.GetMemory().LoadUnsignedByte(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21u);
 
@@ -3068,7 +3068,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        val = proc.m_MemoryBlock.LoadUnsignedByte(1000u);
+        val = proc.GetMemory().LoadUnsignedByte(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21u);
     }
@@ -3085,7 +3085,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        auto val = proc.m_MemoryBlock.LoadHalfWord(1000u);
+        auto val = proc.GetMemory().LoadHalfWord(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21);
 
@@ -3099,7 +3099,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        val = proc.m_MemoryBlock.LoadHalfWord(1000u);
+        val = proc.GetMemory().LoadHalfWord(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21);
     }
@@ -3116,7 +3116,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        auto val = proc.m_MemoryBlock.LoadUnsignedHalfWord(1000u);
+        auto val = proc.GetMemory().LoadUnsignedHalfWord(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21u);
 
@@ -3130,7 +3130,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        val = proc.m_MemoryBlock.LoadUnsignedHalfWord(1000u);
+        val = proc.GetMemory().LoadUnsignedHalfWord(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21u);
     }
@@ -3147,7 +3147,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        auto val = proc.m_MemoryBlock.LoadWord(1000u);
+        auto val = proc.GetMemory().LoadWord(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21);
 
@@ -3161,7 +3161,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        val = proc.m_MemoryBlock.LoadWord(1000u);
+        val = proc.GetMemory().LoadWord(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21);
     }
@@ -3178,7 +3178,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        auto val = proc.m_MemoryBlock.LoadUnsignedWord(1000u);
+        auto val = proc.GetMemory().LoadUnsignedWord(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21u);
 
@@ -3192,7 +3192,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        val = proc.m_MemoryBlock.LoadUnsignedWord(1000u);
+        val = proc.GetMemory().LoadUnsignedWord(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 21u);
     }
@@ -3209,7 +3209,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        auto val = proc.m_MemoryBlock.LoadFloat(1000u);
+        auto val = proc.GetMemory().LoadFloat(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 1.0f);
 
@@ -3223,7 +3223,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        val = proc.m_MemoryBlock.LoadFloat(1000u);
+        val = proc.GetMemory().LoadFloat(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 1.0f);
     }
@@ -3240,7 +3240,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        auto val = proc.m_MemoryBlock.LoadDouble(1000u);
+        auto val = proc.GetMemory().LoadDouble(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 1.0);
 
@@ -3254,7 +3254,7 @@ TEST_CASE("Processor instructions")
 
         proc.ExecuteCurrentProgram();
 
-        val = proc.m_MemoryBlock.LoadDouble(1000u);
+        val = proc.GetMemory().LoadDouble(1000u);
         REQUIRE(val.has_value());
         CHECK(val->get() == 1.0);
     }

@@ -373,8 +373,38 @@ namespace dlx
         return m_LastRaisedException;
     }
 
-    [[nodiscard]] phi::Boolean Processor::IsHalted() const noexcept
+    phi::Boolean Processor::IsHalted() const noexcept
     {
         return m_Halted;
+    }
+
+    const MemoryBlock& Processor::GetMemory() const noexcept
+    {
+        return m_MemoryBlock;
+    }
+
+    MemoryBlock& Processor::GetMemory() noexcept
+    {
+        return m_MemoryBlock;
+    }
+
+    phi::u32 Processor::GetProgramCounter() const noexcept
+    {
+        return m_ProgramCounter;
+    }
+
+    void Processor::SetProgramCounter(phi::u32 new_pc) noexcept
+    {
+        m_ProgramCounter = new_pc;
+    }
+
+    [[nodiscard]] phi::u32 Processor::GetNextProgramCounter() const noexcept
+    {
+        return m_NextProgramCounter;
+    }
+
+    void Processor::SetNextProgramCounter(phi::u32 new_npc) noexcept
+    {
+        m_NextProgramCounter = new_npc;
     }
 } // namespace dlx
