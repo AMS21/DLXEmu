@@ -2948,7 +2948,7 @@ namespace dlxemu
         Line& line = m_Lines[(token.GetLineNumber() - 1u).get()];
         //PHI_LOG_INFO("Line number: {}", (token.GetLineNumber() - 1u).get());
 
-        for (std::size_t index{(token.GetColumn() - 1u).get()};
+        for (std::size_t index{static_cast<std::size_t>((token.GetColumn() - 1u).get())};
              index < token.GetColumn() + token.GetLength() - 1u; ++index)
         {
             line[index].m_ColorIndex = palette_index;
