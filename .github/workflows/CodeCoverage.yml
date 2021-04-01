@@ -8,7 +8,7 @@ on:
 
 jobs:
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       LLVM_VERSION: "11"
       LLVM_PROFILE_FILE: "profile-%p.profraw"
@@ -33,7 +33,7 @@ jobs:
         run: |
           # Add clang repo
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${{ env.LLVM_VERSION }} main"
+          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ env.LLVM_VERSION }} main"
 
           # Update repo list
           sudo apt-get update -m

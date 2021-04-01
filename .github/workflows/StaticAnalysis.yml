@@ -8,7 +8,7 @@ on:
 
 jobs:
   cppcheck:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       LLVM_VERSION: 11
 
@@ -34,7 +34,7 @@ jobs:
         run: |
           # Add repository
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${{ env.LLVM_VERSION }} main"
+          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ env.LLVM_VERSION }} main"
 
           # Install
           sudo apt-get update -m
@@ -87,7 +87,7 @@ jobs:
           cat cppcheck_filtered.log | reviewdog -efm="%f:%l:%c: %m" -diff="git diff FETCH_HEAD" -reporter=github-check -name CppCheck -level warning
 
   clang-tidy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       LLVM_VERSION: 11
 
@@ -116,7 +116,7 @@ jobs:
       - name: Install clang tidy
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${{ env.LLVM_VERSION }} main"
+          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ env.LLVM_VERSION }} main"
           sudo apt-get update -m
           sudo apt-get install clang-${{ env.LLVM_VERSION }} clang-tidy-${{ env.LLVM_VERSION }}
 
@@ -150,7 +150,7 @@ jobs:
           cat build/clang_tidy_output.log | reviewdog -efm="%f:%l:%c: warning: %m" -diff="git diff FETCH_HEAD" -reporter=github-check -name Clang-Tidy -level warning
 
   include-what-you-use:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       LLVM_VERSION: 11
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
@@ -180,7 +180,7 @@ jobs:
       - name: Install llvm
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${{ env.LLVM_VERSION }} main"
+          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ env.LLVM_VERSION }} main"
           sudo apt-get update -m
           sudo apt-get install clang-${{ env.LLVM_VERSION }} llvm-${{ env.LLVM_VERSION }} llvm-${{ env.LLVM_VERSION }}-dev libclang-${{ env.LLVM_VERSION }}-dev
 
@@ -231,7 +231,7 @@ jobs:
           cat build/iwyu_filtered.log | reviewdog -efm="%Z%A%f:%l:%c: error: %m" -efm="%C%m" -diff="git diff FETCH_HEAD" -reporter=github-check -name include-what-you-use -level warning
 
   cmake-lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout
