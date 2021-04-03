@@ -248,7 +248,7 @@ jobs:
                 break
               else
                 if [ "$i" = 5 ]; then
-                  echo "Failed to push after 5 retries"
+                  echo "Failed to push after 5 retries"19614997+AMS21@users.noreply.github.com
                   exit 1
                 fi
               fi
@@ -346,7 +346,7 @@ jobs:
           cmake --build . --clean-first --target ${{ matrix.fuzz_target }}
 
           # Generate coverage data
-          find $CORPUS_ROOT_DIR -type f -exec bash -c '$FUZZER ${0}' {} \;
+          find $CORPUS_ROOT_DIR -type f -exec bash -c '$FUZZER ${0} > /dev/null 2>&1' {} \;
 
           llvm-profdata-${{ env.LLVM_VERSION }} merge -sparse $(find . -iname "*.profraw" -type f) -o coverage.profdata
 
