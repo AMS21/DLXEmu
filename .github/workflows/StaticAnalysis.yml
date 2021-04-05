@@ -19,7 +19,7 @@ jobs:
           submodules: recursive
           fetch-depth: 2
 
-      - uses: reviewdog/action-setup@v1.0.2
+      - uses: reviewdog/action-setup@v1.0.3
         with:
           reviewdog_version: latest
 
@@ -98,7 +98,7 @@ jobs:
           submodules: recursive
           fetch-depth: 2
 
-      - uses: reviewdog/action-setup@v1.0.2
+      - uses: reviewdog/action-setup@v1.0.3
         with:
           reviewdog_version: latest
 
@@ -166,7 +166,7 @@ jobs:
         with:
           python-version: '3.x'
 
-      - uses: reviewdog/action-setup@v1.0.2
+      - uses: reviewdog/action-setup@v1.0.3
         with:
           reviewdog_version: latest
 
@@ -240,7 +240,7 @@ jobs:
           fetch-depth: 2
 
 
-      - uses: reviewdog/action-setup@v1.0.2
+      - uses: reviewdog/action-setup@v1.0.3
         with:
           reviewdog_version: latest
 
