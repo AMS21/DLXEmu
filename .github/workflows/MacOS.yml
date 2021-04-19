@@ -29,12 +29,12 @@ jobs:
           - { compiler: g++, compiler_version: "10", dynamic_test: "lsan" }
           - { compiler: g++, compiler_version: "10", dynamic_test: "ubsan" }
           # AppleClang 12.3
-          - { compiler: clang++, compiler_version: "12.3" }
-          - { compiler: clang++, compiler_version: "12.3", dynamic_test: "asan" }
-          #- { compiler: clang++, compiler_version: "12.3", dynamic_test: "msan" }
-          - { compiler: clang++, compiler_version: "12.3", dynamic_test: "tsan" }
-          - { compiler: clang++, compiler_version: "12.3", dynamic_test: "ubsan" }
-          - { compiler: clang++, compiler_version: "12.3", dynamic_test: "valgrind" }
+          - { compiler: clang++, compiler_version: "12.4"" }
+          - { compiler: clang++, compiler_version: "12.4", dynamic_test: "asan" }
+          #- { compiler: clang++, compiler_version: "12.4", dynamic_test: "msan" }
+          - { compiler: clang++, compiler_version: "12.4", dynamic_test: "tsan" }
+          - { compiler: clang++, compiler_version: "12.4", dynamic_test: "ubsan" }
+          - { compiler: clang++, compiler_version: "12.4", dynamic_test: "valgrind" }
 
     steps:
       - name: Checkout
