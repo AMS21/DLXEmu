@@ -84,6 +84,11 @@ namespace dlxemu
             return false;
         }
 
+        // Hook unsupported functions functions
+#if PHI_PLATFORM_IS(WEB)
+        glad_glPolygonMode = [](GLenum /*face*/, GLenum /*mode*/) -> void { return; };
+#endif
+
         PHI_LOG_INFO("Successfully loaded OpenGL version {}.{}", GLVersion.major, GLVersion.minor);
 
         InitializeImGui();
@@ -118,9 +123,6 @@ namespace dlxemu
     {
         glfwPollEvents();
 
-#if PHI_PLATFORM_IS(WEB)
-        ImGui::SetCurrentContext(m_ImGuiContext);
-#endif
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -166,13 +168,14 @@ namespace dlxemu
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         m_ImGuiContext = ImGui::CreateContext();
-        if (!m_ImGuiContext)
+        if (m_ImGuiContext == nullptr)
         {
             PHI_LOG_ERROR("Failed to create ImGuiContext");
             return;
         }
 
         ImGuiIO& io = ImGui::GetIO();
+
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
         //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
@@ -211,7 +214,7 @@ namespace dlxemu
         ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
         ImGui_ImplOpenGL3_Init(glsl_version);
 
-        PHI_LOG_INFO("Successfully initialized ImGui");
+        PHI_LOG_INFO("Successfully initialized ImGui with glsl {}", glsl_version);
 
         imgui_initialized = true;
     }

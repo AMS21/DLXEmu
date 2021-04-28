@@ -8,9 +8,23 @@
 #endif
 
 #if PHI_PLATFORM_IS(WEB)
+
+static bool inited{false};
+
 extern "C" void main_loop(void* data)
 {
     dlxemu::Emulator* emulator = reinterpret_cast<dlxemu::Emulator*>(data);
+
+    if (!inited)
+    {
+        if (!emulator->Initialize())
+        {
+            PHI_LOG_ERROR("Failed to initialize Emulator!");
+            std::exit(1);
+        }
+
+        inited = true;
+    }
 
     emulator->MainLoop();
 }
@@ -22,15 +36,15 @@ int main(int argc, char* argv[])
     phi::Log::initialize_default_loggers();
 
     dlxemu::Emulator emulator{};
+
+#if PHI_PLATFORM_IS(WEB)
+    emscripten_set_main_loop_arg(main_loop, &emulator, 0, false);
+#else
     if (!emulator.Initialize())
     {
         PHI_LOG_ERROR("Failed to initialize Emulator!");
         return 1;
     }
-
-#if PHI_PLATFORM_IS(WEB)
-    emscripten_set_main_loop_arg(main_loop, &emulator, 0, false);
-#else
 
     while (emulator.IsRunning())
     {
