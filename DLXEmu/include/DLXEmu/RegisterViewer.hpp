@@ -4,10 +4,10 @@ namespace dlxemu
 {
     class Emulator;
 
-    class MemoryViewer
+    class RegisterViewer
     {
     public:
-        explicit MemoryViewer(Emulator* emulator);
+        explicit RegisterViewer(Emulator* emulator);
 
         void Render();
 

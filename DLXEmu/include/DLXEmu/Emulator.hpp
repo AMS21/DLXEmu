@@ -2,6 +2,7 @@
 
 #include "CodeEditor.hpp"
 #include "MemoryViewer.hpp"
+#include "RegisterViewer.hpp"
 #include "Window.hpp"
 #include <DLX/InstructionLibrary.hpp>
 #include <DLX/Parser.hpp>
@@ -41,8 +42,9 @@ namespace dlxemu
         dlx::Processor          m_Processor;
         dlx::ParsedProgram      m_DLXProgram;
 
-        CodeEditor   m_CodeEditor;
-        Window       m_Window;
-        MemoryViewer m_MemoryViewer;
+        CodeEditor     m_CodeEditor;
+        Window         m_Window;
+        MemoryViewer   m_MemoryViewer;
+        RegisterViewer m_RegisterViewer;
     };
 } // namespace dlxemu
