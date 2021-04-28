@@ -21,7 +21,7 @@ namespace dlxemu
 
         for (std::size_t index{0}; index < values.size(); index += 4)
         {
-            auto val = mem.LoadWord(mem.GetStartingAddress() + index)->get();
+            std::int32_t val = mem.LoadWord(mem.GetStartingAddress() + index)->get();
 
             ImGui::InputInt(std::to_string((mem.GetStartingAddress() + index).get()).c_str(), &val);
         }
