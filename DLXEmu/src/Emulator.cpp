@@ -8,6 +8,7 @@ namespace dlxemu
 {
     Emulator::Emulator() noexcept
         : m_CodeEditor(this)
+        , m_MemoryViewer(this)
     {}
 
     phi::Boolean Emulator::Initialize()
@@ -37,6 +38,7 @@ namespace dlxemu
 
         // Render our stuff
         m_CodeEditor.Render();
+        m_MemoryViewer.Render();
 
         m_Window.EndFrame();
     }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CodeEditor.hpp"
+#include "MemoryViewer.hpp"
 #include "Window.hpp"
 #include <DLX/InstructionLibrary.hpp>
 #include <DLX/Parser.hpp>
@@ -37,7 +38,8 @@ namespace dlxemu
         dlx::Processor          m_Processor;
         dlx::ParsedProgram      m_DLXProgram;
 
-        CodeEditor m_CodeEditor;
-        Window     m_Window;
+        CodeEditor   m_CodeEditor;
+        Window       m_Window;
+        MemoryViewer m_MemoryViewer;
     };
 } // namespace dlxemu
