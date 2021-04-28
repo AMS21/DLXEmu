@@ -34,6 +34,9 @@ namespace dlxemu
         void ParseProgram(std::vector<dlx::Token> tokens) noexcept;
 
     private:
+        void RenderControlPanel() noexcept;
+
+    private:
         dlx::InstructionLibrary m_InstructionLibrary;
         dlx::Processor          m_Processor;
         dlx::ParsedProgram      m_DLXProgram;
