@@ -8204,6 +8204,7 @@ var ASM_CONSTS = {
   }
   }
 
+
   function _fd_close(fd) {try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -10159,6 +10160,7 @@ var asmLibraryArg = {
   "emscripten_thread_sleep": _emscripten_thread_sleep,
   "environ_get": _environ_get,
   "environ_sizes_get": _environ_sizes_get,
+  "exit": _exit,
   "fd_close": _fd_close,
   "fd_fdstat_get": _fd_fdstat_get,
   "fd_read": _fd_read,
