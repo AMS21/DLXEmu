@@ -355,7 +355,7 @@ jobs:
           cmake --build . --clean-first --target ${{ matrix.fuzz_target }}
 
           # Generate coverage data
-          find $CORPUS_ROOT_DIR -type f -exec bash -c '$FUZZER ${0} > /dev/null 2>&1' {} \;
+          find $CORPUS_ROOT_DIR -type f -exec bash -c 'echo Fuzzing: ${0}; $FUZZER ${0} > /dev/null 2>&1' {} \;
 
           llvm-profdata-${{ env.LLVM_VERSION }} merge -sparse $(find . -iname "*.profraw" -type f) -o coverage.profdata
 
