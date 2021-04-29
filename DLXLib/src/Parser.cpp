@@ -5,6 +5,7 @@
 #include "DLX/ParserUtils.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/Token.hpp"
+#include "Phi/Core/Types.hpp"
 #include <Phi/Config/FunctionLikeMacro.hpp>
 #include <Phi/Core/Assert.hpp>
 #include <Phi/Core/Conversion.hpp>
@@ -15,6 +16,7 @@
 #include <optional>
 #include <regex>
 #include <stdexcept>
+#include <string_view>
 
 using namespace phi::literals;
 
@@ -72,8 +74,7 @@ namespace dlx
         std::vector<Token> tokens{};
         tokens.reserve(5);
 
-        std::string current_token;
-        current_token.reserve(10);
+        std::string_view current_token;
 
         phi::u64 current_line_number{1u};
         phi::u64 current_column{1u};
@@ -109,7 +110,7 @@ namespace dlx
                 tokens.emplace_back(Token::Type::NewLine, source.substr(token_begin.get(), 1),
                                     current_line_number, current_column - 1u);
 
-                current_token.clear();
+                current_token   = std::string_view{};
                 parsing_comment = false;
                 current_line_number += 1u;
                 current_column = 0u;
@@ -123,12 +124,14 @@ namespace dlx
                 }
 
                 parsing_comment = true;
-                current_token.push_back(c);
+                current_token   = std::string_view(
+                        source.substr(token_begin.get(), current_token.length() + 1));
             }
             else if (parsing_comment)
             {
                 // simply append the character
-                current_token.push_back(c);
+                current_token = std::string_view(
+                        source.substr(token_begin.get(), current_token.length() + 1));
             }
             else
             {
@@ -150,19 +153,20 @@ namespace dlx
                         tokens.emplace_back(ParseToken(
                                 source.substr(token_begin.get(), current_token.length()),
                                 current_line_number, current_column - current_token.length()));
-                        current_token.clear();
+                        current_token = std::string_view{};
                         break;
                     case ':':
                         // Need to parse label names together with their colon
                         if (!current_token.empty())
                         {
-                            current_token.push_back(c);
+                            current_token = std::string_view(
+                                    source.substr(token_begin.get(), current_token.length() + 1));
                             tokens.emplace_back(ParseToken(
                                     source.substr(token_begin.get(), current_token.length()),
                                     current_line_number,
                                     current_column + 1u - current_token.length()));
 
-                            current_token.clear();
+                            current_token = std::string_view{};
                         }
                         else
                         {
@@ -183,7 +187,7 @@ namespace dlx
                                     source.substr(token_begin.get(), current_token.length()),
                                     current_line_number, current_column - current_token.length()));
 
-                            current_token.clear();
+                            current_token = std::string_view{};
                         }
 
                         Token::Type type;
@@ -216,7 +220,8 @@ namespace dlx
                         }
 
                         // simply append the character
-                        current_token.push_back(c);
+                        current_token = std::string_view(
+                                source.substr(token_begin.get(), current_token.length() + 1));
                 }
             }
 
