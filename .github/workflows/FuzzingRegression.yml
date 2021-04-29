@@ -75,14 +75,17 @@ jobs:
 
       - name: Run Fuzzer
         run: |
+          # Fin all seed files
+          seed_files=$(find $CORPUS_ROOT_DIR/Seed -type f -printf "%p ")
+          echo "Found seed files: $seed_files"
+
           # Find all files
           files=$(find $CORPUS_ROOT_DIR -type f \( -iname "Crash-*" -or -iname "Timeout-*" \) -printf "%p ")
           echo "Found regression tests: $files"
 
           if [ -z "$files" ]; then
             echo "No regression test found!"
-            exit 0
           fi
 
-          # Run the fuzzer on all previous crashes and timeouts
-          $BINARY_DIR/fuzz_regression -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 $files
+          # Run the fuzzer on all previous crashes, timeouts and seed files
+          $BINARY_DIR/fuzz_regression -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 $files $seed_files
