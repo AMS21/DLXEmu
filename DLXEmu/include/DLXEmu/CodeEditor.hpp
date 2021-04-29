@@ -141,7 +141,7 @@ namespace dlxemu
         using Line  = std::vector<Glyph>;
         using Lines = std::vector<Line>;
 
-        CodeEditor(Emulator* emulator);
+        explicit CodeEditor(Emulator* emulator);
 
         [[nodiscard]] const Palette& GetPalette() const;
         void                         SetPalette(const Palette& value);
