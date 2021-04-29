@@ -131,6 +131,9 @@ jobs:
           # Generate compile_commands.json
           cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
+          # Build glad so it generates the required files
+          cmake --build . --target glad --clean-first
+
           # Run clang-tidy
           run-clang-tidy-${{ env.LLVM_VERSION }} -quiet -header-filter ".*" > clang_tidy.log
 
