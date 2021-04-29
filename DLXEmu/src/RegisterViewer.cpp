@@ -1,9 +1,9 @@
-#include "DLX/InstructionInfo.hpp"
-#include "DLX/RegisterNames.hpp"
 #include "DLXEmu/RegisterViewer.hpp"
 
 #include "DLXEmu/Emulator.hpp"
-#include <imgui.h>>
+#include <DLX/InstructionInfo.hpp>
+#include <DLX/RegisterNames.hpp>
+#include <imgui.h>
 #include <spdlog/fmt/fmt.h>
 
 namespace dlxemu
