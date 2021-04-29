@@ -12,20 +12,29 @@ namespace fuzz
 {
     namespace detail
     {
-        inline void AddSeperatorToken(std::string& text, const std::uint8_t* data, std::size_t size,
+        constexpr char ErrorString[] = "";
+
+        inline bool AddSeperatorToken(std::string& text, const std::uint8_t* data, std::size_t size,
                                       std::size_t& index)
         {
             if (index < size)
             {
-                if (data[index++] % 2 == 0)
+                std::uint8_t val = data[index++];
+                if (val == 0)
                 {
                     text += ' ';
                 }
-                else
+                else if (val == 1)
                 {
                     text += ',';
                 }
+                else
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
 
         inline char SanitizeForIdentifier(std::uint8_t c)
@@ -64,7 +73,10 @@ namespace fuzz
 
                         ret += magic_enum::enum_name(static_cast<dlx::OpCode>(opcode_value));
 
-                        detail::AddSeperatorToken(ret, data, size, index);
+                        if (!detail::AddSeperatorToken(ret, data, size, index))
+                        {
+                            return detail::ErrorString;
+                        }
                     }
                     break;
                 }
@@ -77,7 +89,10 @@ namespace fuzz
                         std::uint8_t opcode_value = data[index++] % number_of_int_registers;
 
                         ret += magic_enum::enum_name(static_cast<dlx::IntRegisterID>(opcode_value));
-                        detail::AddSeperatorToken(ret, data, size, index);
+                        if (!detail::AddSeperatorToken(ret, data, size, index))
+                        {
+                            return detail::ErrorString;
+                        }
                     }
                     break;
                 }
@@ -91,7 +106,10 @@ namespace fuzz
 
                         ret += magic_enum::enum_name(
                                 static_cast<dlx::FloatRegisterID>(opcode_value));
-                        detail::AddSeperatorToken(ret, data, size, index);
+                        if (!detail::AddSeperatorToken(ret, data, size, index))
+                        {
+                            return detail::ErrorString;
+                        }
                     }
                     break;
                 }
@@ -99,7 +117,10 @@ namespace fuzz
                 // Floating point status register
                 case 3: {
                     ret += "FPSR";
-                    detail::AddSeperatorToken(ret, data, size, index);
+                    if (!detail::AddSeperatorToken(ret, data, size, index))
+                    {
+                        return detail::ErrorString;
+                    }
 
                     break;
                 }
@@ -153,7 +174,10 @@ namespace fuzz
                         else
                         {
                             ret += label_name;
-                            detail::AddSeperatorToken(ret, data, size, index);
+                            if (!detail::AddSeperatorToken(ret, data, size, index))
+                            {
+                                return detail::ErrorString;
+                            }
                         }
                     }
                     break;
@@ -185,7 +209,7 @@ namespace fuzz
 
                 // Ignore
                 default:
-                    break;
+                    return detail::ErrorString;
             }
         }
 
