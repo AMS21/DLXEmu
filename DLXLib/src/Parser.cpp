@@ -22,7 +22,7 @@ using namespace phi::literals;
 
 namespace dlx
 {
-    Token ParseToken(std::string_view token, phi::u64 line_number, phi::u64 column)
+    Token ParseToken(std::string_view token, phi::u64 line_number, phi::u64 column) noexcept
     {
         // TODO: Parse the given number here directly?
         if (token.at(0) == '#' && token.size() > 1)
@@ -69,7 +69,7 @@ namespace dlx
         return Token(Token::Type::LabelIdentifier, token, line_number, column);
     }
 
-    std::vector<Token> Parser::Tokenize(std::string_view source)
+    std::vector<Token> Parser::Tokenize(std::string_view source) noexcept
     {
         std::vector<Token> tokens{};
         tokens.reserve(5);
@@ -438,7 +438,7 @@ namespace dlx
         consume_x_tokens(index, 1u);
     }
 
-    ParsedProgram Parser::Parse(const InstructionLibrary& lib, std::vector<Token>& tokens)
+    ParsedProgram Parser::Parse(const InstructionLibrary& lib, std::vector<Token>& tokens) noexcept
     {
         ParsedProgram program;
 
@@ -588,7 +588,7 @@ namespace dlx
         return program;
     }
 
-    ParsedProgram Parser::Parse(const InstructionLibrary& lib, std::string_view source)
+    ParsedProgram Parser::Parse(const InstructionLibrary& lib, std::string_view source) noexcept
     {
         std::vector<Token> tokens = Tokenize(source);
         return Parse(lib, tokens);

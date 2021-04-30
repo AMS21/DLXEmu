@@ -18,4 +18,4 @@ target_include_directories("DLXLibUnittest" PRIVATE "include")
 
 set_target_properties("DLXLibUnittest" PROPERTIES FOLDER "Tests")
 
-add_test(DLXLibUnittest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DLXLibUnittest)
+phi_add_test(TARGET DLXLibUnittest)
