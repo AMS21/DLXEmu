@@ -24,6 +24,8 @@ extern "C" void main_loop(void* data) noexcept
         }
 
         inited = true;
+        PHI_LOG_INFO("Successfully initialized Emulator");
+        return;
     }
 
     emulator->MainLoop();
