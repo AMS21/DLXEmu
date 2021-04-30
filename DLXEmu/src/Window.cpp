@@ -19,17 +19,17 @@ static bool imgui_initialized{false};
 
 namespace dlxemu
 {
-    static void glfw_error_callback(int error, const char* message)
+    static void glfw_error_callback(int error, const char* message) noexcept
     {
         PHI_LOG_ERROR("GLFW error {}: {}", error, message);
     }
 
-    Window::~Window()
+    Window::~Window() noexcept
     {
         Shutdown();
     }
 
-    phi::Boolean Window::Initialize()
+    phi::Boolean Window::Initialize() noexcept
     {
         // Set error callback
         glfwSetErrorCallback(&glfw_error_callback);
@@ -96,7 +96,7 @@ namespace dlxemu
         return true;
     }
 
-    void Window::Shutdown()
+    void Window::Shutdown() noexcept
     {
         if (imgui_initialized)
         {
@@ -114,12 +114,12 @@ namespace dlxemu
         }
     }
 
-    phi::Boolean Window::IsOpen() const
+    phi::Boolean Window::IsOpen() const noexcept
     {
         return glfwWindowShouldClose(m_Window) == 0;
     }
 
-    void Window::BeginFrame()
+    void Window::BeginFrame() noexcept
     {
         glfwPollEvents();
 
@@ -130,7 +130,7 @@ namespace dlxemu
         ImGui::NewFrame();
     }
 
-    void Window::EndFrame()
+    void Window::EndFrame() noexcept
     {
         static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -163,7 +163,7 @@ namespace dlxemu
         glfwSwapBuffers(m_Window);
     }
 
-    void Window::InitializeImGui()
+    void Window::InitializeImGui() noexcept
     {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
@@ -219,7 +219,7 @@ namespace dlxemu
         imgui_initialized = true;
     }
 
-    void Window::ShutdownImGui()
+    void Window::ShutdownImGui() noexcept
     {
         ImGui_ImplGlfw_Shutdown();
         ImGui_ImplOpenGL3_Shutdown();

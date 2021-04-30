@@ -9,21 +9,21 @@ namespace dlx
     class Instruction
     {
     public:
-        explicit Instruction(const InstructionInfo& info);
+        explicit Instruction(const InstructionInfo& info) noexcept;
 
-        void SetArgument(phi::u8 argument_number, InstructionArg argument);
+        void SetArgument(phi::u8 argument_number, InstructionArg argument) noexcept;
 
         std::string DebugInfo() const noexcept;
 
         void Execute(Processor& processor) const noexcept;
 
-        [[nodiscard]] const InstructionInfo& GetInfo() const;
+        [[nodiscard]] const InstructionInfo& GetInfo() const noexcept;
 
-        [[nodiscard]] const InstructionArg& GetArg1() const;
+        [[nodiscard]] const InstructionArg& GetArg1() const noexcept;
 
-        [[nodiscard]] const InstructionArg& GetArg2() const;
+        [[nodiscard]] const InstructionArg& GetArg2() const noexcept;
 
-        [[nodiscard]] const InstructionArg& GetArg3() const;
+        [[nodiscard]] const InstructionArg& GetArg3() const noexcept;
 
     private:
         const InstructionInfo& m_Info;

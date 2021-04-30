@@ -178,5 +178,5 @@ namespace dlx
         NONE,
     };
 
-    OpCode StringToOpCode(std::string_view token);
+    OpCode StringToOpCode(std::string_view token) noexcept;
 } // namespace dlx

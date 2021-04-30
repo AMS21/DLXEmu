@@ -32,57 +32,57 @@ namespace dlx
     class Processor
     {
     public:
-        Processor();
+        Processor() noexcept;
 
         // Registers
 
-        [[nodiscard]] IntRegister& GetIntRegister(IntRegisterID id);
+        [[nodiscard]] IntRegister& GetIntRegister(IntRegisterID id) noexcept;
 
-        [[nodiscard]] const IntRegister& GetIntRegister(IntRegisterID id) const;
+        [[nodiscard]] const IntRegister& GetIntRegister(IntRegisterID id) const noexcept;
 
-        [[nodiscard]] phi::i32 IntRegisterGetSignedValue(IntRegisterID id) const;
+        [[nodiscard]] phi::i32 IntRegisterGetSignedValue(IntRegisterID id) const noexcept;
 
-        [[nodiscard]] phi::u32 IntRegisterGetUnsignedValue(IntRegisterID id) const;
+        [[nodiscard]] phi::u32 IntRegisterGetUnsignedValue(IntRegisterID id) const noexcept;
 
-        void IntRegisterSetSignedValue(IntRegisterID id, phi::i32 value);
+        void IntRegisterSetSignedValue(IntRegisterID id, phi::i32 value) noexcept;
 
-        void IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value);
+        void IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value) noexcept;
 
-        [[nodiscard]] FloatRegister& GetFloatRegister(FloatRegisterID id);
+        [[nodiscard]] FloatRegister& GetFloatRegister(FloatRegisterID id) noexcept;
 
-        [[nodiscard]] const FloatRegister& GetFloatRegister(FloatRegisterID id) const;
+        [[nodiscard]] const FloatRegister& GetFloatRegister(FloatRegisterID id) const noexcept;
 
-        [[nodiscard]] phi::f32 FloatRegisterGetFloatValue(FloatRegisterID id) const;
+        [[nodiscard]] phi::f32 FloatRegisterGetFloatValue(FloatRegisterID id) const noexcept;
 
-        [[nodiscard]] phi::f64 FloatRegisterGetDoubleValue(FloatRegisterID id);
+        [[nodiscard]] phi::f64 FloatRegisterGetDoubleValue(FloatRegisterID id) noexcept;
 
-        void FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value);
+        void FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value) noexcept;
 
-        void FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value);
+        void FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value) noexcept;
 
-        [[nodiscard]] StatusRegister& GetFPSR();
+        [[nodiscard]] StatusRegister& GetFPSR() noexcept;
 
-        [[nodiscard]] const StatusRegister& GetFPSR() const;
+        [[nodiscard]] const StatusRegister& GetFPSR() const noexcept;
 
-        [[nodiscard]] phi::Boolean GetFPSRValue() const;
+        [[nodiscard]] phi::Boolean GetFPSRValue() const noexcept;
 
-        void SetFPSRValue(phi::Boolean value);
+        void SetFPSRValue(phi::Boolean value) noexcept;
 
         //
 
-        void ExecuteInstruction(const Instruction& inst);
+        void ExecuteInstruction(const Instruction& inst) noexcept;
 
-        void LoadProgram(ParsedProgram& programm);
+        void LoadProgram(ParsedProgram& programm) noexcept;
 
         [[nodiscard]] phi::ObserverPtr<ParsedProgram> GetCurrentProgramm() const noexcept;
 
-        void ExecuteCurrentProgram();
+        void ExecuteCurrentProgram() noexcept;
 
-        void ClearRegisters();
+        void ClearRegisters() noexcept;
 
-        void ClearMemory();
+        void ClearMemory() noexcept;
 
-        void Raise(Exception exception);
+        void Raise(Exception exception) noexcept;
 
         [[nodiscard]] Exception GetLastRaisedException() const noexcept;
 

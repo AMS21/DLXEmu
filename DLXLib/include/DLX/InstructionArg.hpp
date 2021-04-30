@@ -41,7 +41,7 @@ namespace dlx
         };
 
     public:
-        InstructionArg();
+        InstructionArg() noexcept;
 
         InstructionArg(const InstructionArg&) = default;
         InstructionArg(InstructionArg&&)      = default;
@@ -49,26 +49,26 @@ namespace dlx
         InstructionArg& operator=(const InstructionArg&) = default;
         InstructionArg& operator=(InstructionArg&&) = default;
 
-        ArgumentType GetType() const;
+        ArgumentType GetType() const noexcept;
 
-        std::string DebugInfo() const;
+        std::string DebugInfo() const noexcept;
 
-        [[nodiscard]] const RegisterInt&         AsRegisterInt() const;
-        [[nodiscard]] const RegisterFloat&       AsRegisterFloat() const;
-        [[nodiscard]] const ImmediateValue&      AsImmediateValue() const;
-        [[nodiscard]] const AddressDisplacement& AsAddressDisplacement() const;
-        [[nodiscard]] const Label&               AsLabel() const;
+        [[nodiscard]] const RegisterInt&         AsRegisterInt() const noexcept;
+        [[nodiscard]] const RegisterFloat&       AsRegisterFloat() const noexcept;
+        [[nodiscard]] const ImmediateValue&      AsImmediateValue() const noexcept;
+        [[nodiscard]] const AddressDisplacement& AsAddressDisplacement() const noexcept;
+        [[nodiscard]] const Label&               AsLabel() const noexcept;
 
-        friend InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id);
+        friend InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id) noexcept;
 
-        friend InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id);
+        friend InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id) noexcept;
 
-        friend InstructionArg ConstructInstructionArgImmediateValue(std::int16_t value);
+        friend InstructionArg ConstructInstructionArgImmediateValue(std::int16_t value) noexcept;
 
-        friend InstructionArg ConstructInstructionArgAddressDisplacement(IntRegisterID id,
-                                                                         phi::i32 displacement);
+        friend InstructionArg ConstructInstructionArgAddressDisplacement(
+                IntRegisterID id, phi::i32 displacement) noexcept;
 
-        friend InstructionArg ConstructInstructionArgLabel(std::string_view label_name);
+        friend InstructionArg ConstructInstructionArgLabel(std::string_view label_name) noexcept;
 
     private:
         union
@@ -83,18 +83,18 @@ namespace dlx
         ArgumentType m_Type;
     };
 
-    phi::Boolean operator==(const InstructionArg& lhs, const InstructionArg& rhs);
+    phi::Boolean operator==(const InstructionArg& lhs, const InstructionArg& rhs) noexcept;
 
-    phi::Boolean operator!=(const InstructionArg& lhs, const InstructionArg& rhs);
+    phi::Boolean operator!=(const InstructionArg& lhs, const InstructionArg& rhs) noexcept;
 
-    InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id);
+    InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id) noexcept;
 
-    InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id);
+    InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id) noexcept;
 
-    InstructionArg ConstructInstructionArgImmediateValue(std::int16_t value);
+    InstructionArg ConstructInstructionArgImmediateValue(std::int16_t value) noexcept;
 
     InstructionArg ConstructInstructionArgAddressDisplacement(IntRegisterID id,
-                                                              phi::i32      displacement);
+                                                              phi::i32      displacement) noexcept;
 
-    InstructionArg ConstructInstructionArgLabel(std::string_view label_name);
+    InstructionArg ConstructInstructionArgLabel(std::string_view label_name) noexcept;
 } // namespace dlx

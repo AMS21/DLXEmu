@@ -12,22 +12,22 @@ namespace dlxemu
     public:
         Window() = default;
 
-        ~Window();
+        ~Window() noexcept;
 
-        phi::Boolean Initialize();
+        phi::Boolean Initialize() noexcept;
 
-        void Shutdown();
+        void Shutdown() noexcept;
 
-        [[nodiscard]] phi::Boolean IsOpen() const;
+        [[nodiscard]] phi::Boolean IsOpen() const noexcept;
 
-        void BeginFrame();
+        void BeginFrame() noexcept;
 
-        void EndFrame();
+        void EndFrame() noexcept;
 
     private:
-        void InitializeImGui();
+        void InitializeImGui() noexcept;
 
-        static void ShutdownImGui();
+        static void ShutdownImGui() noexcept;
 
         GLFWwindow*   m_Window{nullptr};
         ImGuiContext* m_ImGuiContext{nullptr};

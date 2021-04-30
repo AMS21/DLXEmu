@@ -41,7 +41,7 @@ namespace dlx
         None
     };
 
-    IntRegisterID StringToIntRegister(std::string_view token);
+    IntRegisterID StringToIntRegister(std::string_view token) noexcept;
 
     enum class FloatRegisterID
     {
@@ -81,5 +81,5 @@ namespace dlx
         None
     };
 
-    FloatRegisterID StringToFloatRegister(std::string_view token);
+    FloatRegisterID StringToFloatRegister(std::string_view token) noexcept;
 } // namespace dlx

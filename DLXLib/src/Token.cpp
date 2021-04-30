@@ -7,7 +7,7 @@
 namespace dlx
 {
     Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
-                 std::uint32_t hint)
+                 std::uint32_t hint) noexcept
         : m_Type{type}
         , m_Text{text}
         , m_LineNumber{line_number}

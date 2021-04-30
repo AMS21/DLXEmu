@@ -12,7 +12,7 @@ namespace dlxemu
         , m_RegisterViewer(this)
     {}
 
-    phi::Boolean Emulator::Initialize()
+    phi::Boolean Emulator::Initialize() noexcept
     {
         // Initialize Window
         if (!m_Window.Initialize())
@@ -29,7 +29,7 @@ namespace dlxemu
         return m_Window.IsOpen();
     }
 
-    void Emulator::MainLoop()
+    void Emulator::MainLoop() noexcept
     {
         m_Window.BeginFrame();
 

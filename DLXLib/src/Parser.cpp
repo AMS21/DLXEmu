@@ -240,18 +240,19 @@ namespace dlx
     }
 
     static phi::Boolean has_x_more_tokens(const std::vector<Token>& tokens, phi::usize index,
-                                          phi::u64 x)
+                                          phi::u64 x) noexcept
     {
         return index + x <= tokens.size();
     }
 
-    static phi::Boolean has_one_more_token(const std::vector<Token>& tokens, phi::usize index)
+    static phi::Boolean has_one_more_token(const std::vector<Token>& tokens,
+                                           phi::usize                index) noexcept
     {
         return has_x_more_tokens(tokens, index, 1u);
     }
 
     static phi::Boolean next_token_is(const std::vector<Token>& tokens, phi::usize index,
-                                      Token::Type token_type)
+                                      Token::Type token_type) noexcept
     {
         PHI_ASSERT(has_one_more_token(tokens, index));
 
@@ -261,7 +262,8 @@ namespace dlx
     }
 
     static phi::Boolean has_one_more_token_of_type(const std::vector<Token>& tokens,
-                                                   phi::usize index, Token::Type token_type)
+                                                   phi::usize                index,
+                                                   Token::Type               token_type) noexcept
     {
         if (!has_one_more_token(tokens, index))
         {
@@ -271,7 +273,7 @@ namespace dlx
         return (next_token_is(tokens, index, token_type));
     }
 
-    static void AddParseError(ParsedProgram& program, const std::string& message)
+    static void AddParseError(ParsedProgram& program, const std::string& message) noexcept
     {
         ParseError err;
         err.message = message;
@@ -283,7 +285,7 @@ namespace dlx
 
     static std::optional<InstructionArg> parse_instruction_argument(
             const Token& token, ArgumentType expected_argument_type,
-            const std::vector<Token>& tokens, phi::usize& index, ParsedProgram& program)
+            const std::vector<Token>& tokens, phi::usize& index, ParsedProgram& program) noexcept
     {
         // PHI_LOG_INFO("Parsing argument with token '{}' and expected type '{}'", token.DebugInfo(),
         //              magic_enum::enum_name(expected_argument_type));
@@ -428,12 +430,12 @@ namespace dlx
         }
     }
 
-    static void consume_x_tokens(phi::usize& index, phi::usize x)
+    static void consume_x_tokens(phi::usize& index, phi::usize x) noexcept
     {
         index += x;
     }
 
-    static void consume_current_token(phi::usize& index)
+    static void consume_current_token(phi::usize& index) noexcept
     {
         consume_x_tokens(index, 1u);
     }

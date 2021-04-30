@@ -11,7 +11,7 @@
 
 static bool inited{false};
 
-extern "C" void main_loop(void* data)
+extern "C" void main_loop(void* data) noexcept
 {
     dlxemu::Emulator* emulator = reinterpret_cast<dlxemu::Emulator*>(data);
 

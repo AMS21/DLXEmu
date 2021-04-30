@@ -95,23 +95,23 @@ namespace dlxemu
         class Coordinates
         {
         public:
-            Coordinates();
+            Coordinates() noexcept;
 
-            Coordinates(std::int32_t line, std::int32_t column);
+            Coordinates(std::int32_t line, std::int32_t column) noexcept;
 
-            [[nodiscard]] static Coordinates Invalid();
+            [[nodiscard]] static Coordinates Invalid() noexcept;
 
-            bool operator==(const Coordinates& o) const;
+            bool operator==(const Coordinates& o) const noexcept;
 
-            bool operator!=(const Coordinates& o) const;
+            bool operator!=(const Coordinates& o) const noexcept;
 
-            bool operator<(const Coordinates& o) const;
+            bool operator<(const Coordinates& o) const noexcept;
 
-            bool operator>(const Coordinates& o) const;
+            bool operator>(const Coordinates& o) const noexcept;
 
-            bool operator<=(const Coordinates& o) const;
+            bool operator<=(const Coordinates& o) const noexcept;
 
-            bool operator>=(const Coordinates& o) const;
+            bool operator>=(const Coordinates& o) const noexcept;
 
             std::int32_t m_Line;
             std::int32_t m_Column;
@@ -132,7 +132,7 @@ namespace dlxemu
         class Glyph
         {
         public:
-            Glyph(Char character, PaletteIndex color_index);
+            Glyph(Char character, PaletteIndex color_index) noexcept;
 
             Char         m_Char;
             PaletteIndex m_ColorIndex = PaletteIndex::Default;
@@ -141,87 +141,89 @@ namespace dlxemu
         using Line  = std::vector<Glyph>;
         using Lines = std::vector<Line>;
 
-        explicit CodeEditor(Emulator* emulator);
+        explicit CodeEditor(Emulator* emulator) noexcept;
 
-        [[nodiscard]] const Palette& GetPalette() const;
-        void                         SetPalette(const Palette& value);
+        [[nodiscard]] const Palette& GetPalette() const noexcept;
+        void                         SetPalette(const Palette& value) noexcept;
 
-        void SetErrorMarkers(const ErrorMarkers& markers);
+        void SetErrorMarkers(const ErrorMarkers& markers) noexcept;
 
-        void SetBreakpoints(const Breakpoints& markers);
+        void SetBreakpoints(const Breakpoints& markers) noexcept;
 
-        void                      Render(const ImVec2& size = ImVec2(), bool border = false);
-        void                      SetText(const std::string& text);
-        [[nodiscard]] std::string GetText() const;
+        void Render(const ImVec2& size = ImVec2(), bool border = false) noexcept;
+        void SetText(const std::string& text) noexcept;
+        [[nodiscard]] std::string GetText() const noexcept;
 
-        void                                   SetTextLines(const std::vector<std::string>& lines);
-        [[nodiscard]] std::vector<std::string> GetTextLines() const;
+        void SetTextLines(const std::vector<std::string>& lines) noexcept;
+        [[nodiscard]] std::vector<std::string> GetTextLines() const noexcept;
 
-        [[nodiscard]] std::string GetSelectedText() const;
-        [[nodiscard]] std::string GetCurrentLineText() const;
+        [[nodiscard]] std::string GetSelectedText() const noexcept;
+        [[nodiscard]] std::string GetCurrentLineText() const noexcept;
 
-        std::uint32_t      GetTotalLines() const;
-        [[nodiscard]] bool IsOverwrite() const;
+        std::uint32_t      GetTotalLines() const noexcept;
+        [[nodiscard]] bool IsOverwrite() const noexcept;
 
-        void               SetReadOnly(bool value);
-        [[nodiscard]] bool IsReadOnly() const;
-        [[nodiscard]] bool IsTextChanged() const;
-        [[nodiscard]] bool IsCursorPositionChanged() const;
+        void               SetReadOnly(bool value) noexcept;
+        [[nodiscard]] bool IsReadOnly() const noexcept;
+        [[nodiscard]] bool IsTextChanged() const noexcept;
+        [[nodiscard]] bool IsCursorPositionChanged() const noexcept;
 
-        [[nodiscard]] bool IsColorizerEnabled() const;
-        void               SetColorizerEnable(bool value);
+        [[nodiscard]] bool IsColorizerEnabled() const noexcept;
+        void               SetColorizerEnable(bool value) noexcept;
 
-        [[nodiscard]] Coordinates GetCursorPosition() const;
-        void                      SetCursorPosition(const Coordinates& position);
+        [[nodiscard]] Coordinates GetCursorPosition() const noexcept;
+        void                      SetCursorPosition(const Coordinates& position) noexcept;
 
-        void               SetHandleMouseInputs(bool value);
-        [[nodiscard]] bool IsHandleMouseInputsEnabled() const;
+        void               SetHandleMouseInputs(bool value) noexcept;
+        [[nodiscard]] bool IsHandleMouseInputsEnabled() const noexcept;
 
-        void               SetHandleKeyboardInputs(bool value);
-        [[nodiscard]] bool IsHandleKeyboardInputsEnabled() const;
+        void               SetHandleKeyboardInputs(bool value) noexcept;
+        [[nodiscard]] bool IsHandleKeyboardInputsEnabled() const noexcept;
 
-        void               SetImGuiChildIgnored(bool value);
-        [[nodiscard]] bool IsImGuiChildIgnored() const;
+        void               SetImGuiChildIgnored(bool value) noexcept;
+        [[nodiscard]] bool IsImGuiChildIgnored() const noexcept;
 
-        void               SetShowWhitespaces(bool value);
-        [[nodiscard]] bool IsShowingWhitespaces() const;
+        void               SetShowWhitespaces(bool value) noexcept;
+        [[nodiscard]] bool IsShowingWhitespaces() const noexcept;
 
-        void                        SetTabSize(std::int32_t value);
-        [[nodiscard]] std::uint32_t GetTabSize() const;
+        void                        SetTabSize(std::int32_t value) noexcept;
+        [[nodiscard]] std::uint32_t GetTabSize() const noexcept;
 
-        void InsertText(const std::string& value);
-        void InsertText(const char* value);
+        void InsertText(const std::string& value) noexcept;
+        void InsertText(const char* value) noexcept;
 
-        void MoveUp(std::int32_t amount = 1, bool select = false);
-        void MoveDown(std::int32_t amount = 1, bool select = false);
-        void MoveLeft(std::int32_t amount = 1, bool select = false, bool word_mode = false);
-        void MoveRight(std::int32_t amount = 1, bool select = false, bool word_mode = false);
-        void MoveTop(bool select = false);
-        void MoveBottom(bool select = false);
-        void MoveHome(bool select = false);
-        void MoveEnd(bool select = false);
+        void MoveUp(std::int32_t amount = 1, bool select = false) noexcept;
+        void MoveDown(std::int32_t amount = 1, bool select = false) noexcept;
+        void MoveLeft(std::int32_t amount = 1, bool select = false,
+                      bool word_mode = false) noexcept;
+        void MoveRight(std::int32_t amount = 1, bool select = false,
+                       bool word_mode = false) noexcept;
+        void MoveTop(bool select = false) noexcept;
+        void MoveBottom(bool select = false) noexcept;
+        void MoveHome(bool select = false) noexcept;
+        void MoveEnd(bool select = false) noexcept;
 
-        void               SetSelectionStart(const Coordinates& position);
-        void               SetSelectionEnd(const Coordinates& position);
+        void               SetSelectionStart(const Coordinates& position) noexcept;
+        void               SetSelectionEnd(const Coordinates& position) noexcept;
         void               SetSelection(const Coordinates& start, const Coordinates& end,
-                                        SelectionMode mode = SelectionMode::Normal);
-        void               SelectWordUnderCursor();
-        void               SelectAll();
-        [[nodiscard]] bool HasSelection() const;
+                                        SelectionMode mode = SelectionMode::Normal) noexcept;
+        void               SelectWordUnderCursor() noexcept;
+        void               SelectAll() noexcept;
+        [[nodiscard]] bool HasSelection() const noexcept;
 
-        void Copy();
-        void Cut();
-        void Paste();
-        void Delete();
+        void Copy() noexcept;
+        void Cut() noexcept;
+        void Paste() noexcept;
+        void Delete() noexcept;
 
-        [[nodiscard]] bool CanUndo() const;
-        [[nodiscard]] bool CanRedo() const;
-        void               Undo(std::int32_t steps = 1);
-        void               Redo(std::int32_t steps = 1);
+        [[nodiscard]] bool CanUndo() const noexcept;
+        [[nodiscard]] bool CanRedo() const noexcept;
+        void               Undo(std::int32_t steps = 1) noexcept;
+        void               Redo(std::int32_t steps = 1) noexcept;
 
-        static const Palette& GetDarkPalette();
-        static const Palette& GetLightPalette();
-        static const Palette& GetRetroBluePalette();
+        static const Palette& GetDarkPalette() noexcept;
+        static const Palette& GetLightPalette() noexcept;
+        static const Palette& GetRetroBluePalette() noexcept;
 
     private:
         class EditorState
@@ -243,10 +245,10 @@ namespace dlxemu
                        const std::string& removed, const CodeEditor::Coordinates removed_start,
                        const CodeEditor::Coordinates removed_end,
 
-                       CodeEditor::EditorState& before, CodeEditor::EditorState& after);
+                       CodeEditor::EditorState& before, CodeEditor::EditorState& after) noexcept;
 
-            void Undo(CodeEditor* editor);
-            void Redo(CodeEditor* editor);
+            void Undo(CodeEditor* editor) noexcept;
+            void Redo(CodeEditor* editor) noexcept;
 
             std::string m_Added;
             Coordinates m_AddedStart;
@@ -262,46 +264,47 @@ namespace dlxemu
 
         using UndoBuffer = std::vector<UndoRecord>;
 
-        void                       ProcessInputs();
-        void                       Colorize(std::int32_t from_line = 0, std::int32_t count = -1);
-        [[nodiscard]] float        TextDistanceToLineStart(const Coordinates& from) const;
-        void                       EnsureCursorVisible();
-        [[nodiscard]] std::int32_t GetPageSize() const;
-        [[nodiscard]] std::string  GetText(const Coordinates& start, const Coordinates& end) const;
-        [[nodiscard]] Coordinates  GetActualCursorCoordinates() const;
-        [[nodiscard]] Coordinates  SanitizeCoordinates(const Coordinates& value) const;
-        void                       Advance(Coordinates& coordinates) const;
-        void                       DeleteRange(const Coordinates& start, const Coordinates& end);
-        std::int32_t               InsertTextAt(Coordinates& where, const char* value);
-        void                       AddUndo(UndoRecord& value);
-        [[nodiscard]] Coordinates  ScreenPosToCoordinates(const ImVec2& position) const;
-        [[nodiscard]] Coordinates  FindWordStart(const Coordinates& from) const;
-        [[nodiscard]] Coordinates  FindWordEnd(const Coordinates& from) const;
-        [[nodiscard]] Coordinates  FindNextWord(const Coordinates& from) const;
-        [[nodiscard]] std::int32_t GetCharacterIndex(const Coordinates& coordinates) const;
+        void                ProcessInputs() noexcept;
+        void                Colorize(std::int32_t from_line = 0, std::int32_t count = -1) noexcept;
+        [[nodiscard]] float TextDistanceToLineStart(const Coordinates& from) const noexcept;
+        void                EnsureCursorVisible() noexcept;
+        [[nodiscard]] std::int32_t GetPageSize() const noexcept;
+        [[nodiscard]] std::string  GetText(const Coordinates& start,
+                                           const Coordinates& end) const noexcept;
+        [[nodiscard]] Coordinates  GetActualCursorCoordinates() const noexcept;
+        [[nodiscard]] Coordinates  SanitizeCoordinates(const Coordinates& value) const noexcept;
+        void                       Advance(Coordinates& coordinates) const noexcept;
+        void         DeleteRange(const Coordinates& start, const Coordinates& end) noexcept;
+        std::int32_t InsertTextAt(Coordinates& where, const char* value) noexcept;
+        void         AddUndo(UndoRecord& value) noexcept;
+        [[nodiscard]] Coordinates  ScreenPosToCoordinates(const ImVec2& position) const noexcept;
+        [[nodiscard]] Coordinates  FindWordStart(const Coordinates& from) const noexcept;
+        [[nodiscard]] Coordinates  FindWordEnd(const Coordinates& from) const noexcept;
+        [[nodiscard]] Coordinates  FindNextWord(const Coordinates& from) const noexcept;
+        [[nodiscard]] std::int32_t GetCharacterIndex(const Coordinates& coordinates) const noexcept;
         [[nodiscard]] std::int32_t GetCharacterColumn(std::int32_t line_number,
-                                                      std::int32_t index) const;
-        [[nodiscard]] std::int32_t GetLineCharacterCount(std::int32_t line) const;
-        [[nodiscard]] std::int32_t GetLineMaxColumn(std::int32_t line) const;
-        [[nodiscard]] bool         IsOnWordBoundary(const Coordinates& at) const;
-        void                       RemoveLine(std::int32_t start, std::int32_t end);
-        void                       RemoveLine(std::int32_t index);
-        Line&                      InsertLine(std::int32_t index);
-        void                       EnterCharacter(ImWchar character, bool shift);
-        void                       Backspace();
-        void                       DeleteSelection();
-        [[nodiscard]] std::string  GetWordUnderCursor() const;
-        [[nodiscard]] std::string  GetWordAt(const Coordinates& coords) const;
-        ImU32                      GetGlyphColor(const Glyph& glyph) const;
+                                                      std::int32_t index) const noexcept;
+        [[nodiscard]] std::int32_t GetLineCharacterCount(std::int32_t line) const noexcept;
+        [[nodiscard]] std::int32_t GetLineMaxColumn(std::int32_t line) const noexcept;
+        [[nodiscard]] bool         IsOnWordBoundary(const Coordinates& at) const noexcept;
+        void                       RemoveLine(std::int32_t start, std::int32_t end) noexcept;
+        void                       RemoveLine(std::int32_t index) noexcept;
+        Line&                      InsertLine(std::int32_t index) noexcept;
+        void                       EnterCharacter(ImWchar character, bool shift) noexcept;
+        void                       Backspace() noexcept;
+        void                       DeleteSelection() noexcept;
+        [[nodiscard]] std::string  GetWordUnderCursor() const noexcept;
+        [[nodiscard]] std::string  GetWordAt(const Coordinates& coords) const noexcept;
+        ImU32                      GetGlyphColor(const Glyph& glyph) const noexcept;
 
-        void HandleKeyboardInputs();
-        void HandleMouseInputs();
-        void InternalRender();
+        void HandleKeyboardInputs() noexcept;
+        void HandleMouseInputs() noexcept;
+        void InternalRender() noexcept;
 
-        void                    RebuildAllTokens();
-        std::vector<dlx::Token> BuildFullTokenStream();
-        void                    ColorizeToken(const dlx::Token& token);
-        void                    ColorizeInternal();
+        void                    RebuildAllTokens() noexcept;
+        std::vector<dlx::Token> BuildFullTokenStream() noexcept;
+        void                    ColorizeToken(const dlx::Token& token) noexcept;
+        void                    ColorizeInternal() noexcept;
 
         float       m_LineSpacing;
         EditorState m_State;

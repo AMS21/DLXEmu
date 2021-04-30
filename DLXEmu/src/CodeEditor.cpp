@@ -47,7 +47,7 @@ SOFTWARE.
 
 namespace dlxemu
 {
-    CodeEditor::CodeEditor(Emulator* emulator)
+    CodeEditor::CodeEditor(Emulator* emulator) noexcept
         : m_LineSpacing(1.0f)
         , m_UndoIndex(0)
         , m_TabSize(4)
@@ -81,12 +81,12 @@ namespace dlxemu
         m_Lines.push_back(Line());
     }
 
-    void CodeEditor::SetPalette(const Palette& value)
+    void CodeEditor::SetPalette(const Palette& value) noexcept
     {
         m_PaletteBase = value;
     }
 
-    std::string CodeEditor::GetText(const Coordinates& start, const Coordinates& end) const
+    std::string CodeEditor::GetText(const Coordinates& start, const Coordinates& end) const noexcept
     {
         std::string result;
 
@@ -127,12 +127,12 @@ namespace dlxemu
         return result.substr(0, result.size() - 1);
     }
 
-    CodeEditor::Coordinates CodeEditor::GetActualCursorCoordinates() const
+    CodeEditor::Coordinates CodeEditor::GetActualCursorCoordinates() const noexcept
     {
         return SanitizeCoordinates(m_State.m_CursorPosition);
     }
 
-    CodeEditor::Coordinates CodeEditor::SanitizeCoordinates(const Coordinates& value) const
+    CodeEditor::Coordinates CodeEditor::SanitizeCoordinates(const Coordinates& value) const noexcept
     {
         std::int32_t line   = value.m_Line;
         std::int32_t column = value.m_Column;
@@ -160,7 +160,7 @@ namespace dlxemu
 
     // https://en.wikipedia.org/wiki/UTF-8
     // We assume that the char is a standalone character (<128) or a leading byte of an UTF-8 code sequence (non-10xxxxxx code)
-    static std::int32_t UTF8CharLength(char c)
+    static std::int32_t UTF8CharLength(char c) noexcept
     {
         if ((c & 0xFE) == 0xFC)
         {
@@ -191,7 +191,8 @@ namespace dlxemu
     }
 
     // "Borrowed" from ImGui source
-    static inline std::int32_t ImTextCharToUtf8(char* buf, std::int32_t buf_size, std::uint32_t c)
+    static inline std::int32_t ImTextCharToUtf8(char* buf, std::int32_t buf_size,
+                                                std::uint32_t c) noexcept
     {
         if (c < 0x80)
         {
@@ -244,7 +245,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::Advance(Coordinates& coordinates) const
+    void CodeEditor::Advance(Coordinates& coordinates) const noexcept
     {
         if (coordinates.m_Line < (std::int32_t)m_Lines.size())
         {
@@ -265,7 +266,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::DeleteRange(const Coordinates& start, const Coordinates& end)
+    void CodeEditor::DeleteRange(const Coordinates& start, const Coordinates& end) noexcept
     {
         PHI_ASSERT(end >= start);
         PHI_ASSERT(!m_ReadOnly);
@@ -314,7 +315,8 @@ namespace dlxemu
         m_TextChanged = true;
     }
 
-    std::int32_t CodeEditor::InsertTextAt(Coordinates& /* inout */ where, const char* value)
+    std::int32_t CodeEditor::InsertTextAt(Coordinates& /* inout */ where,
+                                          const char*              value) noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
 
@@ -368,7 +370,7 @@ namespace dlxemu
         return total_lines;
     }
 
-    void CodeEditor::AddUndo(UndoRecord& value)
+    void CodeEditor::AddUndo(UndoRecord& value) noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
 
@@ -377,7 +379,8 @@ namespace dlxemu
         ++m_UndoIndex;
     }
 
-    CodeEditor::Coordinates CodeEditor::ScreenPosToCoordinates(const ImVec2& position) const
+    CodeEditor::Coordinates CodeEditor::ScreenPosToCoordinates(
+            const ImVec2& position) const noexcept
     {
         ImVec2 origin = ImGui::GetCursorScreenPos();
         ImVec2 local(position.x - origin.x, position.y - origin.y);
@@ -445,7 +448,7 @@ namespace dlxemu
         return SanitizeCoordinates(Coordinates(line_no, column_coord));
     }
 
-    CodeEditor::Coordinates CodeEditor::FindWordStart(const Coordinates& from) const
+    CodeEditor::Coordinates CodeEditor::FindWordStart(const Coordinates& from) const noexcept
     {
         Coordinates at = from;
         if (at.m_Line >= (std::int32_t)m_Lines.size())
@@ -489,7 +492,7 @@ namespace dlxemu
         return Coordinates(at.m_Line, GetCharacterColumn(at.m_Line, cindex));
     }
 
-    CodeEditor::Coordinates CodeEditor::FindWordEnd(const Coordinates& from) const
+    CodeEditor::Coordinates CodeEditor::FindWordEnd(const Coordinates& from) const noexcept
     {
         Coordinates at = from;
         if (at.m_Line >= (std::int32_t)m_Lines.size())
@@ -535,7 +538,7 @@ namespace dlxemu
         return Coordinates(from.m_Line, GetCharacterColumn(from.m_Line, cindex));
     }
 
-    CodeEditor::Coordinates CodeEditor::FindNextWord(const Coordinates& from) const
+    CodeEditor::Coordinates CodeEditor::FindNextWord(const Coordinates& from) const noexcept
     {
         Coordinates at = from;
         if (at.m_Line >= (std::int32_t)m_Lines.size())
@@ -592,7 +595,7 @@ namespace dlxemu
         return at;
     }
 
-    std::int32_t CodeEditor::GetCharacterIndex(const Coordinates& coordinates) const
+    std::int32_t CodeEditor::GetCharacterIndex(const Coordinates& coordinates) const noexcept
     {
         if (coordinates.m_Line >= m_Lines.size())
         {
@@ -619,7 +622,8 @@ namespace dlxemu
         return i;
     }
 
-    std::int32_t CodeEditor::GetCharacterColumn(std::int32_t line_number, std::int32_t index) const
+    std::int32_t CodeEditor::GetCharacterColumn(std::int32_t line_number,
+                                                std::int32_t index) const noexcept
     {
         if (line_number >= m_Lines.size())
         {
@@ -647,7 +651,7 @@ namespace dlxemu
         return col;
     }
 
-    std::int32_t CodeEditor::GetLineCharacterCount(std::int32_t line_number) const
+    std::int32_t CodeEditor::GetLineCharacterCount(std::int32_t line_number) const noexcept
     {
         if (line_number >= m_Lines.size())
         {
@@ -665,7 +669,7 @@ namespace dlxemu
         return c;
     }
 
-    std::int32_t CodeEditor::GetLineMaxColumn(std::int32_t line_number) const
+    std::int32_t CodeEditor::GetLineMaxColumn(std::int32_t line_number) const noexcept
     {
         if (line_number >= m_Lines.size())
         {
@@ -693,7 +697,7 @@ namespace dlxemu
         return col;
     }
 
-    bool CodeEditor::IsOnWordBoundary(const Coordinates& at) const
+    bool CodeEditor::IsOnWordBoundary(const Coordinates& at) const noexcept
     {
         if (at.m_Line >= (std::int32_t)m_Lines.size() || at.m_Column == 0)
         {
@@ -715,7 +719,7 @@ namespace dlxemu
         return dlx::IsSpace(line[cindex].m_Char) != dlx::IsSpace(line[cindex - 1].m_Char);
     }
 
-    void CodeEditor::RemoveLine(std::int32_t start, std::int32_t end)
+    void CodeEditor::RemoveLine(std::int32_t start, std::int32_t end) noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
         PHI_ASSERT(end >= start);
@@ -750,7 +754,7 @@ namespace dlxemu
         m_TextChanged = true;
     }
 
-    void CodeEditor::RemoveLine(std::int32_t index)
+    void CodeEditor::RemoveLine(std::int32_t index) noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
         PHI_ASSERT(m_Lines.size() > 1);
@@ -785,7 +789,7 @@ namespace dlxemu
         m_TextChanged = true;
     }
 
-    CodeEditor::Line& CodeEditor::InsertLine(std::int32_t index)
+    CodeEditor::Line& CodeEditor::InsertLine(std::int32_t index) noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
 
@@ -809,13 +813,13 @@ namespace dlxemu
         return result;
     }
 
-    std::string CodeEditor::GetWordUnderCursor() const
+    std::string CodeEditor::GetWordUnderCursor() const noexcept
     {
         Coordinates coordinates = GetCursorPosition();
         return GetWordAt(coordinates);
     }
 
-    std::string CodeEditor::GetWordAt(const Coordinates& coords) const
+    std::string CodeEditor::GetWordAt(const Coordinates& coords) const noexcept
     {
         Coordinates start = FindWordStart(coords);
         Coordinates end   = FindWordEnd(coords);
@@ -833,7 +837,7 @@ namespace dlxemu
         return r;
     }
 
-    void CodeEditor::HandleKeyboardInputs()
+    void CodeEditor::HandleKeyboardInputs() noexcept
     {
         ImGuiIO& io    = ImGui::GetIO();
         auto     shift = io.KeyShift;
@@ -980,7 +984,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::HandleMouseInputs()
+    void CodeEditor::HandleMouseInputs() noexcept
     {
         ImGuiIO& io    = ImGui::GetIO();
         auto     shift = io.KeyShift;
@@ -1070,7 +1074,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::InternalRender()
+    void CodeEditor::InternalRender() noexcept
     {
         /* Compute m_CharAdvance regarding to scaled font size (Ctrl + mouse wheel)*/
         const float font_size =
@@ -1232,9 +1236,10 @@ namespace dlxemu
                                             start.y + m_CharAdvance.y);
                         draw_list->AddRectFilled(
                                 start, end,
-                                m_Palette[(std::int32_t)(
-                                        focused ? PaletteIndex::CurrentLineFill :
-                                                  PaletteIndex::CurrentLineFillInactive)]);
+                                m_Palette[(std::int32_t)(focused ?
+                                                                 PaletteIndex::CurrentLineFill :
+                                                                 PaletteIndex::
+                                                                         CurrentLineFillInactive)]);
                         draw_list->AddRect(start, end,
                                            m_Palette[(std::int32_t)PaletteIndex::CurrentLineEdge],
                                            1.0f);
@@ -1407,7 +1412,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::Render(const ImVec2& size, bool border)
+    void CodeEditor::Render(const ImVec2& size, bool border) noexcept
     {
         m_WithinRender          = true;
         m_TextChanged           = false;
@@ -1468,7 +1473,7 @@ namespace dlxemu
         m_WithinRender = false;
     }
 
-    void CodeEditor::SetText(const std::string& text)
+    void CodeEditor::SetText(const std::string& text) noexcept
     {
         m_Lines.clear();
         m_Lines.emplace_back(Line());
@@ -1498,7 +1503,7 @@ namespace dlxemu
         Colorize();
     }
 
-    void CodeEditor::SetTextLines(const std::vector<std::string>& lines)
+    void CodeEditor::SetTextLines(const std::vector<std::string>& lines) noexcept
     {
         m_Lines.clear();
 
@@ -1531,7 +1536,7 @@ namespace dlxemu
         Colorize();
     }
 
-    void CodeEditor::EnterCharacter(ImWchar character, bool shift)
+    void CodeEditor::EnterCharacter(ImWchar character, bool shift) noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
 
@@ -1723,17 +1728,17 @@ namespace dlxemu
         EnsureCursorVisible();
     }
 
-    void CodeEditor::SetReadOnly(bool value)
+    void CodeEditor::SetReadOnly(bool value) noexcept
     {
         m_ReadOnly = value;
     }
 
-    void CodeEditor::SetColorizerEnable(bool value)
+    void CodeEditor::SetColorizerEnable(bool value) noexcept
     {
         m_ColorizerEnabled = value;
     }
 
-    void CodeEditor::SetCursorPosition(const Coordinates& position)
+    void CodeEditor::SetCursorPosition(const Coordinates& position) noexcept
     {
         if (m_State.m_CursorPosition != position)
         {
@@ -1743,7 +1748,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::SetSelectionStart(const Coordinates& position)
+    void CodeEditor::SetSelectionStart(const Coordinates& position) noexcept
     {
         m_State.m_SelectionStart = SanitizeCoordinates(position);
         if (m_State.m_SelectionStart > m_State.m_SelectionEnd)
@@ -1752,7 +1757,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::SetSelectionEnd(const Coordinates& position)
+    void CodeEditor::SetSelectionEnd(const Coordinates& position) noexcept
     {
         m_State.m_SelectionEnd = SanitizeCoordinates(position);
         if (m_State.m_SelectionStart > m_State.m_SelectionEnd)
@@ -1762,7 +1767,7 @@ namespace dlxemu
     }
 
     void CodeEditor::SetSelection(const Coordinates& start, const Coordinates& end,
-                                  SelectionMode mode)
+                                  SelectionMode mode) noexcept
     {
         auto old_sel_start = m_State.m_SelectionStart;
         auto old_sel_end   = m_State.m_SelectionEnd;
@@ -1804,17 +1809,17 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::SetTabSize(std::int32_t value)
+    void CodeEditor::SetTabSize(std::int32_t value) noexcept
     {
         m_TabSize = std::max(0, std::min(32, value));
     }
 
-    void CodeEditor::InsertText(const std::string& value)
+    void CodeEditor::InsertText(const std::string& value) noexcept
     {
         InsertText(value.c_str());
     }
 
-    void CodeEditor::InsertText(const char* value)
+    void CodeEditor::InsertText(const char* value) noexcept
     {
         if (value == nullptr)
         {
@@ -1832,7 +1837,7 @@ namespace dlxemu
         Colorize(start.m_Line - 1, total_lines + 2);
     }
 
-    void CodeEditor::DeleteSelection()
+    void CodeEditor::DeleteSelection() noexcept
     {
         PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
 
@@ -1848,7 +1853,7 @@ namespace dlxemu
         Colorize(m_State.m_SelectionStart.m_Line, 1);
     }
 
-    void CodeEditor::MoveUp(std::int32_t amount, bool select)
+    void CodeEditor::MoveUp(std::int32_t amount, bool select) noexcept
     {
         auto old_pos                    = m_State.m_CursorPosition;
         m_State.m_CursorPosition.m_Line = std::max(0, m_State.m_CursorPosition.m_Line - amount);
@@ -1881,7 +1886,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::MoveDown(std::int32_t amount, bool select)
+    void CodeEditor::MoveDown(std::int32_t amount, bool select) noexcept
     {
         PHI_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
@@ -1919,12 +1924,12 @@ namespace dlxemu
         }
     }
 
-    static bool IsUTFSequence(char c)
+    static bool IsUTFSequence(char c) noexcept
     {
         return (c & 0xC0) == 0x80;
     }
 
-    void CodeEditor::MoveLeft(std::int32_t amount, bool select, bool word_mode)
+    void CodeEditor::MoveLeft(std::int32_t amount, bool select, bool word_mode) noexcept
     {
         if (m_Lines.empty())
         {
@@ -2006,7 +2011,7 @@ namespace dlxemu
         EnsureCursorVisible();
     }
 
-    void CodeEditor::MoveRight(std::int32_t amount, bool select, bool word_mode)
+    void CodeEditor::MoveRight(std::int32_t amount, bool select, bool word_mode) noexcept
     {
         auto old_pos = m_State.m_CursorPosition;
 
@@ -2074,7 +2079,7 @@ namespace dlxemu
         EnsureCursorVisible();
     }
 
-    void CodeEditor::MoveTop(bool select)
+    void CodeEditor::MoveTop(bool select) noexcept
     {
         auto old_pos = m_State.m_CursorPosition;
         SetCursorPosition(Coordinates(0, 0));
@@ -2095,7 +2100,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::CodeEditor::MoveBottom(bool select)
+    void CodeEditor::CodeEditor::MoveBottom(bool select) noexcept
     {
         auto old_pos = GetCursorPosition();
         auto new_pos = Coordinates((std::int32_t)m_Lines.size() - 1, 0);
@@ -2113,7 +2118,7 @@ namespace dlxemu
         SetSelection(m_InteractiveStart, m_InteractiveEnd);
     }
 
-    void CodeEditor::MoveHome(bool select)
+    void CodeEditor::MoveHome(bool select) noexcept
     {
         auto old_pos = m_State.m_CursorPosition;
         SetCursorPosition(Coordinates(m_State.m_CursorPosition.m_Line, 0));
@@ -2145,7 +2150,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::MoveEnd(bool select)
+    void CodeEditor::MoveEnd(bool select) noexcept
     {
         auto old_pos = m_State.m_CursorPosition;
         SetCursorPosition(
@@ -2178,7 +2183,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::Delete()
+    void CodeEditor::Delete() noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
 
@@ -2242,7 +2247,7 @@ namespace dlxemu
         AddUndo(u);
     }
 
-    void CodeEditor::Backspace()
+    void CodeEditor::Backspace() noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
 
@@ -2331,23 +2336,23 @@ namespace dlxemu
         AddUndo(u);
     }
 
-    void CodeEditor::SelectWordUnderCursor()
+    void CodeEditor::SelectWordUnderCursor() noexcept
     {
         auto c = GetCursorPosition();
         SetSelection(FindWordStart(c), FindWordEnd(c));
     }
 
-    void CodeEditor::SelectAll()
+    void CodeEditor::SelectAll() noexcept
     {
         SetSelection(Coordinates(0, 0), Coordinates((std::int32_t)m_Lines.size(), 0));
     }
 
-    bool CodeEditor::HasSelection() const
+    bool CodeEditor::HasSelection() const noexcept
     {
         return m_State.m_SelectionEnd > m_State.m_SelectionStart;
     }
 
-    void CodeEditor::Copy()
+    void CodeEditor::Copy() noexcept
     {
         if (HasSelection())
         {
@@ -2370,7 +2375,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::Cut()
+    void CodeEditor::Cut() noexcept
     {
         if (IsReadOnly())
         {
@@ -2395,7 +2400,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::Paste()
+    void CodeEditor::Paste() noexcept
     {
         if (IsReadOnly())
         {
@@ -2427,17 +2432,17 @@ namespace dlxemu
         }
     }
 
-    bool CodeEditor::CanUndo() const
+    bool CodeEditor::CanUndo() const noexcept
     {
         return !m_ReadOnly && m_UndoIndex > 0;
     }
 
-    bool CodeEditor::CanRedo() const
+    bool CodeEditor::CanRedo() const noexcept
     {
         return !m_ReadOnly && m_UndoIndex < (std::int32_t)m_UndoBuffer.size();
     }
 
-    void CodeEditor::Undo(std::int32_t steps)
+    void CodeEditor::Undo(std::int32_t steps) noexcept
     {
         while (CanUndo() && steps-- > 0)
         {
@@ -2445,7 +2450,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::Redo(std::int32_t steps)
+    void CodeEditor::Redo(std::int32_t steps) noexcept
     {
         while (CanRedo() && steps-- > 0)
         {
@@ -2453,7 +2458,7 @@ namespace dlxemu
         }
     }
 
-    const CodeEditor::Palette& CodeEditor::GetDarkPalette()
+    const CodeEditor::Palette& CodeEditor::GetDarkPalette() noexcept
     {
         const static Palette p = {{
                 0xff7f7f7f, // Default
@@ -2481,7 +2486,7 @@ namespace dlxemu
         return p;
     }
 
-    const CodeEditor::Palette& CodeEditor::GetLightPalette()
+    const CodeEditor::Palette& CodeEditor::GetLightPalette() noexcept
     {
         const static Palette p = {{
                 0xff7f7f7f, // None
@@ -2509,7 +2514,7 @@ namespace dlxemu
         return p;
     }
 
-    const CodeEditor::Palette& CodeEditor::GetRetroBluePalette()
+    const CodeEditor::Palette& CodeEditor::GetRetroBluePalette() noexcept
     {
         const static Palette p = {{
                 0xff00ffff, // None
@@ -2537,12 +2542,12 @@ namespace dlxemu
         return p;
     }
 
-    std::string CodeEditor::GetText() const
+    std::string CodeEditor::GetText() const noexcept
     {
         return GetText(Coordinates(), Coordinates((std::int32_t)m_Lines.size(), 0));
     }
 
-    std::vector<std::string> CodeEditor::GetTextLines() const
+    std::vector<std::string> CodeEditor::GetTextLines() const noexcept
     {
         std::vector<std::string> result;
 
@@ -2565,12 +2570,12 @@ namespace dlxemu
         return result;
     }
 
-    std::string CodeEditor::GetSelectedText() const
+    std::string CodeEditor::GetSelectedText() const noexcept
     {
         return GetText(m_State.m_SelectionStart, m_State.m_SelectionEnd);
     }
 
-    std::string CodeEditor::GetCurrentLineText() const
+    std::string CodeEditor::GetCurrentLineText() const noexcept
     {
         auto line_length = GetLineMaxColumn(m_State.m_CursorPosition.m_Line);
 
@@ -2578,10 +2583,10 @@ namespace dlxemu
                        Coordinates(m_State.m_CursorPosition.m_Line, line_length));
     }
 
-    void CodeEditor::ProcessInputs()
+    void CodeEditor::ProcessInputs() noexcept
     {}
 
-    void CodeEditor::Colorize(std::int32_t from_line, std::int32_t count)
+    void CodeEditor::Colorize(std::int32_t from_line, std::int32_t count) noexcept
     {
         std::int32_t to_line = count == -1 ?
                                        (std::int32_t)m_Lines.size() :
@@ -2594,7 +2599,7 @@ namespace dlxemu
         m_CheckComments = true;
     }
 
-    float CodeEditor::TextDistanceToLineStart(const Coordinates& from) const
+    float CodeEditor::TextDistanceToLineStart(const Coordinates& from) const noexcept
     {
         const auto& line     = m_Lines[from.m_Line];
         float       distance = 0.0f;
@@ -2633,7 +2638,7 @@ namespace dlxemu
         return distance;
     }
 
-    void CodeEditor::EnsureCursorVisible()
+    void CodeEditor::EnsureCursorVisible() noexcept
     {
         if (!m_WithinRender)
         {
@@ -2674,7 +2679,7 @@ namespace dlxemu
         }
     }
 
-    std::int32_t CodeEditor::GetPageSize() const
+    std::int32_t CodeEditor::GetPageSize() const noexcept
     {
         auto height = ImGui::GetWindowHeight() - 20.0f;
         return (std::int32_t)std::floor(height / m_CharAdvance.y);
@@ -2684,7 +2689,7 @@ namespace dlxemu
             const std::string& added, const CodeEditor::Coordinates added_start,
             const CodeEditor::Coordinates added_end, const std::string& removed,
             const CodeEditor::Coordinates removed_start, const CodeEditor::Coordinates removed_end,
-            CodeEditor::EditorState& before, CodeEditor::EditorState& after)
+            CodeEditor::EditorState& before, CodeEditor::EditorState& after) noexcept
         : m_Added(added)
         , m_AddedStart(added_start)
         , m_AddedEnd(added_end)
@@ -2698,7 +2703,7 @@ namespace dlxemu
         PHI_ASSERT(m_RemovedStart <= m_RemovedEnd);
     }
 
-    void CodeEditor::UndoRecord::Undo(CodeEditor* editor)
+    void CodeEditor::UndoRecord::Undo(CodeEditor* editor) noexcept
     {
         if (!m_Added.empty())
         {
@@ -2718,7 +2723,7 @@ namespace dlxemu
         editor->EnsureCursorVisible();
     }
 
-    void CodeEditor::UndoRecord::Redo(CodeEditor* editor)
+    void CodeEditor::UndoRecord::Redo(CodeEditor* editor) noexcept
     {
         if (!m_Removed.empty())
         {
@@ -2738,12 +2743,12 @@ namespace dlxemu
         editor->EnsureCursorVisible();
     }
 
-    CodeEditor::Coordinates::Coordinates()
+    CodeEditor::Coordinates::Coordinates() noexcept
         : m_Line(0)
         , m_Column(0)
     {}
 
-    CodeEditor::Coordinates::Coordinates(std::int32_t line, std::int32_t column)
+    CodeEditor::Coordinates::Coordinates(std::int32_t line, std::int32_t column) noexcept
         : m_Line(line)
         , m_Column(column)
     {
@@ -2751,23 +2756,23 @@ namespace dlxemu
         PHI_ASSERT(column >= 0);
     }
 
-    CodeEditor::Coordinates CodeEditor::Coordinates::Invalid()
+    CodeEditor::Coordinates CodeEditor::Coordinates::Invalid() noexcept
     {
         static Coordinates invalid(-1, -1);
         return invalid;
     }
 
-    bool CodeEditor::Coordinates::operator==(const Coordinates& o) const
+    bool CodeEditor::Coordinates::operator==(const Coordinates& o) const noexcept
     {
         return (m_Line == o.m_Line) && (m_Column == o.m_Column);
     }
 
-    bool CodeEditor::Coordinates::operator!=(const Coordinates& o) const
+    bool CodeEditor::Coordinates::operator!=(const Coordinates& o) const noexcept
     {
         return (m_Line != o.m_Line) || (m_Column != o.m_Column);
     }
 
-    bool CodeEditor::Coordinates::operator<(const Coordinates& o) const
+    bool CodeEditor::Coordinates::operator<(const Coordinates& o) const noexcept
     {
         if (m_Line != o.m_Line)
         {
@@ -2777,7 +2782,7 @@ namespace dlxemu
         return m_Column < o.m_Column;
     }
 
-    bool CodeEditor::Coordinates::operator>(const Coordinates& o) const
+    bool CodeEditor::Coordinates::operator>(const Coordinates& o) const noexcept
     {
         if (m_Line != o.m_Line)
         {
@@ -2787,7 +2792,7 @@ namespace dlxemu
         return m_Column > o.m_Column;
     }
 
-    bool CodeEditor::Coordinates::operator<=(const Coordinates& o) const
+    bool CodeEditor::Coordinates::operator<=(const Coordinates& o) const noexcept
     {
         if (m_Line != o.m_Line)
         {
@@ -2797,7 +2802,7 @@ namespace dlxemu
         return m_Column <= o.m_Column;
     }
 
-    bool CodeEditor::Coordinates::operator>=(const Coordinates& o) const
+    bool CodeEditor::Coordinates::operator>=(const Coordinates& o) const noexcept
     {
         if (m_Line != o.m_Line)
         {
@@ -2807,102 +2812,102 @@ namespace dlxemu
         return m_Column >= o.m_Column;
     }
 
-    const CodeEditor::Palette& CodeEditor::GetPalette() const
+    const CodeEditor::Palette& CodeEditor::GetPalette() const noexcept
     {
         return m_PaletteBase;
     }
 
-    void CodeEditor::SetErrorMarkers(const ErrorMarkers& markers)
+    void CodeEditor::SetErrorMarkers(const ErrorMarkers& markers) noexcept
     {
         m_ErrorMarkers = markers;
     }
 
-    void CodeEditor::SetBreakpoints(const Breakpoints& markers)
+    void CodeEditor::SetBreakpoints(const Breakpoints& markers) noexcept
     {
         m_Breakpoints = markers;
     }
 
-    std::uint32_t CodeEditor::GetTotalLines() const
+    std::uint32_t CodeEditor::GetTotalLines() const noexcept
     {
         return (std::uint32_t)m_Lines.size();
     }
 
-    bool CodeEditor::IsOverwrite() const
+    bool CodeEditor::IsOverwrite() const noexcept
     {
         return m_Overwrite;
     }
 
-    bool CodeEditor::IsReadOnly() const
+    bool CodeEditor::IsReadOnly() const noexcept
     {
         return m_ReadOnly;
     }
 
-    bool CodeEditor::IsTextChanged() const
+    bool CodeEditor::IsTextChanged() const noexcept
     {
         return m_TextChanged;
     }
 
-    bool CodeEditor::IsCursorPositionChanged() const
+    bool CodeEditor::IsCursorPositionChanged() const noexcept
     {
         return m_CursorPositionChanged;
     }
 
-    bool CodeEditor::IsColorizerEnabled() const
+    bool CodeEditor::IsColorizerEnabled() const noexcept
     {
         return m_ColorizerEnabled;
     }
 
-    CodeEditor::Coordinates CodeEditor::GetCursorPosition() const
+    CodeEditor::Coordinates CodeEditor::GetCursorPosition() const noexcept
     {
         return GetActualCursorCoordinates();
     }
 
-    void CodeEditor::SetHandleMouseInputs(bool value)
+    void CodeEditor::SetHandleMouseInputs(bool value) noexcept
     {
         m_HandleMouseInputs = value;
     }
 
-    bool CodeEditor::IsHandleMouseInputsEnabled() const
+    bool CodeEditor::IsHandleMouseInputsEnabled() const noexcept
     {
         return m_HandleKeyboardInputs;
     }
 
-    void CodeEditor::SetHandleKeyboardInputs(bool value)
+    void CodeEditor::SetHandleKeyboardInputs(bool value) noexcept
     {
         m_HandleKeyboardInputs = value;
     }
 
-    bool CodeEditor::IsHandleKeyboardInputsEnabled() const
+    bool CodeEditor::IsHandleKeyboardInputsEnabled() const noexcept
     {
         return m_HandleKeyboardInputs;
     }
 
-    void CodeEditor::SetImGuiChildIgnored(bool value)
+    void CodeEditor::SetImGuiChildIgnored(bool value) noexcept
     {
         m_IgnoreImGuiChild = value;
     }
 
-    bool CodeEditor::IsImGuiChildIgnored() const
+    bool CodeEditor::IsImGuiChildIgnored() const noexcept
     {
         return m_IgnoreImGuiChild;
     }
 
-    void CodeEditor::SetShowWhitespaces(bool value)
+    void CodeEditor::SetShowWhitespaces(bool value) noexcept
     {
         m_ShowWhitespaces = value;
     }
 
-    bool CodeEditor::IsShowingWhitespaces() const
+    bool CodeEditor::IsShowingWhitespaces() const noexcept
     {
         return m_ShowWhitespaces;
     }
 
-    std::uint32_t CodeEditor::GetTabSize() const
+    std::uint32_t CodeEditor::GetTabSize() const noexcept
     {
         return m_TabSize;
     }
 
-    ImU32 CodeEditor::GetGlyphColor(const Glyph& glyph) const
+    ImU32 CodeEditor::GetGlyphColor(const Glyph& glyph) const noexcept
     {
         if (!m_ColorizerEnabled)
         {
@@ -2912,7 +2917,7 @@ namespace dlxemu
         return m_Palette[(int)glyph.m_ColorIndex];
     }
 
-    void CodeEditor::ColorizeToken(const dlx::Token& token)
+    void CodeEditor::ColorizeToken(const dlx::Token& token) noexcept
     {
         //PHI_LOG_INFO("Colorizing token: {}", token.DebugInfo());
 
@@ -2957,7 +2962,7 @@ namespace dlxemu
         //PHI_LOG_INFO("Finished colorizing");
     }
 
-    void CodeEditor::ColorizeInternal()
+    void CodeEditor::ColorizeInternal() noexcept
     {
         const dlx::ParsedProgram& program = m_Emulator->GetProgram();
 
@@ -2969,7 +2974,7 @@ namespace dlxemu
         //PHI_LOG_INFO("End of Tokens\n");
     }
 
-    CodeEditor::Glyph::Glyph(Char character, PaletteIndex color_index)
+    CodeEditor::Glyph::Glyph(Char character, PaletteIndex color_index) noexcept
         : m_Char(character)
         , m_ColorIndex(color_index)
     {}

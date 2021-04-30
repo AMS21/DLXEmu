@@ -7,9 +7,9 @@ namespace dlxemu
     class RegisterViewer
     {
     public:
-        explicit RegisterViewer(Emulator* emulator);
+        explicit RegisterViewer(Emulator* emulator) noexcept;
 
-        void Render();
+        void Render() noexcept;
 
     private:
         Emulator* m_Emulator;

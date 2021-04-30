@@ -8,11 +8,11 @@
 
 namespace dlxemu
 {
-    RegisterViewer::RegisterViewer(Emulator* emulator)
+    RegisterViewer::RegisterViewer(Emulator* emulator) noexcept
         : m_Emulator(emulator)
     {}
 
-    void RegisterViewer::Render()
+    void RegisterViewer::Render() noexcept
     {
         ImGui::Begin("Register Viewer");
 

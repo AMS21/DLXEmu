@@ -7,13 +7,13 @@
 
 namespace dlx
 {
-    InstructionLibrary::InstructionLibrary()
+    InstructionLibrary::InstructionLibrary() noexcept
         : m_Instructions()
     {
         PHI_ASSERT(Initialize());
     }
 
-    phi::Boolean InstructionLibrary::Initialize()
+    phi::Boolean InstructionLibrary::Initialize() noexcept
     {
         /* Arithmetic */
 
@@ -404,7 +404,7 @@ namespace dlx
     void InstructionLibrary::InitInstruction(OpCode opcode, ArgumentType arg1, ArgumentType arg2,
                                              ArgumentType        arg3,
                                              RegisterAccessType  register_access_type,
-                                             InstructionExecutor executor)
+                                             InstructionExecutor executor) noexcept
     {
         PHI_ASSERT(LookUp(opcode).GetExecutor() == nullptr, "Already registered instruction {}",
                    magic_enum::enum_name(opcode));

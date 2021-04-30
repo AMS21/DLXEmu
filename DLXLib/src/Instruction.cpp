@@ -5,11 +5,11 @@
 
 namespace dlx
 {
-    Instruction::Instruction(const InstructionInfo& info)
+    Instruction::Instruction(const InstructionInfo& info) noexcept
         : m_Info(info)
     {}
 
-    void Instruction::SetArgument(phi::u8 argument_number, InstructionArg argument)
+    void Instruction::SetArgument(phi::u8 argument_number, InstructionArg argument) noexcept
     {
         PHI_ASSERT(argument_number < 3u);
 
@@ -39,22 +39,22 @@ namespace dlx
         m_Info.Execute(processor, m_Arg1, m_Arg2, m_Arg3);
     }
 
-    const InstructionInfo& Instruction::GetInfo() const
+    const InstructionInfo& Instruction::GetInfo() const noexcept
     {
         return m_Info;
     }
 
-    const InstructionArg& Instruction::GetArg1() const
+    const InstructionArg& Instruction::GetArg1() const noexcept
     {
         return m_Arg1;
     }
 
-    const InstructionArg& Instruction::GetArg2() const
+    const InstructionArg& Instruction::GetArg2() const noexcept
     {
         return m_Arg2;
     }
 
-    const InstructionArg& Instruction::GetArg3() const
+    const InstructionArg& Instruction::GetArg3() const noexcept
     {
         return m_Arg3;
     }

@@ -7,9 +7,9 @@ namespace dlxemu
     class MemoryViewer
     {
     public:
-        explicit MemoryViewer(Emulator* emulator);
+        explicit MemoryViewer(Emulator* emulator) noexcept;
 
-        void Render();
+        void Render() noexcept;
 
     private:
         Emulator* m_Emulator;

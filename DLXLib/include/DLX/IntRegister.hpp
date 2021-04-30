@@ -9,19 +9,19 @@ namespace dlx
     class IntRegister
     {
     public:
-        IntRegister();
+        IntRegister() noexcept;
 
-        void SetSignedValue(phi::i32 val);
+        void SetSignedValue(phi::i32 val) noexcept;
 
-        void SetUnsignedValue(phi::u32 val);
+        void SetUnsignedValue(phi::u32 val) noexcept;
 
-        phi::i32 GetSignedValue() const;
+        phi::i32 GetSignedValue() const noexcept;
 
-        phi::u32 GetUnsignedValue() const;
+        phi::u32 GetUnsignedValue() const noexcept;
 
-        [[nodiscard]] phi::Boolean IsReadOnly() const;
+        [[nodiscard]] phi::Boolean IsReadOnly() const noexcept;
 
-        void SetReadOnly(phi::Boolean read_only);
+        void SetReadOnly(phi::Boolean read_only) noexcept;
 
     protected:
         union

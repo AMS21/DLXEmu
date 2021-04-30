@@ -18,11 +18,11 @@ namespace dlxemu
     public:
         Emulator() noexcept;
 
-        phi::Boolean Initialize();
+        phi::Boolean Initialize() noexcept;
 
         [[nodiscard]] phi::Boolean IsRunning() const noexcept;
 
-        void MainLoop();
+        void MainLoop() noexcept;
 
         [[nodiscard]] dlx::Processor& GetProcessor() noexcept;
 

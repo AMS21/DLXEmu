@@ -38,7 +38,7 @@ namespace dlx
                                  {"F28", FloatRegisterID::F28}, {"F29", FloatRegisterID::F29},
                                  {"F30", FloatRegisterID::F30}, {"F31", FloatRegisterID::F31}}};
 
-    IntRegisterID StringToIntRegister(std::string_view token)
+    IntRegisterID StringToIntRegister(std::string_view token) noexcept
     {
         static constexpr auto map =
                 LookUpMap<std::string_view, IntRegisterID, IntRegisterValues.size()>(
@@ -47,7 +47,7 @@ namespace dlx
         return map.at(token);
     }
 
-    FloatRegisterID StringToFloatRegister(std::string_view token)
+    FloatRegisterID StringToFloatRegister(std::string_view token) noexcept
     {
         static constexpr auto map =
                 LookUpMap<std::string_view, FloatRegisterID, FloatRegisterValues.size()>(

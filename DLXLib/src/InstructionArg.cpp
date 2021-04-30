@@ -2,57 +2,58 @@
 
 namespace dlx
 {
-    InstructionArg::InstructionArg()
+    InstructionArg::InstructionArg() noexcept
         : m_Type(ArgumentType::None)
         , address_displacement()
     {}
 
-    ArgumentType InstructionArg::GetType() const
+    ArgumentType InstructionArg::GetType() const noexcept
     {
         return m_Type;
     }
 
-    std::string InstructionArg::DebugInfo() const
+    std::string InstructionArg::DebugInfo() const noexcept
     {
         return "InstructionArgument";
     }
 
-    const InstructionArg::RegisterInt& InstructionArg::AsRegisterInt() const
+    const InstructionArg::RegisterInt& InstructionArg::AsRegisterInt() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::IntRegister);
 
         return register_int;
     }
 
-    const InstructionArg::RegisterFloat& InstructionArg::AsRegisterFloat() const
+    const InstructionArg::RegisterFloat& InstructionArg::AsRegisterFloat() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::FloatRegister);
 
         return register_float;
     }
 
-    const InstructionArg::ImmediateValue& InstructionArg::AsImmediateValue() const
+    const InstructionArg::ImmediateValue& InstructionArg::AsImmediateValue() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::ImmediateInteger);
 
         return immediate_value;
     }
 
-    const InstructionArg::AddressDisplacement& InstructionArg::AsAddressDisplacement() const
+    const InstructionArg::AddressDisplacement& InstructionArg::AsAddressDisplacement()
+            const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::AddressDisplacement);
 
         return address_displacement;
     }
 
-    const InstructionArg::Label& InstructionArg::AsLabel() const
+    const InstructionArg::Label& InstructionArg::AsLabel() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::Label);
 
         return label;
     }
 
-    phi::Boolean operator==(const InstructionArg& lhs, const InstructionArg& rhs)
+    phi::Boolean operator==(const InstructionArg& lhs, const InstructionArg& rhs) noexcept
     {
         if (lhs.GetType() != rhs.GetType())
         {
@@ -85,12 +86,12 @@ namespace dlx
         return false;
     }
 
-    phi::Boolean operator!=(const InstructionArg& lhs, const InstructionArg& rhs)
+    phi::Boolean operator!=(const InstructionArg& lhs, const InstructionArg& rhs) noexcept
     {
         return !(lhs == rhs);
     }
 
-    InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id)
+    InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id) noexcept
     {
         InstructionArg arg;
         arg.m_Type                   = ArgumentType::IntRegister;
@@ -98,7 +99,7 @@ namespace dlx
         return arg;
     }
 
-    InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id)
+    InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id) noexcept
     {
         InstructionArg arg;
         arg.m_Type                     = ArgumentType::FloatRegister;
@@ -106,7 +107,7 @@ namespace dlx
         return arg;
     }
 
-    InstructionArg ConstructInstructionArgImmediateValue(std::int16_t value)
+    InstructionArg ConstructInstructionArgImmediateValue(std::int16_t value) noexcept
     {
         InstructionArg arg;
         arg.m_Type                       = ArgumentType::ImmediateInteger;
@@ -115,7 +116,7 @@ namespace dlx
     }
 
     InstructionArg ConstructInstructionArgAddressDisplacement(IntRegisterID id,
-                                                              phi::i32      displacement)
+                                                              phi::i32      displacement) noexcept
     {
         InstructionArg arg;
         arg.m_Type                            = ArgumentType::AddressDisplacement;
@@ -124,7 +125,7 @@ namespace dlx
         return arg;
     }
 
-    InstructionArg ConstructInstructionArgLabel(std::string_view label_name)
+    InstructionArg ConstructInstructionArgLabel(std::string_view label_name) noexcept
     {
         InstructionArg arg;
         arg.m_Type           = ArgumentType::Label;

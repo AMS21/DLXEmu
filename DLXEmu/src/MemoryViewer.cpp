@@ -7,11 +7,11 @@
 
 namespace dlxemu
 {
-    MemoryViewer::MemoryViewer(Emulator* emulator)
+    MemoryViewer::MemoryViewer(Emulator* emulator) noexcept
         : m_Emulator(emulator)
     {}
 
-    void MemoryViewer::Render()
+    void MemoryViewer::Render() noexcept
     {
         ImGui::Begin("Memory Viewer");
 

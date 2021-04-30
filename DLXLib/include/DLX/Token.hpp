@@ -31,7 +31,7 @@ namespace dlx
 
     public:
         Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
-              std::uint32_t hint = 0u);
+              std::uint32_t hint = 0u) noexcept;
 
         [[nodiscard]] Type GetType() const noexcept;
 

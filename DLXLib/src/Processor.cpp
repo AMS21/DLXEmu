@@ -11,7 +11,7 @@
 namespace dlx
 {
     static phi::Boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
-                                                  RegisterAccessType access)
+                                                  RegisterAccessType access) noexcept
     {
         PHI_ASSERT(access == RegisterAccessType::Signed || access == RegisterAccessType::Unsigned ||
                    access == RegisterAccessType::Float || access == RegisterAccessType::Double);
@@ -29,14 +29,14 @@ namespace dlx
         }
     }
 
-    Processor::Processor()
+    Processor::Processor() noexcept
         : m_MemoryBlock(1000u, 1000u)
     {
         // Mark R0 as ready only
         m_IntRegisters.at(0).SetReadOnly(true);
     }
 
-    IntRegister& Processor::GetIntRegister(IntRegisterID id)
+    IntRegister& Processor::GetIntRegister(IntRegisterID id) noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
         std::underlying_type_t<IntRegisterID> id_value =
@@ -47,7 +47,7 @@ namespace dlx
         return m_IntRegisters.at(id_value);
     }
 
-    const IntRegister& Processor::GetIntRegister(IntRegisterID id) const
+    const IntRegister& Processor::GetIntRegister(IntRegisterID id) const noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
         std::underlying_type_t<IntRegisterID> id_value =
@@ -58,7 +58,7 @@ namespace dlx
         return m_IntRegisters.at(id_value);
     }
 
-    phi::i32 Processor::IntRegisterGetSignedValue(IntRegisterID id) const
+    phi::i32 Processor::IntRegisterGetSignedValue(IntRegisterID id) const noexcept
     {
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Signed))
         {
@@ -68,7 +68,7 @@ namespace dlx
         return GetIntRegister(id).GetSignedValue();
     }
 
-    phi::u32 Processor::IntRegisterGetUnsignedValue(IntRegisterID id) const
+    phi::u32 Processor::IntRegisterGetUnsignedValue(IntRegisterID id) const noexcept
     {
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
                                        RegisterAccessType::Unsigned))
@@ -79,7 +79,7 @@ namespace dlx
         return GetIntRegister(id).GetUnsignedValue();
     }
 
-    void Processor::IntRegisterSetSignedValue(IntRegisterID id, phi::i32 value)
+    void Processor::IntRegisterSetSignedValue(IntRegisterID id, phi::i32 value) noexcept
     {
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Signed))
         {
@@ -96,7 +96,7 @@ namespace dlx
         reg.SetSignedValue(value);
     }
 
-    void Processor::IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value)
+    void Processor::IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value) noexcept
     {
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
                                        RegisterAccessType::Unsigned))
@@ -114,7 +114,7 @@ namespace dlx
         reg.SetUnsignedValue(value);
     }
 
-    FloatRegister& Processor::GetFloatRegister(FloatRegisterID id)
+    FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) noexcept
     {
         PHI_ASSERT(id != FloatRegisterID::None);
         std::underlying_type_t<FloatRegisterID> id_value =
@@ -125,7 +125,7 @@ namespace dlx
         return m_FloatRegisters.at(id_value);
     }
 
-    const FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) const
+    const FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) const noexcept
     {
         PHI_ASSERT(id != FloatRegisterID::None);
         std::underlying_type_t<FloatRegisterID> id_value =
@@ -136,7 +136,7 @@ namespace dlx
         return m_FloatRegisters.at(id_value);
     }
 
-    [[nodiscard]] phi::f32 Processor::FloatRegisterGetFloatValue(FloatRegisterID id) const
+    [[nodiscard]] phi::f32 Processor::FloatRegisterGetFloatValue(FloatRegisterID id) const noexcept
     {
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Float))
         {
@@ -148,7 +148,7 @@ namespace dlx
         return reg.GetValue();
     }
 
-    [[nodiscard]] phi::f64 Processor::FloatRegisterGetDoubleValue(FloatRegisterID id)
+    [[nodiscard]] phi::f64 Processor::FloatRegisterGetDoubleValue(FloatRegisterID id) noexcept
     {
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Double))
         {
@@ -179,7 +179,7 @@ namespace dlx
         return *reinterpret_cast<double*>(&final_value_bits);
     }
 
-    void Processor::FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value)
+    void Processor::FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value) noexcept
     {
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Float))
         {
@@ -191,7 +191,7 @@ namespace dlx
         reg.SetValue(value);
     }
 
-    void Processor::FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value)
+    void Processor::FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value) noexcept
     {
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Double))
         {
@@ -224,38 +224,38 @@ namespace dlx
         second_reg.SetValue(second_value);
     }
 
-    StatusRegister& Processor::GetFPSR()
+    StatusRegister& Processor::GetFPSR() noexcept
     {
         return m_FPSR;
     }
 
-    const StatusRegister& Processor::GetFPSR() const
+    const StatusRegister& Processor::GetFPSR() const noexcept
     {
         return m_FPSR;
     }
 
-    phi::Boolean Processor::GetFPSRValue() const
+    phi::Boolean Processor::GetFPSRValue() const noexcept
     {
         const StatusRegister& status_reg = GetFPSR();
 
         return status_reg.Get();
     }
 
-    void Processor::SetFPSRValue(phi::Boolean value)
+    void Processor::SetFPSRValue(phi::Boolean value) noexcept
     {
         StatusRegister& status_reg = GetFPSR();
 
         status_reg.SetStatus(value);
     }
 
-    void Processor::ExecuteInstruction(const Instruction& inst)
+    void Processor::ExecuteInstruction(const Instruction& inst) noexcept
     {
         m_CurrentInstructionAccessType = inst.GetInfo().GetRegisterAccessType();
 
         inst.Execute(*this);
     }
 
-    void Processor::LoadProgram(ParsedProgram& programm)
+    void Processor::LoadProgram(ParsedProgram& programm) noexcept
     {
         m_CurrentProgram = &programm;
 
@@ -269,7 +269,7 @@ namespace dlx
         return m_CurrentProgram;
     }
 
-    void Processor::ExecuteCurrentProgram()
+    void Processor::ExecuteCurrentProgram() noexcept
     {
         PHI_ASSERT(m_CurrentProgram);
 
@@ -300,7 +300,7 @@ namespace dlx
         }
     }
 
-    void Processor::ClearRegisters()
+    void Processor::ClearRegisters() noexcept
     {
         for (auto& reg : m_IntRegisters)
         {
@@ -315,12 +315,12 @@ namespace dlx
         m_FPSR.SetStatus(false);
     }
 
-    void Processor::ClearMemory()
+    void Processor::ClearMemory() noexcept
     {
         m_MemoryBlock.Clear();
     }
 
-    void Processor::Raise(Exception exception)
+    void Processor::Raise(Exception exception) noexcept
     {
         PHI_ASSERT(exception != Exception::None, "Cannot raise None exception");
 
