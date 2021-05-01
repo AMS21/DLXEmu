@@ -242,6 +242,7 @@ namespace dlx
         // Do nothing when shifting by zero to prevent undefined behavior
         if (shift == 0)
         {
+            processor.IntRegisterSetSignedValue(dest_reg, base);
             return;
         }
 
