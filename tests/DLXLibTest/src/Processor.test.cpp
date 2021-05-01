@@ -4445,3 +4445,17 @@ TEST_CASE("R0 is read only")
 
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R0).get() == 0);
 }
+
+TEST_CASE("Empty source code")
+{
+    res = dlx::Parser::Parse(lib, "");
+    REQUIRE(res.m_ParseErrors.empty());
+    CHECK(res.m_Instructions.empty());
+    CHECK(res.m_JumpData.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+}

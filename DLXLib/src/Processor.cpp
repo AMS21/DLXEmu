@@ -287,7 +287,13 @@ namespace dlx
             return;
         }
 
-        // No nothing when processor is halted
+        // Halt if there are no instruction to execute
+        if (m_CurrentProgram->m_Instructions.empty())
+        {
+            m_Halted = true;
+        }
+
+        // Do nothing when processor is halted
         if (m_Halted)
         {
             return;
