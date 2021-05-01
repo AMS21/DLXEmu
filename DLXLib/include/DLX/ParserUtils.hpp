@@ -137,7 +137,6 @@ namespace dlx
             return {};
         }
 
-        // TODO: Length == 1
         if (token.length() == 1)
         {
             if (IsDigit(token.at(0)))
@@ -296,6 +295,19 @@ namespace dlx
 
         if (parsed_something)
         {
+            // Check for over/underflow
+            if (is_negative && (-number < std::numeric_limits<std::int16_t>::min()))
+            {
+                // Would underflow
+                return {};
+            }
+            if (!is_negative && (number > std::numeric_limits<std::int16_t>::max()))
+            {
+                // Would overflow
+                return {};
+            }
+
+
             if (is_negative)
             {
                 return static_cast<std::int16_t>(-number);
