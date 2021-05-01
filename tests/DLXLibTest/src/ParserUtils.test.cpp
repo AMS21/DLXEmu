@@ -444,4 +444,17 @@ TEST_CASE("ParseNumber")
         CHECK_FALSE(dlx::ParseNumber("-0x").has_value());
         CHECK_FALSE(dlx::ParseNumber("0xg").has_value());
     }
+
+    SECTION("Overflow")
+    {
+        CHECK((dlx::ParseNumber("32767").value() == 32767));
+        CHECK_FALSE(dlx::ParseNumber("32768").has_value());
+        CHECK_FALSE(dlx::ParseNumber("999999").has_value());
+    }
+
+    SECTION("Underflow")
+    {
+        CHECK((dlx::ParseNumber("-32768").value() == -32768));
+        CHECK_FALSE(dlx::ParseNumber("-999999").has_value());
+    }
 }
