@@ -25,7 +25,7 @@ jobs:
           submodules: recursive
 
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v8
+        uses: mymindstorm/setup-emsdk@v9
         with:
           version: ${{ matrix.em_version }}
           actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
