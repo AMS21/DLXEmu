@@ -35,6 +35,8 @@ namespace dlxemu
         void ParseProgram(std::vector<dlx::Token> tokens) noexcept;
 
     private:
+        void RenderMenuBar() noexcept;
+
         void RenderControlPanel() noexcept;
 
     private:
@@ -46,5 +48,10 @@ namespace dlxemu
         Window         m_Window;
         MemoryViewer   m_MemoryViewer;
         RegisterViewer m_RegisterViewer;
+
+        // Menu
+        bool m_ShowControlPanel{true};
+        bool m_ShowMemoryViewer{true};
+        bool m_ShowRegisterViewer{true};
     };
 } // namespace dlxemu

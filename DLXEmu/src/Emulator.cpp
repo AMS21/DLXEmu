@@ -38,10 +38,21 @@ namespace dlxemu
         ImGui::DockSpaceOverViewport(viewport);
 
         // Render our stuff
-        RenderControlPanel();
+        RenderMenuBar();
         m_CodeEditor.Render();
-        m_MemoryViewer.Render();
-        m_RegisterViewer.Render();
+
+        if (m_ShowControlPanel)
+        {
+            RenderControlPanel();
+        }
+        if (m_ShowMemoryViewer)
+        {
+            m_MemoryViewer.Render();
+        }
+        if (m_ShowRegisterViewer)
+        {
+            m_RegisterViewer.Render();
+        }
 
         m_Window.EndFrame();
     }
@@ -71,47 +82,114 @@ namespace dlxemu
         m_DLXProgram = dlx::Parser::Parse(m_InstructionLibrary, tokens);
     }
 
+    void Emulator::RenderMenuBar() noexcept
+    {
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("New"))
+                {}
+
+                if (ImGui::MenuItem("Open", "Ctrl+O"))
+                {}
+
+                if (ImGui::MenuItem("Save", "Ctrl+S"))
+                {}
+
+                if (ImGui::MenuItem("Save As.."))
+                {}
+
+                ImGui::Separator();
+                if (ImGui::BeginMenu("Options"))
+                {
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::MenuItem("Quit", "Alt+F4"))
+                {}
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Edit"))
+            {
+                if (ImGui::MenuItem("Undo", "CTRL+Z"))
+                {}
+
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
+                {} // Disabled item
+
+                ImGui::Separator();
+
+                if (ImGui::MenuItem("Cut", "CTRL+X"))
+                {}
+
+                if (ImGui::MenuItem("Copy", "CTRL+C"))
+                {}
+
+                if (ImGui::MenuItem("Paste", "CTRL+V"))
+                {}
+
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("View"))
+            {
+                ImGui::MenuItem("Control Panel", "", &m_ShowControlPanel);
+
+                ImGui::MenuItem("Memory Viewer", "", &m_ShowMemoryViewer);
+
+                ImGui::MenuItem("Registry Viewer", "", &m_ShowRegisterViewer);
+
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMainMenuBar();
+        }
+    }
+
     void Emulator::RenderControlPanel() noexcept
     {
-        ImGui::Begin("Control Panel");
-
-        if (ImGui::Button("R"))
+        if (ImGui::Begin("Control Panel"), &m_ShowControlPanel)
         {
-            // Run
-            ParseProgram(m_CodeEditor.GetText());
-            if (!m_Processor.LoadProgram(m_DLXProgram))
+            if (ImGui::Button("R"))
             {
-                PHI_LOG_INFO("Can't execute program since it contains {} parse errors",
-                             m_DLXProgram.m_ParseErrors.size());
-            }
-            else
-            {
-                m_Processor.ExecuteCurrentProgram();
-                PHI_LOG_INFO("Executed current program");
-            }
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("S"))
-        {
-            // Step
-            if (m_Processor.GetCurrentStepCount() == 0u)
-            {
-                PHI_LOG_INFO("Loaded program");
+                // Run
                 ParseProgram(m_CodeEditor.GetText());
+                if (!m_Processor.LoadProgram(m_DLXProgram))
+                {
+                    PHI_LOG_INFO("Can't execute program since it contains {} parse errors",
+                                 m_DLXProgram.m_ParseErrors.size());
+                }
+                else
+                {
+                    m_Processor.ExecuteCurrentProgram();
+                    PHI_LOG_INFO("Executed current program");
+                }
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("S"))
+            {
+                // Step
+                if (m_Processor.GetCurrentStepCount() == 0u)
+                {
+                    PHI_LOG_INFO("Loaded program");
+                    ParseProgram(m_CodeEditor.GetText());
+                    m_Processor.LoadProgram(m_DLXProgram);
+                }
+
+                m_Processor.ExecuteStep();
+
+                PHI_LOG_INFO("Executed step");
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("D"))
+            {
+                // Discard? / Reset
                 m_Processor.LoadProgram(m_DLXProgram);
             }
-
-            m_Processor.ExecuteStep();
-
-            PHI_LOG_INFO("Executed step");
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("D"))
-        {
-            // Discard? / Reset
-            m_Processor.LoadProgram(m_DLXProgram);
         }
 
         ImGui::End();
