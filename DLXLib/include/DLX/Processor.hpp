@@ -72,9 +72,11 @@ namespace dlx
 
         void ExecuteInstruction(const Instruction& inst) noexcept;
 
-        void LoadProgram(ParsedProgram& programm) noexcept;
+        phi::Boolean LoadProgram(ParsedProgram& programm) noexcept;
 
         [[nodiscard]] phi::ObserverPtr<ParsedProgram> GetCurrentProgramm() const noexcept;
+
+        void ExecuteStep() noexcept;
 
         void ExecuteCurrentProgram() noexcept;
 
@@ -100,6 +102,8 @@ namespace dlx
 
         void SetNextProgramCounter(phi::u32 new_npc) noexcept;
 
+        [[nodiscard]] phi::usize GetCurrentStepCount() const noexcept;
+
     private:
         phi::ObserverPtr<ParsedProgram> m_CurrentProgram;
         std::array<IntRegister, 32u>    m_IntRegisters;
@@ -110,6 +114,7 @@ namespace dlx
 
         phi::u32   m_ProgramCounter{0u};
         phi::u32   m_NextProgramCounter{0u};
+        phi::usize m_CurrentStepCount{0u};
         phi::usize m_MaxNumberOfSteps{10'000u};
 
         Exception m_LastRaisedException{Exception::None};

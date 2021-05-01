@@ -5,6 +5,7 @@
 #include "DLX/Parser.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
+#include "Phi/Core/Boolean.hpp"
 #include "Phi/Core/Log.hpp"
 #include "Phi/Core/Types.hpp"
 
@@ -255,13 +256,22 @@ namespace dlx
         inst.Execute(*this);
     }
 
-    void Processor::LoadProgram(ParsedProgram& programm) noexcept
+    phi::Boolean Processor::LoadProgram(ParsedProgram& program) noexcept
     {
-        m_CurrentProgram = &programm;
+        if (!program.m_ParseErrors.empty())
+        {
+            return false;
+        }
+
+        m_CurrentProgram = &program;
 
         m_ProgramCounter               = 0u;
         m_Halted                       = false;
         m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
+        m_LastRaisedException          = Exception::None;
+        m_CurrentStepCount             = 0u;
+
+        return true;
     }
 
     phi::ObserverPtr<ParsedProgram> Processor::GetCurrentProgramm() const noexcept
@@ -269,34 +279,58 @@ namespace dlx
         return m_CurrentProgram;
     }
 
-    void Processor::ExecuteCurrentProgram() noexcept
+    void Processor::ExecuteStep() noexcept
     {
-        PHI_ASSERT(m_CurrentProgram);
-
-        // Don't execute a program with parsing errors
-        if (!m_CurrentProgram->m_ParseErrors.empty())
+        // No nothing when no program is loaded
+        if (!m_CurrentProgram)
         {
             return;
         }
 
-        m_ProgramCounter      = 0u;
-        m_Halted              = false;
-        m_LastRaisedException = Exception::None;
-
-        phi::usize StepCount{0u};
-
-        while (m_ProgramCounter < m_CurrentProgram->m_Instructions.size() && !m_Halted &&
-               (m_MaxNumberOfSteps != 0u && StepCount < m_MaxNumberOfSteps))
+        // No nothing when processor is halted
+        if (m_Halted)
         {
-            m_NextProgramCounter = m_ProgramCounter + 1u;
+            return;
+        }
 
-            const auto& current_instruction =
-                    m_CurrentProgram->m_Instructions.at(m_ProgramCounter.get());
-            ExecuteInstruction(current_instruction);
+        // Increase Next program counter (may be later overwritten by branch instructions)
+        m_NextProgramCounter = m_ProgramCounter + 1u;
 
-            m_ProgramCounter = m_NextProgramCounter;
+        // Get current instruction pointed to by the program counter
+        const auto& current_instruction =
+                m_CurrentProgram->m_Instructions.at(m_ProgramCounter.get());
 
-            ++StepCount;
+        // Execute current instruction
+        ExecuteInstruction(current_instruction);
+
+        m_ProgramCounter = m_NextProgramCounter;
+
+        ++m_CurrentStepCount;
+
+        if ((m_MaxNumberOfSteps != 0u && m_CurrentStepCount >= m_MaxNumberOfSteps) ||
+            (m_ProgramCounter >= m_CurrentProgram->m_Instructions.size()))
+        {
+            m_Halted = true;
+        }
+    }
+
+    void Processor::ExecuteCurrentProgram() noexcept
+    {
+        // Do nothing when no program is loaded
+        if (!m_CurrentProgram)
+        {
+            return;
+        }
+
+        m_ProgramCounter               = 0u;
+        m_Halted                       = false;
+        m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
+        m_LastRaisedException          = Exception::None;
+        m_CurrentStepCount             = 0u;
+
+        while (!m_Halted)
+        {
+            ExecuteStep();
         }
     }
 
@@ -406,5 +440,10 @@ namespace dlx
     void Processor::SetNextProgramCounter(phi::u32 new_npc) noexcept
     {
         m_NextProgramCounter = new_npc;
+    }
+
+    phi::usize Processor::GetCurrentStepCount() const noexcept
+    {
+        return m_CurrentStepCount;
     }
 } // namespace dlx

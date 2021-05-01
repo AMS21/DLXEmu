@@ -77,22 +77,41 @@ namespace dlxemu
 
         if (ImGui::Button("R"))
         {
-            // Run;
+            // Run
             ParseProgram(m_CodeEditor.GetText());
-            m_Processor.LoadProgram(m_DLXProgram);
-            m_Processor.ExecuteCurrentProgram();
-
-            PHI_LOG_INFO("Executed current program");
+            if (!m_Processor.LoadProgram(m_DLXProgram))
+            {
+                PHI_LOG_INFO("Can't execute program since it contains {} parse errors",
+                             m_DLXProgram.m_ParseErrors.size());
+            }
+            else
+            {
+                m_Processor.ExecuteCurrentProgram();
+                PHI_LOG_INFO("Executed current program");
+            }
         }
+
         ImGui::SameLine();
         if (ImGui::Button("S"))
         {
             // Step
+            if (m_Processor.GetCurrentStepCount() == 0u)
+            {
+                PHI_LOG_INFO("Loaded program");
+                ParseProgram(m_CodeEditor.GetText());
+                m_Processor.LoadProgram(m_DLXProgram);
+            }
+
+            m_Processor.ExecuteStep();
+
+            PHI_LOG_INFO("Executed step");
         }
+
         ImGui::SameLine();
         if (ImGui::Button("D"))
         {
             // Discard? / Reset
+            m_Processor.LoadProgram(m_DLXProgram);
         }
 
         ImGui::End();

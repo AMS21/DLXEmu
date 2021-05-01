@@ -4427,7 +4427,7 @@ TEST_CASE("NOP")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK_FALSE(proc.IsHalted());
+    CHECK(proc.IsHalted());
 }
 
 TEST_CASE("R0 is read only")
