@@ -145,6 +145,10 @@ TEST_CASE("Parser tokenize")
         res = dlx::Parser::Tokenize("_1");
         REQUIRE(res.size() == 1);
         CHECK(TokenMatches(res.at(0), "_1", dlx::Token::Type::LabelIdentifier));
+
+        res = dlx::Parser::Tokenize("FPSR");
+        REQUIRE(res.size() == 1);
+        CHECK(TokenMatches(res.at(0), "FPSR", dlx::Token::Type::RegisterStatus));
     }
 }
 
