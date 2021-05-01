@@ -1856,6 +1856,15 @@ TEST_CASE("Parser")
 
             res = dlx::Parser::Parse(lib, "J label:");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "ADD");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "SW");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
 
         SECTION("Require IntRegister")
@@ -1867,6 +1876,15 @@ TEST_CASE("Parser")
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse(lib, "ADD R1 R1 label");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "ADD R1 R1 F0");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "ADD R1 R1 FPSR");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "ADD R1 R1 ADD");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
 
@@ -1880,6 +1898,15 @@ TEST_CASE("Parser")
 
             res = dlx::Parser::Parse(lib, "ADDI R1 R1 label");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "ADDI R1 R1 F0");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "ADDI R1 R1 FPSR");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "ADDI R1 R1 ADD");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
 
         SECTION("Require label")
@@ -1892,6 +1919,15 @@ TEST_CASE("Parser")
 
             res = dlx::Parser::Parse(lib, "J #25");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "J F0");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "J FPSR");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "J ADD");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
 
         SECTION("Address displacement or immediate value")
@@ -1900,6 +1936,84 @@ TEST_CASE("Parser")
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse(lib, "LW R1 R2");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 F0");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 FPSR");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 ADD");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+        }
+
+        SECTION("Incomplete Address displacement")
+        {
+            res = dlx::Parser::Parse(lib, "LW R1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 999999999");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000(");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000:");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000(F1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000(FPSR");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000()");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000(R1:");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000(R1 F1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "LW R1 1000(R1 / Comment");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+        }
+
+        SECTION("Immediate integer value too large")
+        {
+            res = dlx::Parser::Parse(lib, "ADDI R1 R0 #999999999999");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "ADDI R1 R0 #-999999999999");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+        }
+
+        SECTION("Unexpected label")
+        {
+            res = dlx::Parser::Parse(lib, "j: ADD R1 R1 R1 j");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "j: ADD R1 R1 R1 l:");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+        }
+
+        SECTION("Invalid label names")
+        {
+            res = dlx::Parser::Parse(lib, "add: ADD R1 R1 R1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "R1: ADD R1 R1 R1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "F1: ADD R1 R1 R1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "FPSR: ADD R1 R1 R1");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
     }
