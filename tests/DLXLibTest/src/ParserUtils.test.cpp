@@ -233,6 +233,11 @@ TEST_CASE("IsValidIdentifier")
 
 TEST_CASE("ParseNumber")
 {
+    SECTION("Empty")
+    {
+        CHECK_FALSE(dlx::ParseNumber("").has_value());
+    }
+
     SECTION("Seperators")
     {
         CHECK((dlx::ParseNumber("1'1").value() == 11));
