@@ -1197,6 +1197,16 @@ TEST_CASE("SLL")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 16);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
 }
 
 TEST_CASE("SLLI")
@@ -1212,6 +1222,19 @@ TEST_CASE("SLLI")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+
+    res = dlx::Parser::Parse(lib, "SLLI R1 R2 #0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
 }
 
@@ -1241,6 +1264,16 @@ TEST_CASE("SRL")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 2147483647);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -1);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -1);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
 }
 
 TEST_CASE("SRLI")
@@ -1265,6 +1298,19 @@ TEST_CASE("SRLI")
 
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1073741823);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -1);
+
+    res = dlx::Parser::Parse(lib, "SRLI R1 R2 #0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
 }
 
 TEST_CASE("SLA")
@@ -1283,6 +1329,16 @@ TEST_CASE("SLA")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 16);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
 }
 
 TEST_CASE("SLAI")
@@ -1298,6 +1354,19 @@ TEST_CASE("SLAI")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+
+    res = dlx::Parser::Parse(lib, "SLAI R1 R2 #0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
 }
 
@@ -1331,6 +1400,16 @@ TEST_CASE("SRA")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 536870912);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1073741825);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
 }
 
 TEST_CASE("SRAI")
@@ -1359,6 +1438,20 @@ TEST_CASE("SRAI")
     // 0b00100000'00000000'00000000'00000000
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 536870912);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1073741825);
+
+    res = dlx::Parser::Parse(lib, "SRAI R1 R2 #0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
+
+    proc.ExecuteCurrentProgram();
+
+    // 0b11000000'00000000'00000000'00000000
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
 }
 
 TEST_CASE("AND")
