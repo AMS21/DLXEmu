@@ -20,8 +20,10 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     processor.ClearMemory();
 
     // Execute
-    processor.LoadProgram(program);
-    processor.ExecuteCurrentProgram();
+    if (processor.LoadProgram(program))
+    {
+        processor.ExecuteCurrentProgram();
+    }
 
     return 0;
 }
