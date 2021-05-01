@@ -605,128 +605,1016 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Loading invalid address")
     {
-        res = dlx::Parser::Parse(lib, "LW R1 #4");
-        REQUIRE(res.m_ParseErrors.empty());
+        SECTION("LB")
+        {
+            res = dlx::Parser::Parse(lib, "LB R1 #4");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "LW R1 #-4");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "LB R1 #-4");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "LW R1 #5000");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "LB R1 #5000");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "LW R1 4(R0)");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "LB R1 4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "LW R1 -4(R0)");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "LB R1 -4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "LW R1 5000(R0)");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "LB R1 5000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("LBU")
+        {
+            res = dlx::Parser::Parse(lib, "LBU R1 #4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LBU R1 #-4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LBU R1 #5000");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LBU R1 4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LBU R1 -4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LW R1 5000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("LH")
+        {
+            res = dlx::Parser::Parse(lib, "LH R1 #4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LH R1 #-4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LH R1 #5000");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LH R1 4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LH R1 -4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LH R1 5000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("LHU")
+        {
+            res = dlx::Parser::Parse(lib, "LHU R1 #4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LHU R1 #-4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LHU R1 #5000");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LHU R1 4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LHU R1 -4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LHU R1 5000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("LW")
+        {
+            res = dlx::Parser::Parse(lib, "LW R1 #4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LW R1 #-4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LW R1 #5000");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LW R1 4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LW R1 -4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LW R1 5000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("LWU")
+        {
+            res = dlx::Parser::Parse(lib, "LWU R1 #4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LWU R1 #-4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LWU R1 #5000");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LWU R1 4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LWU R1 -4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LWU R1 5000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("LF")
+        {
+            res = dlx::Parser::Parse(lib, "LF F0 #4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LF F0 #-4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LF F0 #5000");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LF F0 4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LF F0 -4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LF F0 5000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("LD")
+        {
+            res = dlx::Parser::Parse(lib, "LD F0 #4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LD F0 #-4");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LD F0 #5000");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LD F0 4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LD F0 -4(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "LD F0 5000(R0)");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
     }
 
     SECTION("Storing invalid address")
     {
-        res = dlx::Parser::Parse(lib, "SW #4 R1");
-        REQUIRE(res.m_ParseErrors.empty());
+        SECTION("SB")
+        {
+            res = dlx::Parser::Parse(lib, "SB #4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "SW #-4 R1");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "SB #-4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "SW #5000 R1");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "SB #5000 R1");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "SW 4(R0) R1");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "SB 4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "SW -4(R0) R1");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "SB -4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-        res = dlx::Parser::Parse(lib, "SW 5000(R0) R1");
-        REQUIRE(res.m_ParseErrors.empty());
+            res = dlx::Parser::Parse(lib, "SB 5000(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
 
-        proc.LoadProgram(res);
+            proc.LoadProgram(res);
 
-        proc.ExecuteCurrentProgram();
+            proc.ExecuteCurrentProgram();
 
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("SBU")
+        {
+            res = dlx::Parser::Parse(lib, "SBU #4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SBU #-4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SBU #5000 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SBU 4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SBU -4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SBU 5000(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("SH")
+        {
+            res = dlx::Parser::Parse(lib, "SH #4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SH #-4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SH #5000 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SH 4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SH -4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SH 5000(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("SHU")
+        {
+            res = dlx::Parser::Parse(lib, "SHU #4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SHU #-4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SHU #5000 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SHU 4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SHU -4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SHU 5000(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("SW")
+        {
+            res = dlx::Parser::Parse(lib, "SW #4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SW #-4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SW #5000 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SW 4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SW -4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SW 5000(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("SWU")
+        {
+            res = dlx::Parser::Parse(lib, "SWU #4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SWU #-4 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SWU #5000 R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SWU 4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SWU -4(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SWU 5000(R0) R1");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("SF")
+        {
+            res = dlx::Parser::Parse(lib, "SF #4 F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SF #-4 F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SF #5000 F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SF 4(R0) F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SF -4(R0) F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SF 5000(R0) F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
+
+        SECTION("SD")
+        {
+            res = dlx::Parser::Parse(lib, "SD #4 F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SD #-4 F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SD #5000 F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SD 4(R0) F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SD -4(R0) F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+            res = dlx::Parser::Parse(lib, "SD 5000(R0) F0");
+            REQUIRE(res.m_ParseErrors.empty());
+
+            proc.LoadProgram(res);
+
+            proc.ExecuteCurrentProgram();
+
+            CHECK(proc.IsHalted());
+            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+        }
     }
 }
 
