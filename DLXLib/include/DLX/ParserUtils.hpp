@@ -1,7 +1,9 @@
 #pragma once
 
+#include "OpCode.hpp"
 #include "Phi/Core/Assert.hpp"
 #include "Phi/Core/Boolean.hpp"
+#include "RegisterNames.hpp"
 #include <Phi/Core/Types.hpp>
 #include <limits>
 #include <optional>
@@ -95,6 +97,34 @@ namespace dlx
     }
 
     /* String functions */
+
+    [[nodiscard]] inline phi::Boolean IsReservedIdentifier(std::string_view token) noexcept
+    {
+        std::string token_upper(token.data(), token.size());
+        std::transform(token_upper.begin(), token_upper.end(), token_upper.begin(), ::toupper);
+
+        if (StringToIntRegister(token_upper) != IntRegisterID::None)
+        {
+            return true;
+        }
+
+        if (StringToFloatRegister(token_upper) != FloatRegisterID::None)
+        {
+            return true;
+        }
+
+        if (StringToOpCode(token_upper) != OpCode::NONE)
+        {
+            return true;
+        }
+
+        if (token_upper == "FPSR")
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     constexpr phi::Boolean IsValidIdentifier(std::string_view token) noexcept
     {
@@ -306,7 +336,6 @@ namespace dlx
                 // Would overflow
                 return {};
             }
-
 
             if (is_negative)
             {

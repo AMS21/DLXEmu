@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Phi/Core/Boolean.hpp"
 #include <string>
 
 namespace dlx

@@ -392,6 +392,13 @@ namespace dlx
                     return {};
                 }
 
+                if (IsReservedIdentifier(token.GetText()))
+                {
+                    AddParseError(program, fmt::format("Cannot used reserved identifier {}",
+                                                       token.GetText()));
+                    return {};
+                }
+
                 if (!IsValidIdentifier(token.GetText()))
                 {
                     AddParseError(program, fmt::format("Invalid label identifier found {}",
@@ -479,6 +486,15 @@ namespace dlx
                     {
                         std::string_view label_name = current_token.GetText().substr(
                                 0, current_token.GetText().size() - 1);
+
+                        if (IsReservedIdentifier(label_name))
+                        {
+                            AddParseError(
+                                    program,
+                                    fmt::format("Cannot used reserved identifier {} as jump label",
+                                                label_name));
+                            break;
+                        }
 
                         program.m_JumpData[label_name] =
                                 static_cast<std::uint32_t>(program.m_Instructions.size());
