@@ -8,7 +8,10 @@
 
 #if PHI_PLATFORM_IS(WEB)
 #    include <emscripten.h>
-extern "C" void* emscripten_GetProcAddress(const char* name_);
+#    include <imgui_internal.h>
+
+extern "C" void*     emscripten_GetProcAddress(const char* name_);
+extern ImGuiContext* GImGui;
 #endif
 
 // GLFW needs to be included after opengl
@@ -126,6 +129,13 @@ namespace dlxemu
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
+
+#if PHI_PLATFORM_IS(WEB)
+        if (GImGui->IO.DeltaTime <= 0.0f)
+        {
+            GImGui->IO.DeltaTime = 0.001f;
+        }
+#endif
 
         ImGui::NewFrame();
     }
