@@ -1,0 +1,33 @@
+// ${CMAKE_AUTO_GENENERATED_WARNING}
+#pragma once
+
+#include <cstdint>
+
+// clang-format off
+// Versions
+#define DLXEMU_VERSION_MAJOR ${DLXEMU_VERSION_MAJOR}
+#define DLXEMU_VERSION_MINOR ${DLXEMU_VERSION_MINOR}
+#define DLXEMU_VERSION_PATCH ${DLXEMU_VERSION_PATCH}
+
+// Git Sha
+#define DLXEMU_GIT_SHA_FULL ${DLXEMU_GIT_SHA_FULL}
+#define DLXEMU_GIT_SHA_SHORT ${DLXEMU_GIT_SHA_SHORT}
+
+// Git Branch
+#define DLXEMU_GIT_BRANCH "${DLXEMU_GIT_BRANCH}"
+// clang-format on
+
+namespace dlxemu
+{
+    constexpr static std::uint32_t VersionMajor{DLXEMU_VERSION_MAJOR};
+    constexpr static std::uint32_t VersionMinor{DLXEMU_VERSION_MINOR};
+    constexpr static std::uint32_t VersionPATCH{DLXEMU_VERSION_PATCH};
+
+    constexpr static const char GitShaFull[]{DLXEMU_GIT_SHA_FULL};
+    constexpr static const char GitShaShort[]{DLXEMU_GIT_SHA_SHORT};
+
+    constexpr static const char GitBranch[]{DLXEMU_GIT_BRANCH};
+
+    constexpr static const char BuildDate[]{__DATE__};
+    constexpr static const char BuildTime[]{__TIME__};
+} // namespace dlxemu
