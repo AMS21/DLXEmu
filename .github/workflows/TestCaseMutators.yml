@@ -44,8 +44,8 @@ jobs:
 
       - name: Install mull
         run: |
-          wget -O - https://api.bintray.com/users/bintray/keys/gpg/public.key | sudo apt-key add -
-          echo "deb https://dl.bintray.com/mull-project/ubuntu-18 stable main" | sudo tee -a /etc/apt/sources.list
+          curl -1sLf 'https://dl.cloudsmith.io/public/mull-project/mull-stable/setup.deb.sh' | sudo -E bash
+
           sudo apt-get update
           sudo apt-get install mull
 
