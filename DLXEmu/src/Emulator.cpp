@@ -1,5 +1,7 @@
 #include "DLXEmu/Emulator.hpp"
 
+#include "DLXEmu/BuildInfo.hpp"
+#include <Phi/Config/Compiler.hpp>
 #include <Phi/Config/Platform.hpp>
 #include <Phi/Core/Log.hpp>
 #include <imgui.h>
@@ -52,6 +54,10 @@ namespace dlxemu
         if (m_ShowRegisterViewer)
         {
             m_RegisterViewer.Render();
+        }
+        if (m_ShowAbout)
+        {
+            RenderAbout();
         }
 
         m_Window.EndFrame();
@@ -144,6 +150,16 @@ namespace dlxemu
                 ImGui::EndMenu();
             }
 
+            if (ImGui::BeginMenu("Help"))
+            {
+                if (ImGui::MenuItem("About"))
+                {
+                    m_ShowAbout = true;
+                }
+
+                ImGui::EndMenu();
+            }
+
             ImGui::EndMainMenuBar();
         }
     }
@@ -189,6 +205,31 @@ namespace dlxemu
             {
                 // Discard? / Reset
                 m_Processor.LoadProgram(m_DLXProgram);
+            }
+        }
+
+        ImGui::End();
+    }
+
+    void Emulator::RenderAbout() noexcept
+    {
+        constexpr static ImGuiWindowFlags about_flags =
+                ImGuiWindowFlags_AlwaysAutoResize + ImGuiWindowFlags_NoDocking +
+                ImGuiWindowFlags_NoResize + ImGuiWindowFlags_NoCollapse +
+                ImGuiWindowFlags_NoSavedSettings;
+
+        if (ImGui::Begin("DLXEmu - About", &m_ShowAbout, about_flags))
+        {
+            ImGui::Text("Version: %d.%d.%d", dlxemu::VersionMajor, dlxemu::VersionMinor,
+                        dlxemu::VersionPatch);
+            ImGui::Text("Commit: %s", dlxemu::GitShaFull);
+            ImGui::Text("Build date: %s %s", dlxemu::BuildDate, dlxemu::BuildTime);
+            ImGui::Text("OS: %s", PHI_PLATFORM_NAME());
+            ImGui::Text("Compiler: %s", PHI_COMPILER_NAME());
+
+            if (ImGui::Button("OK"))
+            {
+                m_ShowAbout = false;
             }
         }
 

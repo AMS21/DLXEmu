@@ -39,6 +39,8 @@ namespace dlxemu
 
         void RenderControlPanel() noexcept;
 
+        void RenderAbout() noexcept;
+
     private:
         dlx::InstructionLibrary m_InstructionLibrary;
         dlx::Processor          m_Processor;
@@ -53,5 +55,6 @@ namespace dlxemu
         bool m_ShowControlPanel{true};
         bool m_ShowMemoryViewer{true};
         bool m_ShowRegisterViewer{true};
+        bool m_ShowAbout{false};
     };
 } // namespace dlxemu

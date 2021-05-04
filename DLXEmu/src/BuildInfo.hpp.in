@@ -21,7 +21,7 @@ namespace dlxemu
 {
     constexpr static std::uint32_t VersionMajor{DLXEMU_VERSION_MAJOR};
     constexpr static std::uint32_t VersionMinor{DLXEMU_VERSION_MINOR};
-    constexpr static std::uint32_t VersionPATCH{DLXEMU_VERSION_PATCH};
+    constexpr static std::uint32_t VersionPatch{DLXEMU_VERSION_PATCH};
 
     constexpr static const char GitShaFull[]{DLXEMU_GIT_SHA_FULL};
     constexpr static const char GitShaShort[]{DLXEMU_GIT_SHA_SHORT};
