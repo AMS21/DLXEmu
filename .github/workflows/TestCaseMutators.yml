@@ -69,8 +69,8 @@ jobs:
           cd build
           cmake --build .
 
-      - name: Display linked libraries
-        run: ldd build/bin/DLXLibUnittest
+      - name: Display default includes
+        run: clang++-${{ env.LLVM_VERSION }} -x c++ -c /dev/null -v
 
       - name: Run mull
         run: |
