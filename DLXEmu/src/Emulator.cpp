@@ -225,7 +225,9 @@ namespace dlxemu
             ImGui::Text("Commit: %s", dlxemu::GitShaFull);
             ImGui::Text("Build date: %s %s", dlxemu::BuildDate, dlxemu::BuildTime);
             ImGui::Text("OS: %s", PHI_PLATFORM_NAME());
-            ImGui::Text("Compiler: %s", PHI_COMPILER_NAME());
+            ImGui::Text("Compiler: %s (%d.%d.%d)", PHI_COMPILER_NAME(),
+                        PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),
+                        PHI_CURRENT_COMPILER_VERSION_PATCH());
 
             if (ImGui::Button("OK"))
             {
