@@ -56,6 +56,9 @@ namespace dlxemu
         RegisterViewer m_RegisterViewer;
 
         // Menu
+#if defined(PHI_DEBUG)
+        bool m_ShowDemoWindow{false};
+#endif
         bool m_ShowControlPanel{true};
         bool m_ShowMemoryViewer{true};
         bool m_ShowRegisterViewer{true};

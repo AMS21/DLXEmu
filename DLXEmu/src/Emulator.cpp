@@ -61,6 +61,13 @@ namespace dlxemu
             RenderAbout();
         }
 
+#if defined(PHI_DEBUG)
+        if (m_ShowDemoWindow)
+        {
+            ImGui::ShowDemoWindow(&m_ShowDemoWindow);
+        }
+#endif
+
         m_Window.EndFrame();
     }
 
@@ -143,10 +150,14 @@ namespace dlxemu
             if (ImGui::BeginMenu("View"))
             {
                 ImGui::MenuItem("Control Panel", "", &m_ShowControlPanel);
-
                 ImGui::MenuItem("Memory Viewer", "", &m_ShowMemoryViewer);
-
                 ImGui::MenuItem("Registry Viewer", "", &m_ShowRegisterViewer);
+
+#if defined(PHI_DEBUG)
+                ImGui::Separator();
+
+                ImGui::MenuItem("Dear ImGui Demo Window", "", &m_ShowDemoWindow);
+#endif
 
                 ImGui::EndMenu();
             }
