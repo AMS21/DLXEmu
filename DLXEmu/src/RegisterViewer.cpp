@@ -14,18 +14,19 @@ namespace dlxemu
 
     void RegisterViewer::Render() noexcept
     {
-        ImGui::Begin("Register Viewer");
-
-        dlx::Processor& proc = m_Emulator->GetProcessor();
-
-        // Int registers
-        for (std::uint32_t index{1}; index < 32; ++index)
+        if (ImGui::Begin("Register Viewer", &m_Emulator->m_ShowRegisterViewer))
         {
-            ImGui::InputInt(
-                    fmt::format("R{}", index).c_str(),
-                    reinterpret_cast<std::int32_t*>(
-                            &proc.GetIntRegister(static_cast<dlx::IntRegisterID>(
-                                    index + static_cast<std::int32_t>(dlx::IntRegisterID::R0)))));
+            dlx::Processor& proc = m_Emulator->GetProcessor();
+
+            // Int registers
+            for (std::uint32_t index{1}; index < 32; ++index)
+            {
+                ImGui::InputInt(fmt::format("R{}", index).c_str(),
+                                reinterpret_cast<std::int32_t*>(
+                                        &proc.GetIntRegister(static_cast<dlx::IntRegisterID>(
+                                                index + static_cast<std::int32_t>(
+                                                                dlx::IntRegisterID::R0)))));
+            }
         }
 
         ImGui::End();

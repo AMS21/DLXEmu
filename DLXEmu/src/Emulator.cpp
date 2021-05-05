@@ -167,7 +167,7 @@ namespace dlxemu
 
     void Emulator::RenderControlPanel() noexcept
     {
-        if (ImGui::Begin("Control Panel"), &m_ShowControlPanel)
+        if (ImGui::Begin("Control Panel", &m_ShowControlPanel))
         {
             if (ImGui::Button("R"))
             {

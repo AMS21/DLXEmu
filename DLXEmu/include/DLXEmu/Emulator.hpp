@@ -15,6 +15,10 @@ namespace dlxemu
 {
     class Emulator
     {
+        friend MemoryViewer;
+        friend RegisterViewer;
+        friend CodeEditor;
+
     public:
         Emulator() noexcept;
 
