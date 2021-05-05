@@ -5,6 +5,7 @@
 #include <Phi/Config/Platform.hpp>
 #include <Phi/Core/Log.hpp>
 #include <imgui.h>
+#include <spdlog/fmt/fmt.h>
 
 namespace dlxemu
 {
@@ -220,14 +221,25 @@ namespace dlxemu
 
         if (ImGui::Begin("DLXEmu - About", &m_ShowAbout, about_flags))
         {
-            ImGui::Text("Version: %d.%d.%d", dlxemu::VersionMajor, dlxemu::VersionMinor,
-                        dlxemu::VersionPatch);
-            ImGui::Text("Commit: %s", dlxemu::GitShaFull);
-            ImGui::Text("Build date: %s %s", dlxemu::BuildDate, dlxemu::BuildTime);
-            ImGui::Text("OS: %s", PHI_PLATFORM_NAME());
-            ImGui::Text("Compiler: %s (%d.%d.%d)", PHI_COMPILER_NAME(),
-                        PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),
-                        PHI_CURRENT_COMPILER_VERSION_PATCH());
+            static std::string about_text = fmt::format(
+                    "Version: {}.{}.{}\n"
+                    "Commit: {}\n"
+                    "Build date: {} {}\n"
+                    "Platform: {}\n"
+                    "Compiler: {} ({}.{}.{})",
+                    dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
+                    dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime, PHI_PLATFORM_NAME(),
+                    PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
+                    PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH());
+
+            ImGui::TextUnformatted(about_text.c_str());
+
+            if (ImGui::Button("Copy"))
+            {
+                ImGui::SetClipboardText(about_text.c_str());
+            }
+
+            ImGui::SameLine();
 
             if (ImGui::Button("OK"))
             {
