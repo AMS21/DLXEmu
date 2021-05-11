@@ -12,11 +12,13 @@ jobs:
 
     env:
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
+      CTEST_PARALLEL_LEVEL: "2"
+      CTEST_OUTPUT_ON_FAILURE: "ON"
       EM_CACHE_FOLDER: 'emsdk-cache'
 
     strategy:
       matrix:
-        em_version: ["2.0.18", "1.40.1"]
+        em_version: ["2.0.20", "1.40.1"]
 
     steps:
       - name: Checkout
