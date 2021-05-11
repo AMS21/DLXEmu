@@ -120,8 +120,10 @@ namespace dlxemu
                     ImGui::EndMenu();
                 }
 
+#if PHI_PLATFORM_IS_NOT(WEB)
                 if (ImGui::MenuItem("Quit", "Alt+F4"))
                 {}
+#endif
                 ImGui::EndMenu();
             }
 
