@@ -117,13 +117,6 @@ namespace dlxemu
             std::int32_t m_Column;
         };
 
-        class Identifier
-        {
-        public:
-            Coordinates m_Location;
-            std::string m_Declaration;
-        };
-
         using ErrorMarkers = std::map<std::int32_t, std::string>;
         using Breakpoints  = std::unordered_set<std::int32_t>;
         using Palette      = std::array<ImU32, static_cast<std::size_t>(PaletteIndex::Max)>;
