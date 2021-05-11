@@ -122,6 +122,11 @@ namespace dlxemu
         return glfwWindowShouldClose(m_Window) == 0;
     }
 
+    void Window::Close() noexcept
+    {
+        glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
+    }
+
     void Window::BeginFrame() noexcept
     {
         glfwPollEvents();

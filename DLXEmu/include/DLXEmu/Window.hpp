@@ -20,6 +20,8 @@ namespace dlxemu
 
         [[nodiscard]] phi::Boolean IsOpen() const noexcept;
 
+        void Close() noexcept;
+
         void BeginFrame() noexcept;
 
         void EndFrame() noexcept;

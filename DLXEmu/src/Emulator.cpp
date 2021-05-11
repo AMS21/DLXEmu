@@ -115,14 +115,16 @@ namespace dlxemu
                 {}
 
                 ImGui::Separator();
-                if (ImGui::BeginMenu("Options"))
+                if (ImGui::MenuItem("Options"))
                 {
-                    ImGui::EndMenu();
+                    m_ShowOptionsMenu = true;
                 }
 
 #if PHI_PLATFORM_IS_NOT(WEB)
                 if (ImGui::MenuItem("Quit", "Alt+F4"))
-                {}
+                {
+                    m_Window.Close();
+                }
 #endif
                 ImGui::EndMenu();
             }
