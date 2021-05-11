@@ -193,19 +193,30 @@ TEST_CASE("Parser")
     dlx::ParsedProgram      res;
     dlx::InstructionLibrary lib;
 
+    SECTION("Empty string")
+    {
+        res = dlx::Parser::Parse(lib, "");
+        CHECK(res.m_Instructions.empty());
+        CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
+    }
+
     SECTION("Ignoring comments")
     {
         res = dlx::Parser::Parse(lib, "; Comment");
         CHECK(res.m_Instructions.empty());
         CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
 
         res = dlx::Parser::Parse(lib, "/Comment");
         CHECK(res.m_Instructions.empty());
         CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
 
         res = dlx::Parser::Parse(lib, "// First comment\n;Second comment");
         CHECK(res.m_Instructions.empty());
         CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
     }
 
     SECTION("Ignoring new lines")
@@ -213,10 +224,12 @@ TEST_CASE("Parser")
         res = dlx::Parser::Parse(lib, "\n");
         CHECK(res.m_Instructions.empty());
         CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
 
         res = dlx::Parser::Parse(lib, "\n\n\n\n");
         CHECK(res.m_Instructions.empty());
         CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
     }
 
     SECTION("Jump labels")

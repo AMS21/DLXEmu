@@ -215,6 +215,14 @@ TEST_CASE("IsHexadecimalChar")
     CHECK_FALSE(dlx::IsHexadecimalChar('G'));
 }
 
+TEST_CASE("IsReservedIdentifer")
+{
+    CHECK(dlx::IsReservedIdentifier("ADD"));
+    CHECK(dlx::IsReservedIdentifier("R0"));
+    CHECK(dlx::IsReservedIdentifier("F0"));
+    CHECK(dlx::IsReservedIdentifier("FPSR"));
+}
+
 TEST_CASE("IsValidIdentifier")
 {
     CHECK(dlx::IsValidIdentifier("a"));
@@ -305,6 +313,8 @@ TEST_CASE("ParseNumber")
         CHECK_FALSE(dlx::ParseNumber("0be").has_value());
         CHECK_FALSE(dlx::ParseNumber("0bf").has_value());
         CHECK_FALSE(dlx::ParseNumber("0b11111111'11111111'1").has_value());
+        CHECK_FALSE(dlx::ParseNumber("-0b0").has_value());
+        CHECK_FALSE(dlx::ParseNumber("-0b1").has_value());
     }
 
     SECTION("Octal")
@@ -398,6 +408,8 @@ TEST_CASE("ParseNumber")
         CHECK((dlx::ParseNumber("-18").value() == -18));
         CHECK((dlx::ParseNumber("-19").value() == -19));
 
+        CHECK_FALSE(dlx::ParseNumber("+").has_value());
+        CHECK_FALSE(dlx::ParseNumber("-").has_value());
         CHECK_FALSE(dlx::ParseNumber("+0").has_value());
         CHECK_FALSE(dlx::ParseNumber("-0").has_value());
         CHECK_FALSE(dlx::ParseNumber("a").has_value());
@@ -448,6 +460,10 @@ TEST_CASE("ParseNumber")
         CHECK_FALSE(dlx::ParseNumber("+0x").has_value());
         CHECK_FALSE(dlx::ParseNumber("-0x").has_value());
         CHECK_FALSE(dlx::ParseNumber("0xg").has_value());
+        CHECK_FALSE(dlx::ParseNumber("0A").has_value());
+        CHECK_FALSE(dlx::ParseNumber("0F").has_value());
+        CHECK_FALSE(dlx::ParseNumber("A").has_value());
+        CHECK_FALSE(dlx::ParseNumber("F").has_value());
     }
 
     SECTION("Overflow")
@@ -460,6 +476,7 @@ TEST_CASE("ParseNumber")
     SECTION("Underflow")
     {
         CHECK((dlx::ParseNumber("-32768").value() == -32768));
+        CHECK_FALSE(dlx::ParseNumber("-32769").has_value());
         CHECK_FALSE(dlx::ParseNumber("-999999").has_value());
     }
 }
