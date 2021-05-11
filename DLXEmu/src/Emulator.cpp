@@ -1,6 +1,7 @@
 #include "DLXEmu/Emulator.hpp"
 
 #include "DLXEmu/BuildInfo.hpp"
+#include "Phi/Core/Assert.hpp"
 #include <Phi/Config/Compiler.hpp>
 #include <Phi/Config/Platform.hpp>
 #include <Phi/Core/Log.hpp>
@@ -55,6 +56,10 @@ namespace dlxemu
         if (m_ShowRegisterViewer)
         {
             m_RegisterViewer.Render();
+        }
+        if (m_ShowOptionsMenu)
+        {
+            RenderOptionsMenu();
         }
         if (m_ShowAbout)
         {
@@ -259,6 +264,46 @@ namespace dlxemu
             if (ImGui::Button("OK"))
             {
                 m_ShowAbout = false;
+            }
+        }
+
+        ImGui::End();
+    }
+
+    void Emulator::RenderOptionsMenu() noexcept
+    {
+        constexpr static ImGuiWindowFlags options_flags =
+                ImGuiWindowFlags_NoDocking + ImGuiWindowFlags_NoCollapse;
+
+        if (ImGui::Begin("Options", &m_ShowOptionsMenu, options_flags))
+        {
+            if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
+            {
+                if (ImGui::BeginTabItem("Style"))
+                {
+                    static int style_idx = 0;
+                    if (ImGui::Combo("Color", &style_idx, "Dark\0Light\0Classic\0"))
+                    {
+                        switch (style_idx)
+                        {
+                            case 0:
+                                ImGui::StyleColorsDark();
+                                break;
+                            case 1:
+                                ImGui::StyleColorsLight();
+                                break;
+                            case 2:
+                                ImGui::StyleColorsClassic();
+                                break;
+                            default:
+                                PHI_ASSERT_NOT_REACHED();
+                        }
+                    }
+
+                    ImGui::EndTabItem();
+                }
+
+                ImGui::EndTabBar();
             }
         }
 

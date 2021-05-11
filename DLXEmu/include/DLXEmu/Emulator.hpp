@@ -45,6 +45,8 @@ namespace dlxemu
 
         void RenderAbout() noexcept;
 
+        void RenderOptionsMenu() noexcept;
+
     private:
         dlx::InstructionLibrary m_InstructionLibrary;
         dlx::Processor          m_Processor;
@@ -63,5 +65,6 @@ namespace dlxemu
         bool m_ShowMemoryViewer{true};
         bool m_ShowRegisterViewer{true};
         bool m_ShowAbout{false};
+        bool m_ShowOptionsMenu{false};
     };
 } // namespace dlxemu
