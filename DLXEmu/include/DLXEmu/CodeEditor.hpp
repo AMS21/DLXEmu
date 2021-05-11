@@ -117,7 +117,7 @@ namespace dlxemu
             std::int32_t m_Column;
         };
 
-        using ErrorMarkers = std::map<std::int32_t, std::string>;
+        using ErrorMarkers = std::map<std::uint32_t, std::string>;
         using Breakpoints  = std::unordered_set<std::int32_t>;
         using Palette      = std::array<ImU32, static_cast<std::size_t>(PaletteIndex::Max)>;
         using Char         = uint8_t;
@@ -140,6 +140,10 @@ namespace dlxemu
         void                         SetPalette(const Palette& value) noexcept;
 
         void SetErrorMarkers(const ErrorMarkers& markers) noexcept;
+
+        void AddErrorMarker(const std::uint32_t line_number, const std::string& message) noexcept;
+
+        void ClearErrorMarkers() noexcept;
 
         void SetBreakpoints(const Breakpoints& markers) noexcept;
 

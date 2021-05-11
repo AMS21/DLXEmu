@@ -1451,6 +1451,14 @@ namespace dlxemu
             m_Emulator->ParseProgram(m_FullText);
 
             ColorizeInternal();
+
+            ClearErrorMarkers();
+
+            // Add error markers
+            for (const dlx::ParseError& err : m_Emulator->m_DLXProgram.m_ParseErrors)
+            {
+                AddErrorMarker(1, err.message);
+            }
         }
 
         InternalRender();
@@ -2820,6 +2828,17 @@ namespace dlxemu
     void CodeEditor::SetErrorMarkers(const ErrorMarkers& markers) noexcept
     {
         m_ErrorMarkers = markers;
+    }
+
+    void CodeEditor::AddErrorMarker(const std::uint32_t line_number,
+                                    const std::string&  message) noexcept
+    {
+        m_ErrorMarkers[line_number] = message;
+    }
+
+    void CodeEditor::ClearErrorMarkers() noexcept
+    {
+        m_ErrorMarkers.clear();
     }
 
     void CodeEditor::SetBreakpoints(const Breakpoints& markers) noexcept
