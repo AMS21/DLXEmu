@@ -1419,42 +1419,43 @@ namespace dlxemu
                 ImGui::ColorConvertU32ToFloat4(m_Palette[(std::int32_t)PaletteIndex::Background]));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-        ImGui::Begin("Code Editor");
-
-        ImGui::BeginChild("Code Editor", size, border,
-                          ImGuiWindowFlags_HorizontalScrollbar |
-                                  ImGuiWindowFlags_AlwaysHorizontalScrollbar |
-                                  ImGuiWindowFlags_NoMove);
-
-        HandleKeyboardInputs();
-        ImGui::PushAllowKeyboardFocus(true);
-
-        HandleMouseInputs();
-
-        if (m_TextChanged)
+        if (ImGui::Begin("Code Editor"))
         {
-            m_FullText = GetText();
+            ImGui::BeginChild("Code Editor", size, border,
+                              ImGuiWindowFlags_HorizontalScrollbar |
+                                      ImGuiWindowFlags_AlwaysHorizontalScrollbar |
+                                      ImGuiWindowFlags_NoMove);
 
-            m_Emulator->ParseProgram(m_FullText);
+            HandleKeyboardInputs();
+            ImGui::PushAllowKeyboardFocus(true);
 
-            ColorizeInternal();
+            HandleMouseInputs();
 
-            ClearErrorMarkers();
-
-            // Add error markers
-            for (const dlx::ParseError& err : m_Emulator->m_DLXProgram.m_ParseErrors)
+            if (m_TextChanged)
             {
-                AddErrorMarker(1, err.message);
+                m_FullText = GetText();
+
+                m_Emulator->ParseProgram(m_FullText);
+
+                ColorizeInternal();
+
+                ClearErrorMarkers();
+
+                // Add error markers
+                for (const dlx::ParseError& err : m_Emulator->m_DLXProgram.m_ParseErrors)
+                {
+                    AddErrorMarker(1, err.message);
+                }
+
+                m_TextChanged = false;
             }
 
-            m_TextChanged = false;
+            InternalRender();
+
+            ImGui::PopAllowKeyboardFocus();
+
+            ImGui::EndChild();
         }
-
-        InternalRender();
-
-        ImGui::PopAllowKeyboardFocus();
-
-        ImGui::EndChild();
 
         ImGui::End();
 
