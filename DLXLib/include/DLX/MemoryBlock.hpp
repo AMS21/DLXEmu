@@ -9,6 +9,7 @@ namespace dlx
 {
     class MemoryBlock
     {
+    public:
         struct MemoryByte
         {
             constexpr MemoryByte() noexcept
@@ -22,7 +23,6 @@ namespace dlx
             };
         };
 
-    public:
         MemoryBlock(phi::usize start_address, phi::usize starting_size) noexcept;
 
         // Loading
