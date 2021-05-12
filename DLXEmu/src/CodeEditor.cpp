@@ -2833,7 +2833,14 @@ namespace dlxemu
     void CodeEditor::AddErrorMarker(const std::uint32_t line_number,
                                     const std::string&  message) noexcept
     {
-        m_ErrorMarkers[line_number] = message;
+        if (m_ErrorMarkers.contains(line_number))
+        {
+            m_ErrorMarkers[line_number] += '\n' + message;
+        }
+        else
+        {
+            m_ErrorMarkers[line_number] = message;
+        }
     }
 
     void CodeEditor::ClearErrorMarkers() noexcept
