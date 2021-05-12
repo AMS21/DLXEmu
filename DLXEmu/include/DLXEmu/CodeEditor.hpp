@@ -171,15 +171,6 @@ namespace dlxemu
         [[nodiscard]] Coordinates GetCursorPosition() const noexcept;
         void                      SetCursorPosition(const Coordinates& position) noexcept;
 
-        void               SetHandleMouseInputs(bool value) noexcept;
-        [[nodiscard]] bool IsHandleMouseInputsEnabled() const noexcept;
-
-        void               SetHandleKeyboardInputs(bool value) noexcept;
-        [[nodiscard]] bool IsHandleKeyboardInputsEnabled() const noexcept;
-
-        void               SetImGuiChildIgnored(bool value) noexcept;
-        [[nodiscard]] bool IsImGuiChildIgnored() const noexcept;
-
         void               SetShowWhitespaces(bool value) noexcept;
         [[nodiscard]] bool IsShowingWhitespaces() const noexcept;
 
@@ -322,9 +313,6 @@ namespace dlxemu
         std::int32_t  m_ColorRangeMin;
         std::int32_t  m_ColorRangeMax;
         SelectionMode m_SelectionMode;
-        bool          m_HandleKeyboardInputs : 1;
-        bool          m_HandleMouseInputs : 1;
-        bool          m_IgnoreImGuiChild : 1;
         bool          m_ShowWhitespaces : 1;
         bool          m_CheckComments : 1;
 

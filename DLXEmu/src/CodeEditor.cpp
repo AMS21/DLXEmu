@@ -66,9 +66,6 @@ namespace dlxemu
         , m_SelectionMode(SelectionMode::Normal)
         , m_CheckComments(true)
         , m_LastClick(-1.0f)
-        , m_HandleKeyboardInputs(true)
-        , m_HandleMouseInputs(true)
-        , m_IgnoreImGuiChild(false)
         , m_ShowWhitespaces(false)
         , m_StartTime(std::chrono::duration_cast<std::chrono::milliseconds>(
                               std::chrono::system_clock::now().time_since_epoch())
@@ -1425,24 +1422,15 @@ namespace dlxemu
 
         ImGui::Begin("Code Editor");
 
-        if (!m_IgnoreImGuiChild)
-        {
-            ImGui::BeginChild("Code Editor", size, border,
-                              ImGuiWindowFlags_HorizontalScrollbar |
-                                      ImGuiWindowFlags_AlwaysHorizontalScrollbar |
-                                      ImGuiWindowFlags_NoMove);
-        }
+        ImGui::BeginChild("Code Editor", size, border,
+                          ImGuiWindowFlags_HorizontalScrollbar |
+                                  ImGuiWindowFlags_AlwaysHorizontalScrollbar |
+                                  ImGuiWindowFlags_NoMove);
 
-        if (m_HandleKeyboardInputs)
-        {
-            HandleKeyboardInputs();
-            ImGui::PushAllowKeyboardFocus(true);
-        }
+        HandleKeyboardInputs();
+        ImGui::PushAllowKeyboardFocus(true);
 
-        if (m_HandleMouseInputs)
-        {
-            HandleMouseInputs();
-        }
+        HandleMouseInputs();
 
         if (m_TextChanged)
         {
@@ -1463,15 +1451,9 @@ namespace dlxemu
 
         InternalRender();
 
-        if (m_HandleKeyboardInputs)
-        {
-            ImGui::PopAllowKeyboardFocus();
-        }
+        ImGui::PopAllowKeyboardFocus();
 
-        if (!m_IgnoreImGuiChild)
-        {
-            ImGui::EndChild();
-        }
+        ImGui::EndChild();
 
         ImGui::End();
 
@@ -2886,36 +2868,6 @@ namespace dlxemu
     CodeEditor::Coordinates CodeEditor::GetCursorPosition() const noexcept
     {
         return GetActualCursorCoordinates();
-    }
-
-    void CodeEditor::SetHandleMouseInputs(bool value) noexcept
-    {
-        m_HandleMouseInputs = value;
-    }
-
-    bool CodeEditor::IsHandleMouseInputsEnabled() const noexcept
-    {
-        return m_HandleKeyboardInputs;
-    }
-
-    void CodeEditor::SetHandleKeyboardInputs(bool value) noexcept
-    {
-        m_HandleKeyboardInputs = value;
-    }
-
-    bool CodeEditor::IsHandleKeyboardInputsEnabled() const noexcept
-    {
-        return m_HandleKeyboardInputs;
-    }
-
-    void CodeEditor::SetImGuiChildIgnored(bool value) noexcept
-    {
-        m_IgnoreImGuiChild = value;
-    }
-
-    bool CodeEditor::IsImGuiChildIgnored() const noexcept
-    {
-        return m_IgnoreImGuiChild;
     }
 
     void CodeEditor::SetShowWhitespaces(bool value) noexcept
