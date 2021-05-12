@@ -5,6 +5,7 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <glad/glad.h>
+#include <imgui.h>
 
 #if PHI_PLATFORM_IS(WEB)
 #    include <emscripten.h>
@@ -197,6 +198,54 @@ namespace dlxemu
 
 #if PHI_PLATFORM_IS(WEB)
         io.IniFilename = nullptr;
+
+        // Load default config
+        constexpr char web_default_config[] =
+                R"([Window][DockSpaceViewport_11111111]
+Pos=0,19
+Size=1280,701
+Collapsed=0
+
+[Window][Debug##Default]
+Pos=60,60
+Size=400,400
+Collapsed=0
+
+[Window][Code Editor]
+Pos=0,74
+Size=962,646
+Collapsed=0
+DockId=0x00000002,0
+
+[Window][Register Viewer]
+Pos=964,19
+Size=149,701
+Collapsed=0
+DockId=0x00000004,0
+
+[Window][Memory Viewer]
+Pos=1115,19
+Size=165,701
+Collapsed=0
+DockId=0x00000006,0
+
+[Window][Control Panel]
+Pos=0,19
+Size=962,53
+Collapsed=0
+DockId=0x00000001,0
+
+[Docking][Data]
+DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1280,701 Split=X
+  DockNode      ID=0x00000005 Parent=0x8B93E3BD SizeRef=1113,701 Split=X
+    DockNode    ID=0x00000003 Parent=0x00000005 SizeRef=962,701 Split=Y
+      DockNode  ID=0x00000001 Parent=0x00000003 SizeRef=1280,53 Selected=0x919FA1B7
+      DockNode  ID=0x00000002 Parent=0x00000003 SizeRef=1280,646 CentralNode=1 Selected=0x2867833B
+    DockNode    ID=0x00000004 Parent=0x00000005 SizeRef=149,701 Selected=0x25A54FD5
+  DockNode      ID=0x00000006 Parent=0x8B93E3BD SizeRef=165,701 Selected=0xE94D7839
+)";
+
+        ImGui::LoadIniSettingsFromMemory(web_default_config);
 #else
         io.IniFilename           = "DLXEmu.ini";
 #endif
