@@ -300,6 +300,25 @@ namespace dlxemu
                         }
                     }
 
+                    static int palete_idx = 0;
+                    if (ImGui::Combo("Palete", &palete_idx, "Dark\0Light\0Retro\0"))
+                    {
+                        switch (palete_idx)
+                        {
+                            case 0:
+                                m_CodeEditor.SetPalette(dlxemu::CodeEditor::GetDarkPalette());
+                                break;
+                            case 1:
+                                m_CodeEditor.SetPalette(dlxemu::CodeEditor::GetLightPalette());
+                                break;
+                            case 2:
+                                m_CodeEditor.SetPalette(dlxemu::CodeEditor::GetRetroBluePalette());
+                                break;
+                            default:
+                                PHI_ASSERT_NOT_REACHED();
+                        }
+                    }
+
                     ImGui::EndTabItem();
                 }
 
