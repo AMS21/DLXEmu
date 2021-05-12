@@ -136,22 +136,34 @@ namespace dlxemu
 
             if (ImGui::BeginMenu("Edit"))
             {
-                if (ImGui::MenuItem("Undo", "CTRL+Z"))
-                {}
+                if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_CodeEditor.CanUndo()))
+                {
+                    m_CodeEditor.Undo();
+                }
 
-                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
-                {} // Disabled item
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_CodeEditor.CanRedo()))
+                {
+                    m_CodeEditor.Redo();
+                }
 
                 ImGui::Separator();
 
-                if (ImGui::MenuItem("Cut", "CTRL+X"))
-                {}
+                if (ImGui::MenuItem("Cut", "CTRL+X", false, m_CodeEditor.HasSelection()))
+                {
+                    m_CodeEditor.Cut();
+                }
 
-                if (ImGui::MenuItem("Copy", "CTRL+C"))
-                {}
+                if (ImGui::MenuItem("Copy", "CTRL+C", false, m_CodeEditor.HasSelection()))
+                {
+                    m_CodeEditor.Copy();
+                }
 
-                if (ImGui::MenuItem("Paste", "CTRL+V"))
-                {}
+                bool can_paste = std::strcmp(ImGui::GetClipboardText(), "") != 0;
+
+                if (ImGui::MenuItem("Paste", "CTRL+V", false, can_paste))
+                {
+                    m_CodeEditor.Paste();
+                }
 
                 ImGui::EndMenu();
             }
