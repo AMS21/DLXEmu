@@ -1412,7 +1412,6 @@ namespace dlxemu
     void CodeEditor::Render(const ImVec2& size, bool border) noexcept
     {
         m_WithinRender          = true;
-        m_TextChanged           = false;
         m_CursorPositionChanged = false;
 
         ImGui::PushStyleColor(
@@ -1447,6 +1446,8 @@ namespace dlxemu
             {
                 AddErrorMarker(1, err.message);
             }
+
+            m_TextChanged = false;
         }
 
         InternalRender();
@@ -1841,6 +1842,7 @@ namespace dlxemu
         SetSelection(m_State.m_SelectionStart, m_State.m_SelectionStart);
         SetCursorPosition(m_State.m_SelectionStart);
         Colorize(m_State.m_SelectionStart.m_Line, 1);
+        m_TextChanged = true;
     }
 
     void CodeEditor::MoveUp(std::int32_t amount, bool select) noexcept
