@@ -15,16 +15,14 @@ namespace dlxemu
     {
         if (ImGui::Begin("Memory Viewer", &m_Emulator->m_ShowMemoryViewer))
         {
-            dlx::MemoryBlock mem = m_Emulator->GetProcessor().GetMemory();
+            dlx::MemoryBlock& mem = m_Emulator->GetProcessor().GetMemory();
 
-            auto& values = mem.GetRawMemory();
+            std::vector<dlx::MemoryBlock::MemoryByte>& values = mem.GetRawMemory();
 
             for (std::size_t index{0}; index < values.size(); index += 4)
             {
-                std::int32_t val = mem.LoadWord(mem.GetStartingAddress() + index)->get();
-
                 ImGui::InputInt(std::to_string((mem.GetStartingAddress() + index).get()).c_str(),
-                                &val);
+                                reinterpret_cast<std::int32_t*>(&values[index]));
             }
         }
 
