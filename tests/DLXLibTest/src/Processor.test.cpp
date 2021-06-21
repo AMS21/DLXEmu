@@ -4459,3 +4459,110 @@ TEST_CASE("Empty source code")
 
     CHECK(proc.IsHalted());
 }
+
+TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e")
+{
+    // Signed half words
+    res = dlx::Parser::Parse(lib, "LH R1 #1001");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse(lib, "LH R1 #1003");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    // Unsigned half words
+    res = dlx::Parser::Parse(lib, "LHU R1 #1001");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse(lib, "LHU R1 #1003");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    // Signed words
+    res = dlx::Parser::Parse(lib, "LW R1 #1001");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse(lib, "LW R1 #1002");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse(lib, "LW R1 #1003");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    // Unsigned words
+    res = dlx::Parser::Parse(lib, "LWU R1 #1001");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse(lib, "LWU R1 #1002");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse(lib, "LWU R1 #1003");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}

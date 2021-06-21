@@ -42,6 +42,11 @@ namespace dlx
             PHI_LOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
+        if (!IsAddressAlignedCorrectly(address, 2u))
+        {
+            PHI_LOG_ERROR("Address {} is misaligned", address.get());
+            return {};
+        }
 
         std::size_t index = (address - m_StartingAddress).get();
         return *reinterpret_cast<const std::int16_t*>(&m_Values[index].signed_value);
@@ -52,6 +57,11 @@ namespace dlx
         if (!IsAddressValid(address, 2u))
         {
             PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            return {};
+        }
+        if (!IsAddressAlignedCorrectly(address, 2u))
+        {
+            PHI_LOG_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -66,6 +76,11 @@ namespace dlx
             PHI_LOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
+        if (!IsAddressAlignedCorrectly(address, 4u))
+        {
+            PHI_LOG_ERROR("Address {} is misaligned", address.get());
+            return {};
+        }
 
         std::size_t index = (address - m_StartingAddress).get();
         return *reinterpret_cast<const std::int32_t*>(&m_Values[index].signed_value);
@@ -76,6 +91,11 @@ namespace dlx
         if (!IsAddressValid(address, 4u))
         {
             PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            return {};
+        }
+        if (!IsAddressAlignedCorrectly(address, 4u))
+        {
+            PHI_LOG_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -219,6 +239,12 @@ namespace dlx
     {
         return address >= m_StartingAddress &&
                (address + size) <= (m_StartingAddress + m_Values.size());
+    }
+
+    phi::Boolean MemoryBlock::IsAddressAlignedCorrectly(phi::usize address,
+                                                        phi::usize size) noexcept
+    {
+        return (address % size) == 0u;
     }
 
     void MemoryBlock::Clear() noexcept

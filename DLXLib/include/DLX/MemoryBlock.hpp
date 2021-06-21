@@ -49,6 +49,9 @@ namespace dlx
         [[nodiscard]] phi::Boolean IsAddressValid(phi::usize address,
                                                   phi::usize size) const noexcept;
 
+        [[nodiscard]] static phi::Boolean IsAddressAlignedCorrectly(phi::usize address,
+                                                                    phi::usize size) noexcept;
+
         void Clear() noexcept;
 
         [[nodiscard]] phi::usize GetStartingAddress() const noexcept;
