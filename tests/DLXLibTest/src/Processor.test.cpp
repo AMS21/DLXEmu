@@ -4432,10 +4432,6 @@ TEST_CASE("NOP")
 
 TEST_CASE("R0 is read only")
 {
-    dlx::InstructionLibrary lib;
-    dlx::Processor          proc;
-    dlx::ParsedProgram      res;
-
     res = dlx::Parser::Parse(lib, "ADDI R0 R0 #4");
     REQUIRE(res.m_ParseErrors.empty());
 
