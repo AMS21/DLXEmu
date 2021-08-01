@@ -28,7 +28,7 @@ jobs:
           sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.20.1
+        uses: lukka/get-cmake@v3.21.1
 
       - name: Install clang
         run: |
@@ -112,7 +112,7 @@ jobs:
           sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.20.1
+        uses: lukka/get-cmake@v3.21.1
 
       - name: Install clang tidy
         run: |
@@ -179,7 +179,7 @@ jobs:
           sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.20.1
+        uses: lukka/get-cmake@v3.21.1
 
       - name: Install llvm
         run: |
