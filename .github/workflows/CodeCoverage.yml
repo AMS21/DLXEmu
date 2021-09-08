@@ -68,7 +68,7 @@ jobs:
           cat coverage.info
 
       - name: Upload coverage data
-        uses: codecov/codecov-action@v2.0.2
+        uses: codecov/codecov-action@v2.0.3
         with:
           file: ./build/coverage.info
           name: ${{ runner.os }}-clang++-${{ env.LLVM_VERSION }}
