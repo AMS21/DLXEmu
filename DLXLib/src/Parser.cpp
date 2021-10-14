@@ -1,5 +1,6 @@
 #include "DLX/Parser.hpp"
 
+#include "DLX/Instruction.hpp"
 #include "DLX/InstructionArg.hpp"
 #include "DLX/OpCode.hpp"
 #include "DLX/ParserUtils.hpp"
@@ -100,9 +101,17 @@ namespace dlx
 
     Token ParseToken(std::string_view token, phi::u64 line_number, phi::u64 column) noexcept
     {
-        // TODO: Parse the given number here directly?
         if (token.at(0) == '#' && token.size() > 1)
         {
+            auto number = ParseNumber(token.substr(1u));
+
+            if (number)
+            {
+                PHI_LOG_TRACE("Parsed number: {:d}", number.value().get());
+                return Token(Token::Type::ImmediateInteger, token, line_number, column,
+                             number.value().get());
+            }
+
             return Token(Token::Type::ImmediateInteger, token, line_number, column);
         }
 
@@ -493,6 +502,12 @@ namespace dlx
                                   fmt::format("Got ImmediateInteger but expected '{}'",
                                               magic_enum::enum_name(expected_argument_type)));
                     return {};
+                }
+
+                if (token.HasHint())
+                {
+                    return ConstructInstructionArgImmediateValue(
+                            static_cast<std::int16_t>(token.GetHint()));
                 }
 
                 auto parsed_value = ParseNumber(token.GetText().substr(1));

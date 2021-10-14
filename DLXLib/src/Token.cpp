@@ -61,10 +61,16 @@ namespace dlx
         return std::string(m_Text.data(), m_Text.length());
     }
 
+    phi::Boolean Token::HasHint() const noexcept
+    {
+        return m_HasHint;
+    }
+
     std::uint32_t Token::GetHint() const noexcept
     {
         PHI_ASSERT(m_Type == Type::RegisterInt || m_Type == Type::RegisterFloat ||
-                   m_Type == Type::IntegerLiteral || m_Type == Type::OpCode);
+                   m_Type == Type::IntegerLiteral || m_Type == Type::OpCode ||
+                   m_Type == Type::ImmediateInteger);
 
         return m_Hint;
     }
