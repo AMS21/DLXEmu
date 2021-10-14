@@ -239,7 +239,8 @@ namespace dlxemu
             if (ImGui::Button("R"))
             {
                 // Run
-                ParseProgram(m_CodeEditor.GetText());
+                std::string text = m_CodeEditor.GetText();
+                ParseProgram(text);
                 if (!m_Processor.LoadProgram(m_DLXProgram))
                 {
                     PHI_LOG_INFO("Can't execute program since it contains {} parse errors",
@@ -259,7 +260,8 @@ namespace dlxemu
                 if (m_Processor.GetCurrentStepCount() == 0u)
                 {
                     PHI_LOG_INFO("Loaded program");
-                    ParseProgram(m_CodeEditor.GetText());
+                    std::string text = m_CodeEditor.GetText();
+                    ParseProgram(text);
                     m_Processor.LoadProgram(m_DLXProgram);
                 }
 
