@@ -253,15 +253,16 @@ namespace dlxemu
 
         if (ImGui::Begin("DLXEmu - About", &m_ShowAbout, about_flags))
         {
-            static std::string about_text = fmt::format(
+            static constexpr const char* arch_flag{sizeof(void*) == 8 ? "x64" : "x32"};
+            static std::string           about_text = fmt::format(
                     "Version: {}.{}.{}\n"
                     "Commit: {}\n"
                     "Build date: {} {}\n"
-                    "Platform: {}\n"
+                    "Platform: {} {}\n"
                     "Compiler: {} ({}.{}.{})",
                     dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
                     dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime, PHI_PLATFORM_NAME(),
-                    PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
+                    arch_flag, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
                     PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH());
 
             ImGui::TextUnformatted(about_text.c_str());
@@ -280,7 +281,7 @@ namespace dlxemu
         }
 
         ImGui::End();
-    }
+    } // namespace dlxemu
 
     void Emulator::RenderOptionsMenu() noexcept
     {
