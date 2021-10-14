@@ -24,17 +24,20 @@ namespace dlx
         // Lookup the label
         const phi::ObserverPtr<ParsedProgram> program = processor.GetCurrentProgramm();
         PHI_ASSERT(program);
+        PHI_ASSERT(!label_name.empty(), "Can't jump to empty label");
 
-        std::string label(label_name.data(), label_name.size());
-        if (program->m_JumpData.find(label) == program->m_JumpData.end())
+        if (program->m_JumpData.find(label_name) == program->m_JumpData.end())
         {
             PHI_LOG_ERROR("Unable to find jump label {}", label_name);
             processor.Raise(Exception::UnknownLabel);
             return;
         }
 
+        const std::uint32_t jump_point = program->m_JumpData.at(label_name);
+        PHI_ASSERT(jump_point < program->m_Instructions.size(), "Jump point out of bounds");
+
         // Set program counter
-        processor.SetNextProgramCounter(program->m_JumpData.at(label));
+        processor.SetNextProgramCounter(jump_point);
     }
 
     static void JumpToRegister(Processor& processor, IntRegisterID reg_id) noexcept

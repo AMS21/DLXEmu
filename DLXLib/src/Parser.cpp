@@ -5,11 +5,12 @@
 #include "DLX/ParserUtils.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/Token.hpp"
-#include "Phi/Core/Types.hpp"
 #include <Phi/Config/FunctionLikeMacro.hpp>
 #include <Phi/Core/Assert.hpp>
+#include <Phi/Core/Boolean.hpp>
 #include <Phi/Core/Conversion.hpp>
 #include <Phi/Core/Log.hpp>
+#include <Phi/Core/Types.hpp>
 #include <magic_enum.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/bundled/format.h>
@@ -528,6 +529,7 @@ namespace dlx
         program.m_Tokens = tokens;
 
         phi::Boolean line_has_instruction{false};
+        phi::Boolean last_line_was_label{false};
 
         for (phi::usize index{0u}; index < tokens.size();)
         {
@@ -556,30 +558,30 @@ namespace dlx
 
                     // Handle jump labels
                     // Check if the last character of the identifier is a colon
-                    if (current_token.GetText().at(current_token.GetText().size() - 1) == ':')
-                    {
-                        std::string_view label_name = current_token.GetText().substr(
-                                0, current_token.GetText().size() - 1);
-
-                        if (IsReservedIdentifier(label_name))
-                        {
-                            AddParseError(
-                                    program,
-                                    fmt::format("Cannot used reserved identifier {} as jump label",
-                                                label_name));
-                            break;
-                        }
-
-                        program.m_JumpData[label_name] =
-                                static_cast<std::uint32_t>(program.m_Instructions.size());
-
-                        //PHI_LOG_INFO("Added jump label {} -> {}", label_name,
-                        //             program.m_Instructions.size());
-                    }
-                    else
+                    if (current_token.GetText().at(current_token.GetText().size() - 1) != ':')
                     {
                         AddParseError(program, "Label identifier is missing a colon");
+                        break;
                     }
+
+                    std::string_view label_name =
+                            current_token.GetText().substr(0, current_token.GetText().size() - 1);
+
+                    if (IsReservedIdentifier(label_name))
+                    {
+                        AddParseError(
+                                program,
+                                fmt::format("Cannot used reserved identifier {} as jump label",
+                                            label_name));
+                        break;
+                    }
+
+                    program.m_JumpData[label_name] =
+                            static_cast<std::uint32_t>(program.m_Instructions.size());
+                    last_line_was_label = true;
+
+                    //PHI_LOG_INFO("Added jump label {} -> {}", label_name,
+                    //             program.m_Instructions.size());
 
                     break;
                 }
@@ -589,6 +591,8 @@ namespace dlx
                         AddParseError(program, "Expected new line but got op code");
                         break;
                     }
+
+                    last_line_was_label = false;
 
                     // Handle normal instructions
                     OpCode opcode = static_cast<OpCode>(current_token.GetHint());
@@ -675,6 +679,11 @@ namespace dlx
                     AddParseError(program, "Unexpected token");
                     break;
             }
+        }
+
+        if (last_line_was_label)
+        {
+            AddParseError(program, "Cannot have empty jump labels");
         }
 
         return program;

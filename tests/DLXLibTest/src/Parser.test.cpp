@@ -236,7 +236,7 @@ TEST_CASE("Parser")
     {
         res = dlx::Parser::Parse(lib, "start:");
         CHECK(res.m_Instructions.empty());
-        REQUIRE(res.m_ParseErrors.empty());
+        REQUIRE_FALSE(res.m_ParseErrors.empty());
 
         REQUIRE(res.m_JumpData.size() == 1);
         REQUIRE(res.m_JumpData.find("start") != res.m_JumpData.end());
@@ -244,7 +244,7 @@ TEST_CASE("Parser")
 
         res = dlx::Parser::Parse(lib, "a:\nb:\nc:");
         CHECK(res.m_Instructions.empty());
-        REQUIRE(res.m_ParseErrors.empty());
+        REQUIRE_FALSE(res.m_ParseErrors.empty());
         REQUIRE(res.m_JumpData.size() == 3);
 
         REQUIRE(res.m_JumpData.find("a") != res.m_JumpData.end());
@@ -2027,6 +2027,21 @@ TEST_CASE("Parser")
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse(lib, "FPSR: ADD R1 R1 R1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+        }
+
+        SECTION("No empty labels")
+        {
+            res = dlx::Parser::Parse(lib, "label:");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "a:\nb:");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "a:\n");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "a:\n//Comment");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
     }
