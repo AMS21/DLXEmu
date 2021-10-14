@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DLX/OpCode.hpp"
+#include <Phi/Core/Boolean.hpp>
 #include <Phi/Core/Types.hpp>
 #include <string>
 #include <string_view>
@@ -30,8 +31,10 @@ namespace dlx
         };
 
     public:
+        Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column) noexcept;
+
         Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
-              std::uint32_t hint = 0u) noexcept;
+              std::uint32_t hint) noexcept;
 
         [[nodiscard]] Type GetType() const noexcept;
 
@@ -47,6 +50,8 @@ namespace dlx
 
         [[nodiscard]] std::string GetTextString() const noexcept;
 
+        [[nodiscard]] phi::Boolean HasHint() const noexcept;
+
         [[nodiscard]] std::uint32_t GetHint() const noexcept;
 
         [[nodiscard]] std::string DebugInfo() const noexcept;
@@ -57,5 +62,6 @@ namespace dlx
         phi::u64         m_LineNumber;
         phi::u64         m_Column;
         std::uint32_t    m_Hint;
+        phi::Boolean     m_HasHint;
     };
 } // namespace dlx

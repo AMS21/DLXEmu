@@ -1,17 +1,28 @@
 #include "DLX/Token.hpp"
-#include "Phi/Core/Assert.hpp"
 
+#include <Phi/Core/Assert.hpp>
+#include <Phi/Core/Boolean.hpp>
 #include <magic_enum.hpp>
 #include <string>
 
 namespace dlx
 {
+    Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column) noexcept
+        : m_Type{type}
+        , m_Text{text}
+        , m_LineNumber{line_number}
+        , m_Column{column}
+        , m_HasHint{false}
+        , m_Hint{0u}
+    {}
+
     Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
                  std::uint32_t hint) noexcept
         : m_Type{type}
         , m_Text{text}
         , m_LineNumber{line_number}
         , m_Column{column}
+        , m_HasHint{true}
         , m_Hint{hint}
     {}
 
