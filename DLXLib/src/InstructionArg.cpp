@@ -1,5 +1,9 @@
 #include "DLX/InstructionArg.hpp"
 
+#include "DLX/InstructionInfo.hpp"
+#include <Phi/Core/Assert.hpp>
+#include <magic_enum.hpp>
+
 namespace dlx
 {
     InstructionArg::InstructionArg() noexcept
@@ -14,7 +18,36 @@ namespace dlx
 
     std::string InstructionArg::DebugInfo() const noexcept
     {
-        return "InstructionArgument";
+        switch (m_Type)
+        {
+            case ArgumentType::None:
+                return "None";
+
+            case ArgumentType::AddressDisplacement: {
+                AddressDisplacement adr = AsAddressDisplacement();
+                return fmt::format("{:d}({:s})", adr.displacement.get(),
+                                   magic_enum::enum_name(adr.register_id));
+            }
+
+            case ArgumentType::FloatRegister:
+                return fmt::format("{:s}", magic_enum::enum_name(AsRegisterFloat().register_id));
+
+            case ArgumentType::IntRegister:
+                return fmt::format("{:s}", magic_enum::enum_name(AsRegisterInt().register_id));
+
+            case ArgumentType::ImmediateInteger:
+                return fmt::format("#{:d}", AsImmediateValue().signed_value.get());
+
+            case ArgumentType::Label:
+                return fmt::format("{:s}", AsLabel().label_name);
+
+            default:
+                PHI_ASSERT_NOT_REACHED();
+                break;
+        }
+
+        PHI_ASSERT_NOT_REACHED();
+        return "Unknown";
     }
 
     const InstructionArg::RegisterInt& InstructionArg::AsRegisterInt() const noexcept

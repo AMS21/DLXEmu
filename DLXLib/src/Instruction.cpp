@@ -2,6 +2,9 @@
 
 #include "DLX/InstructionArg.hpp"
 #include <Phi/Core/Assert.hpp>
+#include <magic_enum.hpp>
+#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/fmt/fmt.h>
 
 namespace dlx
 {
@@ -31,7 +34,26 @@ namespace dlx
 
     std::string Instruction::DebugInfo() const noexcept
     {
-        return std::string("Instruction");
+        switch (m_Info.GetNumberOfRequiredArguments().get())
+        {
+            case 0:
+                return fmt::format("{}", magic_enum::enum_name(m_Info.GetOpCode()));
+            case 1:
+                return fmt::format("{}, {}", magic_enum::enum_name(m_Info.GetOpCode()),
+                                   m_Arg1.DebugInfo());
+            case 2:
+                return fmt::format("{}, {}, {}", magic_enum::enum_name(m_Info.GetOpCode()),
+                                   m_Arg1.DebugInfo(), m_Arg2.DebugInfo());
+            case 3:
+                return fmt::format("{}, {}, {}, {}", magic_enum::enum_name(m_Info.GetOpCode()),
+                                   m_Arg1.DebugInfo(), m_Arg2.DebugInfo(), m_Arg3.DebugInfo());
+            default:
+                PHI_ASSERT_NOT_REACHED();
+                break;
+        }
+
+        PHI_ASSERT_NOT_REACHED();
+        return "Unknown";
     }
 
     void Instruction::Execute(Processor& processor) const noexcept

@@ -104,6 +104,16 @@ namespace dlx
 
         [[nodiscard]] phi::usize GetCurrentStepCount() const noexcept;
 
+        // Dumping
+
+        [[nodiscard]] std::string GetRegisterDump() const noexcept;
+
+        [[nodiscard]] std::string GetMemoryDump() const noexcept;
+
+        [[nodiscard]] std::string GetProcessorDump() const noexcept;
+
+        [[nodiscard]] std::string GetCurrentProgrammDump() const noexcept;
+
     private:
         phi::ObserverPtr<ParsedProgram> m_CurrentProgram;
         std::array<IntRegister, 32u>    m_IntRegisters;

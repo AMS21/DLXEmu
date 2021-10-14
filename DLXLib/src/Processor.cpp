@@ -1,13 +1,19 @@
 #include "DLX/Processor.hpp"
 
 #include "DLX/FloatRegister.hpp"
+#include "DLX/Instruction.hpp"
 #include "DLX/InstructionInfo.hpp"
+#include "DLX/IntRegister.hpp"
 #include "DLX/Parser.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
-#include "Phi/Core/Boolean.hpp"
-#include "Phi/Core/Log.hpp"
-#include "Phi/Core/Types.hpp"
+#include <Phi/Core/Boolean.hpp>
+#include <Phi/Core/Log.hpp>
+#include <Phi/Core/Types.hpp>
+#include <magic_enum.hpp>
+#include <spdlog/fmt/bundled/core.h>
+#include <spdlog/fmt/bundled/format.h>
+#include <utility>
 
 namespace dlx
 {
@@ -451,5 +457,87 @@ namespace dlx
     phi::usize Processor::GetCurrentStepCount() const noexcept
     {
         return m_CurrentStepCount;
+    }
+
+    std::string Processor::GetRegisterDump() const noexcept
+    {
+        std::string text{"Int registers:\n"};
+
+        for (phi::usize i{0u}; i < m_IntRegisters.size(); ++i)
+        {
+            const IntRegister reg = m_IntRegisters.at(i.get());
+            text.append(
+                    fmt::format("R{0}: sdec: {1:d}, udec: {2:d}, hex: 0x{2:08X}, bin: {2:#032b}\n",
+                                i.get(), reg.GetSignedValue().get(), reg.GetUnsignedValue().get()));
+        }
+
+        text.append("\nFloat registers:\n");
+
+        for (phi::usize i{0u}; i < m_FloatRegisters.size(); ++i)
+        {
+            const FloatRegister reg        = m_FloatRegisters.at(i.get());
+            float               value      = reg.GetValue().get();
+            std::uint32_t       value_uint = *reinterpret_cast<std::uint32_t*>(&value);
+            text.append(fmt::format("F{0}: flt: {1:f}, hex: 0x{2:08X}, bin: {2:#032b}\n", i.get(),
+                                    reg.GetValue().get(), value_uint));
+        }
+
+        text.append("\nStatus registers:\n");
+
+        text.append(fmt::format("FPSR: {}", m_FPSR.Get() ? "Set" : "Not Set"));
+
+        return text;
+    }
+
+    std::string Processor::GetMemoryDump() const noexcept
+    {
+        std::string text{};
+
+        // TODO: Properly implement
+
+        return text;
+    }
+
+    std::string Processor::GetProcessorDump() const noexcept
+    {
+        std::string text;
+
+        text.append(fmt::format("H: {:s}\n", m_Halted ? "True" : "False"));
+        text.append(fmt::format("PC: {:d}, NPC: {:d}\n", m_ProgramCounter.get(),
+                                m_NextProgramCounter.get()));
+
+        if (m_CurrentProgram)
+        {
+            if (m_CurrentProgram->m_ParseErrors.empty() &&
+                m_ProgramCounter.get() < m_CurrentProgram->m_Instructions.size())
+            {
+                Instruction instr = m_CurrentProgram->m_Instructions.at(m_ProgramCounter.get());
+                text.append(fmt::format("INSTR:\n{}\n", instr.DebugInfo()));
+            }
+            else
+            {
+                text.append(fmt::format("INSTR:\nPC >= Instruction count ({:d}))\n",
+                                        m_CurrentProgram->m_Instructions.size()));
+            }
+        }
+        else
+        {
+            text.append("INSTR:\nNo program loaded\n");
+        }
+
+        text.append(fmt::format("EX: {}\n", magic_enum::enum_name(m_LastRaisedException)));
+        text.append(fmt::format("IAT: {}", magic_enum::enum_name(m_CurrentInstructionAccessType)));
+
+        return text;
+    }
+
+    std::string Processor::GetCurrentProgrammDump() const noexcept
+    {
+        if (m_CurrentProgram)
+        {
+            return m_CurrentProgram->GetDump();
+        }
+
+        return "No Program";
     }
 } // namespace dlx

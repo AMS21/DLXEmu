@@ -193,6 +193,41 @@ namespace dlxemu
                 ImGui::EndMenu();
             }
 
+#if defined(PHI_DEBUG)
+            if (ImGui::BeginMenu("Debug"))
+            {
+                if (ImGui::MenuItem("Dump registers to console"))
+                {
+                    PHI_LOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
+                }
+
+                if (ImGui::MenuItem("Dump memory to console"))
+                {
+                    PHI_LOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
+                }
+
+                if (ImGui::MenuItem("Dump processor to console"))
+                {
+                    PHI_LOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
+                }
+
+                if (ImGui::MenuItem("Dump current program to console"))
+                {
+                    PHI_LOG_TRACE("Current program dump:\n" + m_Processor.GetCurrentProgrammDump());
+                }
+
+                if (ImGui::MenuItem("Full console dump"))
+                {
+                    PHI_LOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
+                    PHI_LOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
+                    PHI_LOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
+                    PHI_LOG_TRACE("Current program dump:\n" + m_Processor.GetCurrentProgrammDump());
+                }
+
+                ImGui::EndMenu();
+            }
+#endif
+
             ImGui::EndMainMenuBar();
         }
     }

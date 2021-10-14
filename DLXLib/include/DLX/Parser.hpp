@@ -20,6 +20,8 @@ namespace dlx
         std::unordered_map<std::string_view, std::uint32_t> m_JumpData;
         std::vector<ParseError>                             m_ParseErrors;
         std::vector<Token>                                  m_Tokens;
+
+        [[nodiscard]] std::string GetDump() const noexcept;
     };
 
     class Parser

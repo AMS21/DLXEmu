@@ -49,9 +49,9 @@ namespace dlx
         InstructionArg& operator=(const InstructionArg&) = default;
         InstructionArg& operator=(InstructionArg&&) = default;
 
-        ArgumentType GetType() const noexcept;
+        [[nodiscard]] ArgumentType GetType() const noexcept;
 
-        std::string DebugInfo() const noexcept;
+        [[nodiscard]] std::string DebugInfo() const noexcept;
 
         [[nodiscard]] const RegisterInt&         AsRegisterInt() const noexcept;
         [[nodiscard]] const RegisterFloat&       AsRegisterFloat() const noexcept;
