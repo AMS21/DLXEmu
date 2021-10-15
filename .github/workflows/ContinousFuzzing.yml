@@ -152,10 +152,10 @@ jobs:
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v4
         with:
-          gpg-private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          gpg_private-key: ${{ secrets.BOT_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_KEY_PASSPHRASE }}
-          git-user-signingkey: true
-          git-commit-gpgsign: true
+          git_user-signingkey: true
+          git_commit-gpgsign: true
           workdir: DLXEmu-App
 
       - name: Handle crash
