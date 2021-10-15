@@ -6,7 +6,9 @@
 #include <Phi/Config/Platform.hpp>
 #include <Phi/Core/Log.hpp>
 #include <imgui.h>
+#include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/fmt.h>
+#include <string_view>
 
 namespace dlxemu
 {
@@ -18,6 +20,50 @@ namespace dlxemu
         , m_DebugView(this)
 #endif
     {}
+
+    phi::Boolean Emulator::HandleCommandLineArguments(phi::i32 argc, char** argv) noexcept
+    {
+        // No args
+        if (argc <= 1)
+        {
+            PHI_LOG_DEBUG("No args provides");
+            return true;
+        }
+
+        for (phi::i32 arg_num{1}; arg_num < argc; ++arg_num)
+        {
+            std::string arg_value = argv[arg_num.get()];
+            std::transform(arg_value.begin(), arg_value.end(), arg_value.begin(), ::tolower);
+
+            PHI_ASSERT(!arg_value.empty());
+
+            if (arg_value.front() == '-')
+            {
+                // Display help
+                if (arg_value == "-h" || arg_value == "-help" || arg_value == "-?" ||
+                    arg_value == "--help")
+                {
+                    PHI_LOG_INFO("Help");
+                    return false;
+                }
+                // Display version
+                if (arg_value == "-v" || arg_value == "--value")
+                {
+                    fmt::print("DLXEmu version {:d}.{:d}.{:d} {:s}-{:s}\n", VersionMajor,
+                               VersionMinor, VersionPatch, GitBranch, GitShaFull);
+                    return false;
+                }
+
+                // Unknown option
+                PHI_LOG_WARN("Unknown option '{:s}'", arg_value);
+                break;
+            }
+
+            PHI_LOG_WARN("Ignore command line argument '{:s}'", arg_value);
+        }
+
+        return true;
+    }
 
     phi::Boolean Emulator::Initialize() noexcept
     {

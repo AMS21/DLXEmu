@@ -24,6 +24,9 @@ namespace dlxemu
     public:
         Emulator() noexcept;
 
+        // Returns true if we should continue initialitation
+        [[nodiscard]] phi::Boolean HandleCommandLineArguments(phi::i32 argc, char** argv) noexcept;
+
         phi::Boolean Initialize() noexcept;
 
         [[nodiscard]] phi::Boolean IsRunning() const noexcept;
