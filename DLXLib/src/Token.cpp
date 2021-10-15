@@ -71,6 +71,7 @@ namespace dlx
         PHI_ASSERT(m_Type == Type::RegisterInt || m_Type == Type::RegisterFloat ||
                    m_Type == Type::IntegerLiteral || m_Type == Type::OpCode ||
                    m_Type == Type::ImmediateInteger);
+        PHI_ASSERT(m_HasHint);
 
         return m_Hint;
     }
