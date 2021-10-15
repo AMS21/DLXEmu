@@ -286,10 +286,40 @@ namespace dlx
         return (next_token_is(tokens, index, token_type));
     }
 
-    static void AddParseError(ParsedProgram& program, const std::string& message) noexcept
+    static const Token* find_first_token_of_type(const std::vector<Token>& tokens,
+                                                                const Token::Type type) noexcept
+    {
+        for (const Token& token : tokens)
+        {
+            if (token.GetType() == type)
+            {
+                return &token;
+            }
+        }
+
+        return nullptr;
+    }
+
+    static const Token* find_last_token_of_type(const std::vector<Token>& tokens, const Token::Type type) noexcept
+    {
+        for (auto it = tokens.rbegin(); it != tokens.rend();++it)
+        {
+            if (it->GetType() == type)
+            {
+                return &(*it);
+            }
+        }
+
+        return nullptr;
+    }
+
+    static void AddParseError(ParsedProgram& program, const Token& current_token,
+                              const std::string& message) noexcept
     {
         ParseError err;
-        err.message = message;
+        err.line_number = current_token.GetLineNumber().get();
+        err.column      = current_token.GetColumn().get();
+        err.message     = message;
 
         //PHI_LOG_ERROR("Parsing error: {}", message);
 
@@ -309,7 +339,7 @@ namespace dlx
                 if (!ArgumentTypeIncludes(expected_argument_type,
                                           ArgumentType::AddressDisplacement))
                 {
-                    AddParseError(program,
+                    AddParseError(program, token,
                                   fmt::format("Expected {} but got address displacement",
                                               magic_enum::enum_name(expected_argument_type)));
                     return {};
@@ -319,7 +349,7 @@ namespace dlx
                 auto displacement_value = ParseNumber(token.GetText());
                 if (!displacement_value)
                 {
-                    AddParseError(program,
+                    AddParseError(program, token,
                                   "Failed to parse displacement value for Address displacement");
                     return {};
                 }
@@ -327,7 +357,7 @@ namespace dlx
 
                 if (!has_x_more_tokens(tokens, index, 3u))
                 {
-                    AddParseError(program,
+                    AddParseError(program, token,
                                   "Not enough arguments left to parse address displacement");
                     return {};
                 }
@@ -338,20 +368,20 @@ namespace dlx
 
                 if (first_token.GetType() != Token::Type::OpenBracket)
                 {
-                    AddParseError(program, "Expected open bracket");
+                    AddParseError(program, token, "Expected open bracket");
                     return {};
                 }
 
                 // Second token is the register
                 if (second_token.GetType() != Token::Type::RegisterInt)
                 {
-                    AddParseError(program, "Expected IntRegister");
+                    AddParseError(program, token, "Expected IntRegister");
                     return {};
                 }
 
                 if (third_token.GetType() != Token::Type::ClosingBracket)
                 {
-                    AddParseError(program, "Expected closing bracket");
+                    AddParseError(program, token, "Expected closing bracket");
                     return {};
                 }
 
@@ -366,7 +396,7 @@ namespace dlx
             case Token::Type::RegisterInt: {
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::IntRegister))
                 {
-                    AddParseError(program,
+                    AddParseError(program, token,
                                   fmt::format("Got IntRegister but expected '{}'",
                                               magic_enum::enum_name(expected_argument_type)));
                     return {};
@@ -381,7 +411,7 @@ namespace dlx
             case Token::Type::RegisterFloat: {
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::FloatRegister))
                 {
-                    AddParseError(program,
+                    AddParseError(program, token,
                                   fmt::format("Got FloatRegister but expected '{}'",
                                               magic_enum::enum_name(expected_argument_type)));
                     return {};
@@ -399,7 +429,7 @@ namespace dlx
                 // Parse as Label
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::Label))
                 {
-                    AddParseError(program,
+                    AddParseError(program, token,
                                   fmt::format("Got Label but expected '{}'",
                                               magic_enum::enum_name(expected_argument_type)));
                     return {};
@@ -407,15 +437,17 @@ namespace dlx
 
                 if (IsReservedIdentifier(token.GetText()))
                 {
-                    AddParseError(program, fmt::format("Cannot used reserved identifier {}",
-                                                       token.GetText()));
+                    AddParseError(
+                            program, token,
+                            fmt::format("Cannot used reserved identifier {}", token.GetText()));
                     return {};
                 }
 
                 if (!IsValidIdentifier(token.GetText()))
                 {
-                    AddParseError(program, fmt::format("Invalid label identifier found {}",
-                                                       token.GetText()));
+                    AddParseError(
+                            program, token,
+                            fmt::format("Invalid label identifier found {}", token.GetText()));
                     return {};
                 }
 
@@ -426,7 +458,7 @@ namespace dlx
             case Token::Type::ImmediateInteger: {
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::ImmediateInteger))
                 {
-                    AddParseError(program,
+                    AddParseError(program, token,
                                   fmt::format("Got ImmediateInteger but expected '{}'",
                                               magic_enum::enum_name(expected_argument_type)));
                     return {};
@@ -441,7 +473,7 @@ namespace dlx
                 auto parsed_value = ParseNumber(token.GetText().substr(1));
                 if (!parsed_value)
                 {
-                    AddParseError(program, "Failed to parse immediate Integer value");
+                    AddParseError(program, token, "Failed to parse immediate Integer value");
                     return {};
                 }
 
@@ -450,7 +482,7 @@ namespace dlx
                 return ConstructInstructionArgImmediateValue(parsed_value.value().get());
             }
             default:
-                AddParseError(program,
+                AddParseError(program, token,
                               fmt::format("Unexpected token of type '{}'", token.GetTypeName()));
                 return {};
         }
@@ -496,7 +528,8 @@ namespace dlx
                 case Token::Type::LabelIdentifier: {
                     if (line_has_instruction)
                     {
-                        AddParseError(program, "Expected new line but got label identifer");
+                        AddParseError(program, current_token,
+                                      "Expected new line but got label identifer");
                         break;
                     }
 
@@ -504,7 +537,8 @@ namespace dlx
                     // Check if the last character of the identifier is a colon
                     if (current_token.GetText().at(current_token.GetText().size() - 1) != ':')
                     {
-                        AddParseError(program, "Label identifier is missing a colon");
+                        AddParseError(program, current_token,
+                                      "Label identifier is missing a colon");
                         break;
                     }
 
@@ -514,7 +548,7 @@ namespace dlx
                     if (IsReservedIdentifier(label_name))
                     {
                         AddParseError(
-                                program,
+                                program, current_token,
                                 fmt::format("Cannot used reserved identifier {} as jump label",
                                             label_name));
                         break;
@@ -523,7 +557,7 @@ namespace dlx
                     // Check if label was already defined
                     if (program.m_JumpData.find(label_name) != program.m_JumpData.end())
                     {
-                        AddParseError(program,
+                        AddParseError(program, current_token,
                                       fmt::format("Label '{:s}' already defined", label_name));
                         break;
                     }
@@ -540,7 +574,7 @@ namespace dlx
                 case Token::Type::OpCode: {
                     if (line_has_instruction)
                     {
-                        AddParseError(program, "Expected new line but got op code");
+                        AddParseError(program, current_token, "Expected new line but got op code");
                         break;
                     }
 
@@ -573,7 +607,7 @@ namespace dlx
                         if (!has_one_more_token(tokens, index))
                         {
                             AddParseError(
-                                    program,
+                                    program, current_token,
                                     fmt::format("Missing {} arguments for instruction {}",
                                                 (number_of_argument_required - argument_num).get(),
                                                 magic_enum::enum_name(opcode)));
@@ -592,7 +626,7 @@ namespace dlx
 
                         if (current_token.GetType() == Token::Type::NewLine)
                         {
-                            AddParseError(program, "Unexpected end of line");
+                            AddParseError(program, current_token, "Unexpected end of line");
                             break;
                         }
 
@@ -602,8 +636,9 @@ namespace dlx
                                                            tokens, index, program);
                         if (!optional_parsed_argument.has_value())
                         {
-                            AddParseError(program, fmt::format("Failed to parse argument number {}",
-                                                               argument_num.get()));
+                            AddParseError(program, current_token,
+                                          fmt::format("Failed to parse argument number {}",
+                                                      argument_num.get()));
                             break;
                         }
 
@@ -628,14 +663,17 @@ namespace dlx
                 }
 
                 default:
-                    AddParseError(program, "Unexpected token");
+                    AddParseError(program, current_token, "Unexpected token");
                     break;
             }
         }
 
         if (last_line_was_label)
         {
-            AddParseError(program, "Cannot have empty jump labels");
+            auto optional_token = find_last_token_of_type(tokens, Token::Type::LabelIdentifier);
+            PHI_ASSERT(optional_token);
+
+            AddParseError(program, *optional_token, "Cannot have empty jump labels");
         }
 
         return program;

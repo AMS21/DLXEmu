@@ -10,7 +10,9 @@ namespace dlx
 {
     struct ParseError
     {
-        std::string message;
+        std::string   message;
+        std::uint32_t line_number;
+        std::uint32_t column;
     };
 
     struct ParsedProgram
