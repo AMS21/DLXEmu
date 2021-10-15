@@ -17,7 +17,7 @@ namespace dlxemu
             const dlx::Processor& processor = m_Emulator->GetProcessor();
             const std::string     full_dump =
                     processor.GetProcessorDump() + '\n' + processor.GetRegisterDump() + '\n' +
-                    processor.GetMemoryDump() + '\n' + processor.GetCurrentProgrammDump();
+                    processor.GetMemoryDump() + '\n' + m_Emulator->m_DLXProgram.GetDump();
 
             ImGui::TextUnformatted(full_dump.c_str());
         }

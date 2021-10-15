@@ -266,6 +266,7 @@ namespace dlx
     {
         if (!program.m_ParseErrors.empty())
         {
+            PHI_LOG_WARN("Trying to load program with parsing errors");
             return false;
         }
 

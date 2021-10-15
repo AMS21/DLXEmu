@@ -102,11 +102,21 @@ namespace dlxemu
     void Emulator::ParseProgram(std::string_view source) noexcept
     {
         m_DLXProgram = dlx::Parser::Parse(m_InstructionLibrary, source);
+
+        if (m_DLXProgram.m_ParseErrors.empty())
+        {
+            m_Processor.LoadProgram(m_DLXProgram);
+        }
     }
 
     void Emulator::ParseProgram(std::vector<dlx::Token> tokens) noexcept
     {
         m_DLXProgram = dlx::Parser::Parse(m_InstructionLibrary, tokens);
+
+        if (m_DLXProgram.m_ParseErrors.empty())
+        {
+            m_Processor.LoadProgram(m_DLXProgram);
+        }
     }
 
     void Emulator::RenderMenuBar() noexcept
@@ -226,7 +236,7 @@ namespace dlxemu
 
                 if (ImGui::MenuItem("Dump current program to console"))
                 {
-                    PHI_LOG_TRACE("Current program dump:\n" + m_Processor.GetCurrentProgrammDump());
+                    PHI_LOG_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
                 }
 
                 if (ImGui::MenuItem("Full console dump"))
@@ -234,7 +244,7 @@ namespace dlxemu
                     PHI_LOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
                     PHI_LOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
                     PHI_LOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
-                    PHI_LOG_TRACE("Current program dump:\n" + m_Processor.GetCurrentProgrammDump());
+                    PHI_LOG_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
                 }
 
                 ImGui::EndMenu();
@@ -252,17 +262,15 @@ namespace dlxemu
             if (ImGui::Button("R"))
             {
                 // Run
-                std::string text = m_CodeEditor.GetText();
-                ParseProgram(text);
-                if (!m_Processor.LoadProgram(m_DLXProgram))
-                {
-                    PHI_LOG_INFO("Can't execute program since it contains {} parse errors",
-                                 m_DLXProgram.m_ParseErrors.size());
-                }
-                else
+                if (m_DLXProgram.m_ParseErrors.empty())
                 {
                     m_Processor.ExecuteCurrentProgram();
                     PHI_LOG_INFO("Executed current program");
+                }
+                else
+                {
+                    PHI_LOG_INFO("Can't execute program since it contains {} parse errors",
+                                 m_DLXProgram.m_ParseErrors.size());
                 }
             }
 
@@ -273,8 +281,6 @@ namespace dlxemu
                 if (m_Processor.GetCurrentStepCount() == 0u)
                 {
                     PHI_LOG_INFO("Loaded program");
-                    std::string text = m_CodeEditor.GetText();
-                    ParseProgram(text);
                     m_Processor.LoadProgram(m_DLXProgram);
                 }
 
