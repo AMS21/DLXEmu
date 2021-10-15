@@ -195,6 +195,9 @@ namespace dlxemu
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
+#if PHI_PLATFORM_IS_NOT(WEB)
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Viewports
+#endif
 
 #if PHI_PLATFORM_IS(WEB)
         io.IniFilename = nullptr;
