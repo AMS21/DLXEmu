@@ -88,7 +88,7 @@ namespace dlxemu
             return false;
         }
 
-        // Hook unsupported functions functions
+        // Hook unsupported functions
 #if PHI_PLATFORM_IS(WEB)
         glad_glPolygonMode = [](GLenum /*face*/, GLenum /*mode*/) -> void { return; };
 #endif
