@@ -61,6 +61,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update -m
           sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install
@@ -179,6 +180,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update -m
           sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
