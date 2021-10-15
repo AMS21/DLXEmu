@@ -126,7 +126,10 @@ namespace dlxemu
             if (ImGui::BeginMenu("File"))
             {
                 if (ImGui::MenuItem("New"))
-                {}
+                {
+                    m_CodeEditor.SelectAll();
+                    m_CodeEditor.Delete();
+                }
 
                 if (ImGui::MenuItem("Open", "Ctrl+O"))
                 {}
