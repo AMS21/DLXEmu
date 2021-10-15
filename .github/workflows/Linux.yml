@@ -23,13 +23,26 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
+          # gcc-11
+          - { compiler: g++, compiler_version: "11" }
+          - { compiler: g++, compiler_version: "11", dynamic_test: "asan" }
+          - { compiler: g++, compiler_version: "11", dynamic_test: "lsan" }
+          - { compiler: g++, compiler_version: "11", dynamic_test: "tsan" }
+          - { compiler: g++, compiler_version: "11", dynamic_test: "ubsan" }
           # gcc-10
           - { compiler: g++, compiler_version: "10" }
           - { compiler: g++, compiler_version: "10", dynamic_test: "asan" }
           - { compiler: g++, compiler_version: "10", dynamic_test: "lsan" }
           - { compiler: g++, compiler_version: "10", dynamic_test: "tsan" }
           - { compiler: g++, compiler_version: "10", dynamic_test: "ubsan" }
-          # clang-11
+          # clang-13
+          - { compiler: clang++, compiler_version: "13" }
+          - { compiler: clang++, compiler_version: "13", dynamic_test: "asan" }
+          - { compiler: clang++, compiler_version: "13", dynamic_test: "lsan" }
+          #- { compiler: clang++, compiler_version: "13", dynamic_test: "msan" }
+          - { compiler: clang++, compiler_version: "13", dynamic_test: "tsan" }
+          - { compiler: clang++, compiler_version: "13", dynamic_test: "ubsan" }
+          # clang-12
           - { compiler: clang++, compiler_version: "12" }
           - { compiler: clang++, compiler_version: "12", dynamic_test: "asan" }
           - { compiler: clang++, compiler_version: "12", dynamic_test: "lsan" }
@@ -152,7 +165,7 @@ jobs:
       matrix:
         cfg:
           - { compiler: g++, compiler_version: "10" }
-          - { compiler: clang++, compiler_version: "12" }
+          - { compiler: clang++, compiler_version: "13" }
 
     steps:
       - name: Checkout
