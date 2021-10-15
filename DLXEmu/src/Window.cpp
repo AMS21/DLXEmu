@@ -25,7 +25,7 @@ namespace dlxemu
 {
     static void glfw_error_callback(int error, const char* message) noexcept
     {
-        PHI_LOG_ERROR("GLFW error {}: {}", error, message);
+        PHI_LOG_ERROR("GLFW error {:d}: {:s}", error, message);
     }
 
     Window::~Window() noexcept
@@ -38,7 +38,7 @@ namespace dlxemu
         // Set error callback
         glfwSetErrorCallback(&glfw_error_callback);
 
-        if (!glfwInit())
+        if (glfwInit() == GLFW_FALSE)
         {
             PHI_LOG_ERROR("Failed to initialize GLFW!");
             return false;

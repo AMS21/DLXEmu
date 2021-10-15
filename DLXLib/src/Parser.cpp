@@ -287,7 +287,7 @@ namespace dlx
     }
 
     static const Token* find_first_token_of_type(const std::vector<Token>& tokens,
-                                                                const Token::Type type) noexcept
+                                                 const Token::Type         type) noexcept
     {
         for (const Token& token : tokens)
         {
@@ -300,9 +300,10 @@ namespace dlx
         return nullptr;
     }
 
-    static const Token* find_last_token_of_type(const std::vector<Token>& tokens, const Token::Type type) noexcept
+    static const Token* find_last_token_of_type(const std::vector<Token>& tokens,
+                                                const Token::Type         type) noexcept
     {
-        for (auto it = tokens.rbegin(); it != tokens.rend();++it)
+        for (auto it = tokens.rbegin(); it != tokens.rend(); ++it)
         {
             if (it->GetType() == type)
             {
