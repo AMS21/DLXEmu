@@ -368,20 +368,26 @@ namespace dlx
 
                 if (first_token.GetType() != Token::Type::OpenBracket)
                 {
-                    AddParseError(program, token, "Expected open bracket");
+                    AddParseError(program, token,
+                                  fmt::format("Expected open bracket but got {:s}",
+                                              magic_enum::enum_name(first_token.GetType())));
                     return {};
                 }
 
                 // Second token is the register
                 if (second_token.GetType() != Token::Type::RegisterInt)
                 {
-                    AddParseError(program, token, "Expected IntRegister");
+                    AddParseError(program, token,
+                                  fmt::format("Expected IntRegister but got {:s}",
+                                              magic_enum::enum_name(second_token.GetType())));
                     return {};
                 }
 
                 if (third_token.GetType() != Token::Type::ClosingBracket)
                 {
-                    AddParseError(program, token, "Expected closing bracket");
+                    AddParseError(program, token,
+                                  fmt::format("Expected closing bracket but got {:s}",
+                                              magic_enum::enum_name(third_token.GetType())));
                     return {};
                 }
 
@@ -542,23 +548,43 @@ namespace dlx
                         break;
                     }
 
-                    std::string_view label_name =
-                            current_token.GetText().substr(0, current_token.GetText().size() - 1);
+                    std::string_view label_name = current_token.GetText();
+                    label_name.remove_suffix(1);
 
                     if (IsReservedIdentifier(label_name))
                     {
-                        AddParseError(
-                                program, current_token,
-                                fmt::format("Cannot used reserved identifier {} as jump label",
-                                            label_name));
+                        AddParseError(program, current_token,
+                                      fmt::format("Cannot use reserved identifier {} as jump label",
+                                                  label_name));
                         break;
                     }
 
                     // Check if label was already defined
                     if (program.m_JumpData.find(label_name) != program.m_JumpData.end())
                     {
+                        // Find first defintions of label
+                        const Token* first_label_definition = nullptr;
+                        for (const Token& token : tokens)
+                        {
+                            if (token.GetType() == Token::Type::LabelIdentifier)
+                            {
+                                std::string_view token_label_name = token.GetText();
+                                token_label_name.remove_suffix(1);
+
+                                if (token_label_name == label_name)
+                                {
+                                    first_label_definition = &token;
+                                    break;
+                                }
+                            }
+                        }
+
+                        PHI_ASSERT(first_label_definition);
+
                         AddParseError(program, current_token,
-                                      fmt::format("Label '{:s}' already defined", label_name));
+                                      fmt::format("Label '{:s}' already defined at line {:d}",
+                                                  label_name,
+                                                  first_label_definition->GetLineNumber().get()));
                         break;
                     }
 
@@ -574,7 +600,8 @@ namespace dlx
                 case Token::Type::OpCode: {
                     if (line_has_instruction)
                     {
-                        AddParseError(program, current_token, "Expected new line but got op code");
+                        AddParseError(program, current_token,
+                                      "You may only place one instruction per line");
                         break;
                     }
 
@@ -626,7 +653,14 @@ namespace dlx
 
                         if (current_token.GetType() == Token::Type::NewLine)
                         {
-                            AddParseError(program, current_token, "Unexpected end of line");
+                            phi::u8 missing_arguments = number_of_argument_required - argument_num;
+                            AddParseError(program, current_token,
+                                          fmt::format("Unexpected end of line. Instruction {:s} "
+                                                      "requires {:d} arguments, but only {:d} were "
+                                                      "provided. Missing {:d} argument(s)",
+                                                      magic_enum::enum_name(opcode),
+                                                      number_of_argument_required.get(),
+                                                      argument_num.get(), missing_arguments.get()));
                             break;
                         }
 
@@ -637,8 +671,10 @@ namespace dlx
                         if (!optional_parsed_argument.has_value())
                         {
                             AddParseError(program, current_token,
-                                          fmt::format("Failed to parse argument number {}",
-                                                      argument_num.get()));
+                                          fmt::format("Failed to parse argument number {:d} of "
+                                                      "{:s} instruction",
+                                                      argument_num.get(),
+                                                      magic_enum::enum_name(opcode)));
                             break;
                         }
 
@@ -663,17 +699,24 @@ namespace dlx
                 }
 
                 default:
-                    AddParseError(program, current_token, "Unexpected token");
+                    AddParseError(program, current_token,
+                                  fmt::format("Unexpected token of type {:s}",
+                                              magic_enum::enum_name(current_token.GetType())));
                     break;
             }
         }
 
         if (last_line_was_label)
         {
-            auto optional_token = find_last_token_of_type(tokens, Token::Type::LabelIdentifier);
+            const Token* optional_token =
+                    find_last_token_of_type(tokens, Token::Type::LabelIdentifier);
             PHI_ASSERT(optional_token);
 
-            AddParseError(program, *optional_token, "Cannot have empty jump labels");
+            const std::string_view label_text = optional_token->GetText();
+            const std::string_view label_name = label_text.substr(0, label_text.size() - 1);
+
+            AddParseError(program, *optional_token,
+                          fmt::format("Label '{:s}' does not have any instructions", label_name));
         }
 
         return program;
