@@ -6,7 +6,6 @@
 ![Emscripten](https://github.com/AMS21/DLXEmu/workflows/Emscripten/badge.svg?branch=main&event=push)
 ![CodeQL](https://github.com/AMS21/DLXEmu/workflows/CodeQL/badge.svg?branch=main&event=push)
 [![CodeFactor](https://www.codefactor.io/repository/github/ams21/dlxemu/badge)](https://www.codefactor.io/repository/github/ams21/dlxemu)
-[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IkFNUzIxIiwicmVwbzEiOiJETFhFbXUiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoxNjg4MSwiaWF0IjoxNjEyMzU5MzEwfQ.CteaaKprIq4xIj17PcTvhY6Q7zY3srM_-Y0FljngLRY)](https://www.deepcode.ai/app/gh/AMS21/DLXEmu/_/dashboard?utm_content=gh%2FAMS21%2FDLXEmu)
 [![codecov](https://codecov.io/gh/AMS21/DLXEmu/branch/main/graph/badge.svg?token=NXREAITGZL)](https://codecov.io/gh/AMS21/DLXEmu)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a755d342cc6c43a29f47c09fe9d5a9df)](https://www.codacy.com/gh/AMS21/DLXEmu/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AMS21/DLXEmu&amp;utm_campaign=Badge_Grade)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/AMS21/DLXEmu.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/AMS21/DLXEmu/context:cpp)
