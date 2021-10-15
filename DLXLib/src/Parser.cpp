@@ -592,6 +592,14 @@ namespace dlx
                         break;
                     }
 
+                    // Check if label was already defined
+                    if (program.m_JumpData.find(label_name) != program.m_JumpData.end())
+                    {
+                        AddParseError(program,
+                                      fmt::format("Label '{:s}' already defined", label_name));
+                        break;
+                    }
+
                     program.m_JumpData[label_name] =
                             static_cast<std::uint32_t>(program.m_Instructions.size());
                     last_line_was_label = true;

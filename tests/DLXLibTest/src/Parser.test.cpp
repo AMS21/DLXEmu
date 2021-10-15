@@ -242,9 +242,37 @@ TEST_CASE("Parser")
         REQUIRE(res.m_JumpData.find("start") != res.m_JumpData.end());
         CHECK(res.m_JumpData.at("start") == 0u);
 
-        res = dlx::Parser::Parse(lib, "a:\nb:\nc:");
-        CHECK(res.m_Instructions.empty());
-        REQUIRE_FALSE(res.m_ParseErrors.empty());
+        res = dlx::Parser::Parse(lib, "a:\nb:\nc: NOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        REQUIRE(res.m_ParseErrors.empty());
+        REQUIRE(res.m_JumpData.size() == 3);
+
+        REQUIRE(res.m_JumpData.find("a") != res.m_JumpData.end());
+        CHECK(res.m_JumpData.at("a") == 0u);
+
+        REQUIRE(res.m_JumpData.find("b") != res.m_JumpData.end());
+        CHECK(res.m_JumpData.at("b") == 0u);
+
+        REQUIRE(res.m_JumpData.find("c") != res.m_JumpData.end());
+        CHECK(res.m_JumpData.at("c") == 0u);
+
+        res = dlx::Parser::Parse(lib, "a:b:c: NOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        REQUIRE(res.m_ParseErrors.empty());
+        REQUIRE(res.m_JumpData.size() == 3);
+
+        REQUIRE(res.m_JumpData.find("a") != res.m_JumpData.end());
+        CHECK(res.m_JumpData.at("a") == 0u);
+
+        REQUIRE(res.m_JumpData.find("b") != res.m_JumpData.end());
+        CHECK(res.m_JumpData.at("b") == 0u);
+
+        REQUIRE(res.m_JumpData.find("c") != res.m_JumpData.end());
+        CHECK(res.m_JumpData.at("c") == 0u);
+
+        res = dlx::Parser::Parse(lib, "a: b: c: NOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        REQUIRE(res.m_ParseErrors.empty());
         REQUIRE(res.m_JumpData.size() == 3);
 
         REQUIRE(res.m_JumpData.find("a") != res.m_JumpData.end());
@@ -2042,6 +2070,27 @@ TEST_CASE("Parser")
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse(lib, "a:\n//Comment");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+        }
+
+        SECTION("Label names need to unique")
+        {
+            res = dlx::Parser::Parse(lib, "l:\nl:\nNOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "a:\nNOP\nb:NOP\na:NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "a:NOP\na:NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "a:a:NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "a: a:NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse(lib, "a: a: a: a:\nNOP");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
     }
