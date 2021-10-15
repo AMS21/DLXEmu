@@ -277,15 +277,15 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1280,701 Split=X
         ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
         ImGui_ImplOpenGL3_Init(glsl_version);
 
-        PHI_LOG_INFO("Successfully initialized ImGui with glsl {}", glsl_version);
+        PHI_LOG_INFO("Successfully initialized ImGui with glsl {:s}", glsl_version);
 
         imgui_initialized = true;
     }
 
     void Window::ShutdownImGui() noexcept
     {
-        ImGui_ImplGlfw_Shutdown();
         ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
 
         ImGui::DestroyContext();
     }
