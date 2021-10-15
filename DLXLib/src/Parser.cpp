@@ -35,7 +35,7 @@ namespace dlx
 
             if (number)
             {
-                PHI_LOG_TRACE("Parsed number: {:d}", number.value().get());
+                //PHI_LOG_TRACE("Parsed number: {:d}", number.value().get());
                 return Token(Token::Type::ImmediateInteger, token, line_number, column,
                              number.value().get());
             }
