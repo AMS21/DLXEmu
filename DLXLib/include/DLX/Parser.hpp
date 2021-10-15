@@ -1,29 +1,13 @@
 #pragma once
 
-#include "Instruction.hpp"
 #include "InstructionLibrary.hpp"
+#include "ParsedProgram.hpp"
 #include "Token.hpp"
-#include <string>
-#include <unordered_map>
+#include <string_view>
 #include <vector>
 
 namespace dlx
 {
-    struct ParseError
-    {
-        std::string message;
-    };
-
-    struct ParsedProgram
-    {
-        std::vector<Instruction>                            m_Instructions;
-        std::unordered_map<std::string_view, std::uint32_t> m_JumpData;
-        std::vector<ParseError>                             m_ParseErrors;
-        std::vector<Token>                                  m_Tokens;
-
-        [[nodiscard]] std::string GetDump() const noexcept;
-    };
-
     class Parser
     {
     public:
