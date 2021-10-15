@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.2)
 
-file(GLOB DLXEMULIB_SOURCES "src/CodeEditor.cpp" "src/CommandLineArgs.cpp" "src/Emulator.cpp" "src/MemoryViewer.cpp" "src/RegisterViewer.cpp" "src/Window.cpp")
-file(GLOB DLXEMULIB_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/Generated/DLXEmu/BuildInfo.hpp" "include/dlxemu/CodeEditor.hpp" "include/dlxemu/CommandLineArgs.hpp" "include/dlxemu/Emulator.hpp" "include/DLXEmu/MemoryViewer.hpp" "include/DLXEmu/RegisterViewer.hpp" "include/dlxemu/Window.hpp")
+file(GLOB DLXEMULIB_SOURCES "src/CodeEditor.cpp" "src/CommandLineArgs.cpp" "src/DebugView.cpp" "src/Emulator.cpp" "src/MemoryViewer.cpp" "src/RegisterViewer.cpp" "src/Window.cpp")
+file(GLOB DLXEMULIB_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/Generated/DLXEmu/BuildInfo.hpp" "include/DLXEmu/CodeEditor.hpp" "include/DLXEmu/CommandLineArgs.hpp" "include/DLXEmu/DebugView.hpp" "include/DLXEmu/Emulator.hpp" "include/DLXEmu/MemoryViewer.hpp" "include/DLXEmu/RegisterViewer.hpp" "include/DLXEmu/Window.hpp")
 
 # DLXEmuLib
 add_library("DLXEmuLib" STATIC ${DLXEMULIB_SOURCES} ${DLXEMULIB_HEADERS})

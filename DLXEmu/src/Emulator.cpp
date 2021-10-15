@@ -14,6 +14,9 @@ namespace dlxemu
         : m_CodeEditor(this)
         , m_MemoryViewer(this)
         , m_RegisterViewer(this)
+#if defined(PHI_DEBUG)
+        , m_DebugView(this)
+#endif
     {}
 
     phi::Boolean Emulator::Initialize() noexcept
@@ -67,6 +70,11 @@ namespace dlxemu
         }
 
 #if defined(PHI_DEBUG)
+        if (m_ShowDebugView)
+        {
+            m_DebugView.Render();
+        }
+
         if (m_ShowDemoWindow)
         {
             ImGui::ShowDemoWindow(&m_ShowDemoWindow);
@@ -178,6 +186,7 @@ namespace dlxemu
                 ImGui::Separator();
 
                 ImGui::MenuItem("Dear ImGui Demo Window", "", &m_ShowDemoWindow);
+                ImGui::MenuItem("Debug View", "", &m_ShowDebugView);
 #endif
 
                 ImGui::EndMenu();
@@ -196,6 +205,10 @@ namespace dlxemu
 #if defined(PHI_DEBUG)
             if (ImGui::BeginMenu("Debug"))
             {
+                ImGui::MenuItem("Debug View", "", &m_ShowDebugView);
+
+                ImGui::Separator();
+
                 if (ImGui::MenuItem("Dump registers to console"))
                 {
                     PHI_LOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());

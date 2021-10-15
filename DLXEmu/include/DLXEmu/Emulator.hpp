@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CodeEditor.hpp"
+#include "DebugView.hpp"
 #include "MemoryViewer.hpp"
 #include "RegisterViewer.hpp"
 #include "Window.hpp"
@@ -18,6 +19,7 @@ namespace dlxemu
         friend MemoryViewer;
         friend RegisterViewer;
         friend CodeEditor;
+        friend DebugView;
 
     public:
         Emulator() noexcept;
@@ -56,10 +58,14 @@ namespace dlxemu
         Window         m_Window;
         MemoryViewer   m_MemoryViewer;
         RegisterViewer m_RegisterViewer;
+#if defined(PHI_DEBUG)
+        DebugView m_DebugView;
+#endif
 
         // Menu
 #if defined(PHI_DEBUG)
         bool m_ShowDemoWindow{false};
+        bool m_ShowDebugView{false};
 #endif
         bool m_ShowControlPanel{true};
         bool m_ShowMemoryViewer{true};
