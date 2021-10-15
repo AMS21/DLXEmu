@@ -314,15 +314,16 @@ namespace dlxemu
         {
             static constexpr const char* arch_flag{sizeof(void*) == 8 ? "x64" : "x32"};
             static std::string           about_text = fmt::format(
-                    "Version: {}.{}.{}\n"
-                    "Commit: {}\n"
-                    "Build date: {} {}\n"
-                    "Platform: {} {}\n"
-                    "Compiler: {} ({}.{}.{})",
+                    "Version: {:d}.{:d}.{:d} {:s}\n"
+                    "Commit: {:s}\n"
+                    "Build date: {:s} {:s}\n"
+                    "Platform: {:s} {:s}\n"
+                    "Compiler: {:s} ({:d}.{:d}.{:d})",
                     dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
-                    dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime, PHI_PLATFORM_NAME(),
-                    arch_flag, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
-                    PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH());
+                    dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
+                    PHI_PLATFORM_NAME(), arch_flag, PHI_COMPILER_NAME(),
+                    PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),
+                    PHI_CURRENT_COMPILER_VERSION_PATCH());
 
             ImGui::TextUnformatted(about_text.c_str());
 
