@@ -121,7 +121,7 @@ namespace dlxemu
             }
         }
 
-        return result.substr(0, result.size());
+        return result.substr(0, result.size() - 1);
     }
 
     CodeEditor::Coordinates CodeEditor::GetActualCursorCoordinates() const noexcept
