@@ -15,9 +15,9 @@ namespace dlx
 
         void SetUnsignedValue(phi::u32 val) noexcept;
 
-        phi::i32 GetSignedValue() const noexcept;
+        [[nodiscard]] phi::i32 GetSignedValue() const noexcept;
 
-        phi::u32 GetUnsignedValue() const noexcept;
+        [[nodiscard]] phi::u32 GetUnsignedValue() const noexcept;
 
         [[nodiscard]] phi::Boolean IsReadOnly() const noexcept;
 

@@ -13,7 +13,7 @@ namespace dlx
 
         void SetArgument(phi::u8 argument_number, InstructionArg argument) noexcept;
 
-        std::string DebugInfo() const noexcept;
+        [[nodiscard]] std::string DebugInfo() const noexcept;
 
         void Execute(Processor& processor) const noexcept;
 

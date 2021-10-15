@@ -13,7 +13,7 @@ namespace dlx
 
         phi::Boolean Initialize() noexcept;
 
-        const InstructionInfo& LookUp(OpCode instruction) const noexcept;
+        [[nodiscard]] const InstructionInfo& LookUp(OpCode instruction) const noexcept;
 
     protected:
         void InitInstruction(OpCode opcode, ArgumentType arg1, ArgumentType arg2, ArgumentType arg3,
