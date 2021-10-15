@@ -1233,10 +1233,9 @@ namespace dlxemu
                                             start.y + m_CharAdvance.y);
                         draw_list->AddRectFilled(
                                 start, end,
-                                m_Palette[(std::int32_t)(focused ?
-                                                                 PaletteIndex::CurrentLineFill :
-                                                                 PaletteIndex::
-                                                                         CurrentLineFillInactive)]);
+                                m_Palette[(std::int32_t)(
+                                        focused ? PaletteIndex::CurrentLineFill :
+                                                  PaletteIndex::CurrentLineFillInactive)]);
                         draw_list->AddRect(start, end,
                                            m_Palette[(std::int32_t)PaletteIndex::CurrentLineEdge],
                                            1.0f);
