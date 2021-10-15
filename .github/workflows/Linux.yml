@@ -164,7 +164,7 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          - { compiler: g++, compiler_version: "10" }
+          - { compiler: g++, compiler_version: "11" }
           - { compiler: clang++, compiler_version: "13" }
 
     steps:

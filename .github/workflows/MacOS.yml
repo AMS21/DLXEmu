@@ -23,6 +23,11 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
+          # gcc-11
+          - { compiler: g++, compiler_version: "11" }
+          - { compiler: g++, compiler_version: "11", dynamic_test: "asan" }
+          - { compiler: g++, compiler_version: "11", dynamic_test: "lsan" }
+          - { compiler: g++, compiler_version: "11", dynamic_test: "ubsan" }
           # gcc-10
           - { compiler: g++, compiler_version: "10" }
           - { compiler: g++, compiler_version: "10", dynamic_test: "asan" }
@@ -137,7 +142,7 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          - { compiler: g++, compiler_version: "10" }
+          - { compiler: g++, compiler_version: "11" }
           - { compiler: clang++, compiler_version: "12.4" }
 
     steps:
