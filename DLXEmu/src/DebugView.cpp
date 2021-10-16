@@ -257,7 +257,7 @@ namespace dlxemu
                 std::size_t message_length = message_length_distrib(engine);
                 std::string text           = generate_random_code_string(engine, message_length);
 
-                PHI_LOG_DEBUG("InsertText: {:s}", text);
+                //PHI_LOG_DEBUG("InsertText: {:s}", text);
 
                 editor.InsertText(text);
                 break;
@@ -268,7 +268,7 @@ namespace dlxemu
                 std::uint32_t amount = uint32_t_distrib(engine);
                 bool          select = bool_distrib(engine) == 1;
 
-                PHI_LOG_DEBUG("MoveUp: {:d} {:s}", amount, select ? "True" : "False");
+                //PHI_LOG_DEBUG("MoveUp: {:d} {:s}", amount, select ? "True" : "False");
 
                 editor.MoveUp(amount, select);
                 break;
@@ -279,7 +279,7 @@ namespace dlxemu
                 std::uint32_t amount = uint32_t_distrib(engine);
                 bool          select = bool_distrib(engine) == 1;
 
-                PHI_LOG_DEBUG("MoveDown: {:d} {:s}", amount, select ? "True" : "False");
+                //PHI_LOG_DEBUG("MoveDown: {:d} {:s}", amount, select ? "True" : "False");
 
                 editor.MoveDown(amount, select);
                 break;
@@ -291,8 +291,8 @@ namespace dlxemu
                 bool          select    = bool_distrib(engine) == 1;
                 bool          word_mode = bool_distrib(engine) == 1;
 
-                PHI_LOG_DEBUG("MoveLeft: {:d} {:s} {:s}", amount, select ? "True" : "False",
-                              word_mode ? "True" : "False");
+                //PHI_LOG_DEBUG("MoveLeft: {:d} {:s} {:s}", amount, select ? "True" : "False",
+                //              word_mode ? "True" : "False");
 
                 editor.MoveLeft(amount, select, word_mode);
                 break;
@@ -304,8 +304,8 @@ namespace dlxemu
                 bool          select    = bool_distrib(engine) == 1;
                 bool          word_mode = bool_distrib(engine) == 1;
 
-                PHI_LOG_DEBUG("MoveRight: {:d} {:s} {:s}", amount, select ? "True" : "False",
-                              word_mode ? "True" : "False");
+                //PHI_LOG_DEBUG("MoveRight: {:d} {:s} {:s}", amount, select ? "True" : "False",
+                //              word_mode ? "True" : "False");
 
                 editor.MoveRight(amount, select, word_mode);
                 break;
@@ -315,7 +315,7 @@ namespace dlxemu
             case 17: {
                 bool select = bool_distrib(engine) == 1;
 
-                PHI_LOG_DEBUG("MoveTop: {:s}", select ? "True" : "False");
+                //PHI_LOG_DEBUG("MoveTop: {:s}", select ? "True" : "False");
 
                 editor.MoveTop(select);
                 break;
@@ -325,7 +325,7 @@ namespace dlxemu
             case 18: {
                 bool select = bool_distrib(engine) == 1;
 
-                PHI_LOG_DEBUG("MoveBottom: {:s}", select ? "True" : "False");
+                //PHI_LOG_DEBUG("MoveBottom: {:s}", select ? "True" : "False");
 
                 editor.MoveBottom(select);
                 break;
@@ -335,7 +335,7 @@ namespace dlxemu
             case 19: {
                 bool select = bool_distrib(engine) == 1;
 
-                PHI_LOG_DEBUG("MoveHome: {:s}", select ? "True" : "False");
+                //PHI_LOG_DEBUG("MoveHome: {:s}", select ? "True" : "False");
 
                 editor.MoveHome(select);
                 break;
@@ -345,7 +345,7 @@ namespace dlxemu
             case 20: {
                 bool select = bool_distrib(engine) == 1;
 
-                PHI_LOG_DEBUG("MoveEnd: {:s}", select ? "True" : "False");
+                //PHI_LOG_DEBUG("MoveEnd: {:s}", select ? "True" : "False");
 
                 editor.MoveEnd(select);
                 break;
