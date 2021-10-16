@@ -13,6 +13,7 @@ namespace dlxemu
 
     void DebugView::Render() noexcept
     {
+#if defined(PHI_DEBUG)
         if (ImGui::Begin("Debug View", &m_Emulator->m_ShowDebugView))
         {
             const dlx::Processor& processor = m_Emulator->GetProcessor();
@@ -25,5 +26,6 @@ namespace dlxemu
         }
 
         ImGui::End();
+#endif
     }
 } // namespace dlxemu
