@@ -17,12 +17,31 @@ namespace dlxemu
         if (ImGui::Begin("Debug View", &m_Emulator->m_ShowDebugView))
         {
             const dlx::Processor& processor = m_Emulator->GetProcessor();
-            const std::string     full_dump = fmt::format(
-                    "Processor:\n{:s}\n\nRegister:\n{:s}\nMemory:\n{:s}\nProgram:\n{:s}",
-                    processor.GetProcessorDump(), processor.GetRegisterDump(),
-                    processor.GetMemoryDump(), m_Emulator->m_DLXProgram.GetDump());
 
-            ImGui::TextUnformatted(full_dump.c_str());
+            // Dumps
+            if (ImGui::CollapsingHeader("Processor Dump"))
+            {
+                const std::string dump = processor.GetProcessorDump();
+                ImGui::TextUnformatted(dump.c_str());
+            }
+
+            if (ImGui::CollapsingHeader("Register Dump"))
+            {
+                const std::string dump = processor.GetRegisterDump();
+                ImGui::TextUnformatted(dump.c_str());
+            }
+
+            if (ImGui::CollapsingHeader("Memory Dump"))
+            {
+                const std::string dump = processor.GetMemoryDump();
+                ImGui::TextUnformatted(dump.c_str());
+            }
+
+            if (ImGui::CollapsingHeader("Program Dump"))
+            {
+                const std::string dump = m_Emulator->m_DLXProgram.GetDump();
+                ImGui::TextUnformatted(dump.c_str());
+            }
         }
 
         ImGui::End();
