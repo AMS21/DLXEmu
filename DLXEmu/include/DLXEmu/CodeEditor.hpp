@@ -167,17 +167,17 @@ namespace dlxemu
         void               SetShowWhitespaces(bool value) noexcept;
         [[nodiscard]] bool IsShowingWhitespaces() const noexcept;
 
-        void                        SetTabSize(std::int32_t value) noexcept;
+        void                        SetTabSize(std::uint32_t value) noexcept;
         [[nodiscard]] std::uint32_t GetTabSize() const noexcept;
 
         void InsertText(const std::string& value) noexcept;
         void InsertText(const char* value) noexcept;
 
-        void MoveUp(std::int32_t amount = 1, bool select = false) noexcept;
-        void MoveDown(std::int32_t amount = 1, bool select = false) noexcept;
-        void MoveLeft(std::int32_t amount = 1, bool select = false,
+        void MoveUp(std::uint32_t amount = 1, bool select = false) noexcept;
+        void MoveDown(std::uint32_t amount = 1, bool select = false) noexcept;
+        void MoveLeft(std::uint32_t amount = 1, bool select = false,
                       bool word_mode = false) noexcept;
-        void MoveRight(std::int32_t amount = 1, bool select = false,
+        void MoveRight(std::uint32_t amount = 1, bool select = false,
                        bool word_mode = false) noexcept;
         void MoveTop(bool select = false) noexcept;
         void MoveBottom(bool select = false) noexcept;

@@ -1801,9 +1801,9 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::SetTabSize(std::int32_t value) noexcept
+    void CodeEditor::SetTabSize(std::uint32_t value) noexcept
     {
-        m_TabSize = std::clamp(value, 1, 32);
+        m_TabSize = std::clamp(value, 1u, 32u);
     }
 
     void CodeEditor::InsertText(const std::string& value) noexcept
@@ -1846,10 +1846,12 @@ namespace dlxemu
         m_TextChanged = true;
     }
 
-    void CodeEditor::MoveUp(std::int32_t amount, bool select) noexcept
+    void CodeEditor::MoveUp(std::uint32_t amount, bool select) noexcept
     {
-        auto old_pos                    = m_State.m_CursorPosition;
-        m_State.m_CursorPosition.m_Line = std::max(0, m_State.m_CursorPosition.m_Line - amount);
+        auto old_pos = m_State.m_CursorPosition;
+        m_State.m_CursorPosition.m_Line =
+                std::max(0, static_cast<std::int32_t>(m_State.m_CursorPosition.m_Line - amount));
+
         if (old_pos != m_State.m_CursorPosition)
         {
             if (select)
@@ -1879,14 +1881,14 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::MoveDown(std::int32_t amount, bool select) noexcept
+    void CodeEditor::MoveDown(std::uint32_t amount, bool select) noexcept
     {
         PHI_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
         auto old_pos = m_State.m_CursorPosition;
         m_State.m_CursorPosition.m_Line =
-                std::max(0, std::min((std::int32_t)m_Lines.size() - 1,
-                                     m_State.m_CursorPosition.m_Line + amount));
+                std::max(0u, std::min(static_cast<std::int32_t>(m_Lines.size()) - 1u,
+                                      m_State.m_CursorPosition.m_Line + amount));
 
         if (m_State.m_CursorPosition != old_pos)
         {
@@ -1922,7 +1924,7 @@ namespace dlxemu
         return (c & 0xC0) == 0x80;
     }
 
-    void CodeEditor::MoveLeft(std::int32_t amount, bool select, bool word_mode) noexcept
+    void CodeEditor::MoveLeft(std::uint32_t amount, bool select, bool word_mode) noexcept
     {
         if (m_Lines.empty())
         {
@@ -1933,6 +1935,8 @@ namespace dlxemu
         m_State.m_CursorPosition = GetActualCursorCoordinates();
         std::int32_t line        = m_State.m_CursorPosition.m_Line;
         std::int32_t cindex      = GetCharacterIndex(m_State.m_CursorPosition);
+
+        amount = std::min(amount, static_cast<std::uint32_t>(m_Lines[line].size()));
 
         while (amount-- > 0)
         {
@@ -2004,7 +2008,7 @@ namespace dlxemu
         EnsureCursorVisible();
     }
 
-    void CodeEditor::MoveRight(std::int32_t amount, bool select, bool word_mode) noexcept
+    void CodeEditor::MoveRight(std::uint32_t amount, bool select, bool word_mode) noexcept
     {
         auto old_pos = m_State.m_CursorPosition;
 
