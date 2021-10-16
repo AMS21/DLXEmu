@@ -1813,7 +1813,7 @@ namespace dlxemu
 
     void CodeEditor::InsertText(const char* value) noexcept
     {
-        if (value == nullptr)
+        if (value == nullptr || m_ReadOnly)
         {
             return;
         }
