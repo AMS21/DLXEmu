@@ -2178,9 +2178,7 @@ namespace dlxemu
 
     void CodeEditor::Delete() noexcept
     {
-        PHI_ASSERT(!m_ReadOnly);
-
-        if (m_Lines.empty())
+        if (m_Lines.empty() || m_ReadOnly)
         {
             return;
         }
