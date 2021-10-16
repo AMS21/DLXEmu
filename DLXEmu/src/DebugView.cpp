@@ -416,37 +416,33 @@ namespace dlxemu
 
             // Copy
             case 26: {
+                //PHI_LOG_DEBUG("Copy");
+
                 editor.Copy();
-
-                PHI_LOG_DEBUG("Copy");
-
                 break;
             }
 
             // Cut
             case 27: {
+                //PHI_LOG_DEBUG("Cut");
+
                 editor.Cut();
-
-                PHI_LOG_DEBUG("Cut");
-
                 break;
             }
 
             // Paste
             case 28: {
+                //PHI_LOG_DEBUG("Paste");
+
                 editor.Paste();
-
-                PHI_LOG_DEBUG("Paste");
-
                 break;
             }
 
             // Delete
             case 29: {
+                //PHI_LOG_DEBUG("Delete");
+
                 editor.Delete();
-
-                PHI_LOG_DEBUG("Delete");
-
                 break;
             }
 
@@ -454,7 +450,7 @@ namespace dlxemu
             case 30: {
                 std::uint32_t steps = uint32_t_distrib(engine);
 
-                PHI_LOG_DEBUG("Undo: {:d}", steps);
+                //PHI_LOG_DEBUG("Undo: {:d}", steps);
 
                 editor.Undo(steps);
                 break;
@@ -464,7 +460,7 @@ namespace dlxemu
             case 31: {
                 std::uint32_t steps = uint32_t_distrib(engine);
 
-                PHI_LOG_DEBUG("Redo: {:d}", steps);
+                //PHI_LOG_DEBUG("Redo: {:d}", steps);
 
                 editor.Redo(steps);
                 break;
@@ -489,9 +485,6 @@ namespace dlxemu
 
         // Set text
         editor.SetText(random_text);
-
-        //editor.MoveLeft(1631870881, false, true);
-        //editor.MoveLeft(1463177774, false, false);
 
         // Execute 50 random functions
         for (int i{0}; i < 50; ++i)
