@@ -199,8 +199,8 @@ namespace dlxemu
 
         [[nodiscard]] bool CanUndo() const noexcept;
         [[nodiscard]] bool CanRedo() const noexcept;
-        void               Undo(std::int32_t steps = 1) noexcept;
-        void               Redo(std::int32_t steps = 1) noexcept;
+        void               Undo(std::uint32_t steps = 1) noexcept;
+        void               Redo(std::uint32_t steps = 1) noexcept;
 
         static const Palette& GetDarkPalette() noexcept;
         static const Palette& GetLightPalette() noexcept;

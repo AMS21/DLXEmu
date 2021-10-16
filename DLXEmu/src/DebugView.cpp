@@ -452,7 +452,7 @@ namespace dlxemu
 
             // Undo
             case 30: {
-                std::int32_t steps = int32_t_distrib(engine);
+                std::uint32_t steps = uint32_t_distrib(engine);
 
                 PHI_LOG_DEBUG("Undo: {:d}", steps);
 
@@ -462,7 +462,7 @@ namespace dlxemu
 
             // Redo
             case 31: {
-                std::int32_t steps = int32_t_distrib(engine);
+                std::uint32_t steps = uint32_t_distrib(engine);
 
                 PHI_LOG_DEBUG("Redo: {:d}", steps);
 

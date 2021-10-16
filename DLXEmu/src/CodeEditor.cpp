@@ -2434,10 +2434,10 @@ namespace dlxemu
 
     bool CodeEditor::CanRedo() const noexcept
     {
-        return !m_ReadOnly && m_UndoIndex < (std::int32_t)m_UndoBuffer.size();
+        return !m_ReadOnly && m_UndoIndex < m_UndoBuffer.size();
     }
 
-    void CodeEditor::Undo(std::int32_t steps) noexcept
+    void CodeEditor::Undo(std::uint32_t steps) noexcept
     {
         while (CanUndo() && steps-- > 0)
         {
@@ -2445,7 +2445,7 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::Redo(std::int32_t steps) noexcept
+    void CodeEditor::Redo(std::uint32_t steps) noexcept
     {
         while (CanRedo() && steps-- > 0)
         {
