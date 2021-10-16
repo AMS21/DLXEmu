@@ -267,6 +267,8 @@ namespace dlxemu
     {
         PHI_ASSERT(end >= start);
         PHI_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(start.m_Line < m_Lines.size());
+        PHI_ASSERT(end.m_Line < m_Lines.size());
 
         if (end == start)
         {
@@ -1832,6 +1834,8 @@ namespace dlxemu
     void CodeEditor::DeleteSelection() noexcept
     {
         PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
+        PHI_ASSERT(m_State.m_SelectionStart.m_Line < m_Lines.size());
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Line < m_Lines.size());
 
         if (m_State.m_SelectionEnd == m_State.m_SelectionStart)
         {
