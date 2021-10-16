@@ -1513,7 +1513,8 @@ namespace dlxemu
                 m_Lines[i].reserve(line.size());
                 for (char j : line)
                 {
-                    m_Lines[i].emplace_back(Glyph(line[j], PaletteIndex::Default));
+                    PHI_ASSERT(j != '\n');
+                    m_Lines[i].emplace_back(Glyph(j, PaletteIndex::Default));
                 }
             }
         }
