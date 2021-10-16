@@ -50,6 +50,12 @@ namespace dlxemu
                 const std::string dump = m_Emulator->m_DLXProgram.GetDump();
                 ImGui::TextUnformatted(dump.c_str());
             }
+
+            if (ImGui::CollapsingHeader("Editor Dump"))
+            {
+                const std::string dump = m_Emulator->m_CodeEditor.GetEditorDump();
+                ImGui::TextUnformatted(dump.c_str());
+            }
         }
 
         ImGui::End();

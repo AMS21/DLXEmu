@@ -2958,4 +2958,11 @@ namespace dlxemu
         : m_Char(character)
         , m_ColorIndex(color_index)
     {}
+
+    std::string CodeEditor::GetEditorDump() const noexcept
+    {
+        std::string str;
+
+        return str;
+    }
 } // namespace dlxemu

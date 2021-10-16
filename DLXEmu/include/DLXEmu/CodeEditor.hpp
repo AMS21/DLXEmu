@@ -208,6 +208,8 @@ namespace dlxemu
         void               Undo(std::uint32_t steps = 1) noexcept;
         void               Redo(std::uint32_t steps = 1) noexcept;
 
+        [[nodiscard]] std::string GetEditorDump() const noexcept;
+
         static const Palette& GetDarkPalette() noexcept;
         static const Palette& GetLightPalette() noexcept;
         static const Palette& GetRetroBluePalette() noexcept;
