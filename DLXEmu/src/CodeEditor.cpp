@@ -2221,6 +2221,8 @@ namespace dlxemu
 
                 auto& next_line = m_Lines[pos.m_Line + 1];
                 line.insert(line.end(), next_line.begin(), next_line.end());
+
+                PHI_ASSERT(pos.m_Line <= m_Lines.size());
                 RemoveLine(pos.m_Line + 1);
             }
             else
@@ -2683,6 +2685,8 @@ namespace dlxemu
 
     void CodeEditor::UndoRecord::Undo(CodeEditor* editor) noexcept
     {
+        PHI_ASSERT(editor != nullptr);
+
         if (!m_Added.empty())
         {
             editor->DeleteRange(m_AddedStart, m_AddedEnd);
@@ -2703,6 +2707,8 @@ namespace dlxemu
 
     void CodeEditor::UndoRecord::Redo(CodeEditor* editor) noexcept
     {
+        PHI_ASSERT(editor != nullptr);
+
         if (!m_Removed.empty())
         {
             editor->DeleteRange(m_RemovedStart, m_RemovedEnd);
