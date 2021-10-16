@@ -1803,7 +1803,7 @@ namespace dlxemu
 
     void CodeEditor::SetTabSize(std::int32_t value) noexcept
     {
-        m_TabSize = std::max(0, std::min(32, value));
+        m_TabSize = std::clamp(value, 1, 32);
     }
 
     void CodeEditor::InsertText(const std::string& value) noexcept
