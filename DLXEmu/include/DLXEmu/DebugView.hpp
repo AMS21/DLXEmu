@@ -12,6 +12,10 @@ namespace dlxemu
         void Render() noexcept;
 
     private:
+        void RunGuiTest() noexcept;
+
         Emulator* m_Emulator;
+
+        bool m_TestGuiMode{false};
     };
 } // namespace dlxemu

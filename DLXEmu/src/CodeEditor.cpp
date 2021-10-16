@@ -2881,7 +2881,7 @@ namespace dlxemu
 
     void CodeEditor::ColorizeToken(const dlx::Token& token) noexcept
     {
-        //PHI_LOG_INFO("Colorizing token: {}", token.DebugInfo());
+        //PHI_LOG_DEBUG("Colorizing token: {}", token.DebugInfo());
 
         PaletteIndex palette_index{PaletteIndex::Default};
 
@@ -2909,31 +2909,34 @@ namespace dlxemu
                 break;
         }
 
-        //PHI_LOG_INFO("palette_index: {}", magic_enum::enum_name(palette_index));
-        //PHI_LOG_INFO("token length: {}", token.GetLength().get());
+        //PHI_LOG_DEBUG("palette_index: {}", magic_enum::enum_name(palette_index));
+        //PHI_LOG_DEBUG("token length: {}", token.GetLength().get());
 
         Line& line = m_Lines[(token.GetLineNumber() - 1u).get()];
-        //PHI_LOG_INFO("Line number: {}", (token.GetLineNumber() - 1u).get());
+        //PHI_LOG_DEBUG("Line number: {}", (token.GetLineNumber() - 1u).get());
+        //PHI_LOG_DEBUG("line empty: {}", line.empty());
 
         for (std::size_t index{static_cast<std::size_t>((token.GetColumn() - 1u).get())};
              index < token.GetColumn() + token.GetLength() - 1u; ++index)
         {
+            //PHI_LOG_DEBUG("index:{:d}, max size: {:d}", index, line.size());
+            PHI_DBG_ASSERT(index < line.size());
             line[index].m_ColorIndex = palette_index;
         }
 
-        //PHI_LOG_INFO("Finished colorizing");
+        //PHI_LOG_DEBUG("Finished colorizing");
     }
 
     void CodeEditor::ColorizeInternal() noexcept
     {
         const dlx::ParsedProgram& program = m_Emulator->GetProgram();
 
-        //PHI_LOG_INFO("Tokens: ");
+        //PHI_LOG_DEBUG("Tokens: ");
         for (const dlx::Token& token : program.m_Tokens)
         {
             ColorizeToken(token);
         }
-        //PHI_LOG_INFO("End of Tokens\n");
+        //PHI_LOG_DEBUG("End of Tokens\n");
     }
 
     CodeEditor::Glyph::Glyph(Char character, PaletteIndex color_index) noexcept
