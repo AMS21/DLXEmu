@@ -2726,6 +2726,11 @@ namespace dlxemu
         , m_Column(0)
     {}
 
+    CodeEditor::Coordinates::Coordinates(dont_use, dont_use) noexcept
+        : m_Line{-1}
+        , m_Column{-1}
+    {}
+
     CodeEditor::Coordinates::Coordinates(std::int32_t line, std::int32_t column) noexcept
         : m_Line(line)
         , m_Column(column)
@@ -2736,7 +2741,7 @@ namespace dlxemu
 
     CodeEditor::Coordinates CodeEditor::Coordinates::Invalid() noexcept
     {
-        static Coordinates invalid(-1, -1);
+        static Coordinates invalid{dont_use{}, dont_use{}};
         return invalid;
     }
 

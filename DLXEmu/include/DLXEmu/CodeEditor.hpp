@@ -108,6 +108,12 @@ namespace dlxemu
 
             std::int32_t m_Line;
             std::int32_t m_Column;
+
+        private:
+            struct dont_use
+            {};
+
+            Coordinates(dont_use, dont_use) noexcept;
         };
 
         using ErrorMarkers = std::map<std::uint32_t, std::string>;
