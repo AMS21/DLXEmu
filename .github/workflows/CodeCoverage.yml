@@ -42,6 +42,10 @@ jobs:
           # Install clang/LLVM
           sudo apt-get install "clang-${{ env.LLVM_VERSION }}" "llvm-${{ env.LLVM_VERSION }}" g++-multilib -y
 
+          # export compiler
+          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+
       - name: Build coverage data
         run: |
           # Create build directory
@@ -49,7 +53,7 @@ jobs:
           cd build
 
           # Build it
-          cmake -DCMAKE_BUILD_TYPE=Debug -DPHI_COVERAGE_BUILD=ON -DCMAKE_CXX_COMPILER="/usr/bin/clang++-${{ env.LLVM_VERSION }}" ..
+          cmake -DCMAKE_BUILD_TYPE=Debug -DPHI_COVERAGE_BUILD=ON ..
           cmake --build . --clean-first
 
           # Generate coverage data
