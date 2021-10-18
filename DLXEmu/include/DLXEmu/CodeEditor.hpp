@@ -295,6 +295,8 @@ namespace dlxemu
         void                    ColorizeToken(const dlx::Token& token) noexcept;
         void                    ColorizeInternal() noexcept;
 
+        void ResetState() noexcept;
+
         float       m_LineSpacing;
         EditorState m_State;
         UndoBuffer  m_UndoBuffer;

@@ -1471,6 +1471,7 @@ namespace dlxemu
     void CodeEditor::SetText(const std::string& text) noexcept
     {
         m_Lines.clear();
+        ResetState();
         m_Lines.emplace_back(Line());
 
         for (char chr : text)
@@ -1501,6 +1502,7 @@ namespace dlxemu
     void CodeEditor::SetTextLines(const std::vector<std::string>& lines) noexcept
     {
         m_Lines.clear();
+        ResetState();
 
         if (lines.empty())
         {
@@ -2963,6 +2965,13 @@ namespace dlxemu
             ColorizeToken(token);
         }
         //PHI_LOG_DEBUG("End of Tokens\n");
+    }
+
+    void CodeEditor::ResetState() noexcept
+    {
+        m_State.m_CursorPosition = Coordinates(0, 0);
+        m_State.m_SelectionStart = Coordinates(0, 0);
+        m_State.m_SelectionEnd   = Coordinates(0, 0);
     }
 
     CodeEditor::Glyph::Glyph(Char character, PaletteIndex color_index) noexcept
