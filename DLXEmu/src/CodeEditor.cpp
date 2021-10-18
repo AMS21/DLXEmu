@@ -2583,9 +2583,6 @@ namespace dlxemu
                        Coordinates(m_State.m_CursorPosition.m_Line, line_length));
     }
 
-    void CodeEditor::ProcessInputs() noexcept
-    {}
-
     void CodeEditor::Colorize(std::int32_t from_line, std::int32_t count) noexcept
     {
         std::int32_t to_line = count == -1 ?

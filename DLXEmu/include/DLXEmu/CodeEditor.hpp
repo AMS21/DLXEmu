@@ -253,7 +253,6 @@ namespace dlxemu
 
         using UndoBuffer = std::vector<UndoRecord>;
 
-        void                ProcessInputs() noexcept;
         void                Colorize(std::int32_t from_line = 0, std::int32_t count = -1) noexcept;
         [[nodiscard]] float TextDistanceToLineStart(const Coordinates& from) const noexcept;
         void                EnsureCursorVisible() noexcept;
