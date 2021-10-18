@@ -236,6 +236,37 @@ template <typename T>
     return ret;
 }
 
+[[nodiscard]] std::string print_error_markers(
+        const dlxemu::CodeEditor::ErrorMarkers& markers) noexcept
+{
+    std::string ret;
+
+    ret += fmt::format("ErrorMarkers(size: {:d}):\n", markers.size());
+
+    for (const auto& val : markers)
+    {
+        ret += fmt::format("{:s}: {:s}\n", print_int(val.first), print_string(val.second));
+    }
+
+    return ret;
+}
+
+[[nodiscard]] std::string print_breakpoints(
+        const dlxemu::CodeEditor::Breakpoints& breakpoints) noexcept
+{
+    std::string lines;
+
+    for (const std::uint32_t line_number : breakpoints)
+    {
+        lines += fmt::format("{:s}, ", print_int(line_number));
+    }
+
+    std::string ret = fmt::format("Breakpoints(size: {:d}: {:s})", breakpoints.size(),
+                                  lines.substr(0, lines.size() - 2));
+
+    return ret.substr(0, ret.size());
+}
+
 [[nodiscard]] const char* print_bool(const bool b) noexcept
 {
     return b ? "true" : "false";
@@ -831,6 +862,90 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 editor.Redo(steps);
                 break;
             }
+
+            // GetEditorDump
+            case 33: {
+                FUZZ_LOG("GetEditorDump()");
+
+                volatile std::string text = editor.GetEditorDump();
+                PHI_UNUSED_VARIABLE(text);
+                break;
+            }
+
+            // SetErrorMarkers
+            case 34: {
+                auto count_opt = consume_t<std::size_t>(data, size, index);
+                if (!count_opt)
+                {
+                    return 0;
+                }
+                std::size_t count = std::min(count_opt.value(), MaxVectorSize);
+
+                dlxemu::CodeEditor::ErrorMarkers markers;
+                for (std::size_t i{0u}; i < count; ++i)
+                {
+                    auto line_number_opt = consume_t<std::uint32_t>(data, size, index);
+                    if (!line_number_opt)
+                    {
+                        return 0;
+                    }
+                    std::uint32_t line_number = line_number_opt.value();
+
+                    auto message_opt = consume_ascii_string(data, size, index);
+                    if (!message_opt)
+                    {
+                        return 0;
+                    }
+                    std::string message = message_opt.value();
+
+                    // Add to error markers
+                    markers[line_number] = message;
+                }
+
+                FUZZ_LOG("SetErrorMarkers({:s})", print_error_markers(markers));
+
+                editor.SetErrorMarkers(markers);
+                break;
+            }
+
+            // SetBreakpoints
+            case 35: {
+                auto count_opt = consume_t<std::size_t>(data, size, index);
+                if (!count_opt)
+                {
+                    return 0;
+                }
+                std::size_t count = std::min(count_opt.value(), MaxVectorSize);
+
+                dlxemu::CodeEditor::Breakpoints breakpoints;
+
+                for (std::size_t i{0u}; i < count; ++i)
+                {
+                    auto line_number_opt = consume_t<std::uint32_t>(data, size, index);
+                    if (!line_number_opt)
+                    {
+                        return 0;
+                    }
+                    std::uint32_t line_number = line_number_opt.value();
+
+                    breakpoints.insert(line_number);
+                }
+
+                FUZZ_LOG("SetBreakpoints({:s})", print_breakpoints(breakpoints));
+
+                editor.SetBreakpoints(breakpoints);
+                break;
+            }
+
+                // Render
+                /*
+            case 36: {
+                FUZZ_LOG("Render");
+
+                editor.Render();
+                break;
+            }
+            */
 
             default: {
                 return 0;
