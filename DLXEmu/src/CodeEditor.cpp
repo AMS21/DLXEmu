@@ -353,8 +353,8 @@ namespace dlxemu
             }
             else
             {
-                Line& line = m_Lines[where.m_Line];
-                char  d    = UTF8CharLength(*value);
+                Line&        line = m_Lines[where.m_Line];
+                std::int32_t d    = UTF8CharLength(*value);
 
                 while (d-- > 0 && *value != '\0')
                 {
@@ -424,7 +424,7 @@ namespace dlxemu
                 else
                 {
                     char         buf[7];
-                    char         d = UTF8CharLength(line[column_index].m_Char);
+                    std::int32_t d = UTF8CharLength(line[column_index].m_Char);
                     std::int32_t i = 0;
                     while (i < 6 && d-- > 0)
                     {
@@ -512,8 +512,8 @@ namespace dlxemu
         PaletteIndex cstart    = line[cindex].m_ColorIndex;
         while (cindex < (std::int32_t)line.size())
         {
-            Glyph c = line[cindex];
-            char  d = UTF8CharLength(c.m_Char);
+            Glyph        c = line[cindex];
+            std::int32_t d = UTF8CharLength(c.m_Char);
 
             if (cstart != line[cindex].m_ColorIndex)
             {
@@ -1354,7 +1354,7 @@ namespace dlxemu
                     }
                     else
                     {
-                        char l = UTF8CharLength(glyph.m_Char);
+                        std::int32_t l = UTF8CharLength(glyph.m_Char);
                         while (l-- > 0)
                         {
                             m_LineBuffer.push_back(line[i++].m_Char);
@@ -2245,7 +2245,7 @@ namespace dlxemu
                 u.m_RemovedEnd.m_Column++;
                 u.m_Removed = GetText(u.m_RemovedStart, u.m_RemovedEnd);
 
-                char d = UTF8CharLength(line[cindex].m_Char);
+                std::int32_t d = UTF8CharLength(line[cindex].m_Char);
                 while (d-- > 0 && cindex < (std::int32_t)line.size())
                 {
                     line.erase(line.begin() + cindex);
@@ -2612,7 +2612,7 @@ namespace dlxemu
             }
             else
             {
-                char         d = UTF8CharLength(line[it].m_Char);
+                std::int32_t d = UTF8CharLength(line[it].m_Char);
                 char         temp_c_string[7];
                 std::int32_t i = 0;
                 for (; i < 6 && d-- > 0 && it < (std::int32_t)line.size(); i++, it++)
