@@ -150,7 +150,8 @@ namespace dlxemu
             return Coordinates(line, column);
         }
 
-        column = m_Lines.empty() ? 0 : std::min(column, GetLineMaxColumn(line));
+        column = m_Lines.empty() ? 0 : std::max(column, GetLineMaxColumn(line));
+        line   = std::max(0, line);
 
         return Coordinates(line, column);
     }
@@ -1734,9 +1735,12 @@ namespace dlxemu
 
     void CodeEditor::SetCursorPosition(const Coordinates& position) noexcept
     {
-        if (m_State.m_CursorPosition != position)
+        // Sanitize
+        Coordinates new_pos = SanitizeCoordinates(position);
+
+        if (m_State.m_CursorPosition != new_pos)
         {
-            m_State.m_CursorPosition = position;
+            m_State.m_CursorPosition = new_pos;
             m_CursorPositionChanged  = true;
             EnsureCursorVisible();
         }
