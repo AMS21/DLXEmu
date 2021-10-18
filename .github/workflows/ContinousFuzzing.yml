@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        fuzz_target: ["fuzz_parser", "fuzz_execution", "fuzz_structured_execution", "fuzz_syntax_highlighting", "fuzz_structured_syntax_highlighting"]
+        fuzz_target: ["fuzz_parser", "fuzz_execution", "fuzz_structured_execution", "fuzz_syntax_highlighting", "fuzz_structured_syntax_highlighting", "fuzz_code_editor"]
 
     steps:
       - name: Setup Git

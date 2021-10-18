@@ -42,3 +42,9 @@ define_fuzzer(fuzz_structured_syntax_highlighting "src/StructuredSyntaxHighlight
 
 # Regression Test
 define_fuzzer(fuzz_regression "src/RegressionTest.fuzz.cpp" DLXLib)
+
+# CodeEditor
+define_fuzzer(fuzz_code_editor "src/CodeEditor.fuzz.cpp" DLXEmuLib)
+
+define_fuzzer(fuzz_code_editor_verbose "src/CodeEditor.fuzz.cpp" DLXEmuLib)
+target_compile_definitions(fuzz_code_editor_verbose PRIVATE "FUZZ_VERBOSE_LOG")
