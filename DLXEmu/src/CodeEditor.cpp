@@ -2241,6 +2241,13 @@ namespace dlxemu
                 }
 
                 std::int32_t cindex = GetCharacterIndex(pos);
+                // TODO: Bit of a hack to get around invalid acceses the assert below should always be true
+                if (cindex >= line.size())
+                {
+                    return;
+                }
+                PHI_ASSERT(cindex < line.size());
+
                 u.m_RemovedStart = u.m_RemovedEnd = GetActualCursorCoordinates();
                 u.m_RemovedEnd.m_Column++;
                 u.m_Removed = GetText(u.m_RemovedStart, u.m_RemovedEnd);
