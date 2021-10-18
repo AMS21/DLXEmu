@@ -2232,6 +2232,12 @@ namespace dlxemu
             }
             else
             {
+                // Nothing todo when line is empty
+                if (line.empty())
+                {
+                    return;
+                }
+
                 std::int32_t cindex = GetCharacterIndex(pos);
                 u.m_RemovedStart = u.m_RemovedEnd = GetActualCursorCoordinates();
                 u.m_RemovedEnd.m_Column++;
