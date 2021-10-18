@@ -107,7 +107,7 @@ namespace dlxemu
                 break;
             }
 
-            const auto& line = m_Lines[lstart];
+            const Line& line = m_Lines[lstart];
             if (istart < (std::int32_t)line.size())
             {
                 result += line[istart].m_Char;
@@ -247,7 +247,7 @@ namespace dlxemu
     {
         if (coordinates.m_Line < (std::int32_t)m_Lines.size())
         {
-            const auto&  line   = m_Lines[coordinates.m_Line];
+            const Line&  line   = m_Lines[coordinates.m_Line];
             std::int32_t cindex = GetCharacterIndex(coordinates);
 
             if (cindex + 1 < (std::int32_t)line.size())
@@ -276,12 +276,12 @@ namespace dlxemu
             return;
         }
 
-        auto start_index = GetCharacterIndex(start);
-        auto end_index   = GetCharacterIndex(end);
+        std::int32_t start_index = GetCharacterIndex(start);
+        std::int32_t end_index   = GetCharacterIndex(end);
 
         if (start.m_Line == end.m_Line)
         {
-            auto&        line = m_Lines[start.m_Line];
+            Line&        line = m_Lines[start.m_Line];
             std::int32_t n    = GetLineMaxColumn(start.m_Line);
 
             if (end.m_Column >= n)
@@ -295,8 +295,8 @@ namespace dlxemu
         }
         else
         {
-            auto& first_line = m_Lines[start.m_Line];
-            auto& last_line  = m_Lines[end.m_Line];
+            Line& first_line = m_Lines[start.m_Line];
+            Line& last_line  = m_Lines[end.m_Line];
 
             first_line.erase(first_line.begin() + start_index, first_line.end());
             last_line.erase(last_line.begin(), last_line.begin() + end_index);
@@ -335,8 +335,8 @@ namespace dlxemu
             {
                 if (cindex < (std::int32_t)m_Lines[where.m_Line].size())
                 {
-                    auto& new_line = InsertLine(where.m_Line + 1);
-                    auto& line     = m_Lines[where.m_Line];
+                    Line& new_line = InsertLine(where.m_Line + 1);
+                    Line& line     = m_Lines[where.m_Line];
                     new_line.insert(new_line.begin(), line.begin() + cindex, line.end());
                     line.erase(line.begin() + cindex, line.end());
                 }
@@ -353,7 +353,7 @@ namespace dlxemu
             }
             else
             {
-                auto& line = m_Lines[where.m_Line];
+                Line& line = m_Lines[where.m_Line];
                 char  d    = UTF8CharLength(*value);
 
                 while (d-- > 0 && *value != '\0')
@@ -391,7 +391,7 @@ namespace dlxemu
 
         if (line_no >= 0 && line_no < (std::int32_t)m_Lines.size())
         {
-            const auto& line = m_Lines.at(line_no);
+            const Line& line = m_Lines.at(line_no);
 
             std::int32_t column_index = 0;
             float        column_x     = 0.0f;
@@ -456,7 +456,7 @@ namespace dlxemu
             return at;
         }
 
-        const auto&  line   = m_Lines[at.m_Line];
+        const Line&  line   = m_Lines[at.m_Line];
         std::int32_t cindex = GetCharacterIndex(at);
 
         if (cindex >= (std::int32_t)line.size())
@@ -472,7 +472,7 @@ namespace dlxemu
         const PaletteIndex cstart = line[cindex].m_ColorIndex;
         while (cindex > 0)
         {
-            auto c = line[cindex];
+            Glyph c = line[cindex];
             if ((c.m_Char & 0xC0) != 0x80) // not UTF code sequence 10xxxxxx
             {
                 if (c.m_Char <= 32 && dlx::IsSpace(c.m_Char))
@@ -500,8 +500,8 @@ namespace dlxemu
             return at;
         }
 
-        const auto& line   = m_Lines[at.m_Line];
-        auto        cindex = GetCharacterIndex(at);
+        const Line&  line   = m_Lines[at.m_Line];
+        std::int32_t cindex = GetCharacterIndex(at);
 
         if (cindex >= (std::int32_t)line.size())
         {
@@ -552,7 +552,7 @@ namespace dlxemu
         bool         skip    = false;
         if (cindex < (std::int32_t)m_Lines[at.m_Line].size())
         {
-            const auto& line = m_Lines[at.m_Line];
+            const Line& line = m_Lines[at.m_Line];
             is_word          = dlx::IsAlphaNumeric(line[cindex].m_Char);
             skip             = is_word;
         }
@@ -566,7 +566,7 @@ namespace dlxemu
                 return Coordinates(l, GetLineMaxColumn(l));
             }
 
-            const auto& line = m_Lines[at.m_Line];
+            const Line& line = m_Lines[at.m_Line];
             if (cindex < (std::int32_t)line.size())
             {
                 is_word = dlx::IsAlphaNumeric(line[cindex].m_Char);
@@ -602,7 +602,7 @@ namespace dlxemu
             return -1;
         }
 
-        const auto&  line = m_Lines[coordinates.m_Line];
+        const Line&  line = m_Lines[coordinates.m_Line];
         std::int32_t c    = 0;
         std::int32_t i    = 0;
         for (; i < line.size() && c < coordinates.m_Column;)
@@ -630,7 +630,7 @@ namespace dlxemu
             return 0;
         }
 
-        const auto&  line = m_Lines[line_number];
+        const Line&  line = m_Lines[line_number];
         std::int32_t col  = 0;
         std::int32_t i    = 0;
 
@@ -658,7 +658,7 @@ namespace dlxemu
             return 0;
         }
 
-        const auto&  line = m_Lines[line_number];
+        const Line&  line = m_Lines[line_number];
         std::int32_t c    = 0;
 
         for (std::int32_t i = 0; i < line.size(); c++)
@@ -676,7 +676,7 @@ namespace dlxemu
             return 0;
         }
 
-        const auto&  line = m_Lines[line_number];
+        const Line&  line = m_Lines[line_number];
         std::int32_t col  = 0;
 
         for (std::int32_t i = 0; i < line.size();)
@@ -704,7 +704,7 @@ namespace dlxemu
             return true;
         }
 
-        const auto&  line   = m_Lines[at.m_Line];
+        const Line&  line   = m_Lines[at.m_Line];
         std::int32_t cindex = GetCharacterIndex(at);
         if (cindex >= (std::int32_t)line.size())
         {
@@ -793,7 +793,7 @@ namespace dlxemu
     {
         PHI_ASSERT(!m_ReadOnly);
 
-        auto& result = *m_Lines.insert(m_Lines.begin() + index, Line());
+        Line& result = *m_Lines.insert(m_Lines.begin() + index, Line());
 
         ErrorMarkers etmp;
         for (auto& i : m_ErrorMarkers)
@@ -829,7 +829,7 @@ namespace dlxemu
         std::int32_t istart = GetCharacterIndex(start);
         std::int32_t iend   = GetCharacterIndex(end);
 
-        for (auto it = istart; it < iend; ++it)
+        for (std::int32_t it = istart; it < iend; ++it)
         {
             r.push_back(m_Lines[coords.m_Line][it].m_Char);
         }
@@ -840,9 +840,9 @@ namespace dlxemu
     void CodeEditor::HandleKeyboardInputs() noexcept
     {
         ImGuiIO& io    = ImGui::GetIO();
-        auto     shift = io.KeyShift;
-        auto     ctrl  = io.ConfigMacOSXBehaviors ? io.KeySuper : io.KeyCtrl;
-        auto     alt   = io.ConfigMacOSXBehaviors ? io.KeyCtrl : io.KeyAlt;
+        bool     shift = io.KeyShift;
+        bool     ctrl  = io.ConfigMacOSXBehaviors ? io.KeySuper : io.KeyCtrl;
+        bool     alt   = io.ConfigMacOSXBehaviors ? io.KeyCtrl : io.KeyAlt;
 
         if (ImGui::IsWindowFocused())
         {
@@ -972,7 +972,7 @@ namespace dlxemu
             {
                 for (std::int32_t i = 0; i < io.InputQueueCharacters.Size; i++)
                 {
-                    auto c = io.InputQueueCharacters[i];
+                    ImWchar c = io.InputQueueCharacters[i];
                     if (c != 0 && (c == '\n' || c >= 32))
                     {
                         EnterCharacter(c, shift);
@@ -987,18 +987,18 @@ namespace dlxemu
     void CodeEditor::HandleMouseInputs() noexcept
     {
         ImGuiIO& io    = ImGui::GetIO();
-        auto     shift = io.KeyShift;
-        auto     ctrl  = io.ConfigMacOSXBehaviors ? io.KeySuper : io.KeyCtrl;
-        auto     alt   = io.ConfigMacOSXBehaviors ? io.KeyCtrl : io.KeyAlt;
+        bool     shift = io.KeyShift;
+        bool     ctrl  = io.ConfigMacOSXBehaviors ? io.KeySuper : io.KeyCtrl;
+        bool     alt   = io.ConfigMacOSXBehaviors ? io.KeyCtrl : io.KeyAlt;
 
         if (ImGui::IsWindowHovered())
         {
             if (!shift && !alt)
             {
-                auto click        = ImGui::IsMouseClicked(0);
-                auto double_click = ImGui::IsMouseDoubleClicked(0);
-                auto t            = ImGui::GetTime();
-                auto triple_click =
+                bool   click        = ImGui::IsMouseClicked(0);
+                bool   double_click = ImGui::IsMouseDoubleClicked(0);
+                double t            = ImGui::GetTime();
+                bool   triple_click =
                         click && !double_click &&
                         (m_LastClick != -1.0f && (t - m_LastClick) < io.MouseDoubleClickTime);
 
@@ -1086,7 +1086,7 @@ namespace dlxemu
         /* Update palette with the current alpha from style */
         for (std::int32_t i = 0; i < (std::int32_t)PaletteIndex::Max; ++i)
         {
-            auto color = ImGui::ColorConvertU32ToFloat4(m_PaletteBase[i]);
+            ImVec4 color = ImGui::ColorConvertU32ToFloat4(m_PaletteBase[i]);
             color.w *= ImGui::GetStyle().Alpha;
             m_Palette[i] = ImGui::ColorConvertFloat4ToU32(color);
         }
@@ -1137,7 +1137,7 @@ namespace dlxemu
                 ImVec2 text_screen_pos =
                         ImVec2(line_start_screen_pos.x + m_TextStart, line_start_screen_pos.y);
 
-                auto& line             = m_Lines[line_no];
+                Line& line             = m_Lines[line_no];
                 longest                = std::max(m_TextStart + TextDistanceToLineStart(Coordinates(
                                                          line_no, GetLineMaxColumn(line_no))),
                                    longest);
@@ -1217,17 +1217,17 @@ namespace dlxemu
                 // Draw line number (right aligned)
                 snprintf(buf, 16, "%d  ", line_no + 1);
 
-                auto line_no_width = ImGui::GetFont()
-                                             ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f,
-                                                             buf, nullptr, nullptr)
-                                             .x;
+                float line_no_width = ImGui::GetFont()
+                                              ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f,
+                                                              buf, nullptr, nullptr)
+                                              .x;
                 draw_list->AddText(ImVec2(line_start_screen_pos.x + m_TextStart - line_no_width,
                                           line_start_screen_pos.y),
                                    m_Palette[(std::int32_t)PaletteIndex::LineNumber], buf);
 
                 if (m_State.m_CursorPosition.m_Line == line_no)
                 {
-                    auto focused = ImGui::IsWindowFocused();
+                    bool focused = ImGui::IsWindowFocused();
 
                     // Highlight the current line (where the cursor is)
                     if (!HasSelection())
@@ -1247,10 +1247,11 @@ namespace dlxemu
                     // Render the cursor
                     if (focused)
                     {
-                        auto time_end = std::chrono::duration_cast<std::chrono::milliseconds>(
-                                                std::chrono::system_clock::now().time_since_epoch())
-                                                .count();
-                        auto elapsed = time_end - m_StartTime;
+                        std::int64_t time_end =
+                                std::chrono::duration_cast<std::chrono::milliseconds>(
+                                        std::chrono::system_clock::now().time_since_epoch())
+                                        .count();
+                        std::uint64_t elapsed = time_end - m_StartTime;
                         if (elapsed > 400)
                         {
                             float        width  = 1.0f;
@@ -1307,7 +1308,7 @@ namespace dlxemu
                         const ImVec2 new_offset(text_screen_pos.x + buffer_offset.x,
                                                 text_screen_pos.y + buffer_offset.y);
                         draw_list->AddText(new_offset, prev_color, m_LineBuffer.c_str());
-                        auto text_size = ImGui::GetFont()->CalcTextSizeA(
+                        ImVec2 text_size = ImGui::GetFont()->CalcTextSizeA(
                                 ImGui::GetFontSize(), FLT_MAX, -1.0f, m_LineBuffer.c_str(), nullptr,
                                 nullptr);
                         buffer_offset.x += text_size.x;
@@ -1343,9 +1344,9 @@ namespace dlxemu
                     {
                         if (m_ShowWhitespaces)
                         {
-                            const auto s = ImGui::GetFontSize();
-                            const auto x = text_screen_pos.x + buffer_offset.x + space_size * 0.5f;
-                            const auto y = text_screen_pos.y + buffer_offset.y + s * 0.5f;
+                            const float s = ImGui::GetFontSize();
+                            const float x = text_screen_pos.x + buffer_offset.x + space_size * 0.5f;
+                            const float y = text_screen_pos.y + buffer_offset.y + s * 0.5f;
                             draw_list->AddCircleFilled(ImVec2(x, y), 1.5f, 0x80808080, 4);
                         }
                         buffer_offset.x += space_size;
@@ -1375,7 +1376,7 @@ namespace dlxemu
             // Draw a tooltip on known identifiers/preprocessor symbols
             if (ImGui::IsMousePosValid())
             {
-                auto id = GetWordAt(ScreenPosToCoordinates(ImGui::GetMousePos()));
+                std::string id = GetWordAt(ScreenPosToCoordinates(ImGui::GetMousePos()));
                 if (!id.empty())
                 {
                     /*
@@ -1472,7 +1473,7 @@ namespace dlxemu
         m_Lines.clear();
         m_Lines.emplace_back(Line());
 
-        for (auto chr : text)
+        for (char chr : text)
         {
             if (chr == '\r')
             {
@@ -1575,7 +1576,7 @@ namespace dlxemu
 
                 for (int32_t i = start.m_Line; i <= end.m_Line; i++)
                 {
-                    auto& line = m_Lines[i];
+                    Line& line = m_Lines[i];
                     if (shift)
                     {
                         if (!line.empty())
@@ -1646,16 +1647,16 @@ namespace dlxemu
             }
         } // HasSelection
 
-        auto coord     = GetActualCursorCoordinates();
-        u.m_AddedStart = coord;
+        Coordinates coord = GetActualCursorCoordinates();
+        u.m_AddedStart    = coord;
 
         PHI_ASSERT(!m_Lines.empty());
 
         if (character == '\n')
         {
             InsertLine(coord.m_Line + 1);
-            auto& line     = m_Lines[coord.m_Line];
-            auto& new_line = m_Lines[coord.m_Line + 1];
+            Line& line     = m_Lines[coord.m_Line];
+            Line& new_line = m_Lines[coord.m_Line + 1];
 
             for (std::size_t it = 0;
                  it < line.size() && isascii(line[it].m_Char) && dlx::IsBlank(line[it].m_Char);
@@ -1674,17 +1675,17 @@ namespace dlxemu
         }
         else
         {
-            char buf[7];
-            int  e = ImTextCharToUtf8(buf, 7, character);
+            char         buf[7];
+            std::int32_t e = ImTextCharToUtf8(buf, 7, character);
             if (e > 0)
             {
                 buf[e]         = '\0';
-                auto&   line   = m_Lines[coord.m_Line];
+                Line&   line   = m_Lines[coord.m_Line];
                 int32_t cindex = GetCharacterIndex(coord);
 
                 if (m_Overwrite && cindex < (int)line.size())
                 {
-                    char d = UTF8CharLength(line[cindex].m_Char);
+                    std::int32_t d = UTF8CharLength(line[cindex].m_Char);
 
                     u.m_RemovedStart = m_State.m_CursorPosition;
                     u.m_RemovedEnd =
@@ -1767,8 +1768,8 @@ namespace dlxemu
     void CodeEditor::SetSelection(const Coordinates& start, const Coordinates& end,
                                   SelectionMode mode) noexcept
     {
-        auto old_sel_start = m_State.m_SelectionStart;
-        auto old_sel_end   = m_State.m_SelectionEnd;
+        Coordinates old_sel_start = m_State.m_SelectionStart;
+        Coordinates old_sel_end   = m_State.m_SelectionEnd;
 
         m_State.m_SelectionStart = SanitizeCoordinates(start);
         m_State.m_SelectionEnd   = SanitizeCoordinates(end);
@@ -1790,9 +1791,9 @@ namespace dlxemu
                 break;
             }
             case CodeEditor::SelectionMode::Line: {
-                const auto line_no = m_State.m_SelectionEnd.m_Line;
-                const auto line_size =
-                        (size_t)line_no < m_Lines.size() ? m_Lines[line_no].size() : 0;
+                const std::int32_t line_no = m_State.m_SelectionEnd.m_Line;
+                const std::size_t  line_size =
+                        (std::size_t)line_no < m_Lines.size() ? m_Lines[line_no].size() : 0;
                 m_State.m_SelectionStart = Coordinates(m_State.m_SelectionStart.m_Line, 0);
                 m_State.m_SelectionEnd   = Coordinates(line_no, GetLineMaxColumn(line_no));
                 break;
@@ -1824,8 +1825,8 @@ namespace dlxemu
             return;
         }
 
-        auto         pos         = GetActualCursorCoordinates();
-        auto         start       = std::min(pos, m_State.m_SelectionStart);
+        Coordinates  pos         = GetActualCursorCoordinates();
+        Coordinates  start       = std::min(pos, m_State.m_SelectionStart);
         std::int32_t total_lines = pos.m_Line - start.m_Line;
 
         total_lines += InsertTextAt(pos, value);
@@ -1856,7 +1857,7 @@ namespace dlxemu
 
     void CodeEditor::MoveUp(std::uint32_t amount, bool select) noexcept
     {
-        auto old_pos = m_State.m_CursorPosition;
+        Coordinates old_pos = m_State.m_CursorPosition;
         m_State.m_CursorPosition.m_Line =
                 std::max(0, static_cast<std::int32_t>(m_State.m_CursorPosition.m_Line - amount));
 
@@ -1893,7 +1894,7 @@ namespace dlxemu
     {
         PHI_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
-        auto old_pos = m_State.m_CursorPosition;
+        Coordinates old_pos = m_State.m_CursorPosition;
         m_State.m_CursorPosition.m_Line =
                 std::max(0u, std::min(static_cast<std::int32_t>(m_Lines.size()) - 1u,
                                       m_State.m_CursorPosition.m_Line + amount));
@@ -2018,18 +2019,18 @@ namespace dlxemu
 
     void CodeEditor::MoveRight(std::uint32_t amount, bool select, bool word_mode) noexcept
     {
-        auto old_pos = m_State.m_CursorPosition;
+        Coordinates old_pos = m_State.m_CursorPosition;
 
         if (m_Lines.empty() || old_pos.m_Line >= m_Lines.size())
         {
             return;
         }
 
-        auto cindex = GetCharacterIndex(m_State.m_CursorPosition);
+        std::int32_t cindex = GetCharacterIndex(m_State.m_CursorPosition);
         while (amount-- > 0)
         {
-            auto  lindex = m_State.m_CursorPosition.m_Line;
-            auto& line   = m_Lines[lindex];
+            std::int32_t lindex = m_State.m_CursorPosition.m_Line;
+            Line&        line   = m_Lines[lindex];
 
             if (cindex >= line.size())
             {
@@ -2086,7 +2087,7 @@ namespace dlxemu
 
     void CodeEditor::MoveTop(bool select) noexcept
     {
-        auto old_pos = m_State.m_CursorPosition;
+        Coordinates old_pos = m_State.m_CursorPosition;
         SetCursorPosition(Coordinates(0, 0));
 
         if (m_State.m_CursorPosition != old_pos)
@@ -2107,8 +2108,8 @@ namespace dlxemu
 
     void CodeEditor::CodeEditor::MoveBottom(bool select) noexcept
     {
-        auto old_pos = GetCursorPosition();
-        auto new_pos = Coordinates((std::int32_t)m_Lines.size() - 1, 0);
+        Coordinates old_pos = GetCursorPosition();
+        Coordinates new_pos = Coordinates((std::int32_t)m_Lines.size() - 1, 0);
         SetCursorPosition(new_pos);
         if (select)
         {
@@ -2125,7 +2126,7 @@ namespace dlxemu
 
     void CodeEditor::MoveHome(bool select) noexcept
     {
-        auto old_pos = m_State.m_CursorPosition;
+        Coordinates old_pos = m_State.m_CursorPosition;
         SetCursorPosition(Coordinates(m_State.m_CursorPosition.m_Line, 0));
 
         if (m_State.m_CursorPosition != old_pos)
@@ -2157,7 +2158,7 @@ namespace dlxemu
 
     void CodeEditor::MoveEnd(bool select) noexcept
     {
-        auto old_pos = m_State.m_CursorPosition;
+        Coordinates old_pos = m_State.m_CursorPosition;
         SetCursorPosition(
                 Coordinates(m_State.m_CursorPosition.m_Line, GetLineMaxColumn(old_pos.m_Line)));
 
@@ -2208,9 +2209,9 @@ namespace dlxemu
         }
         else
         {
-            auto pos = GetActualCursorCoordinates();
+            Coordinates pos = GetActualCursorCoordinates();
             SetCursorPosition(pos);
-            auto& line = m_Lines[pos.m_Line];
+            Line& line = m_Lines[pos.m_Line];
 
             if (pos.m_Column == GetLineMaxColumn(pos.m_Line))
             {
@@ -2223,7 +2224,7 @@ namespace dlxemu
                 u.m_RemovedStart = u.m_RemovedEnd = GetActualCursorCoordinates();
                 Advance(u.m_RemovedEnd);
 
-                auto& next_line = m_Lines[pos.m_Line + 1];
+                Line& next_line = m_Lines[pos.m_Line + 1];
                 line.insert(line.end(), next_line.begin(), next_line.end());
 
                 PHI_ASSERT(pos.m_Line <= m_Lines.size());
@@ -2274,7 +2275,7 @@ namespace dlxemu
         }
         else
         {
-            auto pos = GetActualCursorCoordinates();
+            Coordinates pos = GetActualCursorCoordinates();
             SetCursorPosition(pos);
 
             if (m_State.m_CursorPosition.m_Column == 0)
@@ -2289,9 +2290,9 @@ namespace dlxemu
                         Coordinates(pos.m_Line - 1, GetLineMaxColumn(pos.m_Line - 1));
                 Advance(u.m_RemovedEnd);
 
-                auto& line      = m_Lines[m_State.m_CursorPosition.m_Line];
-                auto& prev_line = m_Lines[m_State.m_CursorPosition.m_Line - 1];
-                auto  prev_size = GetLineMaxColumn(m_State.m_CursorPosition.m_Line - 1);
+                Line&        line      = m_Lines[m_State.m_CursorPosition.m_Line];
+                Line&        prev_line = m_Lines[m_State.m_CursorPosition.m_Line - 1];
+                std::int32_t prev_size = GetLineMaxColumn(m_State.m_CursorPosition.m_Line - 1);
                 prev_line.insert(prev_line.end(), line.begin(), line.end());
 
                 ErrorMarkers etmp;
@@ -2309,9 +2310,9 @@ namespace dlxemu
             }
             else
             {
-                auto& line   = m_Lines[m_State.m_CursorPosition.m_Line];
-                auto  cindex = GetCharacterIndex(pos) - 1;
-                auto  cend   = cindex + 1;
+                Line&        line   = m_Lines[m_State.m_CursorPosition.m_Line];
+                std::int32_t cindex = GetCharacterIndex(pos) - 1;
+                std::int32_t cend   = cindex + 1;
                 while (cindex > 0 && IsUTFSequence(line[cindex].m_Char))
                 {
                     --cindex;
@@ -2343,7 +2344,7 @@ namespace dlxemu
 
     void CodeEditor::SelectWordUnderCursor() noexcept
     {
-        auto c = GetCursorPosition();
+        Coordinates c = GetCursorPosition();
         SetSelection(FindWordStart(c), FindWordEnd(c));
     }
 
@@ -2368,9 +2369,9 @@ namespace dlxemu
             if (!m_Lines.empty())
             {
                 std::string str;
-                auto&       line = m_Lines[GetActualCursorCoordinates().m_Line];
+                Line&       line = m_Lines[GetActualCursorCoordinates().m_Line];
 
-                for (auto& g : line)
+                for (Glyph& g : line)
                 {
                     str.push_back(g.m_Char);
                 }
@@ -2412,7 +2413,7 @@ namespace dlxemu
             return;
         }
 
-        const auto* clip_text = ImGui::GetClipboardText();
+        const char* clip_text = ImGui::GetClipboardText();
         if (clip_text != nullptr && strlen(clip_text) > 0)
         {
             UndoRecord u;
@@ -2537,7 +2538,7 @@ namespace dlxemu
 
         result.reserve(m_Lines.size());
 
-        for (const auto& line : m_Lines)
+        for (const Line& line : m_Lines)
         {
             std::string text;
 
@@ -2561,7 +2562,7 @@ namespace dlxemu
 
     std::string CodeEditor::GetCurrentLineText() const noexcept
     {
-        auto line_length = GetLineMaxColumn(m_State.m_CursorPosition.m_Line);
+        std::int32_t line_length = GetLineMaxColumn(m_State.m_CursorPosition.m_Line);
 
         return GetText(Coordinates(m_State.m_CursorPosition.m_Line, 0),
                        Coordinates(m_State.m_CursorPosition.m_Line, line_length));
@@ -2585,7 +2586,7 @@ namespace dlxemu
 
     float CodeEditor::TextDistanceToLineStart(const Coordinates& from) const noexcept
     {
-        const auto& line     = m_Lines[from.m_Line];
+        const Line& line     = m_Lines[from.m_Line];
         float       distance = 0.0f;
         float       space_size =
                 ImGui::GetFont()
@@ -2665,7 +2666,7 @@ namespace dlxemu
 
     std::int32_t CodeEditor::GetPageSize() const noexcept
     {
-        auto height = ImGui::GetWindowHeight() - 20.0f;
+        float height = ImGui::GetWindowHeight() - 20.0f;
         return (std::int32_t)std::floor(height / m_CharAdvance.y);
     }
 
@@ -2699,7 +2700,7 @@ namespace dlxemu
 
         if (!m_Removed.empty())
         {
-            auto start = m_RemovedStart;
+            Coordinates start = m_RemovedStart;
             editor->InsertTextAt(start, m_Removed.c_str());
             editor->Colorize(m_RemovedStart.m_Line - 1,
                              m_RemovedEnd.m_Line - m_RemovedStart.m_Line + 2);
@@ -2722,7 +2723,7 @@ namespace dlxemu
 
         if (!m_Added.empty())
         {
-            auto start = m_AddedStart;
+            Coordinates start = m_AddedStart;
             editor->InsertTextAt(start, m_Added.c_str());
             editor->Colorize(m_AddedStart.m_Line - 1, m_AddedEnd.m_Line - m_AddedStart.m_Line + 1);
         }
