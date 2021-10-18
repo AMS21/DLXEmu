@@ -16,6 +16,8 @@ target_link_libraries("DLXLibUnittest" PRIVATE DLXLib Catch2::Catch2WithMain Phi
 
 target_include_directories("DLXLibUnittest" PRIVATE "include")
 
+#target_compile_definitions("DLXLibUnittest" PRIVATE "_GLIBCXX_DEBUG;_LIBCPP_DEBUG=1;_ITERATOR_DEBUG_LEVEL=2")
+
 set_target_properties("DLXLibUnittest" PROPERTIES FOLDER "Tests")
 
 phi_add_test(TARGET DLXLibUnittest)

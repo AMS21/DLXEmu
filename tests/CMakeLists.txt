@@ -5,9 +5,8 @@ if (PHI_PLATFORM_EMSCRIPTEN)
      set(CMAKE_EXECUTABLE_SUFFIX ".js")
 endif()
 
-if(NOT ${DLXEMU_FUZZ_BUILD})
-  add_subdirectory("DLXLibTest")
-endif()
+add_subdirectory("DLXLibTest")
+add_subdirectory("DLXEmuTest")
 
 if(PHI_COMPILER_CLANG AND PHI_PLATFORM_LINUX)
   add_subdirectory("Fuzzing")
