@@ -5,6 +5,7 @@
 #include <Phi/Core/Assert.hpp>
 #include <Phi/Core/Log.hpp>
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <magic_enum.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <algorithm>
@@ -272,6 +273,68 @@ template <typename T>
     return b ? "true" : "false";
 }
 
+bool SetupImGui() noexcept
+{
+    IMGUI_CHECKVERSION();
+    if (GImGui != nullptr)
+    {
+        return true;
+    }
+
+    if (ImGui::CreateContext() == nullptr)
+    {
+        FUZZ_LOG("Failed to create ImGuiContext");
+        return false;
+    }
+
+    // Set config
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
+
+    // Don't save any config
+    io.IniFilename = nullptr;
+
+    // SetStyle
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding              = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+
+    // Build atlas
+    unsigned char* tex_pixels{nullptr};
+    int            tex_w;
+    int            tex_h;
+    io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
+
+    ImGui::NewFrame();
+
+    return true;
+}
+
+void ShutdownImGui() noexcept
+{
+    ImGui::Render();
+
+    volatile ImDrawData* draw_data = ImGui::GetDrawData();
+    PHI_UNUSED_VARIABLE(draw_data);
+
+    ImGuiIO& io = ImGui::GetIO();
+    // Update and Render additional Platform Windows
+    // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+    }
+
+    ImGui::DestroyContext();
+}
+
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
 {
@@ -279,16 +342,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     phi::Log::initialize_default_loggers();
 #endif
 
-    /*
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGuiContext* ImGuiContext = ImGui::CreateContext();
-    if (ImGuiContext == nullptr)
-    {
-        FUZZ_LOG("Failed to create ImGuiContext");
-        return 0;
-    }
-    */
+    SetupImGui();
 
     dlxemu::Emulator   emulator;
     dlxemu::CodeEditor editor{&emulator};
@@ -795,7 +849,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
-            /*
             // Copy
             case 27: {
                 FUZZ_LOG("Copy");
@@ -803,9 +856,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 editor.Copy();
                 break;
             }
-            */
 
-            /*
             // Cut
             case 28: {
                 FUZZ_LOG("Cut");
@@ -813,9 +864,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 editor.Cut();
                 break;
             }
-            */
 
-            /*
             // Paste
             case 29: {
                 FUZZ_LOG("Paste");
@@ -823,7 +872,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 editor.Paste();
                 break;
             }
-            */
 
             // Delete
             case 30: {
@@ -937,15 +985,13 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
-                // Render
-                /*
+            // Render
             case 36: {
                 FUZZ_LOG("Render");
 
                 editor.Render();
                 break;
             }
-            */
 
             default: {
                 return 0;
@@ -953,7 +999,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
         }
     }
 
-    //ImGui::DestroyContext();
+    ShutdownImGui();
 
     FUZZ_LOG("Finished execution");
 
