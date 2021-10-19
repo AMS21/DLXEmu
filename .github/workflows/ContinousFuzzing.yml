@@ -17,7 +17,7 @@ jobs:
       TOTAL_RUN_TIME: "14400" # 4 Hours
       ASAN_OPTIONS: "strict_string_checks=1:detect_odr_violation=2:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=true:detect_invalid_pointer_pairs=3:detect_leaks=1"
       UBSAN_OPTIONS: "print_stacktrace=1"
-      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,nullability -fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,nullability -fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common"
 
     strategy:
       fail-fast: false
