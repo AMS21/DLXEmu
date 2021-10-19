@@ -190,13 +190,15 @@ namespace dlxemu
         void MoveHome(bool select = false) noexcept;
         void MoveEnd(bool select = false) noexcept;
 
-        void               SetSelectionStart(const Coordinates& position) noexcept;
-        void               SetSelectionEnd(const Coordinates& position) noexcept;
-        void               SetSelection(const Coordinates& start, const Coordinates& end,
-                                        SelectionMode mode = SelectionMode::Normal) noexcept;
-        void               SelectWordUnderCursor() noexcept;
-        void               SelectAll() noexcept;
-        [[nodiscard]] bool HasSelection() const noexcept;
+        void                      SetSelectionStart(const Coordinates& position) noexcept;
+        void                      SetSelectionEnd(const Coordinates& position) noexcept;
+        void                      SetSelection(const Coordinates& start, const Coordinates& end,
+                                               SelectionMode mode = SelectionMode::Normal) noexcept;
+        void                      SelectWordUnderCursor() noexcept;
+        void                      SelectAll() noexcept;
+        [[nodiscard]] bool        HasSelection() const noexcept;
+        [[nodiscard]] Coordinates GetSelectionStart() const noexcept;
+        [[nodiscard]] Coordinates GetSelectionEnd() const noexcept;
 
         void Copy() noexcept;
         void Cut() noexcept;

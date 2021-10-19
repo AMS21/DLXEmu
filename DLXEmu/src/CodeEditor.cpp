@@ -2373,6 +2373,16 @@ namespace dlxemu
         return m_State.m_SelectionEnd > m_State.m_SelectionStart;
     }
 
+    CodeEditor::Coordinates CodeEditor::GetSelectionStart() const noexcept
+    {
+        return m_State.m_SelectionStart;
+    }
+
+    CodeEditor::Coordinates CodeEditor::GetSelectionEnd() const noexcept
+    {
+        return m_State.m_SelectionEnd;
+    }
+
     void CodeEditor::Copy() noexcept
     {
         if (HasSelection())
