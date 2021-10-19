@@ -134,5 +134,17 @@ TEST_CASE("CodeEditor")
 
             editor.Delete();
         }
+
+        SECTION("crash-6ededd1eef55e21130e51a28a22b1275a0929cfd")
+        {
+            dlxemu::CodeEditor editor{&emulator};
+
+            editor.InsertText("\n\n\n");
+            editor.SetSelection(dlxemu::CodeEditor::Coordinates(0, 1993065),
+                                dlxemu::CodeEditor::Coordinates(31, 1761607680));
+            editor.Delete();
+            editor.Undo(24);
+            editor.Delete();
+        }
     }
 }
