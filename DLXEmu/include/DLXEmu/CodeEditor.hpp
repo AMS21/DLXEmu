@@ -139,12 +139,15 @@ namespace dlxemu
         void                         SetPalette(const Palette& value) noexcept;
 
         void SetErrorMarkers(const ErrorMarkers& markers) noexcept;
-
         void AddErrorMarker(const std::uint32_t line_number, const std::string& message) noexcept;
-
         void ClearErrorMarkers() noexcept;
+        [[nodiscard]] ErrorMarkers&       GetErrorMarkers() noexcept;
+        [[nodiscard]] const ErrorMarkers& GetErrorMarkers() const noexcept;
 
-        void SetBreakpoints(const Breakpoints& markers) noexcept;
+        void                             SetBreakpoints(const Breakpoints& markers) noexcept;
+        void                             ClearBreakPoints() noexcept;
+        [[nodiscard]] Breakpoints&       GetBreakpoints() noexcept;
+        [[nodiscard]] const Breakpoints& GetBreakpoints() const noexcept;
 
         void Render(const ImVec2& size = ImVec2(), bool border = false) noexcept;
         void SetText(const std::string& text) noexcept;
@@ -156,7 +159,9 @@ namespace dlxemu
         [[nodiscard]] std::string GetSelectedText() const noexcept;
         [[nodiscard]] std::string GetCurrentLineText() const noexcept;
 
-        std::uint32_t      GetTotalLines() const noexcept;
+        std::uint32_t GetTotalLines() const noexcept;
+
+        void               SetOverwrite(bool overwrite) noexcept;
         [[nodiscard]] bool IsOverwrite() const noexcept;
 
         void               SetReadOnly(bool value) noexcept;

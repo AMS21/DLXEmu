@@ -2854,14 +2854,44 @@ namespace dlxemu
         m_ErrorMarkers.clear();
     }
 
+    CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() noexcept
+    {
+        return m_ErrorMarkers;
+    }
+
+    const CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() const noexcept
+    {
+        return m_ErrorMarkers;
+    }
+
     void CodeEditor::SetBreakpoints(const Breakpoints& markers) noexcept
     {
         m_Breakpoints = markers;
     }
 
+    void CodeEditor::ClearBreakPoints() noexcept
+    {
+        m_Breakpoints.clear();
+    }
+
+    CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() noexcept
+    {
+        return m_Breakpoints;
+    }
+
+    const CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() const noexcept
+    {
+        return m_Breakpoints;
+    }
+
     std::uint32_t CodeEditor::GetTotalLines() const noexcept
     {
         return (std::uint32_t)m_Lines.size();
+    }
+
+    void CodeEditor::SetOverwrite(bool overwrite) noexcept
+    {
+        m_Overwrite = overwrite;
     }
 
     bool CodeEditor::IsOverwrite() const noexcept
