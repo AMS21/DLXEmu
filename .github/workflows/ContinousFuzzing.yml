@@ -332,7 +332,7 @@ jobs:
             else
               git add ${{ matrix.fuzz_target }}
               git status
-              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Corpus] '$(date)' Automatic corpus update"
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Corpus] ${{ matrix.fuzz_target }}: Automatic corpus update '$(date)'"
               git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
@@ -386,7 +386,7 @@ jobs:
             else
               git add ${{ matrix.fuzz_target }}
               git status
-              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Coverage] '$(date)' Automatic coverage update"
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Coverage] ${{ matrix.fuzz_target }}: Automatic coverage update '$(date)'"
               git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
