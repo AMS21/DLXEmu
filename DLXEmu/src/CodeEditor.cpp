@@ -1862,6 +1862,12 @@ namespace dlxemu
         m_State.m_CursorPosition.m_Line =
                 std::max(0, static_cast<std::int32_t>(m_State.m_CursorPosition.m_Line - amount));
 
+        // Move cursor to the beginning of the line after we reached the top
+        if (amount > old_pos.m_Line)
+        {
+            m_State.m_CursorPosition.m_Column = 0;
+        }
+
         if (old_pos != m_State.m_CursorPosition)
         {
             if (select)
