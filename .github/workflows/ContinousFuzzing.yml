@@ -364,9 +364,7 @@ jobs:
 
           files=$(find $GITHUB_WORKSPACE/DLXEmu-App/DLXLib -iname "*.hpp" -or -iname "*.cpp" -printf "%p ")
 
-          # Generate coverage reports
-          llvm-cov-${{ env.LLVM_VERSION }} show "$FUZZER" -instr-profile=coverage.profdata $files                               > $FUZZING_DIR/coverage.info
-          llvm-cov-${{ env.LLVM_VERSION }} show "$FUZZER" -instr-profile=coverage.profdata $files --format html                 > $FUZZING_DIR/coverage.html
+          # Generate coverage report
           llvm-cov-${{ env.LLVM_VERSION }} report "$FUZZER" -instr-profile=coverage.profdata $files -show-instantiation-summary > $FUZZING_DIR/coverage.report
 
           cd $CORPUS_ROOT_DIR
