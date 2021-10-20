@@ -1475,7 +1475,7 @@ namespace dlxemu
 
         for (char chr : text)
         {
-            if (chr == '\r' || std::iscntrl(chr))
+            if (chr == '\r' || (std::iscntrl(chr) && chr != '\n'))
             {
                 // ignore the carriage return character and control characters
             }
