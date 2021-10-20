@@ -146,13 +146,13 @@ namespace dlxemu
                 column = GetLineMaxColumn(line);
             }
 
-            return Coordinates(line, column);
+            return {line, column};
         }
 
-        column = m_Lines.empty() ? 0 : std::max(column, GetLineMaxColumn(line));
+        column = m_Lines.empty() ? 0 : std::clamp(column, 0, GetLineMaxColumn(line));
         line   = std::max(0, line);
 
-        return Coordinates(line, column);
+        return {line, column};
     }
 
     // https://en.wikipedia.org/wiki/UTF-8
