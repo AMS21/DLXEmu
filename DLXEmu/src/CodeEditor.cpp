@@ -1109,9 +1109,9 @@ namespace dlxemu
         std::int32_t line_no         = (std::int32_t)std::floor(scroll_y / m_CharAdvance.y);
         std::int32_t global_line_max = (std::int32_t)m_Lines.size();
         std::int32_t line_max        = std::max(
-                0, std::min((std::int32_t)m_Lines.size() - 1,
-                            line_no + (std::int32_t)std::floor((scroll_y + content_size.y) /
-                                                               m_CharAdvance.y)));
+                       0, std::min((std::int32_t)m_Lines.size() - 1,
+                                   line_no + (std::int32_t)std::floor((scroll_y + content_size.y) /
+                                                                      m_CharAdvance.y)));
 
         // Deduce m_TextStart by evaluating mLines size (global lineMax) plus two spaces as text width
         char buf[16];
@@ -1138,8 +1138,8 @@ namespace dlxemu
 
                 Line& line             = m_Lines[line_no];
                 longest                = std::max(m_TextStart + TextDistanceToLineStart(Coordinates(
-                                                         line_no, GetLineMaxColumn(line_no))),
-                                   longest);
+                                                                        line_no, GetLineMaxColumn(line_no))),
+                                                  longest);
                 std::int32_t column_no = 0;
                 Coordinates  line_start_coord(line_no, 0);
                 Coordinates  line_end_coord(line_no, GetLineMaxColumn(line_no));
