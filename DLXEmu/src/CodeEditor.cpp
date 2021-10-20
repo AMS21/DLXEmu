@@ -92,7 +92,7 @@ namespace dlxemu
         std::int32_t iend   = GetCharacterIndex(end);
         std::size_t  s      = 0;
 
-        for (std::size_t i = lstart; i < lend; i++)
+        for (std::size_t i = lstart; i < lend; ++i)
         {
             s += m_Lines[i].size();
         }
