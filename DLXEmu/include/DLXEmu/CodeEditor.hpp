@@ -318,7 +318,6 @@ namespace dlxemu
         std::int32_t  m_ColorRangeMax;
         SelectionMode m_SelectionMode;
         bool          m_ShowWhitespaces : 1;
-        bool          m_CheckComments : 1;
 
         Palette m_PaletteBase;
         Palette m_Palette;

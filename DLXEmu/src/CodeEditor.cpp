@@ -64,7 +64,6 @@ namespace dlxemu
         , m_ColorRangeMin(0)
         , m_ColorRangeMax(0)
         , m_SelectionMode(SelectionMode::Normal)
-        , m_CheckComments(true)
         , m_LastClick(-1.0f)
         , m_ShowWhitespaces(false)
         , m_StartTime(std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -2603,7 +2602,6 @@ namespace dlxemu
         m_ColorRangeMax = std::max(m_ColorRangeMax, to_line);
         m_ColorRangeMin = std::max(0, m_ColorRangeMin);
         m_ColorRangeMax = std::max(m_ColorRangeMin, m_ColorRangeMax);
-        m_CheckComments = true;
     }
 
     float CodeEditor::TextDistanceToLineStart(const Coordinates& from) const noexcept
