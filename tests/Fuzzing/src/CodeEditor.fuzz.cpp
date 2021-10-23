@@ -344,6 +344,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
     SetupImGui();
 
+    // Clear clipboard content
+    ImGui::SetClipboardText("");
+
     dlxemu::Emulator   emulator;
     dlxemu::CodeEditor editor{&emulator};
 
