@@ -990,9 +990,32 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // Render
             case 36: {
-                FUZZ_LOG("Render");
+                auto x_opt = consume_t<float>(data, size, index);
+                if (!x_opt)
+                {
+                    return 0;
+                }
+                float x = x_opt.value();
 
-                editor.Render();
+                auto y_opt = consume_t<float>(data, size, index);
+                if (!y_opt)
+                {
+                    return 0;
+                }
+                float y = y_opt.value();
+
+                ImVec2 size_vec(x, y);
+
+                auto border_opt = consume_bool(data, size, index);
+                if (!border_opt)
+                {
+                    return 0;
+                }
+                bool border = border_opt.value();
+
+                FUZZ_LOG("Render(ImVec2({:f}, {:f}), {:s})", x, y, border ? "true" : "false");
+
+                editor.Render(size_vec, border);
                 break;
             }
 
