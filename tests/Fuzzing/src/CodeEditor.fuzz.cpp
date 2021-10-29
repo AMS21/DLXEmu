@@ -9,6 +9,7 @@
 #include <magic_enum.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <limits>
 #include <optional>
@@ -990,6 +991,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // Render
             case 36: {
+                constexpr const static float min_val{-10'000};
+                constexpr const static float max_val{+10'000};
+
                 auto x_opt = consume_t<float>(data, size, index);
                 if (!x_opt)
                 {
@@ -1003,6 +1007,13 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                     return 0;
                 }
                 float y = y_opt.value();
+
+                // Reject invalid values
+                if (x < min_val || x > max_val || y < min_val || y > max_val || std::isnan(x) ||
+                    std::isnan(y) || std::isinf(x) || std::isinf(y))
+                {
+                    return 0;
+                }
 
                 ImVec2 size_vec(x, y);
 
