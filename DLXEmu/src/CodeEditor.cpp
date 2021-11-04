@@ -33,6 +33,7 @@ SOFTWARE.
 #include <Phi/Core/Assert.hpp>
 #include <Phi/Core/Log.hpp>
 #include <magic_enum.hpp>
+#include <spdlog/fmt/bundled/core.h>
 #include <algorithm>
 #include <cctype>
 #include <chrono>
@@ -3030,6 +3031,142 @@ namespace dlxemu
     std::string CodeEditor::GetEditorDump() const noexcept
     {
         std::string str;
+
+        Coordinates cursor_pos = GetCursorPosition();
+
+        str += "State:\n";
+        str += fmt::format("Cursor position: {:d}, {:d}\n", m_State.m_CursorPosition.m_Line,
+                           m_State.m_CursorPosition.m_Column);
+        str += fmt::format("Actual cursor positon: {:d}, {:d}\n", cursor_pos.m_Line,
+                           cursor_pos.m_Column);
+        str += fmt::format("Selection start: {:d}, {:d}\n", m_State.m_SelectionStart.m_Line,
+                           m_State.m_SelectionStart.m_Column);
+        str += fmt::format("Selection end: {:d}, {:d}\n", m_State.m_SelectionEnd.m_Line,
+                           m_State.m_SelectionEnd.m_Column);
+        str += fmt::format("Has selection: {:s}\n", HasSelection() ? "true" : "false");
+
+        str += "\n";
+        str += "Options:\n";
+        str += fmt::format("Line spacing: {:f}\n", m_LineSpacing);
+        str += fmt::format("Tab size: {:d}\n", GetTabSize());
+        str += fmt::format("Overwrite: {:s}\n", IsOverwrite() ? "true" : "false");
+        str += fmt::format("Read only: {:s}\n", IsReadOnly() ? "true" : "false");
+        str += fmt::format("Show whitespaces: {:s}\n", IsShowingWhitespaces() ? "true" : "false");
+        str += fmt::format("Selection mode: {:s}\n", magic_enum::enum_name(m_SelectionMode));
+
+        const std::string              full_text = GetText();
+        const std::vector<std::string> lines     = GetTextLines();
+        std::string                    lines_text;
+
+        for (const std::string& str : lines)
+        {
+            lines_text += str + '\n';
+        }
+        lines_text.pop_back();
+
+        str += "\n";
+        str += "Text:\n";
+        str += fmt::format("Total lines: {:d}\n", GetTotalLines());
+        if (lines_text != full_text)
+        {
+            str += "[WARNING]: Lines and text don't match!";
+            str += fmt::format("full_text:\n\"{:s}\"\n", full_text);
+
+            str += "Lines:\n";
+            for (std::size_t i{0}; i < lines.size(); ++i)
+            {
+                str += fmt::format("{:02d}: \"{:s}\"\n", i, lines.at(i));
+            }
+        }
+        else
+        {
+            str += fmt::format("\"{:s}\"\n", full_text);
+        }
+        if (HasSelection())
+        {
+            str += fmt::format("Selected text: \"{:s}\"\n", GetSelectedText());
+        }
+        else
+        {
+            str += "Selected text: N/A\n";
+        }
+        str += fmt::format("Current line text: \"{:s}\"\n", GetCurrentLineText());
+        str += fmt::format("Word under cursor: \"{:s}\"\n", GetWordUnderCursor());
+
+        str += "\n";
+        str += "Error markers:\n";
+        if (GetErrorMarkers().empty())
+        {
+            str += "None\n";
+        }
+        for (const auto& marker : GetErrorMarkers())
+        {
+            str += fmt::format("{:02d}: {:s}\n", marker.first, marker.second);
+        }
+
+        str += "\n";
+        str += "Break points:\n";
+        if (GetBreakpoints().empty())
+        {
+            str += "None\n";
+        }
+        for (const auto break_point : GetBreakpoints())
+        {
+            str += fmt::format("{:02d}\n", break_point);
+        }
+
+        str += "\n";
+        str += "Undo/Redo:\n";
+        str += fmt::format("Can undo: {:s}\n", CanUndo() ? "true" : "false");
+        str += fmt::format("Can redo: {:s}\n", CanRedo() ? "true" : "false");
+        str += fmt::format("Undo index: {:d}\n", m_UndoIndex);
+
+        str += "UndoBuffer:\n";
+        if (m_UndoBuffer.empty())
+        {
+            str += "Empty\n";
+        }
+        for (std::size_t i{0}; i < m_UndoBuffer.size(); ++i)
+        {
+            const UndoRecord& record = m_UndoBuffer.at(i);
+            str += fmt::format("#{:02d} UndoRecord:\n", i);
+
+            if (!record.m_Added.empty())
+            {
+                str += fmt::format("Added: \"{:s}\" from {:d}, {:d} to {:d}, {:d}\n",
+                                   record.m_Added, record.m_AddedStart.m_Line,
+                                   record.m_AddedStart.m_Column, record.m_AddedEnd.m_Line,
+                                   record.m_AddedEnd.m_Column);
+            }
+
+            if (!record.m_Removed.empty())
+            {
+                str += fmt::format("Removed: \"{:s}\" from {:d}, {:d} to {:d}, {:d}\n",
+                                   record.m_Removed, record.m_RemovedStart.m_Line,
+                                   record.m_RemovedStart.m_Column, record.m_RemovedEnd.m_Line,
+                                   record.m_RemovedEnd.m_Column);
+            }
+
+            str += "State before:\n";
+            str += fmt::format("Cursor position: {:d}, {:d}\n",
+                               record.m_Before.m_CursorPosition.m_Line,
+                               record.m_Before.m_CursorPosition.m_Column);
+            str += fmt::format("Selection start: {:d}, {:d}\n",
+                               record.m_Before.m_SelectionStart.m_Line,
+                               record.m_Before.m_SelectionStart.m_Column);
+            str += fmt::format("Selection end: {:d}, {:d}\n", record.m_Before.m_SelectionEnd.m_Line,
+                               record.m_Before.m_SelectionEnd.m_Column);
+
+            str += "State after:\n";
+            str += fmt::format("Cursor position: {:d}, {:d}\n",
+                               record.m_After.m_CursorPosition.m_Line,
+                               record.m_After.m_CursorPosition.m_Column);
+            str += fmt::format("Selection start: {:d}, {:d}\n",
+                               record.m_After.m_SelectionStart.m_Line,
+                               record.m_After.m_SelectionStart.m_Column);
+            str += fmt::format("Selection end: {:d}, {:d}\n", record.m_After.m_SelectionEnd.m_Line,
+                               record.m_After.m_SelectionEnd.m_Column);
+        }
 
         return str;
     }
