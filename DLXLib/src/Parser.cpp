@@ -53,27 +53,26 @@ namespace dlx
             return Token(Token::Type::IntegerLiteral, token, line_number, column, number->get());
         }
 
-        std::string token_upper(token.data(), token.size());
-        std::transform(token_upper.begin(), token_upper.end(), token_upper.begin(), ::toupper);
-
-        if (token_upper == "FPSR")
+        if (token.length() == 4 && (token[0] == 'F' || token[0] == 'f') &&
+            (token[1] == 'P' || token[1] == 'p') && (token[2] == 'S' || token[2] == 's') &&
+            (token[3] == 'R' || token[3] == 'r'))
         {
             return Token(Token::Type::RegisterStatus, token, line_number, column);
         }
 
-        if (IntRegisterID id = StringToIntRegister(token_upper); id != IntRegisterID::None)
+        if (IntRegisterID id = StringToIntRegister(token); id != IntRegisterID::None)
         {
             return Token(Token::Type::RegisterInt, token, line_number, column,
                          static_cast<std::uint32_t>(id));
         }
 
-        if (FloatRegisterID id = StringToFloatRegister(token_upper); id != FloatRegisterID::None)
+        if (FloatRegisterID id = StringToFloatRegister(token); id != FloatRegisterID::None)
         {
             return Token(Token::Type::RegisterFloat, token, line_number, column,
                          static_cast<std::uint32_t>(id));
         }
 
-        if (OpCode opcode = StringToOpCode(token_upper); opcode != OpCode::NONE)
+        if (OpCode opcode = StringToOpCode(token); opcode != OpCode::NONE)
         {
             return Token(Token::Type::OpCode, token, line_number, column,
                          static_cast<std::uint32_t>(opcode));
@@ -138,7 +137,7 @@ namespace dlx
 
                 parsing_comment = true;
                 current_token   = std::string_view(
-                        source.substr(token_begin.get(), current_token.length() + 1));
+                          source.substr(token_begin.get(), current_token.length() + 1));
             }
             else if (parsing_comment)
             {

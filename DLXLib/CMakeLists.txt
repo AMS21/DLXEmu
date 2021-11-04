@@ -24,7 +24,6 @@ file(
 file(
   GLOB
   DLXLIB_HEADERS
-  "include/DLX/Containers/LookUpMap.hpp"
   #
   "include/DLX/FloatRegister.hpp"
   "include/DLX/Instruction.hpp"
