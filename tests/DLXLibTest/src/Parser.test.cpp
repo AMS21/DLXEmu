@@ -1,10 +1,14 @@
-#include "DLX/InstructionArg.hpp"
-#include "DLX/OpCode.hpp"
-#include "DLX/RegisterNames.hpp"
-#include "DLX/Token.hpp"
+#include <catch2/catch_test_macros.hpp>
+
+#include <DLX/Instruction.hpp>
+#include <DLX/InstructionArg.hpp>
+#include <DLX/InstructionLibrary.hpp>
+#include <DLX/IntRegister.hpp>
+#include <DLX/OpCode.hpp>
 #include <DLX/Parser.hpp>
 #include <DLX/Processor.hpp>
-#include <catch2/catch_test_macros.hpp>
+#include <DLX/RegisterNames.hpp>
+#include <DLX/Token.hpp>
 
 phi::Boolean TokenMatches(const dlx::Token& token, const std::string& text, dlx::Token::Type type)
 {
@@ -186,6 +190,44 @@ phi::Boolean InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcod
     }
 
     return true;
+}
+
+TEST_CASE("InstructionMatches")
+{
+    dlx::ParsedProgram      res;
+    dlx::InstructionLibrary lib;
+
+    res = dlx::Parser::Parse(lib, "ADD, R2, R4, R29");
+    REQUIRE(res.m_ParseErrors.empty());
+    REQUIRE(res.m_Instructions.size() == 1);
+
+    // Different opcode
+    CHECK_FALSE(
+            InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADDI,
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+
+    // First arg wrong
+    CHECK_FALSE(
+            InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADD,
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R0),
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+
+    // Second arg wrong
+    CHECK_FALSE(
+            InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADD,
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R0),
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+
+    // Third arg wrong
+    CHECK_FALSE(
+            InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADD,
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
+                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R0)));
 }
 
 TEST_CASE("Parser")
