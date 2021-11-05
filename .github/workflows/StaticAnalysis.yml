@@ -217,6 +217,7 @@ jobs:
       - name: Verify installation
         run: |
           iwyu_tool.py --help
+          include-what-you-use --version
 
       - name: Run Include-What-You-Use
         run: |
