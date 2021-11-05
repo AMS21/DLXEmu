@@ -61,6 +61,9 @@ int main(int argc, char* argv[])
         file_log->info(R"(float_register_id_{0}="{0}")", reg);
     }
 
+    // Write FPSR
+    file_log->info(R"(FPSR="FPSR")");
+
     // Write normal tokens
     file_log->info(R"(space=" ")");
     file_log->info(R"(comma=",")");
