@@ -55,4 +55,24 @@ TEST_CASE("StringToOpCode")
     CHECK(dlx::StringToOpCode("\\") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("!") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("AD") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("OA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("SA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("AAA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("DDD") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("EEE") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("TTT") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("LBA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("LEA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("LHA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("LTA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("LWW") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("LXX") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("NEA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("NXX") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("ORA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("SBA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("SEA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("SGA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("SHA") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("SLB") == dlx::OpCode::NONE);
 }
