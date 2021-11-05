@@ -87,6 +87,8 @@ TEST_CASE("StringToIntRegister")
     CHECK(dlx::StringToIntRegister("R100") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("None") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("RA") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("RAA") == dlx::IntRegisterID::None);
 }
 
 TEST_CASE("StringToFloatRegister")
@@ -174,4 +176,6 @@ TEST_CASE("StringToFloatRegister")
     CHECK(dlx::StringToFloatRegister("F100") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("None") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("FA") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("FAA") == dlx::FloatRegisterID::None);
 }
