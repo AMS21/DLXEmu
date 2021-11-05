@@ -214,6 +214,10 @@ jobs:
           # Install Include-what-you-use
           sudo make install
 
+      - name: Verify installation
+        run: |
+          iwyu_tool.py --help
+
       - name: Run Include-What-You-Use
         run: |
           # Create build directory
