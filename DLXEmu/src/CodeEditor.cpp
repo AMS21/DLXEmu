@@ -117,11 +117,15 @@ namespace dlxemu
             {
                 istart = 0;
                 ++lstart;
-                result += '\n';
+
+                if (lstart != m_Lines.size())
+                {
+                    result += '\n';
+                }
             }
         }
 
-        return result.substr(0, result.size() - 1);
+        return result;
     }
 
     CodeEditor::Coordinates CodeEditor::GetActualCursorCoordinates() const noexcept
