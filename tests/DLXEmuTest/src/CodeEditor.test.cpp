@@ -502,8 +502,6 @@ TEST_CASE("CodeEditor bad calls")
 
     SECTION("crash-6ededd1eef55e21130e51a28a22b1275a0929cfd")
     {
-        // TODO: fix
-        /*
         dlxemu::CodeEditor editor{&emulator};
 
         editor.InsertText("\n\n\n");
@@ -512,7 +510,6 @@ TEST_CASE("CodeEditor bad calls")
         editor.Delete();
         editor.Undo(24);
         editor.Delete();
-        */
     }
 
     SECTION("Crash-1c525126120b9931b78d5b724f6338435e211037")
