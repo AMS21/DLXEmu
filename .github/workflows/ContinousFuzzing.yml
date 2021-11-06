@@ -354,7 +354,7 @@ jobs:
           cd DLXEmu-App
           cd build
 
-          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-O0 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fprofile-instr-generate -fcoverage-mapping" ..
+          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-O0 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions -fprofile-instr-generate -fcoverage-mapping" ..
           cmake --build . --clean-first --target ${{ matrix.fuzz_target }}
 
           # Generate coverage data
