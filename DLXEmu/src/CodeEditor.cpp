@@ -3196,4 +3196,12 @@ namespace dlxemu
 
         return str;
     }
+
+    void CodeEditor::VerifyInternalState() noexcept
+    {
+        // Verify Selection is still in a valid state
+        PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
+        PHI_ASSERT(m_State.m_SelectionStart.m_Line < m_Lines.size());
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Line < m_Lines.size());
+    }
 } // namespace dlxemu

@@ -303,6 +303,8 @@ namespace dlxemu
 
         void ResetState() noexcept;
 
+        void VerifyInternalState() noexcept;
+
         float       m_LineSpacing;
         EditorState m_State;
         UndoBuffer  m_UndoBuffer;
