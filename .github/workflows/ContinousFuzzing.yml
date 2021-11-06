@@ -251,7 +251,7 @@ jobs:
                 break
               else
                 if [ "$i" = 5 ]; then
-                  echo "Failed to push after 5 retries"19614997+AMS21@users.noreply.github.com
+                  echo "Failed to push after 5 retries"
                   exit 1
                 fi
               fi
