@@ -101,5 +101,5 @@ jobs:
           do
             printf "*****\nRegression fuzz test with ${0}\n*****\n"
 
-            $fuzzer -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 $files $seed_files | tee $fuzzer.log'
+            $fuzzer -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 $files $seed_files | tee $fuzzer.log
           done

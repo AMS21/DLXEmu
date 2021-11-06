@@ -174,7 +174,7 @@ jobs:
           do
             printf "*****\Running $fuzzer\n*****\n"
 
-            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME | tee $fuzzer-Debug.log'
+            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME | tee $fuzzer-Debug.log
           done
 
       - name: Run fuzzers RelWithDebInfo
@@ -193,7 +193,7 @@ jobs:
           do
             printf "*****\Running $fuzzer\n*****\n"
 
-            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME | tee $fuzzer-RelWithDebInfo.log'
+            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME | tee $fuzzer-RelWithDebInfo.log
           done
 
       - name: Run fuzzers Release
@@ -212,7 +212,7 @@ jobs:
           do
             printf "*****\Running $fuzzer\n*****\n"
 
-            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME | tee $fuzzer-Release.log'
+            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME | tee $fuzzer-Release.log
           done
 
   Warnings:
