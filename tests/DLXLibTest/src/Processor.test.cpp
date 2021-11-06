@@ -533,6 +533,17 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
         CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
         CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+
+        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
+        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
+
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
+        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
+        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
     }
 
     SECTION("Jump to non existing label")
