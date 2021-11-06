@@ -93,7 +93,7 @@ jobs:
           fi
 
           # Run all fuzzers on all previous crashes, timeouts and seed files
-          fuzzers=$(find find $BINARY_DIR -type f -iname "fuzz_*")
+          fuzzers=$(find $BINARY_DIR -type f -iname "fuzz_*")
           echo "Found fuzzers:"
           echo "$fuzzers"
 

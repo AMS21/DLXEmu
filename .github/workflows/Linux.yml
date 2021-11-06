@@ -166,7 +166,7 @@ jobs:
           cmake --build . --clean-first
           ctest . -C Debug
 
-          fuzzers=$(find find $BINARY_DIR -type f -iname "fuzz_*")
+          fuzzers=$(find $BINARY_DIR -type f -iname "fuzz_*")
           echo "Found fuzzers:"
           echo "$fuzzers"
 
@@ -185,7 +185,7 @@ jobs:
           cmake --build . --clean-first
           ctest . -C RelWithDebInfo
 
-          fuzzers=$(find find $BINARY_DIR -type f -iname "fuzz_*")
+          fuzzers=$(find $BINARY_DIR -type f -iname "fuzz_*")
           echo "Found fuzzers:"
           echo "$fuzzers"
 
@@ -204,7 +204,7 @@ jobs:
           cmake --build . --clean-first
           ctest . -C Release
 
-          fuzzers=$(find find $BINARY_DIR -type f -iname "fuzz_*")
+          fuzzers=$(find $BINARY_DIR -type f -iname "fuzz_*")
           echo "Found fuzzers:"
           echo "$fuzzers"
 
