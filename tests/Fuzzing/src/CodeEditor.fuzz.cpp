@@ -305,6 +305,18 @@ bool SetupImGui() noexcept
         io.DisplaySize.y = 768.0f;
     }
 
+    // Enfore valid DeltaTime
+    if (io.DeltaTime <= 0.0f)
+    {
+        io.DeltaTime = 1.0f / 60.0f;
+    }
+
+    // Enforce valid space key mapping
+    if (io.KeyMap[ImGuiKey_Space] == -1)
+    {
+        io.KeyMap[ImGuiKey_Space] = 0;
+    }
+
     // Don't save any config
     io.IniFilename = nullptr;
 
@@ -342,6 +354,8 @@ void ShutdownImGui() noexcept
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
     }
+
+    ImGui::EndFrame();
 
     ImGui::DestroyContext();
 }
