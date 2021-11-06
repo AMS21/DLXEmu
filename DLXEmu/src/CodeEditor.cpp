@@ -798,6 +798,11 @@ namespace dlxemu
         m_Lines.erase(m_Lines.begin() + index);
         PHI_ASSERT(!m_Lines.empty());
 
+        // Verify Selection is still in a valid state
+        PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
+        PHI_ASSERT(m_State.m_SelectionStart.m_Line < m_Lines.size());
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Line < m_Lines.size());
+
         m_TextChanged = true;
     }
 
@@ -2281,6 +2286,11 @@ namespace dlxemu
 
             Colorize(pos.m_Line, 1);
         }
+
+        // Verify Selection is still in a valid state
+        PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
+        PHI_ASSERT(m_State.m_SelectionStart.m_Line < m_Lines.size());
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Line < m_Lines.size());
 
         u.m_After = m_State;
         AddUndo(u);
