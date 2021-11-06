@@ -72,8 +72,19 @@ TEST_CASE("StringToIntRegister")
     CHECK(dlx::StringToIntRegister("r31") == dlx::IntRegisterID::R31);
 
     // Invalid registers
+    CHECK(dlx::StringToIntRegister("") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("R") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("r") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R00") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R01") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R02") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R03") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R04") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R05") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R06") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R07") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R08") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R09") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("R32") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("R33") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("R34") == dlx::IntRegisterID::None);
@@ -85,10 +96,20 @@ TEST_CASE("StringToIntRegister")
     CHECK(dlx::StringToIntRegister("R86") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("R95") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("R100") == dlx::IntRegisterID::None);
-    CHECK(dlx::StringToIntRegister("") == dlx::IntRegisterID::None);
     CHECK(dlx::StringToIntRegister("None") == dlx::IntRegisterID::None);
-    CHECK(dlx::StringToIntRegister("RA") == dlx::IntRegisterID::None);
-    CHECK(dlx::StringToIntRegister("RAA") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("RX") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R0X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R1X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R2X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R3X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R4X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R5X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R6X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R7X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R8X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("R9X") == dlx::IntRegisterID::None);
+    CHECK(dlx::StringToIntRegister("XXX") == dlx::IntRegisterID::None);
 }
 
 TEST_CASE("StringToFloatRegister")
@@ -161,9 +182,20 @@ TEST_CASE("StringToFloatRegister")
     CHECK(dlx::StringToFloatRegister("f31") == dlx::FloatRegisterID::F31);
 
     // Invalid registers
+    CHECK(dlx::StringToFloatRegister("") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("F") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("f") == dlx::FloatRegisterID::None);
-    CHECK(dlx::StringToFloatRegister("F32") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F00") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F01") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F02") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F03") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F04") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F05") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F06") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F07") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F08") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F09") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F1X") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("F33") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("F34") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("F42") == dlx::FloatRegisterID::None);
@@ -174,10 +206,20 @@ TEST_CASE("StringToFloatRegister")
     CHECK(dlx::StringToFloatRegister("F86") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("F95") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("F100") == dlx::FloatRegisterID::None);
-    CHECK(dlx::StringToFloatRegister("") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("None") == dlx::FloatRegisterID::None);
-    CHECK(dlx::StringToFloatRegister("FA") == dlx::FloatRegisterID::None);
-    CHECK(dlx::StringToFloatRegister("FAA") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("FX") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F0X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F1X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F2X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F3X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F4X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F5X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F6X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F7X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F8X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("F9X") == dlx::FloatRegisterID::None);
+    CHECK(dlx::StringToFloatRegister("XXX") == dlx::FloatRegisterID::None);
 }
 
 TEST_CASE("IsFPSR")
