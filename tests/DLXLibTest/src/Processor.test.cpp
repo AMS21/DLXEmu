@@ -1616,6 +1616,29 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
         }
     }
+
+    SECTION("Register out of bounds")
+    {
+        // Write out of bounds
+        res = dlx::Parser::Parse(lib, "ADDD F31 F0 F0");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IsHalted());
+        CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
+
+        // Read out of bounds
+        res = dlx::Parser::Parse(lib, "ADDD F0 F31 F0");
+        REQUIRE(res.m_ParseErrors.empty());
+
+        proc.LoadProgram(res);
+        proc.ExecuteCurrentProgram();
+
+        CHECK(proc.IsHalted());
+        CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
+    }
 }
 
 TEST_CASE("ADD")
@@ -4436,10 +4459,18 @@ TEST_CASE("R0 is read only")
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
-
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R0).get() == 0);
+
+    // Unsigned
+    res = dlx::Parser::Parse(lib, "ADDUI R0 R0 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R0).get() == 0);
 }
 
 TEST_CASE("Empty source code")
@@ -4454,6 +4485,80 @@ TEST_CASE("Empty source code")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.IsHalted());
+}
+
+TEST_CASE("Processor::LoadProgram")
+{
+    // Parser errors
+    res = dlx::Parser::Parse(lib, "This has errors");
+    REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+    // Returns false on prog with Parser errors
+    CHECK_FALSE(proc.LoadProgram(res));
+
+    // Should be NOPs
+    proc.ExecuteCurrentProgram();
+    proc.ExecuteStep();
+
+    // Empty
+    res = dlx::Parser::Parse(lib, "");
+
+    CHECK(proc.LoadProgram(res));
+
+    // Should be NOPs
+    proc.ExecuteCurrentProgram();
+    proc.ExecuteStep();
+
+    // Valid
+    res = dlx::Parser::Parse(lib, "ADD R1 R1 R1");
+
+    CHECK(proc.LoadProgram(res));
+}
+
+TEST_CASE("Processor::ClearRegisters")
+{
+    // Set all registers to non zero
+    for (int i{0}; i < 31; ++i)
+    {
+        proc.IntRegisterSetSignedValue(static_cast<dlx::IntRegisterID>(i), 42);
+        proc.FloatRegisterSetFloatValue(static_cast<dlx::FloatRegisterID>(i), 3.14f);
+    }
+    proc.SetFPSRValue(true);
+
+    proc.ClearRegisters();
+
+    // Test
+    for (int i{0}; i < 31; ++i)
+    {
+        CHECK(bool(proc.IntRegisterGetSignedValue(static_cast<dlx::IntRegisterID>(i)) == 0));
+        CHECK(bool(proc.FloatRegisterGetFloatValue(static_cast<dlx::FloatRegisterID>(i)).get() ==
+                   0.0f));
+    }
+
+    CHECK_FALSE(proc.GetFPSRValue());
+}
+
+TEST_CASE("Processor::ClearMemory")
+{
+    using namespace phi::literals;
+
+    auto& mem = proc.GetMemory();
+
+    phi::usize start_adr = mem.GetStartingAddress();
+
+    // Set all values to non zero
+    for (phi::usize i{0u}; i < mem.GetSize(); ++i)
+    {
+        mem.StoreByte(start_adr + i, 1_i8);
+    }
+
+    proc.ClearMemory();
+
+    // Test all values
+    for (phi::usize i{0u}; i < mem.GetSize(); ++i)
+    {
+        CHECK(mem.LoadByte(start_adr + i)->get() == 0);
+    }
 }
 
 TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e")
