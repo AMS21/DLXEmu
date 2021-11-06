@@ -3,6 +3,7 @@
 #include "DLX/MemoryBlock.hpp"
 #include "DLX/Processor.hpp"
 #include "DLXEmu/Emulator.hpp"
+#include "Phi/Core/Types.hpp"
 #include <imgui.h>
 
 namespace dlxemu
@@ -19,9 +20,11 @@ namespace dlxemu
 
             std::vector<dlx::MemoryBlock::MemoryByte>& values = mem.GetRawMemory();
 
+            phi::usize start_adr = mem.GetStartingAddress();
+
             for (std::size_t index{0}; index < values.size(); index += 4)
             {
-                ImGui::InputInt(std::to_string((mem.GetStartingAddress() + index).get()).c_str(),
+                ImGui::InputInt(std::to_string((start_adr + index).get()).c_str(),
                                 reinterpret_cast<std::int32_t*>(&values[index]));
             }
         }
