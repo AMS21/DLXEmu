@@ -100,25 +100,22 @@ namespace dlx
 
     [[nodiscard]] inline phi::Boolean IsReservedIdentifier(std::string_view token) noexcept
     {
-        std::string token_upper(token.data(), token.size());
-        std::transform(token_upper.begin(), token_upper.end(), token_upper.begin(), ::toupper);
-
-        if (StringToIntRegister(token_upper) != IntRegisterID::None)
+        if (StringToIntRegister(token) != IntRegisterID::None)
         {
             return true;
         }
 
-        if (StringToFloatRegister(token_upper) != FloatRegisterID::None)
+        if (StringToFloatRegister(token) != FloatRegisterID::None)
         {
             return true;
         }
 
-        if (StringToOpCode(token_upper) != OpCode::NONE)
+        if (StringToOpCode(token) != OpCode::NONE)
         {
             return true;
         }
 
-        if (token_upper == "FPSR")
+        if (IsFPSR(token))
         {
             return true;
         }

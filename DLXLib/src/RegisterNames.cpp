@@ -113,4 +113,18 @@ namespace dlx
 
         return FloatRegisterID::None;
     }
+
+    bool IsFPSR(std::string_view token) noexcept
+    {
+        if (token.length() == 4)
+        {
+            char c1 = token[0];
+            char c2 = token[1];
+            char c3 = token[2];
+            char c4 = token[3];
+
+            return (c1 == 'F' || c1 == 'f') && (c2 == 'P' || c2 == 'p') &&
+                   (c3 == 'S' || c3 == 's') && (c4 == 'R' || c4 == 'r');
+        }
+    }
 } // namespace dlx

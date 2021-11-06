@@ -83,4 +83,6 @@ namespace dlx
     };
 
     FloatRegisterID StringToFloatRegister(std::string_view token) noexcept;
+
+    bool IsFPSR(std::string_view token) noexcept;
 } // namespace dlx

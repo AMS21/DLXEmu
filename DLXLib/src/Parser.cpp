@@ -53,9 +53,7 @@ namespace dlx
             return Token(Token::Type::IntegerLiteral, token, line_number, column, number->get());
         }
 
-        if (token.length() == 4 && (token[0] == 'F' || token[0] == 'f') &&
-            (token[1] == 'P' || token[1] == 'p') && (token[2] == 'S' || token[2] == 's') &&
-            (token[3] == 'R' || token[3] == 'r'))
+        if (IsFPSR(token))
         {
             return Token(Token::Type::RegisterStatus, token, line_number, column);
         }
