@@ -179,3 +179,35 @@ TEST_CASE("StringToFloatRegister")
     CHECK(dlx::StringToFloatRegister("FA") == dlx::FloatRegisterID::None);
     CHECK(dlx::StringToFloatRegister("FAA") == dlx::FloatRegisterID::None);
 }
+
+TEST_CASE("IsFPSR")
+{
+    CHECK(dlx::IsFPSR("fpsr"));
+    CHECK(dlx::IsFPSR("Fpsr"));
+    CHECK(dlx::IsFPSR("fPsr"));
+    CHECK(dlx::IsFPSR("FPsr"));
+    CHECK(dlx::IsFPSR("fpSr"));
+    CHECK(dlx::IsFPSR("FpSr"));
+    CHECK(dlx::IsFPSR("fPSr"));
+    CHECK(dlx::IsFPSR("FPSr"));
+    CHECK(dlx::IsFPSR("fpsR"));
+    CHECK(dlx::IsFPSR("FpsR"));
+    CHECK(dlx::IsFPSR("fPsR"));
+    CHECK(dlx::IsFPSR("FPsR"));
+    CHECK(dlx::IsFPSR("fpSR"));
+    CHECK(dlx::IsFPSR("FpSR"));
+    CHECK(dlx::IsFPSR("fPSR"));
+    CHECK(dlx::IsFPSR("FPSR"));
+
+    CHECK_FALSE(dlx::IsFPSR(""));
+    CHECK_FALSE(dlx::IsFPSR(";"));
+    CHECK_FALSE(dlx::IsFPSR(":"));
+    CHECK_FALSE(dlx::IsFPSR("-"));
+    CHECK_FALSE(dlx::IsFPSR("#"));
+    CHECK_FALSE(dlx::IsFPSR("!"));
+    CHECK_FALSE(dlx::IsFPSR("a"));
+    CHECK_FALSE(dlx::IsFPSR("FPSX"));
+    CHECK_FALSE(dlx::IsFPSR("FPXX"));
+    CHECK_FALSE(dlx::IsFPSR("FXXX"));
+    CHECK_FALSE(dlx::IsFPSR("XXXX"));
+}
