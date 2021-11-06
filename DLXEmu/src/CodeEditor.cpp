@@ -759,6 +759,7 @@ namespace dlxemu
         PHI_ASSERT(!m_ReadOnly);
         PHI_ASSERT(m_Lines.size() > 1);
 
+        // Clear error markers on that line
         ErrorMarkers etmp;
         for (auto& i : m_ErrorMarkers)
         {
@@ -771,6 +772,7 @@ namespace dlxemu
         }
         m_ErrorMarkers = std::move(etmp);
 
+        // Remove breakpoints on that line
         Breakpoints btmp;
         for (auto i : m_Breakpoints)
         {
@@ -782,6 +784,16 @@ namespace dlxemu
             btmp.insert(i >= index ? i - 1 : i);
         }
         m_Breakpoints = std::move(btmp);
+
+        // Fix selection
+        if (m_State.m_SelectionStart.m_Line >= index)
+        {
+            m_State.m_SelectionStart.m_Line--;
+        }
+        if (m_State.m_SelectionEnd.m_Line >= index)
+        {
+            m_State.m_SelectionEnd.m_Line--;
+        }
 
         m_Lines.erase(m_Lines.begin() + index);
         PHI_ASSERT(!m_Lines.empty());
