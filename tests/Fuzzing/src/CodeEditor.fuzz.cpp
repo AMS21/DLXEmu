@@ -295,6 +295,16 @@ bool SetupImGui() noexcept
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
 
+    // Enforce valid display size
+    if (io.DisplaySize.x <= 0.0f)
+    {
+        io.DisplaySize.x = 1024.0f;
+    }
+    if (io.DisplaySize.y <= 0.0f)
+    {
+        io.DisplaySize.y = 768.0f;
+    }
+
     // Don't save any config
     io.IniFilename = nullptr;
 
