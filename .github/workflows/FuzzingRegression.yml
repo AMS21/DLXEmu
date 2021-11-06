@@ -93,4 +93,13 @@ jobs:
           fi
 
           # Run all fuzzers on all previous crashes, timeouts and seed files
-          find $BINARY_DIR -type f -iname "fuzz_*" -exec env files=$files seed_files=$seed_files bash -c 'printf "*****\nRegression fuzz test with ${0}\n*****\n"; ${0} -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 $files $seed_files | tee ${0}.log' {} \;
+          fuzzers=$(find find $BINARY_DIR -type f -iname "fuzz_*")
+          echo "Found fuzzers:"
+          echo "$fuzzers"
+
+          for fuzzer in $fuzzers
+          do
+            printf "*****\nRegression fuzz test with ${0}\n*****\n"
+
+            $fuzzer -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 $files $seed_files | tee $fuzzer.log'
+          done
