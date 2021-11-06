@@ -4,6 +4,7 @@
 #include <Phi/Config/Warning.hpp>
 #include <Phi/Core/Assert.hpp>
 #include <Phi/Core/Log.hpp>
+#include <Phi/Core/ScopeGuard.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <magic_enum.hpp>
@@ -296,26 +297,14 @@ bool SetupImGui() noexcept
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
 
     // Enforce valid display size
-    if (io.DisplaySize.x <= 0.0f)
-    {
-        io.DisplaySize.x = 1024.0f;
-    }
-    if (io.DisplaySize.y <= 0.0f)
-    {
-        io.DisplaySize.y = 768.0f;
-    }
+    io.DisplaySize.x = 1024.0f;
+    io.DisplaySize.y = 768.0f;
 
     // Enfore valid DeltaTime
-    if (io.DeltaTime <= 0.0f)
-    {
-        io.DeltaTime = 1.0f / 60.0f;
-    }
+    io.DeltaTime = 1.0f / 60.0f;
 
     // Enforce valid space key mapping
-    if (io.KeyMap[ImGuiKey_Space] == -1)
-    {
-        io.KeyMap[ImGuiKey_Space] = 0;
-    }
+    io.KeyMap[ImGuiKey_Space] = 0;
 
     // Don't save any config
     io.IniFilename = nullptr;
@@ -334,12 +323,10 @@ bool SetupImGui() noexcept
     int            tex_h;
     io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
 
-    ImGui::NewFrame();
-
     return true;
 }
 
-void ShutdownImGui() noexcept
+void EndImGui() noexcept
 {
     ImGui::Render();
 
@@ -356,8 +343,6 @@ void ShutdownImGui() noexcept
     }
 
     ImGui::EndFrame();
-
-    ImGui::DestroyContext();
 }
 
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
@@ -367,7 +352,10 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     phi::Log::initialize_default_loggers();
 #endif
 
-    SetupImGui();
+    static bool imgui_init = SetupImGui();
+
+    ImGui::NewFrame();
+    auto guard = phi::make_scope_guard(&EndImGui);
 
     // Clear clipboard content
     ImGui::SetClipboardText("");
@@ -1059,8 +1047,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
         }
     }
-
-    ShutdownImGui();
 
     FUZZ_LOG("Finished execution");
 
