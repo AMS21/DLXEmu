@@ -265,6 +265,11 @@ namespace dlx
         m_StartingAddress = new_starting_address;
     }
 
+    phi::usize MemoryBlock::GetSize() const noexcept
+    {
+        return m_Values.size();
+    }
+
     std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() noexcept
     {
         return m_Values;
