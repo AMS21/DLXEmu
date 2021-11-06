@@ -15,6 +15,7 @@ jobs:
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
       CTEST_PARALLEL_LEVEL: "2"
       CTEST_OUTPUT_ON_FAILURE: "ON"
+      FUZZ_TIME: 300 # 5 Minutes
 
     steps:
       - name: Checkout
@@ -58,6 +59,12 @@ jobs:
 
           # Generate coverage data
           ctest . -C Debug
+
+      - name: Run fuzzers
+        run: |
+          cd build
+
+          find bin -type f -iname "fuzz_*" -exec bash -c 'echo Running ${0}; ${0} -max_total_time=$FUZZ_TIME' {} \;
 
       - name: Process coverage data
         run: |
