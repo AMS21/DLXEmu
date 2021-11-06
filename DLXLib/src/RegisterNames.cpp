@@ -126,5 +126,7 @@ namespace dlx
             return (c1 == 'F' || c1 == 'f') && (c2 == 'P' || c2 == 'p') &&
                    (c3 == 'S' || c3 == 's') && (c4 == 'R' || c4 == 'r');
         }
+
+        return false;
     }
 } // namespace dlx
