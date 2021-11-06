@@ -198,7 +198,7 @@ jobs:
             cat $crash
 
             # Minimize crash
-            $FUZZER -minimize_crash=1 -runs=500000 -timeout=10 -max_total_time=5400 $crash || true
+            $FUZZER -minimize_crash=1 -runs=500000 -timeout=10 -max_total_time=5400 -rss_limit_mb=0 $crash || true
             if [ ! "${PIPESTATUS[0]}" = 0 ]; then
               echo "WARN: Failed to minimize $err_name"
               rm minimized-from-* -v || true
