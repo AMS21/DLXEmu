@@ -239,20 +239,28 @@ jobs:
               git pull -ff
 
               # Copy minimized crash to Corpus
-              cp "$FUZZING_DIR/$minimized_crash" "$LOCAL_CORPUS_DIR/$err_name/$err_name-$checksum"
+              cp "$FUZZING_DIR/$minimized_crash" "$LOCAL_CORPUS_DIR/$err_name/$err_name-$checksum" || true
 
-              git add ${{ matrix.fuzz_target }}
               git status
-              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" --file $FUZZING_DIR/commit_message
-              git push -u origin main | true
 
-              if [ "${PIPESTATUS[0]}" = 0 ]; then
-                echo "Sucessfully pushed after $i tries"
+              git_dirty=$(git status -s)
+              if [ -z "$git_dirty" ]; then
+                echo "No changes detected"
                 break
               else
-                if [ "$i" = 5 ]; then
-                  echo "Failed to push after 5 retries"
-                  exit 1
+                git add ${{ matrix.fuzz_target }}
+                git status
+                git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" --file $FUZZING_DIR/commit_message
+                git push -u origin main | true
+
+                if [ "${PIPESTATUS[0]}" = 0 ]; then
+                  echo "Sucessfully pushed after $i tries"
+                  break
+                else
+                  if [ "$i" = 5 ]; then
+                    echo "Failed to push after 5 retries"
+                    exit 1
+                  fi
                 fi
               fi
             done
