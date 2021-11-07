@@ -777,6 +777,10 @@ namespace dlxemu
         {
             m_State.m_SelectionEnd.m_Line -= end - start;
         }
+        if (m_State.m_SelectionStart > m_State.m_SelectionEnd)
+        {
+            std::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
+        }
 
         VerifyInternalState();
 
