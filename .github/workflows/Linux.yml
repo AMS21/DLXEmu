@@ -159,7 +159,7 @@ jobs:
           ctest . -C Release
 
       - name: Run fuzzers Debug
-        if: matrix.cfg.compiler == 'clang++'
+        if: matrix.cfg.compiler == 'clang++' && matrix.cfg.dynamic_test != "tsan"
         run: |
           cd build
           cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="$FUZZING_BUILD_FLAGS"
@@ -178,7 +178,7 @@ jobs:
           done
 
       - name: Run fuzzers RelWithDebInfo
-        if: matrix.cfg.compiler == 'clang++'
+        if: matrix.cfg.compiler == 'clang++' && matrix.cfg.dynamic_test != "tsan"
         run: |
           cd build
           cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="$FUZZING_BUILD_FLAGS"
@@ -197,7 +197,7 @@ jobs:
           done
 
       - name: Run fuzzers Release
-        if: matrix.cfg.compiler == 'clang++'
+        if: matrix.cfg.compiler == 'clang++' && matrix.cfg.dynamic_test != "tsan"
         run: |
           cd build
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="$FUZZING_BUILD_FLAGS"
