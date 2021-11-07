@@ -522,4 +522,14 @@ TEST_CASE("CodeEditor bad calls")
         editor.SetSelectionStart(dlxemu::CodeEditor::Coordinates(0, 30));
         editor.Delete();
     }
+
+    SECTION("Crash-a37f577acccdcbfa8bdc8f53a570e1c6385c13da")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.SetText("z`3!\n");
+        editor.InsertText("\x1E");
+        editor.MoveBottom(true);
+        editor.Delete();
+    }
 }
