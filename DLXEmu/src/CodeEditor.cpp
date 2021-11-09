@@ -3280,7 +3280,7 @@ namespace dlxemu
         return str;
     }
 
-    void CodeEditor::VerifyInternalState() noexcept
+    void CodeEditor::VerifyInternalState() const noexcept
     {
         // Verify Selection is still in a valid state
         PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
