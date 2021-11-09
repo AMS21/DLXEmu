@@ -2478,7 +2478,7 @@ namespace dlxemu
         return m_State.m_SelectionEnd;
     }
 
-    void CodeEditor::Copy() noexcept
+    void CodeEditor::Copy() const noexcept
     {
         if (HasSelection())
         {
@@ -2489,9 +2489,9 @@ namespace dlxemu
             if (!m_Lines.empty())
             {
                 std::string str;
-                Line&       line = m_Lines[GetActualCursorCoordinates().m_Line];
+                const Line& line = m_Lines[GetActualCursorCoordinates().m_Line];
 
-                for (Glyph& g : line)
+                for (const Glyph& g : line)
                 {
                     str.push_back(g.m_Char);
                 }

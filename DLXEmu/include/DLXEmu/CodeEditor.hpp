@@ -205,7 +205,7 @@ namespace dlxemu
         [[nodiscard]] Coordinates GetSelectionStart() const noexcept;
         [[nodiscard]] Coordinates GetSelectionEnd() const noexcept;
 
-        void Copy() noexcept;
+        void Copy() const noexcept;
         void Cut() noexcept;
         void Paste() noexcept;
         void Delete() noexcept;
