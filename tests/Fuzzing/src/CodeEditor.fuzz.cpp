@@ -940,17 +940,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
-            // GetEditorDump
-            case 33: {
-                FUZZ_LOG("GetEditorDump()");
-
-                volatile std::string text = editor.GetEditorDump();
-                PHI_UNUSED_VARIABLE(text);
-                break;
-            }
-
             // SetErrorMarkers
-            case 34: {
+            case 33: {
                 auto count_opt = consume_t<std::size_t>(data, size, index);
                 if (!count_opt)
                 {
@@ -986,7 +977,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetBreakpoints
-            case 35: {
+            case 34: {
                 auto count_opt = consume_t<std::size_t>(data, size, index);
                 if (!count_opt)
                 {
@@ -1015,7 +1006,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // Render
-            case 36: {
+            case 35: {
                 constexpr const static float min_val{-10'000};
                 constexpr const static float max_val{+10'000};
 
