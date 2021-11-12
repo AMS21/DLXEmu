@@ -135,6 +135,8 @@ namespace dlxemu
 
         explicit CodeEditor(Emulator* emulator) noexcept;
 
+        ~CodeEditor() noexcept;
+
         [[nodiscard]] const Palette& GetPalette() const noexcept;
         void                         SetPalette(const Palette& value) noexcept;
 

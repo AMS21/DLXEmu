@@ -78,6 +78,11 @@ namespace dlxemu
         m_Lines.push_back(Line());
     }
 
+    CodeEditor::~CodeEditor() noexcept
+    {
+        VerifyInternalState();
+    }
+
     void CodeEditor::SetPalette(const Palette& value) noexcept
     {
         m_PaletteBase = value;
