@@ -1061,6 +1061,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
         }
     }
 
+    FUZZ_LOG("VerifyInternalState");
+    editor.VerifyInternalState();
+
     FUZZ_LOG("Finished execution");
 
     return 0;
