@@ -76,6 +76,30 @@ int main(int argc, char* argv[])
     file_log->info(R"(forward_slash="/")");
     file_log->info(R"(semicolon=";")");
 
+    // Write numbers
+    file_log->info(R"(num0="0")");
+    file_log->info(R"(num1="1")");
+    file_log->info(R"(num2="2")");
+    file_log->info(R"(num3="3")");
+    file_log->info(R"(num4="4")");
+    file_log->info(R"(num5="5")");
+    file_log->info(R"(num6="6")");
+    file_log->info(R"(num7="7")");
+    file_log->info(R"(num8="8")");
+    file_log->info(R"(num9="9")");
+    file_log->info(R"(hex10="A")");
+    file_log->info(R"(hex11="B")");
+    file_log->info(R"(hex12="C")");
+    file_log->info(R"(hex13="D")");
+    file_log->info(R"(hex14="E")");
+    file_log->info(R"(hex15="F")");
+
+    file_log->info(R"(hex_begin="0x")");
+    file_log->info(R"(bin_begin="0b")");
+
+    file_log->info(R"(plus="+")");
+    file_log->info(R"(minus="-")");
+
     file_log->flush();
 
     return 0;
