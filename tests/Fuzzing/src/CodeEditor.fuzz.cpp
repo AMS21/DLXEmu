@@ -227,6 +227,9 @@ template <typename T>
             case '\t':
                 print_str += "\\t";
                 break;
+            case '\r':
+                print_str += "\\r";
+                break;
 
             default:
                 print_str += c;
