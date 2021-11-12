@@ -217,6 +217,8 @@ namespace dlxemu
 
         [[nodiscard]] std::string GetEditorDump() const noexcept;
 
+        void VerifyInternalState() const noexcept;
+
         static const Palette& GetDarkPalette() noexcept;
         static const Palette& GetLightPalette() noexcept;
         static const Palette& GetRetroBluePalette() noexcept;
@@ -302,8 +304,6 @@ namespace dlxemu
         void                    ColorizeInternal() noexcept;
 
         void ResetState() noexcept;
-
-        void VerifyInternalState() const noexcept;
 
         float       m_LineSpacing;
         EditorState m_State;
