@@ -279,7 +279,6 @@ namespace dlxemu
         PHI_ASSERT(!m_ReadOnly);
         PHI_ASSERT(start.m_Line < m_Lines.size());
         PHI_ASSERT(end.m_Line < m_Lines.size());
-        VerifyInternalState();
 
         if (end == start)
         {
@@ -297,10 +296,47 @@ namespace dlxemu
             if (end.m_Column >= n)
             {
                 line.erase(line.begin() + start_index, line.end());
+
+                // Fix selection
+                if (m_State.m_SelectionStart.m_Column > start_index)
+                {
+                    m_State.m_SelectionStart.m_Column = start_index;
+                }
+                if (m_State.m_SelectionEnd.m_Column > start_index)
+                {
+                    m_State.m_SelectionEnd.m_Column = start_index;
+                }
             }
             else
             {
+                std::int32_t start_column = GetCharacterColumn(start.m_Line, start_index);
+                std::int32_t end_column   = GetCharacterColumn(end.m_Line, end_index);
+
                 line.erase(line.begin() + start_index, line.begin() + end_index);
+
+                // Fix selection
+                if (m_State.m_SelectionStart.m_Column > start_column)
+                {
+                    if (m_State.m_SelectionStart.m_Column <= end_column)
+                    {
+                        m_State.m_SelectionStart.m_Column = start_column;
+                    }
+                    else
+                    {
+                        m_State.m_SelectionStart.m_Column -= (end_column - start_column);
+                    }
+                }
+                if (m_State.m_SelectionEnd.m_Column > start_column)
+                {
+                    if (m_State.m_SelectionEnd.m_Column <= end_column)
+                    {
+                        m_State.m_SelectionEnd.m_Column = start_column;
+                    }
+                    else
+                    {
+                        m_State.m_SelectionEnd.m_Column -= (end_column - start_column);
+                    }
+                }
             }
         }
         else
@@ -311,12 +347,34 @@ namespace dlxemu
             first_line.erase(first_line.begin() + start_index, first_line.end());
             last_line.erase(last_line.begin(), last_line.begin() + end_index);
 
-            VerifyInternalState();
+            // Fix selection
+            if (m_State.m_SelectionStart.m_Line == start.m_Line &&
+                m_State.m_SelectionStart.m_Column > start.m_Column)
+            {
+                m_State.m_SelectionStart.m_Column -=
+                        (m_State.m_SelectionStart.m_Column - start.m_Column);
+            }
+            else if (m_State.m_SelectionStart.m_Line > start.m_Line)
+            {
+                m_State.m_SelectionStart.m_Line -= (m_State.m_SelectionStart.m_Line - start.m_Line);
+                m_State.m_SelectionStart.m_Column = 0;
+            }
+
+            if (m_State.m_SelectionEnd.m_Line == start.m_Line &&
+                m_State.m_SelectionEnd.m_Column > start.m_Column)
+            {
+                m_State.m_SelectionEnd.m_Column -=
+                        (m_State.m_SelectionEnd.m_Column - start.m_Column);
+            }
+            else if (m_State.m_SelectionEnd.m_Line > start.m_Line)
+            {
+                m_State.m_SelectionEnd.m_Line -= (m_State.m_SelectionEnd.m_Line - start.m_Line);
+                m_State.m_SelectionEnd.m_Column = GetLineMaxColumn(m_State.m_SelectionEnd.m_Line);
+            }
 
             if (start.m_Line < end.m_Line)
             {
                 first_line.insert(first_line.end(), last_line.begin(), last_line.end());
-                VerifyInternalState();
             }
 
             if (start.m_Line < end.m_Line)
@@ -324,8 +382,6 @@ namespace dlxemu
                 RemoveLine(start.m_Line + 1, end.m_Line + 1);
             }
         }
-
-        VerifyInternalState();
 
         m_TextChanged = true;
     }
@@ -381,8 +437,6 @@ namespace dlxemu
 
             m_TextChanged = true;
         }
-
-        VerifyInternalState();
 
         return total_lines;
     }
@@ -741,7 +795,6 @@ namespace dlxemu
         PHI_ASSERT(!m_ReadOnly);
         PHI_ASSERT(end >= start);
         PHI_ASSERT(m_Lines.size() > (size_t)(end - start));
-        VerifyInternalState();
 
         // Remove error markers
         ErrorMarkers etmp;
@@ -768,8 +821,6 @@ namespace dlxemu
         }
         m_Breakpoints = std::move(btmp);
 
-        VerifyInternalState();
-
         m_Lines.erase(m_Lines.begin() + start, m_Lines.begin() + end);
         PHI_ASSERT(!m_Lines.empty());
 
@@ -786,8 +837,6 @@ namespace dlxemu
         {
             std::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
         }
-
-        VerifyInternalState();
 
         m_TextChanged = true;
     }
@@ -836,8 +885,6 @@ namespace dlxemu
         m_Lines.erase(m_Lines.begin() + index);
         PHI_ASSERT(!m_Lines.empty());
 
-        VerifyInternalState();
-
         m_TextChanged = true;
     }
 
@@ -861,8 +908,6 @@ namespace dlxemu
             btmp.insert(i >= index ? i + 1 : i);
         }
         m_Breakpoints = std::move(btmp);
-
-        VerifyInternalState();
 
         return result;
     }
@@ -1036,8 +1081,6 @@ namespace dlxemu
                 io.InputQueueCharacters.resize(0);
             }
         }
-
-        VerifyInternalState();
     }
 
     void CodeEditor::HandleMouseInputs() noexcept
@@ -1780,8 +1823,6 @@ namespace dlxemu
 
         Colorize(coord.m_Line - 1, 3);
         EnsureCursorVisible();
-
-        VerifyInternalState();
     }
 
     void CodeEditor::SetReadOnly(bool value) noexcept
@@ -1805,8 +1846,6 @@ namespace dlxemu
             m_CursorPositionChanged  = true;
             EnsureCursorVisible();
         }
-
-        VerifyInternalState();
     }
 
     void CodeEditor::SetSelectionStart(const Coordinates& position) noexcept
@@ -1816,8 +1855,6 @@ namespace dlxemu
         {
             std::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
         }
-
-        VerifyInternalState();
     }
 
     void CodeEditor::SetSelectionEnd(const Coordinates& position) noexcept
@@ -1827,8 +1864,6 @@ namespace dlxemu
         {
             std::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
         }
-
-        VerifyInternalState();
     }
 
     void CodeEditor::SetSelection(const Coordinates& start, const Coordinates& end,
@@ -1872,8 +1907,6 @@ namespace dlxemu
         {
             m_CursorPositionChanged = true;
         }
-
-        VerifyInternalState();
     }
 
     void CodeEditor::SetTabSize(std::uint32_t value) noexcept
@@ -1902,14 +1935,10 @@ namespace dlxemu
         SetSelection(pos, pos);
         SetCursorPosition(pos);
         Colorize(start.m_Line - 1, total_lines + 2);
-
-        VerifyInternalState();
     }
 
     void CodeEditor::DeleteSelection() noexcept
     {
-        VerifyInternalState();
-
         if (m_State.m_SelectionEnd == m_State.m_SelectionStart)
         {
             return;
@@ -1921,8 +1950,6 @@ namespace dlxemu
         SetCursorPosition(m_State.m_SelectionStart);
         Colorize(m_State.m_SelectionStart.m_Line, 1);
         m_TextChanged = true;
-
-        VerifyInternalState();
     }
 
     void CodeEditor::MoveUp(std::uint32_t amount, bool select) noexcept
@@ -2159,8 +2186,6 @@ namespace dlxemu
                      select && word_mode ? SelectionMode::Word : SelectionMode::Normal);
 
         EnsureCursorVisible();
-
-        VerifyInternalState();
     }
 
     void CodeEditor::MoveTop(bool select) noexcept
@@ -2182,8 +2207,6 @@ namespace dlxemu
 
             SetSelection(m_InteractiveStart, m_InteractiveEnd);
         }
-
-        VerifyInternalState();
     }
 
     void CodeEditor::CodeEditor::MoveBottom(bool select) noexcept
@@ -2203,8 +2226,6 @@ namespace dlxemu
         }
 
         SetSelection(m_InteractiveStart, m_InteractiveEnd);
-
-        VerifyInternalState();
     }
 
     void CodeEditor::MoveHome(bool select) noexcept
@@ -2237,8 +2258,6 @@ namespace dlxemu
 
             SetSelection(m_InteractiveStart, m_InteractiveEnd);
         }
-
-        VerifyInternalState();
     }
 
     void CodeEditor::MoveEnd(bool select) noexcept
@@ -2272,8 +2291,6 @@ namespace dlxemu
 
             SetSelection(m_InteractiveStart, m_InteractiveEnd);
         }
-
-        VerifyInternalState();
     }
 
     void CodeEditor::Delete() noexcept
@@ -2282,8 +2299,6 @@ namespace dlxemu
         {
             return;
         }
-
-        VerifyInternalState();
 
         UndoRecord u;
         u.m_Before = m_State;
@@ -2316,8 +2331,6 @@ namespace dlxemu
                 Line& next_line = m_Lines[pos.m_Line + 1];
                 line.insert(line.end(), next_line.begin(), next_line.end());
 
-                VerifyInternalState();
-
                 PHI_ASSERT(pos.m_Line <= m_Lines.size());
                 RemoveLine(pos.m_Line + 1);
             }
@@ -2337,7 +2350,9 @@ namespace dlxemu
                 }
                 PHI_ASSERT(cindex < line.size());
 
-                u.m_RemovedStart = u.m_RemovedEnd = GetActualCursorCoordinates();
+                Coordinates current_cursor_pos = GetActualCursorCoordinates();
+                u.m_RemovedStart               = current_cursor_pos;
+                u.m_RemovedEnd                 = current_cursor_pos;
                 u.m_RemovedEnd.m_Column++;
                 u.m_Removed = GetText(u.m_RemovedStart, u.m_RemovedEnd);
 
@@ -2345,7 +2360,18 @@ namespace dlxemu
                 while (d-- > 0 && cindex < (std::int32_t)line.size())
                 {
                     line.erase(line.begin() + cindex);
-                    VerifyInternalState();
+
+                    // Correct selection state
+                    if (m_State.m_SelectionStart.m_Line == current_cursor_pos.m_Line &&
+                        m_State.m_SelectionStart.m_Column >= cindex)
+                    {
+                        m_State.m_SelectionStart.m_Column--;
+                    }
+                    if (m_State.m_SelectionEnd.m_Line == current_cursor_pos.m_Line &&
+                        m_State.m_SelectionEnd.m_Column >= cindex)
+                    {
+                        m_State.m_SelectionEnd.m_Column--;
+                    }
                 }
             }
 
@@ -2353,13 +2379,6 @@ namespace dlxemu
 
             Colorize(pos.m_Line, 1);
         }
-
-        // Verify Selection is still in a valid state
-        PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
-        PHI_ASSERT(m_State.m_SelectionStart.m_Line < m_Lines.size());
-        PHI_ASSERT(m_State.m_SelectionEnd.m_Line < m_Lines.size());
-
-        VerifyInternalState();
 
         u.m_After = m_State;
         AddUndo(u);
@@ -2441,7 +2460,6 @@ namespace dlxemu
                 {
                     u.m_Removed += line[cindex].m_Char;
                     line.erase(line.begin() + cindex);
-                    VerifyInternalState();
                 }
             }
 
@@ -2453,8 +2471,6 @@ namespace dlxemu
 
         u.m_After = m_State;
         AddUndo(u);
-
-        VerifyInternalState();
     }
 
     void CodeEditor::SelectWordUnderCursor() noexcept
@@ -2575,25 +2591,17 @@ namespace dlxemu
 
     void CodeEditor::Undo(std::uint32_t steps) noexcept
     {
-        VerifyInternalState();
-
         while (CanUndo() && steps-- > 0)
         {
             m_UndoBuffer[--m_UndoIndex].Undo(this);
-
-            VerifyInternalState();
         }
     }
 
     void CodeEditor::Redo(std::uint32_t steps) noexcept
     {
-        VerifyInternalState();
-
         while (CanRedo() && steps-- > 0)
         {
             m_UndoBuffer[m_UndoIndex++].Redo(this);
-
-            VerifyInternalState();
         }
     }
 
@@ -2825,8 +2833,6 @@ namespace dlxemu
         {
             editor->DeleteRange(m_AddedStart, m_AddedEnd);
             editor->Colorize(m_AddedStart.m_Line - 1, m_AddedEnd.m_Line - m_AddedStart.m_Line + 2);
-
-            editor->VerifyInternalState();
         }
 
         if (!m_Removed.empty())
@@ -2835,14 +2841,10 @@ namespace dlxemu
             editor->InsertTextAt(start, m_Removed.c_str());
             editor->Colorize(m_RemovedStart.m_Line - 1,
                              m_RemovedEnd.m_Line - m_RemovedStart.m_Line + 2);
-
-            editor->VerifyInternalState();
         }
 
         editor->m_State = m_Before;
         editor->EnsureCursorVisible();
-
-        editor->VerifyInternalState();
     }
 
     void CodeEditor::UndoRecord::Redo(CodeEditor* editor) noexcept
@@ -2854,8 +2856,6 @@ namespace dlxemu
             editor->DeleteRange(m_RemovedStart, m_RemovedEnd);
             editor->Colorize(m_RemovedStart.m_Line - 1,
                              m_RemovedEnd.m_Line - m_RemovedStart.m_Line + 1);
-
-            editor->VerifyInternalState();
         }
 
         if (!m_Added.empty())
@@ -2863,14 +2863,10 @@ namespace dlxemu
             Coordinates start = m_AddedStart;
             editor->InsertTextAt(start, m_Added.c_str());
             editor->Colorize(m_AddedStart.m_Line - 1, m_AddedEnd.m_Line - m_AddedStart.m_Line + 1);
-
-            editor->VerifyInternalState();
         }
 
         editor->m_State = m_After;
         editor->EnsureCursorVisible();
-
-        editor->VerifyInternalState();
     }
 
     CodeEditor::Coordinates::Coordinates() noexcept
@@ -3291,5 +3287,13 @@ namespace dlxemu
         PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
         PHI_ASSERT(m_State.m_SelectionStart.m_Line < m_Lines.size());
         PHI_ASSERT(m_State.m_SelectionEnd.m_Line < m_Lines.size());
+
+        // This should also always be true. But its implementation is way to slow when fuzzing
+        /*
+        PHI_ASSERT(m_State.m_SelectionStart.m_Column <=
+                   GetLineMaxColumn(m_State.m_SelectionStart.m_Line));
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Column <=
+                   GetLineMaxColumn(m_State.m_SelectionEnd.m_Line));
+        */
     }
 } // namespace dlxemu
