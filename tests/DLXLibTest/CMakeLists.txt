@@ -5,7 +5,7 @@ project("DLXLibTest" CXX)
 
 # Files
 file(GLOB DLXLIB_TEST_SOURCES "src/ParsedProgram.test.cpp" "src/OpCode.test.cpp" "src/Parser.test.cpp" "src/Processor.test.cpp"
-     "src/RegisterNames.test.cpp" "src/ParserUtils.test.cpp")
+     "src/RegisterNames.test.cpp" "src/ParserUtils.test.cpp" "src/Tokenize.test.cpp" "src/TokenStream.test.cpp")
 file(GLOB DLXLIB_TEST_HEADERS "include/StringHelper.hpp")
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${DLXLIB_TEST_SOURCES} ${DLXLIB_TEST_HEADERS})

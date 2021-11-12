@@ -19,7 +19,9 @@ file(
   "src/RegisterNames.cpp"
   "src/Parser.cpp"
   "src/StatusRegister.cpp"
-  "src/Token.cpp")
+  "src/Token.cpp"
+  "src/Tokenize.cpp"
+  "src/TokenStream.cpp")
 
 file(
   GLOB
@@ -40,7 +42,9 @@ file(
   "include/DLX/Processor.hpp"
   "include/DLX/RegisterNames.hpp"
   "include/DLX/StatusRegister.hpp"
-  "include/DLX/Token.hpp")
+  "include/DLX/Token.hpp"
+  "include/DLX/Tokenize.hpp"
+  "include/DLX/TokenStream.hpp")
 
 add_library(${PROJECT_NAME} STATIC ${DLXLIB_SOURCES} ${DLXLIB_HEADERS})
 

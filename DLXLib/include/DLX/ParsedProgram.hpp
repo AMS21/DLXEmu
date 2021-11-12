@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DLX/TokenStream.hpp"
 #include "Instruction.hpp"
 #include "Token.hpp"
 #include <string>
@@ -20,7 +21,7 @@ namespace dlx
         std::vector<Instruction>                            m_Instructions;
         std::unordered_map<std::string_view, std::uint32_t> m_JumpData;
         std::vector<ParseError>                             m_ParseErrors;
-        std::vector<Token>                                  m_Tokens;
+        TokenStream                                         m_Tokens;
 
         [[nodiscard]] std::string GetDump() const noexcept;
     };

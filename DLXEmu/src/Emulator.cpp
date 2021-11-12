@@ -1,5 +1,6 @@
 #include "DLXEmu/Emulator.hpp"
 
+#include "DLX/TokenStream.hpp"
 #include "DLXEmu/BuildInfo.hpp"
 #include "Phi/Core/Assert.hpp"
 #include <Phi/Config/Compiler.hpp>
@@ -155,7 +156,7 @@ namespace dlxemu
         }
     }
 
-    void Emulator::ParseProgram(std::vector<dlx::Token> tokens) noexcept
+    void Emulator::ParseProgram(dlx::TokenStream& tokens) noexcept
     {
         m_DLXProgram = dlx::Parser::Parse(m_InstructionLibrary, tokens);
 
@@ -360,16 +361,16 @@ namespace dlxemu
         {
             static constexpr const char* arch_flag{sizeof(void*) == 8 ? "x64" : "x32"};
             static std::string           about_text = fmt::format(
-                    "Version: {:d}.{:d}.{:d} {:s}\n"
-                    "Commit: {:s}\n"
-                    "Build date: {:s} {:s}\n"
-                    "Platform: {:s} {:s}\n"
-                    "Compiler: {:s} ({:d}.{:d}.{:d})",
-                    dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
-                    dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
-                    PHI_PLATFORM_NAME(), arch_flag, PHI_COMPILER_NAME(),
-                    PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),
-                    PHI_CURRENT_COMPILER_VERSION_PATCH());
+                              "Version: {:d}.{:d}.{:d} {:s}\n"
+                                        "Commit: {:s}\n"
+                                        "Build date: {:s} {:s}\n"
+                                        "Platform: {:s} {:s}\n"
+                                        "Compiler: {:s} ({:d}.{:d}.{:d})",
+                              dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
+                              dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
+                              PHI_PLATFORM_NAME(), arch_flag, PHI_COMPILER_NAME(),
+                              PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),
+                              PHI_CURRENT_COMPILER_VERSION_PATCH());
 
             ImGui::TextUnformatted(about_text.c_str());
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CodeEditor.hpp"
+#include "DLX/TokenStream.hpp"
 #include "DebugView.hpp"
 #include "MemoryViewer.hpp"
 #include "RegisterViewer.hpp"
@@ -41,7 +42,7 @@ namespace dlxemu
 
         void ParseProgram(std::string_view source) noexcept;
 
-        void ParseProgram(std::vector<dlx::Token> tokens) noexcept;
+        void ParseProgram(dlx::TokenStream& tokens) noexcept;
 
     private:
         void RenderMenuBar() noexcept;
