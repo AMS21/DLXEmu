@@ -214,6 +214,9 @@ template <typename T>
             case '\0':
                 print_str += "\\0";
                 break;
+            case '\t':
+                print_str += "\\t";
+                break;
 
             default:
                 print_str += c;
