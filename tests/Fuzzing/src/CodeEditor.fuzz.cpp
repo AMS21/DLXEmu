@@ -109,6 +109,16 @@ template <typename T>
     return value;
 }
 
+[[nodiscard]] bool is_valid_ascii_char(char c) noexcept
+{
+    if (c == '\0' || c == '\t' || (c >= 32 && c <= 126))
+    {
+        return true;
+    }
+
+    return false;
+}
+
 [[nodiscard]] std::optional<std::string> consume_ascii_string(const std::uint8_t* data,
                                                               const std::size_t   size,
                                                               std::size_t&        index) noexcept
@@ -117,9 +127,9 @@ template <typename T>
 
     while (index < size && data[index] != '\0')
     {
-        if (data[index] > 127)
+        if (!is_valid_ascii_char(data[index]))
         {
-            // Reject non ascii characters
+            // Reject non printable ascii characters
             return {};
         }
 
@@ -389,7 +399,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 std::uint32_t line_number = line_number_opt.value();
 
-                auto message_opt = consume_string(data, size, index);
+                auto message_opt = consume_ascii_string(data, size, index);
                 if (!message_opt)
                 {
                     return 0;
