@@ -5,8 +5,3 @@ path_classifiers:
     - tests
   library:
     - external
-
-queries:
-  - include: "*"
-  - exclude: 
-    - "cpp/commented-out-code"
