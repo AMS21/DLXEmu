@@ -2,6 +2,7 @@
 
 #include "DLX/Instruction.hpp"
 #include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionLibrary.hpp"
 #include "DLX/OpCode.hpp"
 #include "DLX/ParserUtils.hpp"
 #include "DLX/RegisterNames.hpp"
@@ -221,7 +222,7 @@ namespace dlx
         consume_x_tokens(index, 1u);
     }
 
-    ParsedProgram Parser::Parse(const InstructionLibrary& lib, TokenStream& tokens) noexcept
+    ParsedProgram Parser::Parse(TokenStream& tokens) noexcept
     {
         ParsedProgram program;
 
@@ -327,7 +328,7 @@ namespace dlx
 
                     //PHI_LOG_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
 
-                    const InstructionInfo& info = lib.LookUp(opcode);
+                    const InstructionInfo& info = LookUpIntructionInfo(opcode);
 
                     // Make sure we got no problems here
                     PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
@@ -436,9 +437,9 @@ namespace dlx
         return program;
     }
 
-    ParsedProgram Parser::Parse(const InstructionLibrary& lib, std::string_view source) noexcept
+    ParsedProgram Parser::Parse(std::string_view source) noexcept
     {
         TokenStream tokens = Tokenize(source);
-        return Parse(lib, tokens);
+        return Parse(tokens);
     }
 } // namespace dlx

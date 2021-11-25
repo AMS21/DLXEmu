@@ -1,13 +1,11 @@
-#include "DLX/RegisterNames.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-#include <DLX/InstructionLibrary.hpp>
 #include <DLX/Parser.hpp>
 #include <DLX/Processor.hpp>
+#include <DLX/RegisterNames.hpp>
 
-static dlx::InstructionLibrary lib;
-static dlx::Processor          proc;
-static dlx::ParsedProgram      res;
+static dlx::Processor     proc;
+static dlx::ParsedProgram res;
 
 TEST_CASE("Operation exceptions")
 {
@@ -17,7 +15,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Signed addition overflow")
     {
-        res = dlx::Parser::Parse(lib, "ADD R1 R2 R3");
+        res = dlx::Parser::Parse("ADD R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -58,7 +56,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Signed addition underflow")
     {
-        res = dlx::Parser::Parse(lib, "ADD R1 R2 R3");
+        res = dlx::Parser::Parse("ADD R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -99,7 +97,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Unsigned addition overflow")
     {
-        res = dlx::Parser::Parse(lib, "ADDU R1 R2 R3");
+        res = dlx::Parser::Parse("ADDU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -129,7 +127,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Signed subtraction overflow")
     {
-        res = dlx::Parser::Parse(lib, "SUB R1 R2 R3");
+        res = dlx::Parser::Parse("SUB R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -159,7 +157,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Signed subtraction underflow")
     {
-        res = dlx::Parser::Parse(lib, "SUB R1 R2 R3");
+        res = dlx::Parser::Parse("SUB R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -200,7 +198,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Unsigned subtraction underflow")
     {
-        res = dlx::Parser::Parse(lib, "SUBU R1 R2 R3");
+        res = dlx::Parser::Parse("SUBU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -241,7 +239,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Signed multiplication overflow")
     {
-        res = dlx::Parser::Parse(lib, "MULT R1 R2 R3");
+        res = dlx::Parser::Parse("MULT R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -282,7 +280,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Signed multiplication underflow")
     {
-        res = dlx::Parser::Parse(lib, "MULT R1 R2 R3");
+        res = dlx::Parser::Parse("MULT R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -312,7 +310,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Unsigned multiplication overflow")
     {
-        res = dlx::Parser::Parse(lib, "MULTU R1 R2 R3");
+        res = dlx::Parser::Parse("MULTU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -331,7 +329,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Signed division by zero")
     {
-        res = dlx::Parser::Parse(lib, "DIV R1 R2 R3");
+        res = dlx::Parser::Parse("DIV R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -344,7 +342,7 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
         CHECK(proc.IsHalted());
 
-        res = dlx::Parser::Parse(lib, "DIVI R1 R2 #0");
+        res = dlx::Parser::Parse("DIVI R1 R2 #0");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -359,7 +357,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Unsigned division by zero")
     {
-        res = dlx::Parser::Parse(lib, "DIVU R1 R2 R3");
+        res = dlx::Parser::Parse("DIVU R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -372,7 +370,7 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
         CHECK(proc.IsHalted());
 
-        res = dlx::Parser::Parse(lib, "DIVUI R1 R2 #0");
+        res = dlx::Parser::Parse("DIVUI R1 R2 #0");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -387,7 +385,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Float division by zero")
     {
-        res = dlx::Parser::Parse(lib, "DIVF F0 F2 F4");
+        res = dlx::Parser::Parse("DIVF F0 F2 F4");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -403,7 +401,7 @@ TEST_CASE("Operation exceptions")
 
     SECTION("Double division by zero")
     {
-        res = dlx::Parser::Parse(lib, "DIVD F0 F2 F4");
+        res = dlx::Parser::Parse("DIVD F0 F2 F4");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -420,7 +418,7 @@ TEST_CASE("Operation exceptions")
     SECTION("Shift left bad shift")
     {
         // Logical
-        res = dlx::Parser::Parse(lib, "SLL R1 R2 R3");
+        res = dlx::Parser::Parse("SLL R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -448,7 +446,7 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
         // Arithmetic
-        res = dlx::Parser::Parse(lib, "SLA R1 R2 R3");
+        res = dlx::Parser::Parse("SLA R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -479,7 +477,7 @@ TEST_CASE("Operation exceptions")
     SECTION("Shift right bad shift")
     {
         // Logical
-        res = dlx::Parser::Parse(lib, "SRL R1 R2 R3");
+        res = dlx::Parser::Parse("SRL R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -507,7 +505,7 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
         // Arithmetic
-        res = dlx::Parser::Parse(lib, "SRA R1 R2 R3");
+        res = dlx::Parser::Parse("SRA R1 R2 R3");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -549,7 +547,7 @@ TEST_CASE("Operation exceptions")
     SECTION("Jump to non existing label")
     {
         // J
-        res = dlx::Parser::Parse(lib, "J label");
+        res = dlx::Parser::Parse("J label");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -560,7 +558,7 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.GetLastRaisedException() == dlx::Exception::UnknownLabel);
 
         // JAL
-        res = dlx::Parser::Parse(lib, "JAL label");
+        res = dlx::Parser::Parse("JAL label");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -574,7 +572,7 @@ TEST_CASE("Operation exceptions")
     SECTION("Invalid jump register")
     {
         // JR
-        res = dlx::Parser::Parse(lib, "JR R1");
+        res = dlx::Parser::Parse("JR R1");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -594,7 +592,7 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
         // JALR
-        res = dlx::Parser::Parse(lib, "JALR R1");
+        res = dlx::Parser::Parse("JALR R1");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -618,7 +616,7 @@ TEST_CASE("Operation exceptions")
     {
         SECTION("LB")
         {
-            res = dlx::Parser::Parse(lib, "LB R1 #4");
+            res = dlx::Parser::Parse("LB R1 #4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -628,7 +626,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LB R1 #-4");
+            res = dlx::Parser::Parse("LB R1 #-4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -638,7 +636,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LB R1 #5000");
+            res = dlx::Parser::Parse("LB R1 #5000");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -648,7 +646,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LB R1 4(R0)");
+            res = dlx::Parser::Parse("LB R1 4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -658,7 +656,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LB R1 -4(R0)");
+            res = dlx::Parser::Parse("LB R1 -4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -668,7 +666,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LB R1 5000(R0)");
+            res = dlx::Parser::Parse("LB R1 5000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -681,7 +679,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("LBU")
         {
-            res = dlx::Parser::Parse(lib, "LBU R1 #4");
+            res = dlx::Parser::Parse("LBU R1 #4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -691,7 +689,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LBU R1 #-4");
+            res = dlx::Parser::Parse("LBU R1 #-4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -701,7 +699,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LBU R1 #5000");
+            res = dlx::Parser::Parse("LBU R1 #5000");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -711,7 +709,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LBU R1 4(R0)");
+            res = dlx::Parser::Parse("LBU R1 4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -721,7 +719,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LBU R1 -4(R0)");
+            res = dlx::Parser::Parse("LBU R1 -4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -731,7 +729,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LW R1 5000(R0)");
+            res = dlx::Parser::Parse("LW R1 5000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -744,7 +742,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("LH")
         {
-            res = dlx::Parser::Parse(lib, "LH R1 #4");
+            res = dlx::Parser::Parse("LH R1 #4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -754,7 +752,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LH R1 #-4");
+            res = dlx::Parser::Parse("LH R1 #-4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -764,7 +762,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LH R1 #5000");
+            res = dlx::Parser::Parse("LH R1 #5000");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -774,7 +772,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LH R1 4(R0)");
+            res = dlx::Parser::Parse("LH R1 4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -784,7 +782,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LH R1 -4(R0)");
+            res = dlx::Parser::Parse("LH R1 -4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -794,7 +792,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LH R1 5000(R0)");
+            res = dlx::Parser::Parse("LH R1 5000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -807,7 +805,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("LHU")
         {
-            res = dlx::Parser::Parse(lib, "LHU R1 #4");
+            res = dlx::Parser::Parse("LHU R1 #4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -817,7 +815,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LHU R1 #-4");
+            res = dlx::Parser::Parse("LHU R1 #-4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -827,7 +825,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LHU R1 #5000");
+            res = dlx::Parser::Parse("LHU R1 #5000");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -837,7 +835,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LHU R1 4(R0)");
+            res = dlx::Parser::Parse("LHU R1 4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -847,7 +845,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LHU R1 -4(R0)");
+            res = dlx::Parser::Parse("LHU R1 -4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -857,7 +855,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LHU R1 5000(R0)");
+            res = dlx::Parser::Parse("LHU R1 5000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -870,7 +868,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("LW")
         {
-            res = dlx::Parser::Parse(lib, "LW R1 #4");
+            res = dlx::Parser::Parse("LW R1 #4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -880,7 +878,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LW R1 #-4");
+            res = dlx::Parser::Parse("LW R1 #-4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -890,7 +888,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LW R1 #5000");
+            res = dlx::Parser::Parse("LW R1 #5000");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -900,7 +898,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LW R1 4(R0)");
+            res = dlx::Parser::Parse("LW R1 4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -910,7 +908,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LW R1 -4(R0)");
+            res = dlx::Parser::Parse("LW R1 -4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -920,7 +918,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LW R1 5000(R0)");
+            res = dlx::Parser::Parse("LW R1 5000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -933,7 +931,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("LWU")
         {
-            res = dlx::Parser::Parse(lib, "LWU R1 #4");
+            res = dlx::Parser::Parse("LWU R1 #4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -943,7 +941,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LWU R1 #-4");
+            res = dlx::Parser::Parse("LWU R1 #-4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -953,7 +951,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LWU R1 #5000");
+            res = dlx::Parser::Parse("LWU R1 #5000");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -963,7 +961,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LWU R1 4(R0)");
+            res = dlx::Parser::Parse("LWU R1 4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -973,7 +971,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LWU R1 -4(R0)");
+            res = dlx::Parser::Parse("LWU R1 -4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -983,7 +981,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LWU R1 5000(R0)");
+            res = dlx::Parser::Parse("LWU R1 5000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -996,7 +994,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("LF")
         {
-            res = dlx::Parser::Parse(lib, "LF F0 #4");
+            res = dlx::Parser::Parse("LF F0 #4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1006,7 +1004,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LF F0 #-4");
+            res = dlx::Parser::Parse("LF F0 #-4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1016,7 +1014,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LF F0 #5000");
+            res = dlx::Parser::Parse("LF F0 #5000");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1026,7 +1024,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LF F0 4(R0)");
+            res = dlx::Parser::Parse("LF F0 4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1036,7 +1034,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LF F0 -4(R0)");
+            res = dlx::Parser::Parse("LF F0 -4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1046,7 +1044,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LF F0 5000(R0)");
+            res = dlx::Parser::Parse("LF F0 5000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1059,7 +1057,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("LD")
         {
-            res = dlx::Parser::Parse(lib, "LD F0 #4");
+            res = dlx::Parser::Parse("LD F0 #4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1069,7 +1067,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LD F0 #-4");
+            res = dlx::Parser::Parse("LD F0 #-4");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1079,7 +1077,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LD F0 #5000");
+            res = dlx::Parser::Parse("LD F0 #5000");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1089,7 +1087,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LD F0 4(R0)");
+            res = dlx::Parser::Parse("LD F0 4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1099,7 +1097,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LD F0 -4(R0)");
+            res = dlx::Parser::Parse("LD F0 -4(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1109,7 +1107,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "LD F0 5000(R0)");
+            res = dlx::Parser::Parse("LD F0 5000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1125,7 +1123,7 @@ TEST_CASE("Operation exceptions")
     {
         SECTION("SB")
         {
-            res = dlx::Parser::Parse(lib, "SB #4 R1");
+            res = dlx::Parser::Parse("SB #4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1135,7 +1133,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SB #-4 R1");
+            res = dlx::Parser::Parse("SB #-4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1145,7 +1143,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SB #5000 R1");
+            res = dlx::Parser::Parse("SB #5000 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1155,7 +1153,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SB 4(R0) R1");
+            res = dlx::Parser::Parse("SB 4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1165,7 +1163,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SB -4(R0) R1");
+            res = dlx::Parser::Parse("SB -4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1175,7 +1173,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SB 5000(R0) R1");
+            res = dlx::Parser::Parse("SB 5000(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1188,7 +1186,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("SBU")
         {
-            res = dlx::Parser::Parse(lib, "SBU #4 R1");
+            res = dlx::Parser::Parse("SBU #4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1198,7 +1196,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SBU #-4 R1");
+            res = dlx::Parser::Parse("SBU #-4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1208,7 +1206,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SBU #5000 R1");
+            res = dlx::Parser::Parse("SBU #5000 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1218,7 +1216,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SBU 4(R0) R1");
+            res = dlx::Parser::Parse("SBU 4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1228,7 +1226,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SBU -4(R0) R1");
+            res = dlx::Parser::Parse("SBU -4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1238,7 +1236,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SBU 5000(R0) R1");
+            res = dlx::Parser::Parse("SBU 5000(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1251,7 +1249,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("SH")
         {
-            res = dlx::Parser::Parse(lib, "SH #4 R1");
+            res = dlx::Parser::Parse("SH #4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1261,7 +1259,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SH #-4 R1");
+            res = dlx::Parser::Parse("SH #-4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1271,7 +1269,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SH #5000 R1");
+            res = dlx::Parser::Parse("SH #5000 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1281,7 +1279,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SH 4(R0) R1");
+            res = dlx::Parser::Parse("SH 4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1291,7 +1289,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SH -4(R0) R1");
+            res = dlx::Parser::Parse("SH -4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1301,7 +1299,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SH 5000(R0) R1");
+            res = dlx::Parser::Parse("SH 5000(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1314,7 +1312,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("SHU")
         {
-            res = dlx::Parser::Parse(lib, "SHU #4 R1");
+            res = dlx::Parser::Parse("SHU #4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1324,7 +1322,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SHU #-4 R1");
+            res = dlx::Parser::Parse("SHU #-4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1334,7 +1332,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SHU #5000 R1");
+            res = dlx::Parser::Parse("SHU #5000 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1344,7 +1342,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SHU 4(R0) R1");
+            res = dlx::Parser::Parse("SHU 4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1354,7 +1352,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SHU -4(R0) R1");
+            res = dlx::Parser::Parse("SHU -4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1364,7 +1362,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SHU 5000(R0) R1");
+            res = dlx::Parser::Parse("SHU 5000(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1377,7 +1375,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("SW")
         {
-            res = dlx::Parser::Parse(lib, "SW #4 R1");
+            res = dlx::Parser::Parse("SW #4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1387,7 +1385,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SW #-4 R1");
+            res = dlx::Parser::Parse("SW #-4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1397,7 +1395,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SW #5000 R1");
+            res = dlx::Parser::Parse("SW #5000 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1407,7 +1405,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SW 4(R0) R1");
+            res = dlx::Parser::Parse("SW 4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1417,7 +1415,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SW -4(R0) R1");
+            res = dlx::Parser::Parse("SW -4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1427,7 +1425,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SW 5000(R0) R1");
+            res = dlx::Parser::Parse("SW 5000(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1440,7 +1438,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("SWU")
         {
-            res = dlx::Parser::Parse(lib, "SWU #4 R1");
+            res = dlx::Parser::Parse("SWU #4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1450,7 +1448,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SWU #-4 R1");
+            res = dlx::Parser::Parse("SWU #-4 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1460,7 +1458,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SWU #5000 R1");
+            res = dlx::Parser::Parse("SWU #5000 R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1470,7 +1468,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SWU 4(R0) R1");
+            res = dlx::Parser::Parse("SWU 4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1480,7 +1478,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SWU -4(R0) R1");
+            res = dlx::Parser::Parse("SWU -4(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1490,7 +1488,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SWU 5000(R0) R1");
+            res = dlx::Parser::Parse("SWU 5000(R0) R1");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1503,7 +1501,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("SF")
         {
-            res = dlx::Parser::Parse(lib, "SF #4 F0");
+            res = dlx::Parser::Parse("SF #4 F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1513,7 +1511,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SF #-4 F0");
+            res = dlx::Parser::Parse("SF #-4 F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1523,7 +1521,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SF #5000 F0");
+            res = dlx::Parser::Parse("SF #5000 F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1533,7 +1531,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SF 4(R0) F0");
+            res = dlx::Parser::Parse("SF 4(R0) F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1543,7 +1541,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SF -4(R0) F0");
+            res = dlx::Parser::Parse("SF -4(R0) F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1553,7 +1551,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SF 5000(R0) F0");
+            res = dlx::Parser::Parse("SF 5000(R0) F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1566,7 +1564,7 @@ TEST_CASE("Operation exceptions")
 
         SECTION("SD")
         {
-            res = dlx::Parser::Parse(lib, "SD #4 F0");
+            res = dlx::Parser::Parse("SD #4 F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1576,7 +1574,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SD #-4 F0");
+            res = dlx::Parser::Parse("SD #-4 F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1586,7 +1584,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SD #5000 F0");
+            res = dlx::Parser::Parse("SD #5000 F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1596,7 +1594,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SD 4(R0) F0");
+            res = dlx::Parser::Parse("SD 4(R0) F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1606,7 +1604,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SD -4(R0) F0");
+            res = dlx::Parser::Parse("SD -4(R0) F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1616,7 +1614,7 @@ TEST_CASE("Operation exceptions")
             CHECK(proc.IsHalted());
             CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-            res = dlx::Parser::Parse(lib, "SD 5000(R0) F0");
+            res = dlx::Parser::Parse("SD 5000(R0) F0");
             REQUIRE(res.m_ParseErrors.empty());
 
             proc.LoadProgram(res);
@@ -1631,7 +1629,7 @@ TEST_CASE("Operation exceptions")
     SECTION("Register out of bounds")
     {
         // Write out of bounds
-        res = dlx::Parser::Parse(lib, "ADDD F31 F0 F0");
+        res = dlx::Parser::Parse("ADDD F31 F0 F0");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -1641,7 +1639,7 @@ TEST_CASE("Operation exceptions")
         CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
 
         // Read out of bounds
-        res = dlx::Parser::Parse(lib, "ADDD F0 F31 F0");
+        res = dlx::Parser::Parse("ADDD F0 F31 F0");
         REQUIRE(res.m_ParseErrors.empty());
 
         proc.LoadProgram(res);
@@ -1654,7 +1652,7 @@ TEST_CASE("Operation exceptions")
 
 TEST_CASE("ADD")
 {
-    res = dlx::Parser::Parse(lib, "ADD R1 R2 R3");
+    res = dlx::Parser::Parse("ADD R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1672,7 +1670,7 @@ TEST_CASE("ADD")
 
 TEST_CASE("ADDI")
 {
-    res = dlx::Parser::Parse(lib, "ADDI R1 R2 #30");
+    res = dlx::Parser::Parse("ADDI R1 R2 #30");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1688,7 +1686,7 @@ TEST_CASE("ADDI")
 
 TEST_CASE("ADDU")
 {
-    res = dlx::Parser::Parse(lib, "ADDU R1 R2 R3");
+    res = dlx::Parser::Parse("ADDU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1706,7 +1704,7 @@ TEST_CASE("ADDU")
 
 TEST_CASE("ADDUI")
 {
-    res = dlx::Parser::Parse(lib, "ADDUI R1 R2 #19");
+    res = dlx::Parser::Parse("ADDUI R1 R2 #19");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1722,7 +1720,7 @@ TEST_CASE("ADDUI")
 
 TEST_CASE("ADDF")
 {
-    res = dlx::Parser::Parse(lib, "ADDF F1 F2 F3");
+    res = dlx::Parser::Parse("ADDF F1 F2 F3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1740,7 +1738,7 @@ TEST_CASE("ADDF")
 
 TEST_CASE("ADDD")
 {
-    res = dlx::Parser::Parse(lib, "ADDD F0 F2 F4");
+    res = dlx::Parser::Parse("ADDD F0 F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1758,7 +1756,7 @@ TEST_CASE("ADDD")
 
 TEST_CASE("SUB")
 {
-    res = dlx::Parser::Parse(lib, "SUB R1 R2 R3");
+    res = dlx::Parser::Parse("SUB R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1776,7 +1774,7 @@ TEST_CASE("SUB")
 
 TEST_CASE("SUBI")
 {
-    res = dlx::Parser::Parse(lib, "SUBI R1 R2 #25");
+    res = dlx::Parser::Parse("SUBI R1 R2 #25");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1792,7 +1790,7 @@ TEST_CASE("SUBI")
 
 TEST_CASE("SUBU")
 {
-    res = dlx::Parser::Parse(lib, "SUBU R1 R2 R3");
+    res = dlx::Parser::Parse("SUBU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1808,7 +1806,7 @@ TEST_CASE("SUBU")
 
 TEST_CASE("SUBUI")
 {
-    res = dlx::Parser::Parse(lib, "SUBUI R1 R2 #25");
+    res = dlx::Parser::Parse("SUBUI R1 R2 #25");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1824,7 +1822,7 @@ TEST_CASE("SUBUI")
 
 TEST_CASE("SUBF")
 {
-    res = dlx::Parser::Parse(lib, "SUBF F1 F2 F3");
+    res = dlx::Parser::Parse("SUBF F1 F2 F3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1842,7 +1840,7 @@ TEST_CASE("SUBF")
 
 TEST_CASE("SUBD")
 {
-    res = dlx::Parser::Parse(lib, "SUBD F0 F2 F4");
+    res = dlx::Parser::Parse("SUBD F0 F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1860,7 +1858,7 @@ TEST_CASE("SUBD")
 
 TEST_CASE("MULT")
 {
-    res = dlx::Parser::Parse(lib, "MULT R1 R2 R3");
+    res = dlx::Parser::Parse("MULT R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1878,7 +1876,7 @@ TEST_CASE("MULT")
 
 TEST_CASE("MULTI")
 {
-    res = dlx::Parser::Parse(lib, "MULTI R1 R2 #3");
+    res = dlx::Parser::Parse("MULTI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1894,7 +1892,7 @@ TEST_CASE("MULTI")
 
 TEST_CASE("MULTU")
 {
-    res = dlx::Parser::Parse(lib, "MULTU R1 R2 R3");
+    res = dlx::Parser::Parse("MULTU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1912,7 +1910,7 @@ TEST_CASE("MULTU")
 
 TEST_CASE("MULTUI")
 {
-    res = dlx::Parser::Parse(lib, "MULTUI R1 R2 #3");
+    res = dlx::Parser::Parse("MULTUI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1928,7 +1926,7 @@ TEST_CASE("MULTUI")
 
 TEST_CASE("MULTF")
 {
-    res = dlx::Parser::Parse(lib, "MULTF F1 F2 F3");
+    res = dlx::Parser::Parse("MULTF F1 F2 F3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1946,7 +1944,7 @@ TEST_CASE("MULTF")
 
 TEST_CASE("MULTD")
 {
-    res = dlx::Parser::Parse(lib, "MULTD F0 F2 F4");
+    res = dlx::Parser::Parse("MULTD F0 F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1964,7 +1962,7 @@ TEST_CASE("MULTD")
 
 TEST_CASE("DIV")
 {
-    res = dlx::Parser::Parse(lib, "DIV R1 R2 R3");
+    res = dlx::Parser::Parse("DIV R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -1989,7 +1987,7 @@ TEST_CASE("DIV")
 
 TEST_CASE("DIVI")
 {
-    res = dlx::Parser::Parse(lib, "DIVI R1 R2 #2");
+    res = dlx::Parser::Parse("DIVI R1 R2 #2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2003,7 +2001,7 @@ TEST_CASE("DIVI")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 6);
 
     // Divide by zero
-    res = dlx::Parser::Parse(lib, "DIVI R1 R2 #0");
+    res = dlx::Parser::Parse("DIVI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2018,7 +2016,7 @@ TEST_CASE("DIVI")
 
 TEST_CASE("DIVU")
 {
-    res = dlx::Parser::Parse(lib, "DIVU R1 R2 R3");
+    res = dlx::Parser::Parse("DIVU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2043,7 +2041,7 @@ TEST_CASE("DIVU")
 
 TEST_CASE("DIVUI")
 {
-    res = dlx::Parser::Parse(lib, "DIVUI R1 R2 #2");
+    res = dlx::Parser::Parse("DIVUI R1 R2 #2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2058,7 +2056,7 @@ TEST_CASE("DIVUI")
 
     // Divide by zero
 
-    res = dlx::Parser::Parse(lib, "DIVUI R1 R2 #0");
+    res = dlx::Parser::Parse("DIVUI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2069,7 +2067,7 @@ TEST_CASE("DIVUI")
 
 TEST_CASE("DIVF")
 {
-    res = dlx::Parser::Parse(lib, "DIVF F1 F2 F3");
+    res = dlx::Parser::Parse("DIVF F1 F2 F3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2087,7 +2085,7 @@ TEST_CASE("DIVF")
 
 TEST_CASE("DIVD")
 {
-    res = dlx::Parser::Parse(lib, "DIVD F0 F2 F4");
+    res = dlx::Parser::Parse("DIVD F0 F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2105,7 +2103,7 @@ TEST_CASE("DIVD")
 
 TEST_CASE("SLL")
 {
-    res = dlx::Parser::Parse(lib, "SLL R1 R2 R3");
+    res = dlx::Parser::Parse("SLL R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2133,7 +2131,7 @@ TEST_CASE("SLL")
 
 TEST_CASE("SLLI")
 {
-    res = dlx::Parser::Parse(lib, "SLLI R1 R2 #2");
+    res = dlx::Parser::Parse("SLLI R1 R2 #2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2146,7 +2144,7 @@ TEST_CASE("SLLI")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 32);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
 
-    res = dlx::Parser::Parse(lib, "SLLI R1 R2 #0");
+    res = dlx::Parser::Parse("SLLI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2162,7 +2160,7 @@ TEST_CASE("SLLI")
 
 TEST_CASE("SRL")
 {
-    res = dlx::Parser::Parse(lib, "SRL R1 R2 R3");
+    res = dlx::Parser::Parse("SRL R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2200,7 +2198,7 @@ TEST_CASE("SRL")
 
 TEST_CASE("SRLI")
 {
-    res = dlx::Parser::Parse(lib, "SRLI R1 R2 #2");
+    res = dlx::Parser::Parse("SRLI R1 R2 #2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2221,7 +2219,7 @@ TEST_CASE("SRLI")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1073741823);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -1);
 
-    res = dlx::Parser::Parse(lib, "SRLI R1 R2 #0");
+    res = dlx::Parser::Parse("SRLI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2237,7 +2235,7 @@ TEST_CASE("SRLI")
 
 TEST_CASE("SLA")
 {
-    res = dlx::Parser::Parse(lib, "SLA R1 R2 R3");
+    res = dlx::Parser::Parse("SLA R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2265,7 +2263,7 @@ TEST_CASE("SLA")
 
 TEST_CASE("SLAI")
 {
-    res = dlx::Parser::Parse(lib, "SLAI R1 R2 #2");
+    res = dlx::Parser::Parse("SLAI R1 R2 #2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2278,7 +2276,7 @@ TEST_CASE("SLAI")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 32);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
 
-    res = dlx::Parser::Parse(lib, "SLAI R1 R2 #0");
+    res = dlx::Parser::Parse("SLAI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2294,7 +2292,7 @@ TEST_CASE("SLAI")
 
 TEST_CASE("SRA")
 {
-    res = dlx::Parser::Parse(lib, "SRA R1 R2 R3");
+    res = dlx::Parser::Parse("SRA R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2336,7 +2334,7 @@ TEST_CASE("SRA")
 
 TEST_CASE("SRAI")
 {
-    res = dlx::Parser::Parse(lib, "SRAI R1 R2 #1");
+    res = dlx::Parser::Parse("SRAI R1 R2 #1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2361,7 +2359,7 @@ TEST_CASE("SRAI")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 536870912);
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1073741825);
 
-    res = dlx::Parser::Parse(lib, "SRAI R1 R2 #0");
+    res = dlx::Parser::Parse("SRAI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2378,7 +2376,7 @@ TEST_CASE("SRAI")
 
 TEST_CASE("AND")
 {
-    res = dlx::Parser::Parse(lib, "AND R1 R2 R3");
+    res = dlx::Parser::Parse("AND R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2396,7 +2394,7 @@ TEST_CASE("AND")
 
 TEST_CASE("ANDI")
 {
-    res = dlx::Parser::Parse(lib, "ANDI R1 R2 #5");
+    res = dlx::Parser::Parse("ANDI R1 R2 #5");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2412,7 +2410,7 @@ TEST_CASE("ANDI")
 
 TEST_CASE("OR")
 {
-    res = dlx::Parser::Parse(lib, "OR R1 R2 R3");
+    res = dlx::Parser::Parse("OR R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2430,7 +2428,7 @@ TEST_CASE("OR")
 
 TEST_CASE("ORI")
 {
-    res = dlx::Parser::Parse(lib, "ORI R1 R2 #8");
+    res = dlx::Parser::Parse("ORI R1 R2 #8");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2446,7 +2444,7 @@ TEST_CASE("ORI")
 
 TEST_CASE("XOR")
 {
-    res = dlx::Parser::Parse(lib, "XOR R1 R2 R3");
+    res = dlx::Parser::Parse("XOR R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2464,7 +2462,7 @@ TEST_CASE("XOR")
 
 TEST_CASE("XORI")
 {
-    res = dlx::Parser::Parse(lib, "XORI R1 R2 #7");
+    res = dlx::Parser::Parse("XORI R1 R2 #7");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2480,7 +2478,7 @@ TEST_CASE("XORI")
 
 TEST_CASE("SLT")
 {
-    res = dlx::Parser::Parse(lib, "SLT R1 R2 R3");
+    res = dlx::Parser::Parse("SLT R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2508,7 +2506,7 @@ TEST_CASE("SLT")
 
 TEST_CASE("SLTI")
 {
-    res = dlx::Parser::Parse(lib, "SLTI R1 R2 #3");
+    res = dlx::Parser::Parse("SLTI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2532,7 +2530,7 @@ TEST_CASE("SLTI")
 
 TEST_CASE("SLTU")
 {
-    res = dlx::Parser::Parse(lib, "SLTU R1 R2 R3");
+    res = dlx::Parser::Parse("SLTU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2560,7 +2558,7 @@ TEST_CASE("SLTU")
 
 TEST_CASE("SLTUI")
 {
-    res = dlx::Parser::Parse(lib, "SLTUI R1 R2 #3");
+    res = dlx::Parser::Parse("SLTUI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2584,7 +2582,7 @@ TEST_CASE("SLTUI")
 
 TEST_CASE("LTF")
 {
-    res = dlx::Parser::Parse(lib, "LTF F1 F2");
+    res = dlx::Parser::Parse("LTF F1 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2612,7 +2610,7 @@ TEST_CASE("LTF")
 
 TEST_CASE("LTD")
 {
-    res = dlx::Parser::Parse(lib, "LTD F2 F4");
+    res = dlx::Parser::Parse("LTD F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2640,7 +2638,7 @@ TEST_CASE("LTD")
 
 TEST_CASE("SGT")
 {
-    res = dlx::Parser::Parse(lib, "SGT R1 R2 R3");
+    res = dlx::Parser::Parse("SGT R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2668,7 +2666,7 @@ TEST_CASE("SGT")
 
 TEST_CASE("SGTI")
 {
-    res = dlx::Parser::Parse(lib, "SGTI R1 R2 #3");
+    res = dlx::Parser::Parse("SGTI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2692,7 +2690,7 @@ TEST_CASE("SGTI")
 
 TEST_CASE("SGTU")
 {
-    res = dlx::Parser::Parse(lib, "SGTU R1 R2 R3");
+    res = dlx::Parser::Parse("SGTU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2720,7 +2718,7 @@ TEST_CASE("SGTU")
 
 TEST_CASE("SGTUI")
 {
-    res = dlx::Parser::Parse(lib, "SGTUI R1 R2 #3");
+    res = dlx::Parser::Parse("SGTUI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2744,7 +2742,7 @@ TEST_CASE("SGTUI")
 
 TEST_CASE("GTF")
 {
-    res = dlx::Parser::Parse(lib, "GTF F1 F2");
+    res = dlx::Parser::Parse("GTF F1 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2771,7 +2769,7 @@ TEST_CASE("GTF")
 }
 TEST_CASE("GTD")
 {
-    res = dlx::Parser::Parse(lib, "GTD F2 F4");
+    res = dlx::Parser::Parse("GTD F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2798,7 +2796,7 @@ TEST_CASE("GTD")
 }
 TEST_CASE("SLE")
 {
-    res = dlx::Parser::Parse(lib, "SLE R1 R2 R3");
+    res = dlx::Parser::Parse("SLE R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2836,7 +2834,7 @@ TEST_CASE("SLE")
 
 TEST_CASE("SLEI")
 {
-    res = dlx::Parser::Parse(lib, "SLEI R1 R2 #3");
+    res = dlx::Parser::Parse("SLEI R1 R2 #3");
 
     REQUIRE(res.m_ParseErrors.empty());
 
@@ -2869,7 +2867,7 @@ TEST_CASE("SLEI")
 
 TEST_CASE("SLEU")
 {
-    res = dlx::Parser::Parse(lib, "SLEU R1 R2 R3");
+    res = dlx::Parser::Parse("SLEU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2907,7 +2905,7 @@ TEST_CASE("SLEU")
 
 TEST_CASE("SLEUI")
 {
-    res = dlx::Parser::Parse(lib, "SLEUI R1 R2 #3");
+    res = dlx::Parser::Parse("SLEUI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2939,7 +2937,7 @@ TEST_CASE("SLEUI")
 
 TEST_CASE("LEF")
 {
-    res = dlx::Parser::Parse(lib, "LEF F1 F2");
+    res = dlx::Parser::Parse("LEF F1 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -2977,7 +2975,7 @@ TEST_CASE("LEF")
 
 TEST_CASE("LED")
 {
-    res = dlx::Parser::Parse(lib, "LED F2 F4");
+    res = dlx::Parser::Parse("LED F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3015,7 +3013,7 @@ TEST_CASE("LED")
 
 TEST_CASE("SGE")
 {
-    res = dlx::Parser::Parse(lib, "SGE R1 R2 R3");
+    res = dlx::Parser::Parse("SGE R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3053,7 +3051,7 @@ TEST_CASE("SGE")
 
 TEST_CASE("SGEI")
 {
-    res = dlx::Parser::Parse(lib, "SGEI R1 R2 #3");
+    res = dlx::Parser::Parse("SGEI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3085,7 +3083,7 @@ TEST_CASE("SGEI")
 
 TEST_CASE("SGEU")
 {
-    res = dlx::Parser::Parse(lib, "SGEU R1 R2 R3");
+    res = dlx::Parser::Parse("SGEU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3123,7 +3121,7 @@ TEST_CASE("SGEU")
 
 TEST_CASE("SGEUI")
 {
-    res = dlx::Parser::Parse(lib, "SGEUI R1 R2 #3");
+    res = dlx::Parser::Parse("SGEUI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3155,7 +3153,7 @@ TEST_CASE("SGEUI")
 
 TEST_CASE("GEF")
 {
-    res = dlx::Parser::Parse(lib, "GEF F1 F2");
+    res = dlx::Parser::Parse("GEF F1 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3193,7 +3191,7 @@ TEST_CASE("GEF")
 
 TEST_CASE("GED")
 {
-    res = dlx::Parser::Parse(lib, "GED F2 F4");
+    res = dlx::Parser::Parse("GED F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3231,7 +3229,7 @@ TEST_CASE("GED")
 
 TEST_CASE("SEQ")
 {
-    res = dlx::Parser::Parse(lib, "SEQ R1 R2 R3");
+    res = dlx::Parser::Parse("SEQ R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3259,7 +3257,7 @@ TEST_CASE("SEQ")
 
 TEST_CASE("SEQI")
 {
-    res = dlx::Parser::Parse(lib, "SEQI R1 R2 #3");
+    res = dlx::Parser::Parse("SEQI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3283,7 +3281,7 @@ TEST_CASE("SEQI")
 
 TEST_CASE("SEQU")
 {
-    res = dlx::Parser::Parse(lib, "SEQU R1 R2 R3");
+    res = dlx::Parser::Parse("SEQU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3311,7 +3309,7 @@ TEST_CASE("SEQU")
 
 TEST_CASE("SEQUI")
 {
-    res = dlx::Parser::Parse(lib, "SEQUI R1 R2 #3");
+    res = dlx::Parser::Parse("SEQUI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3335,7 +3333,7 @@ TEST_CASE("SEQUI")
 
 TEST_CASE("EQF")
 {
-    res = dlx::Parser::Parse(lib, "EQF F1 F2");
+    res = dlx::Parser::Parse("EQF F1 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3363,7 +3361,7 @@ TEST_CASE("EQF")
 
 TEST_CASE("EQD")
 {
-    res = dlx::Parser::Parse(lib, "EQD F2 F4");
+    res = dlx::Parser::Parse("EQD F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3391,7 +3389,7 @@ TEST_CASE("EQD")
 
 TEST_CASE("SNE")
 {
-    res = dlx::Parser::Parse(lib, "SNE R1 R2 R3");
+    res = dlx::Parser::Parse("SNE R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3419,7 +3417,7 @@ TEST_CASE("SNE")
 
 TEST_CASE("SNEI")
 {
-    res = dlx::Parser::Parse(lib, "SNEI R1 R2 #3");
+    res = dlx::Parser::Parse("SNEI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3444,7 +3442,7 @@ TEST_CASE("SNEI")
 
 TEST_CASE("SNEU")
 {
-    res = dlx::Parser::Parse(lib, "SNEU R1 R2 R3");
+    res = dlx::Parser::Parse("SNEU R1 R2 R3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3472,7 +3470,7 @@ TEST_CASE("SNEU")
 
 TEST_CASE("SNEUI")
 {
-    res = dlx::Parser::Parse(lib, "SNEUI R1 R2 #3");
+    res = dlx::Parser::Parse("SNEUI R1 R2 #3");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3497,7 +3495,7 @@ TEST_CASE("SNEUI")
 
 TEST_CASE("NEF")
 {
-    res = dlx::Parser::Parse(lib, "NEF F1 F2");
+    res = dlx::Parser::Parse("NEF F1 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3525,7 +3523,7 @@ TEST_CASE("NEF")
 
 TEST_CASE("NED")
 {
-    res = dlx::Parser::Parse(lib, "NED F2 F4");
+    res = dlx::Parser::Parse("NED F2 F4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3560,7 +3558,7 @@ TEST_CASE("BEQZ")
         true:
             ADDI R2 R0 #1
         )";
-    res = dlx::Parser::Parse(lib, data);
+    res = dlx::Parser::Parse(data);
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3589,7 +3587,7 @@ TEST_CASE("BNEZ")
         true:
             ADDI R2 R0 #1
         )";
-    res = dlx::Parser::Parse(lib, data);
+    res = dlx::Parser::Parse(data);
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3618,7 +3616,7 @@ TEST_CASE("BFPT")
         true:
             ADDI R1 R0 #1
         )";
-    res = dlx::Parser::Parse(lib, data);
+    res = dlx::Parser::Parse(data);
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3647,7 +3645,7 @@ TEST_CASE("BFPF")
         false:
             ADDI R1 R0 #1
         )";
-    res = dlx::Parser::Parse(lib, data);
+    res = dlx::Parser::Parse(data);
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3676,7 +3674,7 @@ TEST_CASE("J")
         jump_label:
             ADDI R1 R0 #1
         )";
-    res              = dlx::Parser::Parse(lib, data);
+    res              = dlx::Parser::Parse(data);
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3697,7 +3695,7 @@ TEST_CASE("JR")
             ADDI R2 R0 #1
         )";
 
-    res = dlx::Parser::Parse(lib, data);
+    res = dlx::Parser::Parse(data);
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3720,7 +3718,7 @@ TEST_CASE("JAL")
         jump_label:
             ADDI R1 R0 #1
         )";
-    res              = dlx::Parser::Parse(lib, data);
+    res              = dlx::Parser::Parse(data);
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3743,7 +3741,7 @@ TEST_CASE("JALR")
             ADDI R2 R0 #1
         )";
 
-    res = dlx::Parser::Parse(lib, data);
+    res = dlx::Parser::Parse(data);
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3760,7 +3758,7 @@ TEST_CASE("JALR")
 
 TEST_CASE("LHI")
 {
-    res = dlx::Parser::Parse(lib, "LHI R1 #1");
+    res = dlx::Parser::Parse("LHI R1 #1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3774,7 +3772,7 @@ TEST_CASE("LHI")
 
 TEST_CASE("LB")
 {
-    res = dlx::Parser::Parse(lib, "LB R1 #1000");
+    res = dlx::Parser::Parse("LB R1 #1000");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3788,7 +3786,7 @@ TEST_CASE("LB")
 
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
 
-    res = dlx::Parser::Parse(lib, "LB R1 1000(R0)");
+    res = dlx::Parser::Parse("LB R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3805,7 +3803,7 @@ TEST_CASE("LB")
 
 TEST_CASE("LBU")
 {
-    res = dlx::Parser::Parse(lib, "LBU R1 #1000");
+    res = dlx::Parser::Parse("LBU R1 #1000");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3819,7 +3817,7 @@ TEST_CASE("LBU")
 
     CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21u);
 
-    res = dlx::Parser::Parse(lib, "LBU R1 1000(R0)");
+    res = dlx::Parser::Parse("LBU R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3836,7 +3834,7 @@ TEST_CASE("LBU")
 
 TEST_CASE("LH")
 {
-    res = dlx::Parser::Parse(lib, "LH R1 #1000");
+    res = dlx::Parser::Parse("LH R1 #1000");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3850,7 +3848,7 @@ TEST_CASE("LH")
 
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
 
-    res = dlx::Parser::Parse(lib, "LH R1 1000(R0)");
+    res = dlx::Parser::Parse("LH R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3867,7 +3865,7 @@ TEST_CASE("LH")
 
 TEST_CASE("LHU")
 {
-    res = dlx::Parser::Parse(lib, "LHU R1 #1000");
+    res = dlx::Parser::Parse("LHU R1 #1000");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3881,7 +3879,7 @@ TEST_CASE("LHU")
 
     CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21u);
 
-    res = dlx::Parser::Parse(lib, "LHU R1 1000(R0)");
+    res = dlx::Parser::Parse("LHU R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3898,7 +3896,7 @@ TEST_CASE("LHU")
 
 TEST_CASE("LW")
 {
-    res = dlx::Parser::Parse(lib, "LW R1 #1000");
+    res = dlx::Parser::Parse("LW R1 #1000");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3912,7 +3910,7 @@ TEST_CASE("LW")
 
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
 
-    res = dlx::Parser::Parse(lib, "LW R1 1000(R0)");
+    res = dlx::Parser::Parse("LW R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3929,7 +3927,7 @@ TEST_CASE("LW")
 
 TEST_CASE("LWU")
 {
-    res = dlx::Parser::Parse(lib, "LWU R1 #1000");
+    res = dlx::Parser::Parse("LWU R1 #1000");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3943,7 +3941,7 @@ TEST_CASE("LWU")
 
     CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21u);
 
-    res = dlx::Parser::Parse(lib, "LWU R1 1000(R0)");
+    res = dlx::Parser::Parse("LWU R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3960,7 +3958,7 @@ TEST_CASE("LWU")
 
 TEST_CASE("LF")
 {
-    res = dlx::Parser::Parse(lib, "LF F0 #1000");
+    res = dlx::Parser::Parse("LF F0 #1000");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3974,7 +3972,7 @@ TEST_CASE("LF")
 
     CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
 
-    res = dlx::Parser::Parse(lib, "LF F0 1000(R0)");
+    res = dlx::Parser::Parse("LF F0 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -3991,7 +3989,7 @@ TEST_CASE("LF")
 
 TEST_CASE("LD")
 {
-    res = dlx::Parser::Parse(lib, "LD F0 #1000");
+    res = dlx::Parser::Parse("LD F0 #1000");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4005,7 +4003,7 @@ TEST_CASE("LD")
 
     CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 1.0);
 
-    res = dlx::Parser::Parse(lib, "LD F0 1000(R0)");
+    res = dlx::Parser::Parse("LD F0 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4022,7 +4020,7 @@ TEST_CASE("LD")
 
 TEST_CASE("SB")
 {
-    res = dlx::Parser::Parse(lib, "SB #1000 R1");
+    res = dlx::Parser::Parse("SB #1000 R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4036,7 +4034,7 @@ TEST_CASE("SB")
     REQUIRE(val.has_value());
     CHECK(val->get() == 21);
 
-    res = dlx::Parser::Parse(lib, "SB 1000(R0) R1");
+    res = dlx::Parser::Parse("SB 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4053,7 +4051,7 @@ TEST_CASE("SB")
 
 TEST_CASE("SBU")
 {
-    res = dlx::Parser::Parse(lib, "SBU #1000 R1");
+    res = dlx::Parser::Parse("SBU #1000 R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4067,7 +4065,7 @@ TEST_CASE("SBU")
     REQUIRE(val.has_value());
     CHECK(val->get() == 21u);
 
-    res = dlx::Parser::Parse(lib, "SBU 1000(R0) R1");
+    res = dlx::Parser::Parse("SBU 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4084,7 +4082,7 @@ TEST_CASE("SBU")
 
 TEST_CASE("SH")
 {
-    res = dlx::Parser::Parse(lib, "SH #1000 R1");
+    res = dlx::Parser::Parse("SH #1000 R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4098,7 +4096,7 @@ TEST_CASE("SH")
     REQUIRE(val.has_value());
     CHECK(val->get() == 21);
 
-    res = dlx::Parser::Parse(lib, "SH 1000(R0) R1");
+    res = dlx::Parser::Parse("SH 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4115,7 +4113,7 @@ TEST_CASE("SH")
 
 TEST_CASE("SHU")
 {
-    res = dlx::Parser::Parse(lib, "SHU #1000 R1");
+    res = dlx::Parser::Parse("SHU #1000 R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4129,7 +4127,7 @@ TEST_CASE("SHU")
     REQUIRE(val.has_value());
     CHECK(val->get() == 21u);
 
-    res = dlx::Parser::Parse(lib, "SHU 1000(R0) R1");
+    res = dlx::Parser::Parse("SHU 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4146,7 +4144,7 @@ TEST_CASE("SHU")
 
 TEST_CASE("SW")
 {
-    res = dlx::Parser::Parse(lib, "SW #1000 R1");
+    res = dlx::Parser::Parse("SW #1000 R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4160,7 +4158,7 @@ TEST_CASE("SW")
     REQUIRE(val.has_value());
     CHECK(val->get() == 21);
 
-    res = dlx::Parser::Parse(lib, "SW 1000(R0) R1");
+    res = dlx::Parser::Parse("SW 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4177,7 +4175,7 @@ TEST_CASE("SW")
 
 TEST_CASE("SWU")
 {
-    res = dlx::Parser::Parse(lib, "SWU #1000 R1");
+    res = dlx::Parser::Parse("SWU #1000 R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4191,7 +4189,7 @@ TEST_CASE("SWU")
     REQUIRE(val.has_value());
     CHECK(val->get() == 21u);
 
-    res = dlx::Parser::Parse(lib, "SWU 1000(R0) R1");
+    res = dlx::Parser::Parse("SWU 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4208,7 +4206,7 @@ TEST_CASE("SWU")
 
 TEST_CASE("SF")
 {
-    res = dlx::Parser::Parse(lib, "SF #1000 F0");
+    res = dlx::Parser::Parse("SF #1000 F0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4222,7 +4220,7 @@ TEST_CASE("SF")
     REQUIRE(val.has_value());
     CHECK(val->get() == 1.0f);
 
-    res = dlx::Parser::Parse(lib, "SF 1000(R0) F0");
+    res = dlx::Parser::Parse("SF 1000(R0) F0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4239,7 +4237,7 @@ TEST_CASE("SF")
 
 TEST_CASE("SD")
 {
-    res = dlx::Parser::Parse(lib, "SD #1000 F0");
+    res = dlx::Parser::Parse("SD #1000 F0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4253,7 +4251,7 @@ TEST_CASE("SD")
     REQUIRE(val.has_value());
     CHECK(val->get() == 1.0);
 
-    res = dlx::Parser::Parse(lib, "SD 1000(R0) F0");
+    res = dlx::Parser::Parse("SD 1000(R0) F0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4270,7 +4268,7 @@ TEST_CASE("SD")
 
 TEST_CASE("MOVF")
 {
-    res = dlx::Parser::Parse(lib, "MOVF F0 F1");
+    res = dlx::Parser::Parse("MOVF F0 F1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4286,7 +4284,7 @@ TEST_CASE("MOVF")
 
 TEST_CASE("MOVD")
 {
-    res = dlx::Parser::Parse(lib, "MOVD F0 F2");
+    res = dlx::Parser::Parse("MOVD F0 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4302,7 +4300,7 @@ TEST_CASE("MOVD")
 
 TEST_CASE("MOVFP2I")
 {
-    res = dlx::Parser::Parse(lib, "MOVFP2I R1 F0");
+    res = dlx::Parser::Parse("MOVFP2I R1 F0");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4318,7 +4316,7 @@ TEST_CASE("MOVFP2I")
 
 TEST_CASE("MOVI2FP")
 {
-    res = dlx::Parser::Parse(lib, "MOVI2FP F0 R1");
+    res = dlx::Parser::Parse("MOVI2FP F0 R1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4334,7 +4332,7 @@ TEST_CASE("MOVI2FP")
 
 TEST_CASE("CVTF2D")
 {
-    res = dlx::Parser::Parse(lib, "CVTF2D F0 F2");
+    res = dlx::Parser::Parse("CVTF2D F0 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4350,7 +4348,7 @@ TEST_CASE("CVTF2D")
 
 TEST_CASE("CVTF2I")
 {
-    res = dlx::Parser::Parse(lib, "CVTF2I F0 F2");
+    res = dlx::Parser::Parse("CVTF2I F0 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4366,7 +4364,7 @@ TEST_CASE("CVTF2I")
 
 TEST_CASE("CVTD2F")
 {
-    res = dlx::Parser::Parse(lib, "CVTD2F F0 F2");
+    res = dlx::Parser::Parse("CVTD2F F0 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4382,7 +4380,7 @@ TEST_CASE("CVTD2F")
 
 TEST_CASE("CVTD2I")
 {
-    res = dlx::Parser::Parse(lib, "CVTD2I F0 F2");
+    res = dlx::Parser::Parse("CVTD2I F0 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4398,7 +4396,7 @@ TEST_CASE("CVTD2I")
 
 TEST_CASE("CVTI2F")
 {
-    res = dlx::Parser::Parse(lib, "CVTI2F F0 F2");
+    res = dlx::Parser::Parse("CVTI2F F0 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4414,7 +4412,7 @@ TEST_CASE("CVTI2F")
 
 TEST_CASE("CVTI2D")
 {
-    res = dlx::Parser::Parse(lib, "CVTI2D F0 F2");
+    res = dlx::Parser::Parse("CVTI2D F0 F2");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4430,7 +4428,7 @@ TEST_CASE("CVTI2D")
 
 TEST_CASE("TRAP")
 {
-    res = dlx::Parser::Parse(lib, "TRAP #1");
+    res = dlx::Parser::Parse("TRAP #1");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4442,7 +4440,7 @@ TEST_CASE("TRAP")
 
 TEST_CASE("HALT")
 {
-    res = dlx::Parser::Parse(lib, "HALT");
+    res = dlx::Parser::Parse("HALT");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4454,7 +4452,7 @@ TEST_CASE("HALT")
 
 TEST_CASE("NOP")
 {
-    res = dlx::Parser::Parse(lib, "NOP");
+    res = dlx::Parser::Parse("NOP");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4466,7 +4464,7 @@ TEST_CASE("NOP")
 
 TEST_CASE("R0 is read only")
 {
-    res = dlx::Parser::Parse(lib, "ADDI R0 R0 #4");
+    res = dlx::Parser::Parse("ADDI R0 R0 #4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4475,7 +4473,7 @@ TEST_CASE("R0 is read only")
     CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R0).get() == 0);
 
     // Unsigned
-    res = dlx::Parser::Parse(lib, "ADDUI R0 R0 #4");
+    res = dlx::Parser::Parse("ADDUI R0 R0 #4");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4486,7 +4484,7 @@ TEST_CASE("R0 is read only")
 
 TEST_CASE("Empty source code")
 {
-    res = dlx::Parser::Parse(lib, "");
+    res = dlx::Parser::Parse("");
     REQUIRE(res.m_ParseErrors.empty());
     CHECK(res.m_Instructions.empty());
     CHECK(res.m_JumpData.empty());
@@ -4501,7 +4499,7 @@ TEST_CASE("Empty source code")
 TEST_CASE("Processor::LoadProgram")
 {
     // Parser errors
-    res = dlx::Parser::Parse(lib, "This has errors");
+    res = dlx::Parser::Parse("This has errors");
     REQUIRE_FALSE(res.m_ParseErrors.empty());
 
     // Returns false on prog with Parser errors
@@ -4512,7 +4510,7 @@ TEST_CASE("Processor::LoadProgram")
     proc.ExecuteStep();
 
     // Empty
-    res = dlx::Parser::Parse(lib, "");
+    res = dlx::Parser::Parse("");
 
     CHECK(proc.LoadProgram(res));
 
@@ -4521,7 +4519,7 @@ TEST_CASE("Processor::LoadProgram")
     proc.ExecuteStep();
 
     // Valid
-    res = dlx::Parser::Parse(lib, "ADD R1 R1 R1");
+    res = dlx::Parser::Parse("ADD R1 R1 R1");
 
     CHECK(proc.LoadProgram(res));
 }
@@ -4575,7 +4573,7 @@ TEST_CASE("Processor::ClearMemory")
 TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e")
 {
     // Signed half words
-    res = dlx::Parser::Parse(lib, "LH R1 #1001");
+    res = dlx::Parser::Parse("LH R1 #1001");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4585,7 +4583,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.IsHalted());
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-    res = dlx::Parser::Parse(lib, "LH R1 #1003");
+    res = dlx::Parser::Parse("LH R1 #1003");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4596,7 +4594,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
     // Unsigned half words
-    res = dlx::Parser::Parse(lib, "LHU R1 #1001");
+    res = dlx::Parser::Parse("LHU R1 #1001");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4606,7 +4604,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.IsHalted());
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-    res = dlx::Parser::Parse(lib, "LHU R1 #1003");
+    res = dlx::Parser::Parse("LHU R1 #1003");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4617,7 +4615,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
     // Signed words
-    res = dlx::Parser::Parse(lib, "LW R1 #1001");
+    res = dlx::Parser::Parse("LW R1 #1001");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4627,7 +4625,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.IsHalted());
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-    res = dlx::Parser::Parse(lib, "LW R1 #1002");
+    res = dlx::Parser::Parse("LW R1 #1002");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4637,7 +4635,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.IsHalted());
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-    res = dlx::Parser::Parse(lib, "LW R1 #1003");
+    res = dlx::Parser::Parse("LW R1 #1003");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4648,7 +4646,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
     // Unsigned words
-    res = dlx::Parser::Parse(lib, "LWU R1 #1001");
+    res = dlx::Parser::Parse("LWU R1 #1001");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4658,7 +4656,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.IsHalted());
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-    res = dlx::Parser::Parse(lib, "LWU R1 #1002");
+    res = dlx::Parser::Parse("LWU R1 #1002");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);
@@ -4668,7 +4666,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
     CHECK(proc.IsHalted());
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 
-    res = dlx::Parser::Parse(lib, "LWU R1 #1003");
+    res = dlx::Parser::Parse("LWU R1 #1003");
     REQUIRE(res.m_ParseErrors.empty());
 
     proc.LoadProgram(res);

@@ -36,8 +36,6 @@ namespace dlxemu
 
         [[nodiscard]] dlx::Processor& GetProcessor() noexcept;
 
-        [[nodiscard]] const dlx::InstructionLibrary& GetInstructionLibrary() const noexcept;
-
         [[nodiscard]] const dlx::ParsedProgram& GetProgram() const noexcept;
 
         void ParseProgram(std::string_view source) noexcept;
@@ -54,9 +52,8 @@ namespace dlxemu
         void RenderOptionsMenu() noexcept;
 
     private:
-        dlx::InstructionLibrary m_InstructionLibrary;
-        dlx::Processor          m_Processor;
-        dlx::ParsedProgram      m_DLXProgram;
+        dlx::Processor     m_Processor;
+        dlx::ParsedProgram m_DLXProgram;
 
         CodeEditor     m_CodeEditor;
         Window         m_Window;

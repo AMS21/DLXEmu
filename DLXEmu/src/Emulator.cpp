@@ -136,11 +136,6 @@ namespace dlxemu
         return m_Processor;
     }
 
-    const dlx::InstructionLibrary& Emulator::GetInstructionLibrary() const noexcept
-    {
-        return m_InstructionLibrary;
-    }
-
     const dlx::ParsedProgram& Emulator::GetProgram() const noexcept
     {
         return m_DLXProgram;
@@ -148,7 +143,7 @@ namespace dlxemu
 
     void Emulator::ParseProgram(std::string_view source) noexcept
     {
-        m_DLXProgram = dlx::Parser::Parse(m_InstructionLibrary, source);
+        m_DLXProgram = dlx::Parser::Parse(source);
 
         if (m_DLXProgram.m_ParseErrors.empty())
         {
@@ -158,7 +153,7 @@ namespace dlxemu
 
     void Emulator::ParseProgram(dlx::TokenStream& tokens) noexcept
     {
-        m_DLXProgram = dlx::Parser::Parse(m_InstructionLibrary, tokens);
+        m_DLXProgram = dlx::Parser::Parse(tokens);
 
         if (m_DLXProgram.m_ParseErrors.empty())
         {

@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <DLX/InstructionLibrary.hpp>
 #include <DLX/ParsedProgram.hpp>
 #include <DLX/Parser.hpp>
 
@@ -24,8 +23,7 @@ TEST_CASE("ParsedProgram::GetDump()")
     CHECK(!str.empty());
 
     // Normal program
-    dlx::InstructionLibrary lib;
-    prog = dlx::Parser::Parse(lib, "l: ADD R1 R1 R1\nJ l");
+    prog = dlx::Parser::Parse("l: ADD R1 R1 R1\nJ l");
 
     str = prog.GetDump();
     CHECK(!str.empty());

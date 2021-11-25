@@ -45,7 +45,8 @@ namespace dlx
                                          static_cast<underlying_t>(rhs));
     }
 
-    constexpr phi::Boolean ArgumentTypeIncludes(ArgumentType type, ArgumentType test) noexcept
+    [[nodiscard]] constexpr phi::Boolean ArgumentTypeIncludes(ArgumentType type,
+                                                              ArgumentType test) noexcept
     {
         using underlying_t = std::underlying_type_t<ArgumentType>;
 
