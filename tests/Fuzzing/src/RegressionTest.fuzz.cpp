@@ -1,3 +1,4 @@
+#include "StructureParser.hpp"
 #include <DLX/Parser.hpp>
 #include <DLX/Processor.hpp>
 #include <cstddef>
@@ -19,6 +20,18 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     processor.ClearMemory();
 
     // Run it
+    if (processor.LoadProgram(program))
+    {
+        processor.ExecuteCurrentProgram();
+    }
+
+    std::string source_structured = fuzz::ParseAsStrucutedDLXCode(data, size);
+
+    program = dlx::Parser::Parse(source_structured);
+
+    processor.ClearRegisters();
+    processor.ClearMemory();
+
     if (processor.LoadProgram(program))
     {
         processor.ExecuteCurrentProgram();
