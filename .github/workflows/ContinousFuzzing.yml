@@ -23,7 +23,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        fuzz_target: ["fuzz_parser", "fuzz_execution", "fuzz_structured_execution", "fuzz_syntax_highlighting", "fuzz_structured_syntax_highlighting", "fuzz_code_editor"]
+        cfg:
+          - { fuzz_target: "fuzz_parser",                         fuzz_options: "-timeout=1  -dict=Dictionary.txt" }
+          - { fuzz_target: "fuzz_execution",                      fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1" }
+          - { fuzz_target: "fuzz_structured_execution",           fuzz_options: "-timeout=1" }
+          - { fuzz_target: "fuzz_syntax_highlighting",            fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1" }
+          - { fuzz_target: "fuzz_structured_syntax_highlighting", fuzz_options: "-timeout=1" }
+          - { fuzz_target: "fuzz_code_editor",                    fuzz_options: "-timeout=10                      -only_ascii=1" }
 
     steps:
       - name: Setup Git
@@ -78,10 +84,10 @@ jobs:
           cd DLXEmu-App
 
           cd build
-          cmake --build . --clean-first --target ${{ matrix.fuzz_target }} generate_dictionary_app
+          cmake --build . --clean-first --target ${{ matrix.cfg.fuzz_target }} generate_dictionary_app
 
           echo "BINARY_DIR=${{ github.workspace }}/DLXEmu-App/build/bin" >> $GITHUB_ENV
-          echo "FUZZER=${{ github.workspace }}/DLXEmu-App/build/bin/${{ matrix.fuzz_target }}" >> $GITHUB_ENV
+          echo "FUZZER=${{ github.workspace }}/DLXEmu-App/build/bin/${{ matrix.cfg.fuzz_target }}" >> $GITHUB_ENV
 
       - name: Checkout Corpus
         uses: actions/checkout@v2.3.5
@@ -117,16 +123,12 @@ jobs:
             TOTAL_RUN_TIME=20
           fi
 
-          fuzz_args="-max_total_time=$TOTAL_RUN_TIME -timeout=10 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -dict=Dictionary.txt"
-
-          if [ "${{ matrix.fuzz_target }}" = "fuzz_execution" ] || [ "${{ matrix.fuzz_target }}" = "fuzz_syntax_highlighting" ]; then
-            fuzz_args="$fuzz_args -only_ascii=1"
-          fi
+          fuzz_args="-max_total_time=$TOTAL_RUN_TIME -use_value_profile=1 -print_pcs=1 -print_final_stats=1 ${{ matrix.cfg.fuzz_options }}"
 
           echo "FUZZ_ARGUMENTS=$fuzz_args" >> $GITHUB_ENV
           echo "Fuzzing arguments: $fuzz_args"
 
-          local_corpus_dir="$CORPUS_ROOT_DIR/${{ matrix.fuzz_target }}"
+          local_corpus_dir="$CORPUS_ROOT_DIR/${{ matrix.cfg.fuzz_target }}"
           echo "LOCAL_CORPUS_DIR=$local_corpus_dir" >> $GITHUB_ENV
           echo "Local corpus directory: $local_corpus_dir"
 
@@ -248,7 +250,7 @@ jobs:
                 echo "No changes detected"
                 break
               else
-                git add ${{ matrix.fuzz_target }}
+                git add ${{ matrix.cfg.fuzz_target }}
                 git status
                 git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" --file $FUZZING_DIR/commit_message
                 git push -u origin main | true
@@ -266,11 +268,11 @@ jobs:
             done
 
             # Create GitHub issue
-            title="$err_name: ${{ matrix.fuzz_target }} $checksum"
+            title="$err_name: ${{ matrix.cfg.fuzz_target }} $checksum"
             # Body
-            echo "New $err_name discovered by the ${{ matrix.fuzz_target }} fuzzer." >> issue_body
+            echo "New $err_name discovered by the ${{ matrix.cfg.fuzz_target }} fuzzer." >> issue_body
             echo "" >> issue_body
-            echo "Faulting input [download]($GITHUB_SERVER_URL/AMS21/DLXEmu-Corpus/blob/main/${{ matrix.fuzz_target }}/$err_name/$err_name-$checksum):" >> issue_body
+            echo "Faulting input [download]($GITHUB_SERVER_URL/AMS21/DLXEmu-Corpus/blob/main/${{ matrix.cfg.fuzz_target }}/$err_name/$err_name-$checksum):" >> issue_body
             echo "" >> issue_body
             echo "\`\`\`" >> issue_body
             cat $FUZZING_DIR/$minimized_crash >> issue_body
@@ -338,9 +340,9 @@ jobs:
               echo "No Corpus changes detected"
               break
             else
-              git add ${{ matrix.fuzz_target }}
+              git add ${{ matrix.cfg.fuzz_target }}
               git status
-              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Corpus] ${{ matrix.fuzz_target }}: Automatic corpus update '$(date)'"
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Corpus] ${{ matrix.cfg.fuzz_target }}: Automatic corpus update '$(date)'"
               git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
@@ -363,7 +365,7 @@ jobs:
           cd build
 
           cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-O0 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions -fprofile-instr-generate -fcoverage-mapping" ..
-          cmake --build . --clean-first --target ${{ matrix.fuzz_target }}
+          cmake --build . --clean-first --target ${{ matrix.cfg.fuzz_target }}
 
           # Generate coverage data
           find $LOCAL_CORPUS_DIR/Corpus -type f -exec bash -c 'echo Fuzzing: ${0}; $FUZZER ${0} > /dev/null 2>&1' {} \;
@@ -392,9 +394,9 @@ jobs:
               echo "No coverage changes detected"
               break
             else
-              git add ${{ matrix.fuzz_target }}
+              git add ${{ matrix.cfg.fuzz_target }}
               git status
-              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Coverage] ${{ matrix.fuzz_target }}: Automatic coverage update '$(date)'"
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Coverage] ${{ matrix.cfg.fuzz_target }}: Automatic coverage update '$(date)'"
               git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
