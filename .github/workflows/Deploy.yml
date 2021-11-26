@@ -56,7 +56,7 @@ jobs:
           ref: develop
           submodules: recursive
           path: develop
-      
+
       - name: Build develop
         run: |
           cd develop
