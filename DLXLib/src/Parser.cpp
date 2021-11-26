@@ -249,6 +249,13 @@ namespace dlx
                         break;
                     }
 
+                    if (!IsValidIdentifier(label_name))
+                    {
+                        program.AddParseError(
+                                ConstructInvalidLabelIdentifierParseError(current_token));
+                        break;
+                    }
+
                     // Check if label was already defined
                     if (program.m_JumpData.find(label_name) != program.m_JumpData.end())
                     {

@@ -231,12 +231,30 @@ TEST_CASE("IsValidIdentifier")
     CHECK(dlx::IsValidIdentifier("_abc"));
     CHECK(dlx::IsValidIdentifier("_1"));
 
+    CHECK_FALSE(dlx::IsValidIdentifier(""));
     CHECK_FALSE(dlx::IsValidIdentifier("_"));
     CHECK_FALSE(dlx::IsValidIdentifier("1"));
     CHECK_FALSE(dlx::IsValidIdentifier("12"));
     CHECK_FALSE(dlx::IsValidIdentifier("444_123"));
     CHECK_FALSE(dlx::IsValidIdentifier("2asbc"));
-    CHECK_FALSE(dlx::IsValidIdentifier(""));
+    CHECK_FALSE(dlx::IsValidIdentifier("+"));
+    CHECK_FALSE(dlx::IsValidIdentifier("-"));
+    CHECK_FALSE(dlx::IsValidIdentifier("*"));
+    CHECK_FALSE(dlx::IsValidIdentifier("/"));
+    CHECK_FALSE(dlx::IsValidIdentifier("#"));
+    CHECK_FALSE(dlx::IsValidIdentifier("!"));
+    CHECK_FALSE(dlx::IsValidIdentifier("\""));
+    CHECK_FALSE(dlx::IsValidIdentifier("§"));
+    CHECK_FALSE(dlx::IsValidIdentifier("$"));
+    CHECK_FALSE(dlx::IsValidIdentifier("%"));
+    CHECK_FALSE(dlx::IsValidIdentifier("&"));
+    CHECK_FALSE(dlx::IsValidIdentifier("("));
+    CHECK_FALSE(dlx::IsValidIdentifier(")"));
+    CHECK_FALSE(dlx::IsValidIdentifier("["));
+    CHECK_FALSE(dlx::IsValidIdentifier("]"));
+    CHECK_FALSE(dlx::IsValidIdentifier("="));
+    CHECK_FALSE(dlx::IsValidIdentifier("?"));
+    CHECK_FALSE(dlx::IsValidIdentifier("\\"));
 }
 
 TEST_CASE("ParseNumber")

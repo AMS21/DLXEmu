@@ -1949,6 +1949,66 @@ TEST_CASE("Parser")
 
             res = dlx::Parser::Parse("FPSR: ADD R1 R1 R1");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("J: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("_: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("+: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("-: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("*: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("\\: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("(: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("): NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("[: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("]: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("=: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("?: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("#: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("!: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("\": NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("§: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("$: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("%: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("&: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("1: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
 
         SECTION("No empty labels")
