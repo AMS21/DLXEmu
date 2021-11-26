@@ -181,8 +181,8 @@ namespace dlxemu
         void               SetShowWhitespaces(bool value) noexcept;
         [[nodiscard]] bool IsShowingWhitespaces() const noexcept;
 
-        void                        SetTabSize(std::uint32_t value) noexcept;
-        [[nodiscard]] std::uint32_t GetTabSize() const noexcept;
+        void                       SetTabSize(std::uint_fast8_t value) noexcept;
+        [[nodiscard]] std::uint_fast8_t GetTabSize() const noexcept;
 
         void InsertText(const std::string& value) noexcept;
         void InsertText(const char* value) noexcept;

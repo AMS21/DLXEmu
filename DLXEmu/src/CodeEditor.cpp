@@ -1909,9 +1909,12 @@ namespace dlxemu
         }
     }
 
-    void CodeEditor::SetTabSize(std::uint32_t value) noexcept
+    static constexpr std::uint_fast8_t MinTabSize{1u};
+    static constexpr std::uint_fast8_t MaxTabSize{32u};
+
+    void CodeEditor::SetTabSize(std::uint_fast8_t value) noexcept
     {
-        m_TabSize = std::clamp(value, 1u, 32u);
+        m_TabSize = std::clamp(value, MinTabSize, MaxTabSize);
     }
 
     void CodeEditor::InsertText(const std::string& value) noexcept
@@ -3051,7 +3054,7 @@ namespace dlxemu
         return m_ShowWhitespaces;
     }
 
-    std::uint32_t CodeEditor::GetTabSize() const noexcept
+    std::uint_fast8_t CodeEditor::GetTabSize() const noexcept
     {
         return m_TabSize;
     }
