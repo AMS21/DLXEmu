@@ -111,12 +111,7 @@ template <typename T>
 
 [[nodiscard]] bool is_valid_ascii_char(char c) noexcept
 {
-    if (c == '\0' || c == '\t' || (c >= 32 && c <= 126))
-    {
-        return true;
-    }
-
-    return false;
+    return c == '\0' || c == '\t' || (c >= 32 && c <= 126);
 }
 
 [[nodiscard]] std::optional<std::string> consume_ascii_string(const std::uint8_t* data,
@@ -127,7 +122,7 @@ template <typename T>
 
     while (index < size && data[index] != '\0')
     {
-        if (!is_valid_ascii_char(data[index]))
+        if (!is_valid_ascii_char(static_cast<char>(data[index])))
         {
             // Reject non printable ascii characters
             return {};
