@@ -48,9 +48,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Build html files when using emscripten
+# Build js files when using emscripten
 if(PHI_PLATFORM_EMSCRIPTEN)
-  set(CMAKE_EXECUTABLE_SUFFIX ".html")
+  set(CMAKE_EXECUTABLE_SUFFIX ".js")
   target_link_options(phi_project_options INTERFACE -sUSE_GLFW=3 -sFETCH=1 -sFULL_ES2=1 -sFULL_ES3=1 -sALLOW_MEMORY_GROWTH=1 -sASSERTIONS=1 -sDISABLE_EXCEPTION_CATCHING=1)
 endif()
 
