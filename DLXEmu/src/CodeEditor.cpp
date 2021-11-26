@@ -1546,7 +1546,7 @@ namespace dlxemu
                 // Add error markers
                 for (const dlx::ParseError& err : m_Emulator->m_DLXProgram.m_ParseErrors)
                 {
-                    AddErrorMarker(err.line_number, err.message);
+                    AddErrorMarker(err.GetLineNumber(), err.ConstructMessage());
                 }
 
                 m_TextChanged = false;

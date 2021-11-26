@@ -1,7 +1,7 @@
 #pragma once
 
-#include "DLX/InstructionInfo.hpp"
 #include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionInfo.hpp"
 
 // Class represents a single fully parsed dlx assembler instruction
 namespace dlx

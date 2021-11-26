@@ -2,8 +2,10 @@
 
 #include "DLX/Instruction.hpp"
 #include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionInfo.hpp"
 #include "DLX/InstructionLibrary.hpp"
 #include "DLX/OpCode.hpp"
+#include "DLX/ParseError.hpp"
 #include "DLX/ParserUtils.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/Token.hpp"
@@ -16,9 +18,6 @@
 #include <Phi/Core/Log.hpp>
 #include <Phi/Core/Types.hpp>
 #include <magic_enum.hpp>
-#include <spdlog/fmt/bundled/core.h>
-#include <spdlog/fmt/bundled/format.h>
-#include <spdlog/fmt/fmt.h>
 #include <algorithm>
 #include <limits>
 #include <optional>
@@ -29,19 +28,6 @@ using namespace phi::literals;
 
 namespace dlx
 {
-    static void AddParseError(ParsedProgram& program, const Token& current_token,
-                              const std::string& message) noexcept
-    {
-        ParseError err;
-        err.line_number = current_token.GetLineNumber().get();
-        err.column      = current_token.GetColumn().get();
-        err.message     = message;
-
-        //PHI_LOG_ERROR("Parsing error: {}", message);
-
-        program.m_ParseErrors.emplace_back(err);
-    }
-
     static std::optional<InstructionArg> parse_instruction_argument(
             const Token& token, ArgumentType expected_argument_type, TokenStream& tokens,
             ParsedProgram& program) noexcept
@@ -55,9 +41,9 @@ namespace dlx
                 if (!ArgumentTypeIncludes(expected_argument_type,
                                           ArgumentType::AddressDisplacement))
                 {
-                    AddParseError(program, token,
-                                  fmt::format("Expected {} but got address displacement",
-                                              magic_enum::enum_name(expected_argument_type)));
+                    program.AddParseError(ConstructUnexpectedArgumentTypeParseError(
+                            token, expected_argument_type, ArgumentType::AddressDisplacement));
+
                     return {};
                 }
 
@@ -65,16 +51,15 @@ namespace dlx
                 auto displacement_value = ParseNumber(token.GetText());
                 if (!displacement_value)
                 {
-                    AddParseError(program, token,
-                                  "Failed to parse displacement value for Address displacement");
+                    program.AddParseError(ConstructInvalidNumberParseError(token));
                     return {};
                 }
                 std::int16_t value = displacement_value.value().get();
 
                 if (!tokens.has_x_more(2u))
                 {
-                    AddParseError(program, token,
-                                  "Not enough arguments left to parse address displacement");
+                    program.AddParseError(
+                            ConstructTooFewArgumentsAddressDisplacementParseError(token));
                     return {};
                 }
 
@@ -85,26 +70,23 @@ namespace dlx
 
                 if (first_token.GetType() != Token::Type::OpenBracket)
                 {
-                    AddParseError(program, token,
-                                  fmt::format("Expected open bracket but got {:s}",
-                                              magic_enum::enum_name(first_token.GetType())));
+                    program.AddParseError(ConstructUnexpectedTokenParseError(
+                            first_token, Token::Type::OpenBracket));
                     return {};
                 }
 
                 // Second token is the register
                 if (second_token.GetType() != Token::Type::RegisterInt)
                 {
-                    AddParseError(program, token,
-                                  fmt::format("Expected IntRegister but got {:s}",
-                                              magic_enum::enum_name(second_token.GetType())));
+                    program.AddParseError(ConstructUnexpectedTokenParseError(
+                            second_token, Token::Type::RegisterInt));
                     return {};
                 }
 
                 if (third_token.GetType() != Token::Type::ClosingBracket)
                 {
-                    AddParseError(program, token,
-                                  fmt::format("Expected closing bracket but got {:s}",
-                                              magic_enum::enum_name(third_token.GetType())));
+                    program.AddParseError(ConstructUnexpectedTokenParseError(
+                            third_token, Token::Type::ClosingBracket));
                     return {};
                 }
 
@@ -120,9 +102,8 @@ namespace dlx
             case Token::Type::RegisterInt: {
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::IntRegister))
                 {
-                    AddParseError(program, token,
-                                  fmt::format("Got IntRegister but expected '{}'",
-                                              magic_enum::enum_name(expected_argument_type)));
+                    program.AddParseError(ConstructUnexpectedArgumentTypeParseError(
+                            token, expected_argument_type, ArgumentType::IntRegister));
                     return {};
                 }
 
@@ -135,9 +116,8 @@ namespace dlx
             case Token::Type::RegisterFloat: {
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::FloatRegister))
                 {
-                    AddParseError(program, token,
-                                  fmt::format("Got FloatRegister but expected '{}'",
-                                              magic_enum::enum_name(expected_argument_type)));
+                    program.AddParseError(ConstructUnexpectedArgumentTypeParseError(
+                            token, expected_argument_type, ArgumentType::FloatRegister));
                     return {};
                 }
 
@@ -153,25 +133,20 @@ namespace dlx
                 // Parse as Label
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::Label))
                 {
-                    AddParseError(program, token,
-                                  fmt::format("Got Label but expected '{}'",
-                                              magic_enum::enum_name(expected_argument_type)));
+                    program.AddParseError(ConstructUnexpectedArgumentTypeParseError(
+                            token, expected_argument_type, ArgumentType::Label));
                     return {};
                 }
 
                 if (IsReservedIdentifier(token.GetText()))
                 {
-                    AddParseError(
-                            program, token,
-                            fmt::format("Cannot used reserved identifier {}", token.GetText()));
+                    program.AddParseError(ConstructReservedIdentiferParseError(token));
                     return {};
                 }
 
                 if (!IsValidIdentifier(token.GetText()))
                 {
-                    AddParseError(
-                            program, token,
-                            fmt::format("Invalid label identifier found {}", token.GetText()));
+                    program.AddParseError(ConstructInvalidLabelIdentifierParseError(token));
                     return {};
                 }
 
@@ -182,9 +157,8 @@ namespace dlx
             case Token::Type::ImmediateInteger: {
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::ImmediateInteger))
                 {
-                    AddParseError(program, token,
-                                  fmt::format("Got ImmediateInteger but expected '{}'",
-                                              magic_enum::enum_name(expected_argument_type)));
+                    program.AddParseError(ConstructUnexpectedArgumentTypeParseError(
+                            token, expected_argument_type, ArgumentType::ImmediateInteger));
                     return {};
                 }
 
@@ -197,7 +171,7 @@ namespace dlx
                 auto parsed_value = ParseNumber(token.GetText().substr(1));
                 if (!parsed_value)
                 {
-                    AddParseError(program, token, "Failed to parse immediate Integer value");
+                    program.AddParseError(ConstructInvalidNumberParseError(token));
                     return {};
                 }
 
@@ -206,8 +180,8 @@ namespace dlx
                 return ConstructInstructionArgImmediateValue(parsed_value.value().get());
             }
             default:
-                AddParseError(program, token,
-                              fmt::format("Unexpected token of type '{}'", token.GetTypeName()));
+                program.AddParseError(
+                        ConstructUnexpectedTokenParseError(token, Token::Type::Unknown));
                 return {};
         }
     }
@@ -250,8 +224,8 @@ namespace dlx
                 case Token::Type::LabelIdentifier: {
                     if (line_has_instruction)
                     {
-                        AddParseError(program, current_token,
-                                      "Expected new line but got label identifer");
+                        program.AddParseError(ConstructUnexpectedTokenParseError(
+                                current_token, Token::Type::NewLine));
                         break;
                     }
 
@@ -259,8 +233,8 @@ namespace dlx
                     // Check if the last character of the identifier is a colon
                     if (current_token.GetText().at(current_token.GetText().size() - 1) != ':')
                     {
-                        AddParseError(program, current_token,
-                                      "Label identifier is missing a colon");
+                        program.AddParseError(
+                                ConstructInvalidLabelIdentifierParseError(current_token));
                         break;
                     }
 
@@ -269,9 +243,9 @@ namespace dlx
 
                     if (IsReservedIdentifier(label_name))
                     {
-                        AddParseError(program, current_token,
-                                      fmt::format("Cannot use reserved identifier {} as jump label",
-                                                  label_name));
+                        program.AddParseError(ConstructReservedIdentiferParseError(
+                                current_token.GetLineNumber().get(),
+                                current_token.GetColumn().get(), label_name));
                         break;
                     }
 
@@ -297,10 +271,8 @@ namespace dlx
 
                         PHI_ASSERT(first_label_definition);
 
-                        AddParseError(program, current_token,
-                                      fmt::format("Label '{:s}' already defined at line {:d}",
-                                                  label_name,
-                                                  first_label_definition->GetLineNumber().get()));
+                        program.AddParseError(ConstructLabelAlreadyDefinedParseError(
+                                current_token, *first_label_definition));
                         break;
                     }
 
@@ -316,8 +288,8 @@ namespace dlx
                 case Token::Type::OpCode: {
                     if (line_has_instruction)
                     {
-                        AddParseError(program, current_token,
-                                      "You may only place one instruction per line");
+                        program.AddParseError(
+                                ConstructOneInstructionPerLineParseError(current_token));
                         break;
                     }
 
@@ -349,11 +321,9 @@ namespace dlx
                         // Get next token
                         if (!tokens.has_more())
                         {
-                            AddParseError(
-                                    program, current_token,
-                                    fmt::format("Missing {} arguments for instruction {}",
-                                                (number_of_argument_required - argument_num).get(),
-                                                magic_enum::enum_name(opcode)));
+                            program.AddParseError(ConstructTooFewArgumentsParseError(
+                                    current_token, number_of_argument_required.get(),
+                                    argument_num.get()));
                             break;
                         }
 
@@ -369,13 +339,9 @@ namespace dlx
                         if (current_token.GetType() == Token::Type::NewLine)
                         {
                             phi::u8 missing_arguments = number_of_argument_required - argument_num;
-                            AddParseError(program, current_token,
-                                          fmt::format("Unexpected end of line. Instruction {:s} "
-                                                      "requires {:d} arguments, but only {:d} were "
-                                                      "provided. Missing {:d} argument(s)",
-                                                      magic_enum::enum_name(opcode),
-                                                      number_of_argument_required.get(),
-                                                      argument_num.get(), missing_arguments.get()));
+                            program.AddParseError(ConstructTooFewArgumentsParseError(
+                                    current_token, number_of_argument_required.get(),
+                                    argument_num.get()));
                             break;
                         }
 
@@ -385,11 +351,7 @@ namespace dlx
                                                            tokens, program);
                         if (!optional_parsed_argument.has_value())
                         {
-                            AddParseError(program, current_token,
-                                          fmt::format("Failed to parse argument number {:d} of "
-                                                      "{:s} instruction",
-                                                      argument_num.get(),
-                                                      magic_enum::enum_name(opcode)));
+                            // The parse_instruction_argument function should already have added a parse error with more detail
                             break;
                         }
 
@@ -414,9 +376,8 @@ namespace dlx
                 }
 
                 default:
-                    AddParseError(program, current_token,
-                                  fmt::format("Unexpected token of type {:s}",
-                                              magic_enum::enum_name(current_token.GetType())));
+                    program.AddParseError(ConstructUnexpectedTokenParseError(current_token,
+                                                                             Token::Type::Unknown));
                     break;
             }
         }
@@ -427,11 +388,7 @@ namespace dlx
                     tokens.find_last_token_of_type(Token::Type::LabelIdentifier);
             PHI_ASSERT(optional_token);
 
-            const std::string_view label_text = optional_token->GetText();
-            const std::string_view label_name = label_text.substr(0, label_text.size() - 1);
-
-            AddParseError(program, *optional_token,
-                          fmt::format("Label '{:s}' does not have any instructions", label_name));
+            program.AddParseError(ConstructEmptyLabelParseError(*optional_token));
         }
 
         return program;

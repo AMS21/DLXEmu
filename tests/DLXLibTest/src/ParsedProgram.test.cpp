@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <DLX/ParseError.hpp>
 #include <DLX/ParsedProgram.hpp>
 #include <DLX/Parser.hpp>
 
@@ -13,11 +14,7 @@ TEST_CASE("ParsedProgram::GetDump()")
     CHECK(!str.empty());
 
     // With error
-    dlx::ParseError err;
-    err.column      = 1;
-    err.line_number = 1;
-    err.message     = "Test";
-    prog.m_ParseErrors.emplace_back(err);
+    prog.AddParseError(dlx::ConstructEmptyLabelParseError(1, 1, "test"));
 
     str = prog.GetDump();
     CHECK(!str.empty());

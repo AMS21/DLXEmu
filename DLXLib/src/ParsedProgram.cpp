@@ -1,7 +1,14 @@
 #include "DLX/ParsedProgram.hpp"
 
+#include <utility>
+
 namespace dlx
 {
+    void ParsedProgram::AddParseError(ParseError&& error) noexcept
+    {
+        m_ParseErrors.emplace_back(std::move(error));
+    }
+
     std::string ParsedProgram::GetDump() const noexcept
     {
         std::string text;
@@ -21,7 +28,7 @@ namespace dlx
         {
             for (const ParseError& err : m_ParseErrors)
             {
-                text.append(err.message + '\n');
+                text.append(err.ConstructMessage() + '\n');
             }
         }
 
