@@ -5,6 +5,7 @@ project("DLXLibTest" CXX)
 
 # Files
 file(GLOB DLXLIB_TEST_SOURCES
+     "src/InstructionLibrary.test.cpp"
      "src/OpCode.test.cpp"
      "src/ParsedProgram.test.cpp"
      "src/ParseError.test.cpp"
