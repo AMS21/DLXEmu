@@ -1,7 +1,8 @@
 #pragma once
 
-#include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionArgument.hpp"
 #include "DLX/InstructionInfo.hpp"
+#include "DLX/OpCode.hpp"
 
 // Class represents a single fully parsed dlx assembler instruction
 namespace dlx
@@ -11,7 +12,7 @@ namespace dlx
     public:
         explicit Instruction(const InstructionInfo& info) noexcept;
 
-        void SetArgument(phi::u8 argument_number, InstructionArg argument) noexcept;
+        void SetArgument(phi::u8 argument_number, InstructionArgument argument) noexcept;
 
         [[nodiscard]] std::string DebugInfo() const noexcept;
 
@@ -19,17 +20,17 @@ namespace dlx
 
         [[nodiscard]] const InstructionInfo& GetInfo() const noexcept;
 
-        [[nodiscard]] const InstructionArg& GetArg1() const noexcept;
+        [[nodiscard]] const InstructionArgument& GetArg1() const noexcept;
 
-        [[nodiscard]] const InstructionArg& GetArg2() const noexcept;
+        [[nodiscard]] const InstructionArgument& GetArg2() const noexcept;
 
-        [[nodiscard]] const InstructionArg& GetArg3() const noexcept;
+        [[nodiscard]] const InstructionArgument& GetArg3() const noexcept;
 
     private:
         const InstructionInfo& m_Info;
 
-        InstructionArg m_Arg1;
-        InstructionArg m_Arg2;
-        InstructionArg m_Arg3;
+        InstructionArgument m_Arg1;
+        InstructionArgument m_Arg2;
+        InstructionArgument m_Arg3;
     };
 } // namespace dlx

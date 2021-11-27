@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <DLX/Instruction.hpp>
-#include <DLX/InstructionArg.hpp>
+#include <DLX/InstructionArgument.hpp>
 #include <DLX/InstructionLibrary.hpp>
 #include <DLX/IntRegister.hpp>
 #include <DLX/OpCode.hpp>
@@ -19,8 +19,9 @@ TEST_CASE("Only one instruction per line")
 }
 
 [[nodiscard]] phi::Boolean InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcode,
-                                              dlx::InstructionArg arg1, dlx::InstructionArg arg2,
-                                              dlx::InstructionArg arg3)
+                                              dlx::InstructionArgument arg1,
+                                              dlx::InstructionArgument arg2,
+                                              dlx::InstructionArgument arg3)
 {
     if (instr.GetInfo().GetOpCode() != opcode)
     {
@@ -54,32 +55,32 @@ TEST_CASE("InstructionMatches")
     REQUIRE(res.m_Instructions.size() == 1);
 
     // Different opcode
-    CHECK_FALSE(
-            InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADDI,
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+    CHECK_FALSE(InstructionMatches(
+            res.m_Instructions.at(0), dlx::OpCode::ADDI,
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R4),
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R29)));
 
     // First arg wrong
-    CHECK_FALSE(
-            InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADD,
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R0),
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+    CHECK_FALSE(InstructionMatches(
+            res.m_Instructions.at(0), dlx::OpCode::ADD,
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R0),
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R4),
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R29)));
 
     // Second arg wrong
-    CHECK_FALSE(
-            InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADD,
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R0),
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+    CHECK_FALSE(InstructionMatches(
+            res.m_Instructions.at(0), dlx::OpCode::ADD,
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R0),
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R29)));
 
     // Third arg wrong
-    CHECK_FALSE(
-            InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::ADD,
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
-                               dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R0)));
+    CHECK_FALSE(InstructionMatches(
+            res.m_Instructions.at(0), dlx::OpCode::ADD,
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R4),
+            dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R0)));
 }
 
 TEST_CASE("Parser")
@@ -202,9 +203,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADD,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R4),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R29)));
 
             res = dlx::Parser::Parse("aDd, r2, r4, R29");
             REQUIRE(res.m_ParseErrors.empty());
@@ -212,9 +213,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADD,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R4),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R29)));
 
             res = dlx::Parser::Parse("AdD, r2, r4, R29");
             REQUIRE(res.m_ParseErrors.empty());
@@ -222,9 +223,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADD,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R4),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R29)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R4),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R29)));
         }
 
         // Arithmetic
@@ -236,9 +237,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADD,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("ADDI")
@@ -249,9 +250,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADDI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(25)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(25)));
         }
 
         SECTION("ADDU")
@@ -262,9 +263,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADDU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("ADDUI")
@@ -275,9 +276,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADDUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(25)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(25)));
         }
 
         SECTION("ADDF")
@@ -288,9 +289,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADDF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2)));
         }
 
         SECTION("ADDD")
@@ -301,9 +302,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ADDD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F4)));
         }
 
         SECTION("SUB")
@@ -314,9 +315,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUB,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SUBI")
@@ -327,9 +328,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUBI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SUBU")
@@ -340,9 +341,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUBU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SUBUI")
@@ -353,9 +354,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUBUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SUBF")
@@ -366,9 +367,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUBF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2)));
         }
 
         SECTION("SUBD")
@@ -379,9 +380,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SUBD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F4)));
         }
 
         SECTION("MULT")
@@ -392,9 +393,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULT,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("MULTI")
@@ -405,9 +406,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULTI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("MULTU")
@@ -418,9 +419,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULTU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("MULTUI")
@@ -431,9 +432,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULTUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("MULTF")
@@ -444,9 +445,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULTF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2)));
         }
 
         SECTION("MULTD")
@@ -457,9 +458,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MULTD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F4)));
         }
 
         SECTION("DIV")
@@ -470,9 +471,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIV,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("DIVI")
@@ -483,9 +484,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIVI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("DIVU")
@@ -496,9 +497,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIVU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("DIVUI")
@@ -509,9 +510,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIVUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("DIVF")
@@ -522,9 +523,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIVF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2)));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2)));
         }
 
         SECTION("DIVD")
@@ -535,9 +536,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::DIVD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F4)));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F4)));
         }
 
         SECTION("SLL")
@@ -548,9 +549,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLL,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SLLI")
@@ -561,9 +562,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLLI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SRL")
@@ -574,9 +575,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SRL,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SRLI")
@@ -587,9 +588,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SRLI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SLA")
@@ -600,9 +601,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLA,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SLAI")
@@ -613,9 +614,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLAI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SRA")
@@ -626,9 +627,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SRA,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SRAI")
@@ -639,9 +640,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SRAI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         // Logic
@@ -653,9 +654,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::AND,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("ANDI")
@@ -666,9 +667,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ANDI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("OR")
@@ -679,9 +680,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::OR,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("ORI")
@@ -692,9 +693,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::ORI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("XOR")
@@ -705,9 +706,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::XOR,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("XORI")
@@ -718,9 +719,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::XORI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         // Set conditionals
@@ -732,9 +733,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLT,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SLTI")
@@ -745,9 +746,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLTI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SLTU")
@@ -758,9 +759,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLTU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SLTUI")
@@ -771,9 +772,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLTUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("LTF")
@@ -784,9 +785,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LTF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LTD")
@@ -797,9 +798,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LTF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SGT")
@@ -810,9 +811,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SGT,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SGTI")
@@ -823,9 +824,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SGTI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SGTU")
@@ -836,9 +837,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SGTU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SGTUI")
@@ -849,9 +850,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SGTUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("GTF")
@@ -862,9 +863,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::GTF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("GTD")
@@ -875,9 +876,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::GTD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SLE")
@@ -888,9 +889,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLE,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SLEI")
@@ -901,9 +902,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLEI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SLEU")
@@ -914,9 +915,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLEU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SLEUI")
@@ -927,9 +928,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SLEUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("LEF")
@@ -940,9 +941,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LEF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LED")
@@ -953,9 +954,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LED,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SEQ")
@@ -966,9 +967,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SEQ,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SEQI")
@@ -979,9 +980,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SEQI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SEQU")
@@ -992,9 +993,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SEQU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SEQUI")
@@ -1005,9 +1006,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SEQUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("EQF")
@@ -1018,9 +1019,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::EQF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("EQD")
@@ -1031,9 +1032,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::EQD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SNE")
@@ -1044,9 +1045,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SNE,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SNEI")
@@ -1057,9 +1058,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SNEI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("SNEU")
@@ -1070,9 +1071,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SNEU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3)));
         }
 
         SECTION("SNEUI")
@@ -1083,9 +1084,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SNEUI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R2),
-                    dlx::ConstructInstructionArgImmediateValue(21)));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R2),
+                    dlx::ConstructInstructionArgumentImmediateValue(21)));
         }
 
         SECTION("NEF")
@@ -1096,9 +1097,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::NEF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("NED")
@@ -1109,9 +1110,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::NED,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         // Conditional branching
@@ -1123,8 +1124,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::BEQZ,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R5),
-                    dlx::ConstructInstructionArgLabel("jump_label"), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R5),
+                    dlx::ConstructInstructionArgumentLabel("jump_label"),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("BNEZ")
@@ -1135,8 +1137,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::BNEZ,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R5),
-                    dlx::ConstructInstructionArgLabel("jump_label"), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R5),
+                    dlx::ConstructInstructionArgumentLabel("jump_label"),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("BFPT")
@@ -1146,8 +1149,8 @@ TEST_CASE("Parser")
             REQUIRE(res.m_Instructions.size() == 1);
 
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::BFPT,
-                                     dlx::ConstructInstructionArgLabel("jump_label"),
-                                     dlx::InstructionArg(), dlx::InstructionArg()));
+                                     dlx::ConstructInstructionArgumentLabel("jump_label"),
+                                     dlx::InstructionArgument(), dlx::InstructionArgument()));
         }
 
         SECTION("BFPF")
@@ -1157,8 +1160,8 @@ TEST_CASE("Parser")
             REQUIRE(res.m_Instructions.size() == 1);
 
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::BFPF,
-                                     dlx::ConstructInstructionArgLabel("jump_label"),
-                                     dlx::InstructionArg(), dlx::InstructionArg()));
+                                     dlx::ConstructInstructionArgumentLabel("jump_label"),
+                                     dlx::InstructionArgument(), dlx::InstructionArgument()));
         }
 
         // Unconditional branching
@@ -1169,8 +1172,8 @@ TEST_CASE("Parser")
             REQUIRE(res.m_Instructions.size() == 1);
 
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::J,
-                                     dlx::ConstructInstructionArgLabel("jump_label"),
-                                     dlx::InstructionArg(), dlx::InstructionArg()));
+                                     dlx::ConstructInstructionArgumentLabel("jump_label"),
+                                     dlx::InstructionArgument(), dlx::InstructionArgument()));
         }
 
         SECTION("JR")
@@ -1181,8 +1184,8 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::JR,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3),
-                    dlx::InstructionArg(), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3),
+                    dlx::InstructionArgument(), dlx::InstructionArgument()));
         }
 
         SECTION("JAL")
@@ -1192,8 +1195,8 @@ TEST_CASE("Parser")
             REQUIRE(res.m_Instructions.size() == 1);
 
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::JAL,
-                                     dlx::ConstructInstructionArgLabel("jump_label"),
-                                     dlx::InstructionArg(), dlx::InstructionArg()));
+                                     dlx::ConstructInstructionArgumentLabel("jump_label"),
+                                     dlx::InstructionArgument(), dlx::InstructionArgument()));
         }
 
         SECTION("JALR")
@@ -1204,8 +1207,8 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::JALR,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R3),
-                    dlx::InstructionArg(), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R3),
+                    dlx::InstructionArgument(), dlx::InstructionArgument()));
         }
 
         // Loading data
@@ -1217,8 +1220,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LHI,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgImmediateValue(1), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentImmediateValue(1),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LB")
@@ -1229,8 +1233,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LB,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("LB, R21, 1000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1238,9 +1243,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LB,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LBU")
@@ -1251,8 +1257,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LBU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("LBU, R21, 1000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1260,9 +1267,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LBU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LH")
@@ -1273,8 +1281,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LH,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("LH, R21, 1000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1282,9 +1291,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LH,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LHU")
@@ -1295,8 +1305,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LHU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("LHU, R21, 1000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1304,9 +1315,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LHU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LW")
@@ -1317,8 +1329,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LW,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("LW, R21, 1000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1326,9 +1339,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LW,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LWU")
@@ -1339,8 +1353,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LWU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("LWU, R21, 1000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1348,9 +1363,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LWU,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R21),
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R21),
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LF")
@@ -1361,8 +1377,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("LF F0 1000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1370,9 +1387,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("LD")
@@ -1383,8 +1401,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgImmediateValue(1000), dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("LD F0 1000(R0)");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1392,9 +1411,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::LD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::InstructionArgument()));
         }
 
         // Store data
@@ -1406,9 +1426,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SB,
-                    dlx::ConstructInstructionArgImmediateValue(1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("SB, 1000(R0), R12");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1416,9 +1436,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SB,
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SBU")
@@ -1429,9 +1450,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SBU,
-                    dlx::ConstructInstructionArgImmediateValue(1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("SBU, 1000(R0), R12");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1439,9 +1460,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SBU,
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SH")
@@ -1452,9 +1474,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SH,
-                    dlx::ConstructInstructionArgImmediateValue(1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("SH, 1000(R0), R12");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1462,9 +1484,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SH,
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SHU")
@@ -1475,9 +1498,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SHU,
-                    dlx::ConstructInstructionArgImmediateValue(1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("SHU, 1000(R0), R12");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1485,9 +1508,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SHU,
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SW")
@@ -1498,9 +1522,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SW,
-                    dlx::ConstructInstructionArgImmediateValue(1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("SW, 1000(R0), R12");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1508,9 +1532,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SW,
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SWU")
@@ -1521,9 +1546,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SWU,
-                    dlx::ConstructInstructionArgImmediateValue(1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("SWU, 1000(R0), R12");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1531,9 +1556,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SWU,
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R12),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R12),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SF")
@@ -1544,9 +1570,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SF,
-                    dlx::ConstructInstructionArgImmediateValue(1000),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("SF 1000(R0) F0");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1554,9 +1580,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SF,
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("SD")
@@ -1567,9 +1594,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SD,
-                    dlx::ConstructInstructionArgImmediateValue(1000),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentImmediateValue(1000),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArgument()));
 
             res = dlx::Parser::Parse("SD 1000(R0) F0");
             REQUIRE(res.m_ParseErrors.empty());
@@ -1577,9 +1604,10 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::SD,
-                    dlx::ConstructInstructionArgAddressDisplacement(dlx::IntRegisterID::R0, 1000),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentAddressDisplacement(dlx::IntRegisterID::R0,
+                                                                         1000),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::InstructionArgument()));
         }
 
         // Moving data
@@ -1591,9 +1619,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MOVF,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("MOVD")
@@ -1604,9 +1632,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MOVD,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("MOVFP2I")
@@ -1617,9 +1645,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MOVFP2I,
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("MOVI2FP")
@@ -1630,9 +1658,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::MOVI2FP,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F1),
-                    dlx::ConstructInstructionArgRegisterInt(dlx::IntRegisterID::R1),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F1),
+                    dlx::ConstructInstructionArgumentRegisterInt(dlx::IntRegisterID::R1),
+                    dlx::InstructionArgument()));
         }
 
         // Converting data
@@ -1644,9 +1672,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::CVTF2D,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("CVTF2I")
@@ -1657,9 +1685,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::CVTF2I,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("CVTD2F")
@@ -1670,9 +1698,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::CVTD2F,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("CVTF2I")
@@ -1683,9 +1711,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::CVTF2I,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("CVTI2F")
@@ -1696,9 +1724,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::CVTI2F,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         SECTION("CVTI2D")
@@ -1709,9 +1737,9 @@ TEST_CASE("Parser")
 
             CHECK(InstructionMatches(
                     res.m_Instructions.at(0), dlx::OpCode::CVTI2D,
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F0),
-                    dlx::ConstructInstructionArgRegisterFloat(dlx::FloatRegisterID::F2),
-                    dlx::InstructionArg()));
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F0),
+                    dlx::ConstructInstructionArgumentRegisterFloat(dlx::FloatRegisterID::F2),
+                    dlx::InstructionArgument()));
         }
 
         // Special
@@ -1722,8 +1750,8 @@ TEST_CASE("Parser")
             REQUIRE(res.m_Instructions.size() == 1);
 
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::TRAP,
-                                     dlx::ConstructInstructionArgImmediateValue(1),
-                                     dlx::InstructionArg(), dlx::InstructionArg()));
+                                     dlx::ConstructInstructionArgumentImmediateValue(1),
+                                     dlx::InstructionArgument(), dlx::InstructionArgument()));
         }
 
         SECTION("HALT")
@@ -1733,8 +1761,8 @@ TEST_CASE("Parser")
             REQUIRE(res.m_Instructions.size() == 1);
 
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::HALT,
-                                     dlx::InstructionArg(), dlx::InstructionArg(),
-                                     dlx::InstructionArg()));
+                                     dlx::InstructionArgument(), dlx::InstructionArgument(),
+                                     dlx::InstructionArgument()));
         }
 
         SECTION("NOP")
@@ -1744,8 +1772,8 @@ TEST_CASE("Parser")
             REQUIRE(res.m_Instructions.size() == 1);
 
             CHECK(InstructionMatches(res.m_Instructions.at(0), dlx::OpCode::NOP,
-                                     dlx::InstructionArg(), dlx::InstructionArg(),
-                                     dlx::InstructionArg()));
+                                     dlx::InstructionArgument(), dlx::InstructionArgument(),
+                                     dlx::InstructionArgument()));
         }
     }
 
@@ -1929,6 +1957,9 @@ TEST_CASE("Parser")
 
         SECTION("Unexpected label")
         {
+            res = dlx::Parser::Parse("j: NOP j");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
             res = dlx::Parser::Parse("j: ADD R1 R1 R1 j");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 

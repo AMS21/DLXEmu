@@ -188,9 +188,11 @@ namespace dlx
                             case ')':
                                 type = Token::Type::ClosingBracket;
                                 break;
+#if !defined(DLXEMU_COVERAGE_BUILD)
                             default:
                                 PHI_ASSERT_NOT_REACHED();
                                 break;
+#endif
                         }
 
                         token_begin = i;

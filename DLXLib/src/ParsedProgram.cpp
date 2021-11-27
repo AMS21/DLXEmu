@@ -9,6 +9,11 @@ namespace dlx
         m_ParseErrors.emplace_back(std::move(error));
     }
 
+    phi::Boolean ParsedProgram::IsValid() const noexcept
+    {
+        return m_ParseErrors.empty() && !m_Instructions.empty();
+    }
+
     std::string ParsedProgram::GetDump() const noexcept
     {
         std::string text;

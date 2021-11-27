@@ -1,7 +1,7 @@
 #include "DLX/Parser.hpp"
 
 #include "DLX/Instruction.hpp"
-#include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionArgument.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/InstructionLibrary.hpp"
 #include "DLX/OpCode.hpp"
@@ -28,7 +28,7 @@ using namespace phi::literals;
 
 namespace dlx
 {
-    static std::optional<InstructionArg> parse_instruction_argument(
+    static std::optional<InstructionArgument> parse_instruction_argument(
             const Token& token, ArgumentType expected_argument_type, TokenStream& tokens,
             ParsedProgram& program) noexcept
     {
@@ -96,7 +96,7 @@ namespace dlx
                 //PHI_LOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
                 //             value, magic_enum::enum_name(reg_id));
 
-                return ConstructInstructionArgAddressDisplacement(
+                return ConstructInstructionArgumentAddressDisplacement(
                         static_cast<IntRegisterID>(second_token.GetHint()), value);
             }
             case Token::Type::RegisterInt: {
@@ -110,7 +110,7 @@ namespace dlx
                 //PHI_LOG_INFO("Parsed identifier as int register {}",
                 //             magic_enum::enum_name(reg_id));
 
-                return ConstructInstructionArgRegisterInt(
+                return ConstructInstructionArgumentRegisterInt(
                         static_cast<IntRegisterID>(token.GetHint()));
             }
             case Token::Type::RegisterFloat: {
@@ -124,7 +124,7 @@ namespace dlx
                 //PHI_LOG_INFO("Parsed identifier as float register {}",
                 //             magic_enum::enum_name(float_reg_id));
 
-                return ConstructInstructionArgRegisterFloat(
+                return ConstructInstructionArgumentRegisterFloat(
                         static_cast<FloatRegisterID>(token.GetHint()));
             }
             case Token::Type::RegisterStatus: {
@@ -152,7 +152,7 @@ namespace dlx
 
                 //PHI_LOG_INFO("Parsed Label identifier as '{}'", token.GetText());
 
-                return ConstructInstructionArgLabel(token.GetText());
+                return ConstructInstructionArgumentLabel(token.GetText());
             }
             case Token::Type::ImmediateInteger: {
                 if (!ArgumentTypeIncludes(expected_argument_type, ArgumentType::ImmediateInteger))
@@ -164,7 +164,7 @@ namespace dlx
 
                 if (token.HasHint())
                 {
-                    return ConstructInstructionArgImmediateValue(
+                    return ConstructInstructionArgumentImmediateValue(
                             static_cast<std::int16_t>(token.GetHint()));
                 }
 
@@ -177,23 +177,13 @@ namespace dlx
 
                 //PHI_LOG_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
 
-                return ConstructInstructionArgImmediateValue(parsed_value.value().get());
+                return ConstructInstructionArgumentImmediateValue(parsed_value.value().get());
             }
             default:
                 program.AddParseError(
                         ConstructUnexpectedTokenParseError(token, Token::Type::Unknown));
                 return {};
         }
-    }
-
-    static void consume_x_tokens(phi::usize& index, phi::usize x) noexcept
-    {
-        index += x;
-    }
-
-    static void consume_current_token(phi::usize& index) noexcept
-    {
-        consume_x_tokens(index, 1u);
     }
 
     ParsedProgram Parser::Parse(TokenStream& tokens) noexcept
@@ -352,7 +342,7 @@ namespace dlx
                             break;
                         }
 
-                        std::optional<InstructionArg> optional_parsed_argument =
+                        std::optional<InstructionArgument> optional_parsed_argument =
                                 parse_instruction_argument(current_token,
                                                            info.GetArgumentType(argument_num),
                                                            tokens, program);
@@ -363,7 +353,7 @@ namespace dlx
                         }
 
                         // Successfully parsed one argument
-                        InstructionArg parsed_argument = optional_parsed_argument.value();
+                        InstructionArgument parsed_argument = optional_parsed_argument.value();
 
                         instruction.SetArgument(argument_num, parsed_argument);
                         argument_num++;

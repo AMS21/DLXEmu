@@ -375,9 +375,11 @@ namespace dlx
 
         switch (exception)
         {
+#if !defined(DLXEMU_COVERAGE_BUILD)
             case Exception::None:
                 PHI_ASSERT_NOT_REACHED();
                 return;
+#endif
             case Exception::DivideByZero:
                 m_Halted = true;
                 PHI_LOG_ERROR("Division through zero");
@@ -412,7 +414,9 @@ namespace dlx
                 return;
         }
 
+#if !defined(DLXEMU_COVERAGE_BUILD)
         PHI_ASSERT_NOT_REACHED();
+#endif
     }
 
     Exception Processor::GetLastRaisedException() const noexcept
@@ -492,7 +496,7 @@ namespace dlx
 
     std::string Processor::GetMemoryDump() const noexcept
     {
-        std::string text{};
+        std::string text{"Not Implemented"};
 
         // TODO: Properly implement
 

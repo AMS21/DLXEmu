@@ -1,4 +1,4 @@
-#include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionArgument.hpp"
 
 #include "DLX/InstructionInfo.hpp"
 #include <Phi/Core/Assert.hpp>
@@ -6,17 +6,17 @@
 
 namespace dlx
 {
-    InstructionArg::InstructionArg() noexcept
+    InstructionArgument::InstructionArgument() noexcept
         : m_Type(ArgumentType::None)
         , address_displacement()
     {}
 
-    ArgumentType InstructionArg::GetType() const noexcept
+    ArgumentType InstructionArgument::GetType() const noexcept
     {
         return m_Type;
     }
 
-    std::string InstructionArg::DebugInfo() const noexcept
+    std::string InstructionArgument::DebugInfo() const noexcept
     {
         switch (m_Type)
         {
@@ -41,37 +41,42 @@ namespace dlx
             case ArgumentType::Label:
                 return fmt::format("{:s}", AsLabel().label_name);
 
+#if !defined(DLXEMU_COVERAGE_BUILD)
             default:
                 PHI_ASSERT_NOT_REACHED();
                 break;
+#endif
         }
 
+#if !defined(DLXEMU_COVERAGE_BUILD)
         PHI_ASSERT_NOT_REACHED();
         return "Unknown";
+#endif
     }
 
-    const InstructionArg::RegisterInt& InstructionArg::AsRegisterInt() const noexcept
+    const InstructionArgument::RegisterInt& InstructionArgument::AsRegisterInt() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::IntRegister);
 
         return register_int;
     }
 
-    const InstructionArg::RegisterFloat& InstructionArg::AsRegisterFloat() const noexcept
+    const InstructionArgument::RegisterFloat& InstructionArgument::AsRegisterFloat() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::FloatRegister);
 
         return register_float;
     }
 
-    const InstructionArg::ImmediateValue& InstructionArg::AsImmediateValue() const noexcept
+    const InstructionArgument::ImmediateValue& InstructionArgument::AsImmediateValue()
+            const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::ImmediateInteger);
 
         return immediate_value;
     }
 
-    const InstructionArg::AddressDisplacement& InstructionArg::AsAddressDisplacement()
+    const InstructionArgument::AddressDisplacement& InstructionArgument::AsAddressDisplacement()
             const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::AddressDisplacement);
@@ -79,14 +84,14 @@ namespace dlx
         return address_displacement;
     }
 
-    const InstructionArg::Label& InstructionArg::AsLabel() const noexcept
+    const InstructionArgument::Label& InstructionArgument::AsLabel() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::Label);
 
         return label;
     }
 
-    phi::Boolean operator==(const InstructionArg& lhs, const InstructionArg& rhs) noexcept
+    phi::Boolean operator==(const InstructionArgument& lhs, const InstructionArgument& rhs) noexcept
     {
         if (lhs.GetType() != rhs.GetType())
         {
@@ -100,67 +105,77 @@ namespace dlx
                         rhs.AsAddressDisplacement().displacement) &&
                        (lhs.AsAddressDisplacement().register_id ==
                         rhs.AsAddressDisplacement().register_id);
+
             case ArgumentType::ImmediateInteger:
                 return lhs.AsImmediateValue().signed_value == rhs.AsImmediateValue().signed_value;
+
             case ArgumentType::IntRegister:
                 return lhs.AsRegisterInt().register_id == rhs.AsRegisterInt().register_id;
+
             case ArgumentType::FloatRegister:
                 return lhs.AsRegisterFloat().register_id == rhs.AsRegisterFloat().register_id;
+
             case ArgumentType::Label:
                 return lhs.AsLabel().label_name == rhs.AsLabel().label_name;
+
             case ArgumentType::None:
                 return true;
+
+#if !defined(DLXEMU_COVERAGE_BUILD)
             default:
                 PHI_ASSERT_NOT_REACHED();
                 break;
+#endif
         }
 
+#if !defined(DLXEMU_COVERAGE_BUILD)
         PHI_ASSERT_NOT_REACHED();
         return false;
+#endif
     }
 
-    phi::Boolean operator!=(const InstructionArg& lhs, const InstructionArg& rhs) noexcept
+    phi::Boolean operator!=(const InstructionArgument& lhs, const InstructionArgument& rhs) noexcept
     {
         return !(lhs == rhs);
     }
 
-    InstructionArg ConstructInstructionArgRegisterInt(IntRegisterID id) noexcept
+    InstructionArgument ConstructInstructionArgumentRegisterInt(IntRegisterID id) noexcept
     {
-        InstructionArg arg;
+        InstructionArgument arg;
         arg.m_Type                   = ArgumentType::IntRegister;
         arg.register_int.register_id = id;
         return arg;
     }
 
-    InstructionArg ConstructInstructionArgRegisterFloat(FloatRegisterID id) noexcept
+    InstructionArgument ConstructInstructionArgumentRegisterFloat(FloatRegisterID id) noexcept
     {
-        InstructionArg arg;
+        InstructionArgument arg;
         arg.m_Type                     = ArgumentType::FloatRegister;
         arg.register_float.register_id = id;
         return arg;
     }
 
-    InstructionArg ConstructInstructionArgImmediateValue(std::int16_t value) noexcept
+    InstructionArgument ConstructInstructionArgumentImmediateValue(std::int16_t value) noexcept
     {
-        InstructionArg arg;
+        InstructionArgument arg;
         arg.m_Type                       = ArgumentType::ImmediateInteger;
         arg.immediate_value.signed_value = value;
         return arg;
     }
 
-    InstructionArg ConstructInstructionArgAddressDisplacement(IntRegisterID id,
-                                                              phi::i32      displacement) noexcept
+    InstructionArgument ConstructInstructionArgumentAddressDisplacement(
+            IntRegisterID id, phi::i32 displacement) noexcept
     {
-        InstructionArg arg;
+        InstructionArgument arg;
         arg.m_Type                            = ArgumentType::AddressDisplacement;
         arg.address_displacement.register_id  = id;
         arg.address_displacement.displacement = displacement;
         return arg;
     }
 
-    InstructionArg ConstructInstructionArgLabel(std::string_view label_name) noexcept
+    InstructionArgument ConstructInstructionArgumentLabel(std::string_view label_name) noexcept
     {
-        InstructionArg arg;
+        InstructionArgument arg;
         arg.m_Type           = ArgumentType::Label;
         arg.label.label_name = label_name;
         return arg;

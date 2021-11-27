@@ -1,6 +1,6 @@
 #include "DLX/InstructionLibrary.hpp"
 
-#include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionArgument.hpp"
 #include "DLX/InstructionImplementation.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/OpCode.hpp"

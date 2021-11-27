@@ -111,9 +111,11 @@ namespace dlx
                 return "Token[ImmediateInteger]" + pos_info + ": " + GetTextString() + "'";
             case Type::Unknown:
                 return "Token[Unknown]" + pos_info;
+#if !defined(DLXEMU_COVERAGE_BUILD)
             default:
                 PHI_ASSERT_NOT_REACHED();
                 return "Token[NotFound]" + pos_info;
+#endif
         }
     }
 } // namespace dlx

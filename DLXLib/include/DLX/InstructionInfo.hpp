@@ -8,7 +8,7 @@
 namespace dlx
 {
     class Processor;
-    class InstructionArg;
+    class InstructionArgument;
 
     enum class ArgumentType
     {
@@ -64,9 +64,9 @@ namespace dlx
         Ignored,
     };
 
-    using InstructionExecutor =
-            std::add_pointer_t<void(Processor& processor, const InstructionArg& arg1,
-                                    const InstructionArg& arg2, const InstructionArg& arg3)>;
+    using InstructionExecutor = std::add_pointer_t<void(
+            Processor& processor, const InstructionArgument& arg1, const InstructionArgument& arg2,
+            const InstructionArgument& arg3)>;
 
     // Class holding all the data and information about a specific instruction
     class InstructionInfo
@@ -146,8 +146,9 @@ namespace dlx
             return m_Executor;
         }
 
-        void Execute(Processor& processor, const InstructionArg& arg1, const InstructionArg& arg2,
-                     const InstructionArg& arg3) const noexcept;
+        void Execute(Processor& processor, const InstructionArgument& arg1,
+                     const InstructionArgument& arg2,
+                     const InstructionArgument& arg3) const noexcept;
 
     private:
         OpCode              m_OpCode;

@@ -36,14 +36,17 @@ namespace dlx
                                    magic_enum::enum_name(detail.expected_type),
                                    magic_enum::enum_name(detail.actual_type));
             }
+
             case Type::InvalidNumber: {
                 const InvalidNumber& detail = GetInvalidNumber();
 
                 return fmt::format("'{:s}' is not a valid number", detail.text);
             }
+
             case Type::TooFewArgumentsAddressDisplacement: {
                 return fmt::format("Not enough arguments left to parse address displacement");
             }
+
             case Type::UnexpectedToken: {
                 const UnexpectedToken& detail = GetUnexpectedToken();
 
@@ -51,25 +54,30 @@ namespace dlx
                                    magic_enum::enum_name(detail.expected_type),
                                    magic_enum::enum_name(detail.actual_type));
             }
+
             case Type::ReserverdIdentifier: {
                 const ReserverdIdentifier& detail = GetReserverIdentifier();
 
                 return fmt::format("'{:s}' is a reserved identifier", detail.identifier);
             }
+
             case Type::InvalidLabelIdentifier: {
                 const InvalidLabelIdentifier& detail = GetInvalidLabelIdentifier();
 
                 return fmt::format("'{:s}' is not a valid label identifier", detail.identifer);
             }
+
             case Type::LabelAlreadyDefined: {
                 const LabelAlreadyDefined& detail = GetLabelAlreadyDefined();
 
                 return fmt::format("Label '{:s}' was already defined at {:d}:{:d}",
                                    detail.label_name, detail.at_line, detail.at_column);
             }
+
             case Type::OneInstructionPerLine: {
                 return fmt::format("You may only place one instruction per line");
             }
+
             case Type::TooFewArgument: {
                 const TooFewArguments& detail = GetTooFewArguments();
 
@@ -77,14 +85,17 @@ namespace dlx
                         "Not enough arguments provided. Required {:d}, provided only {:d}",
                         detail.required, detail.provided);
             }
+
             case Type::EmptyLabel: {
                 const EmptyLabel& detail = GetEmptyLabel();
 
                 return fmt::format("Label '{:s}' does not have any instruction", detail.label_name);
             }
 
+#if !defined(DLXEMU_COVERAGE_BUILD)
             default:
                 PHI_ASSERT_NOT_REACHED();
+#endif
         }
     }
 

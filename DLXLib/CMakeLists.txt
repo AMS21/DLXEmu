@@ -7,7 +7,7 @@ file(
   DLXLIB_SOURCES
   "src/FloatRegister.cpp"
   "src/Instruction.cpp"
-  "src/InstructionArg.cpp"
+  "src/InstructionArgument.cpp"
   "src/InstructionImplementation.cpp"
   "src/InstructionInfo.cpp"
   "src/InstructionLibrary.cpp"
@@ -30,7 +30,7 @@ file(
   #
   "include/DLX/FloatRegister.hpp"
   "include/DLX/Instruction.hpp"
-  "include/DLX/InstructionArg.hpp"
+  "include/DLX/InstructionArgument.hpp"
   "include/DLX/InstructionImplementation.hpp"
   "include/DLX/InstructionInfo.hpp"
   "include/DLX/InstructionLibrary.hpp"
@@ -57,3 +57,7 @@ target_link_libraries(
   PRIVATE Phi::ProjectOptions)
 target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELWITHDBGINFO>:PHI_DEBUG>")
 phi_enable_static_analyzers(${PROJECT_NAME})
+
+if (${DLXEMU_COVERAGE_BUILD})
+  target_compile_definitions(${PROJECT_NAME} PUBLIC "DLXEMU_COVERAGE_BUILD")
+endif()

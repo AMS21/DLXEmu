@@ -4,6 +4,7 @@
 #include "DLX/TokenStream.hpp"
 #include "Instruction.hpp"
 #include "Token.hpp"
+#include <Phi/Core/Boolean.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -18,6 +19,8 @@ namespace dlx
         TokenStream                                         m_Tokens;
 
         void AddParseError(ParseError&& error) noexcept;
+
+        [[nodiscard]] phi::Boolean IsValid() const noexcept;
 
         [[nodiscard]] std::string GetDump() const noexcept;
     };

@@ -4484,16 +4484,24 @@ TEST_CASE("R0 is read only")
 
 TEST_CASE("Empty source code")
 {
+    dlx::Processor processor;
+
+    // Should be no ops
+    proc.ExecuteCurrentProgram();
+    proc.ExecuteStep();
+
     res = dlx::Parser::Parse("");
     REQUIRE(res.m_ParseErrors.empty());
     CHECK(res.m_Instructions.empty());
     CHECK(res.m_JumpData.empty());
+    CHECK_FALSE(res.IsValid());
 
-    proc.LoadProgram(res);
+    processor.LoadProgram(res);
 
-    proc.ExecuteCurrentProgram();
+    processor.ExecuteCurrentProgram();
+    processor.ExecuteStep();
 
-    CHECK(proc.IsHalted());
+    CHECK(processor.IsHalted());
 }
 
 TEST_CASE("Processor::LoadProgram")
@@ -4501,6 +4509,7 @@ TEST_CASE("Processor::LoadProgram")
     // Parser errors
     res = dlx::Parser::Parse("This has errors");
     REQUIRE_FALSE(res.m_ParseErrors.empty());
+    REQUIRE_FALSE(res.IsValid());
 
     // Returns false on prog with Parser errors
     CHECK_FALSE(proc.LoadProgram(res));
@@ -4675,4 +4684,25 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
 
     CHECK(proc.IsHalted());
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Dump functions")
+{
+    dlx::Processor processor;
+
+    CHECK_FALSE(processor.GetRegisterDump().empty());
+    CHECK_FALSE(processor.GetMemoryDump().empty());
+    CHECK_FALSE(processor.GetProcessorDump().empty());
+    CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
+
+    res = dlx::Parser::Parse("ADD R1 R1 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+    REQUIRE(res.IsValid());
+
+    processor.LoadProgram(res);
+
+    CHECK_FALSE(processor.GetRegisterDump().empty());
+    CHECK_FALSE(processor.GetMemoryDump().empty());
+    CHECK_FALSE(processor.GetProcessorDump().empty());
+    CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
 }

@@ -178,6 +178,7 @@ TEST_CASE("StringToOpCode")
     CHECK(dlx::StringToOpCode("SGTX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SLEX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SLLX") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("SLTX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SNEX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SRAX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SRLX") == dlx::OpCode::NONE);

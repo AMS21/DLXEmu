@@ -1,6 +1,6 @@
 #include "DLX/Instruction.hpp"
 
-#include "DLX/InstructionArg.hpp"
+#include "DLX/InstructionArgument.hpp"
 #include <Phi/Core/Assert.hpp>
 #include <magic_enum.hpp>
 #include <spdlog/fmt/bundled/format.h>
@@ -12,7 +12,7 @@ namespace dlx
         : m_Info(info)
     {}
 
-    void Instruction::SetArgument(phi::u8 argument_number, InstructionArg argument) noexcept
+    void Instruction::SetArgument(phi::u8 argument_number, InstructionArgument argument) noexcept
     {
         PHI_ASSERT(argument_number < 3u);
 
@@ -27,8 +27,10 @@ namespace dlx
             case 2u:
                 m_Arg3 = argument;
                 break;
+#if !defined(DLXEMU_COVERAGE_BUILD)
             default:
                 PHI_ASSERT_NOT_REACHED();
+#endif
         }
     }
 
@@ -47,13 +49,18 @@ namespace dlx
             case 3:
                 return fmt::format("{}, {}, {}, {}", magic_enum::enum_name(m_Info.GetOpCode()),
                                    m_Arg1.DebugInfo(), m_Arg2.DebugInfo(), m_Arg3.DebugInfo());
+
+#if !defined(DLXEMU_COVERAGE_BUILD)
             default:
                 PHI_ASSERT_NOT_REACHED();
                 break;
+#endif
         }
 
+#if !defined(DLXEMU_COVERAGE_BUILD)
         PHI_ASSERT_NOT_REACHED();
         return "Unknown";
+#endif
     }
 
     void Instruction::Execute(Processor& processor) const noexcept
@@ -66,17 +73,17 @@ namespace dlx
         return m_Info;
     }
 
-    const InstructionArg& Instruction::GetArg1() const noexcept
+    const InstructionArgument& Instruction::GetArg1() const noexcept
     {
         return m_Arg1;
     }
 
-    const InstructionArg& Instruction::GetArg2() const noexcept
+    const InstructionArgument& Instruction::GetArg2() const noexcept
     {
         return m_Arg2;
     }
 
-    const InstructionArg& Instruction::GetArg3() const noexcept
+    const InstructionArgument& Instruction::GetArg3() const noexcept
     {
         return m_Arg3;
     }
