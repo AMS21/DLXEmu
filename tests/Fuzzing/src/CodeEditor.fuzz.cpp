@@ -412,16 +412,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
-            // ClearErrorMarkers
-            case 1: {
-                FUZZ_LOG("ClearErrorMarkers()");
-
-                editor.ClearErrorMarkers();
-                break;
-            }
-
             // SetText
-            case 2: {
+            case 1: {
                 auto text_opt = consume_ascii_string(data, size, index);
                 if (!text_opt)
                 {
@@ -436,7 +428,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // GetText
-            case 3: {
+            case 2: {
                 FUZZ_LOG("GetText()");
 
                 volatile std::string str = editor.GetText();
@@ -445,7 +437,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetTextLines
-            case 4: {
+            case 3: {
                 auto lines_opt = consume_vector_string(data, size, index);
                 if (!lines_opt)
                 {
@@ -474,7 +466,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // GetTextLines
-            case 5: {
+            case 4: {
                 FUZZ_LOG("GetTextLines()");
 
                 volatile std::vector<std::string> lines = editor.GetTextLines();
@@ -483,7 +475,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // GetSelectedText
-            case 6: {
+            case 5: {
                 FUZZ_LOG("GetSelectedText()");
 
                 volatile std::string line = editor.GetSelectedText();
@@ -492,7 +484,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // GetCurrentLineText
-            case 7: {
+            case 6: {
                 FUZZ_LOG("GetCurrentLineText()");
 
                 volatile std::string line = editor.GetCurrentLineText();
@@ -501,7 +493,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetReadOnly
-            case 8: {
+            case 7: {
                 auto read_only_opt = consume_bool(data, size, index);
                 if (!read_only_opt)
 
@@ -517,7 +509,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // GetCursorPosition
-            case 9: {
+            case 8: {
                 FUZZ_LOG("GetCursorPosition()");
 
                 volatile dlxemu::CodeEditor::Coordinates coords = editor.GetCursorPosition();
@@ -526,7 +518,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetCursorPosition
-            case 10: {
+            case 9: {
                 auto coords_opt = consume_coordinates(data, size, index);
                 if (!coords_opt)
                 {
@@ -542,38 +534,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
-            // SetShowWhiteSpaces
-            case 11: {
-                auto show_whitespaces_opt = consume_bool(data, size, index);
-                if (!show_whitespaces_opt)
-                {
-                    return 0;
-                }
-                bool show_whitespaces = show_whitespaces_opt.value();
-
-                FUZZ_LOG("SetShowWhitespaces({:s})", print_bool(show_whitespaces));
-
-                editor.SetShowWhitespaces(show_whitespaces);
-                break;
-            }
-
-            // SetTabSize
-            case 12: {
-                auto tab_size_opt = consume_t<std::int32_t>(data, size, index);
-                if (!tab_size_opt)
-                {
-                    return 0;
-                }
-                std::int32_t tab_size = tab_size_opt.value();
-
-                FUZZ_LOG("SetTabSize({:s})", print_int(tab_size));
-
-                editor.SetTabSize(tab_size);
-                break;
-            }
-
             // InsertText
-            case 13: {
+            case 10: {
                 auto message_opt = consume_ascii_string(data, size, index);
                 if (!message_opt)
                 {
@@ -589,7 +551,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // MoveUp
-            case 14: {
+            case 11: {
                 auto amount_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!amount_opt)
                 {
@@ -611,7 +573,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // MoveDown
-            case 15: {
+            case 12: {
                 auto amount_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!amount_opt)
                 {
@@ -633,7 +595,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // MoveLeft
-            case 16: {
+            case 13: {
                 auto amount_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!amount_opt)
                 {
@@ -663,7 +625,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // MoveRight
-            case 17: {
+            case 14: {
                 auto amount_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!amount_opt)
                 {
@@ -693,7 +655,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // MoveTop
-            case 18: {
+            case 15: {
                 auto select_opt = consume_bool(data, size, index);
                 if (!select_opt)
                 {
@@ -708,7 +670,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // MoveBottom
-            case 19: {
+            case 16: {
                 auto select_opt = consume_bool(data, size, index);
                 if (!select_opt)
                 {
@@ -723,7 +685,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // MoveHome
-            case 20: {
+            case 17: {
                 auto select_opt = consume_bool(data, size, index);
                 if (!select_opt)
                 {
@@ -738,7 +700,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // MoveEnd
-            case 21: {
+            case 18: {
                 auto select_opt = consume_bool(data, size, index);
                 if (!select_opt)
                 {
@@ -753,7 +715,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetSelectionStart
-            case 22: {
+            case 19: {
                 auto column_opt = consume_t<std::int32_t>(data, size, index);
                 if (!column_opt)
                 {
@@ -780,7 +742,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetSelectionEnd
-            case 23: {
+            case 20: {
                 auto column_opt = consume_t<std::int32_t>(data, size, index);
                 if (!column_opt)
                 {
@@ -807,7 +769,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetSelection
-            case 24: {
+            case 21: {
                 auto column_start_opt = consume_t<std::int32_t>(data, size, index);
                 if (!column_start_opt)
                 {
@@ -862,7 +824,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SelectWordUnderCursor
-            case 25: {
+            case 22: {
                 FUZZ_LOG("SelectWordUnderCursor");
 
                 editor.SelectWordUnderCursor();
@@ -870,7 +832,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SelectAll
-            case 26: {
+            case 23: {
                 FUZZ_LOG("SelectAll");
 
                 editor.SelectAll();
@@ -878,7 +840,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // Delete
-            case 27: {
+            case 24: {
                 FUZZ_LOG("Delete");
 
                 editor.Delete();
@@ -886,7 +848,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // Undo
-            case 28: {
+            case 25: {
                 FUZZ_LOG("Undo()");
 
                 editor.Undo();
@@ -894,7 +856,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // Redo
-            case 29: {
+            case 26: {
                 FUZZ_LOG("Redo()");
 
                 editor.Redo();
@@ -902,7 +864,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetErrorMarkers
-            case 30: {
+            case 27: {
                 auto count_opt = consume_t<std::size_t>(data, size, index);
                 if (!count_opt)
                 {
@@ -938,7 +900,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetBreakpoints
-            case 31: {
+            case 28: {
                 auto count_opt = consume_t<std::size_t>(data, size, index);
                 if (!count_opt)
                 {
@@ -967,7 +929,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // Render
-            case 32: {
+            case 29: {
                 constexpr const static float min_val{-10'000};
                 constexpr const static float max_val{+10'000};
 
