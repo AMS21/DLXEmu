@@ -365,6 +365,10 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
     static bool imgui_init = SetupImGui();
 
+    // Ensure frame count doesn't overflow
+    ImGuiContext* context = ImGui::GetCurrentContext();
+    context->FrameCount   = 0;
+
     ImGui::NewFrame();
     auto guard = phi::make_scope_guard(&EndImGui);
 
