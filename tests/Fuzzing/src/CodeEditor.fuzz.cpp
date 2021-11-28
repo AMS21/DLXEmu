@@ -372,9 +372,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     ImGui::NewFrame();
     auto guard = phi::make_scope_guard(&EndImGui);
 
-    // Clear clipboard content
-    ImGui::SetClipboardText("");
-
     dlxemu::Emulator   emulator;
     dlxemu::CodeEditor editor{&emulator};
 
@@ -880,32 +877,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
-            // Copy
-            case 27: {
-                FUZZ_LOG("Copy");
-
-                editor.Copy();
-                break;
-            }
-
-            // Cut
-            case 28: {
-                FUZZ_LOG("Cut");
-
-                editor.Cut();
-                break;
-            }
-
-            // Paste
-            case 29: {
-                FUZZ_LOG("Paste");
-
-                editor.Paste();
-                break;
-            }
-
             // Delete
-            case 30: {
+            case 27: {
                 FUZZ_LOG("Delete");
 
                 editor.Delete();
@@ -913,37 +886,23 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // Undo
-            case 31: {
-                auto steps_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!steps_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t steps = steps_opt.value();
+            case 28: {
+                FUZZ_LOG("Undo()");
 
-                FUZZ_LOG("Undo({:s})", print_int(steps));
-
-                editor.Undo(steps);
+                editor.Undo();
                 break;
             }
 
             // Redo
-            case 32: {
-                auto steps_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!steps_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t steps = steps_opt.value();
+            case 29: {
+                FUZZ_LOG("Redo()");
 
-                FUZZ_LOG("Redo({:s})", print_int(steps));
-
-                editor.Redo(steps);
+                editor.Redo();
                 break;
             }
 
             // SetErrorMarkers
-            case 33: {
+            case 30: {
                 auto count_opt = consume_t<std::size_t>(data, size, index);
                 if (!count_opt)
                 {
@@ -979,7 +938,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // SetBreakpoints
-            case 34: {
+            case 31: {
                 auto count_opt = consume_t<std::size_t>(data, size, index);
                 if (!count_opt)
                 {
@@ -1008,7 +967,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             }
 
             // Render
-            case 35: {
+            case 32: {
                 constexpr const static float min_val{-10'000};
                 constexpr const static float max_val{+10'000};
 
