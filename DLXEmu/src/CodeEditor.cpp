@@ -46,6 +46,7 @@ SOFTWARE.
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h> // for imGui::GetCurrentWindow()
+#include <imgui_internal.h>
 
 namespace dlxemu
 {
@@ -1300,7 +1301,8 @@ namespace dlxemu
                     draw_list->AddRectFilled(start, end,
                                              m_Palette[(std::int32_t)PaletteIndex::ErrorMarker]);
 
-                    if (ImGui::IsMouseHoveringRect(line_start_screen_pos, end))
+                    if (GImGui->HoveredWindow == ImGui::GetCurrentWindow() &&
+                        ImGui::IsMouseHoveringRect(line_start_screen_pos, end))
                     {
                         ImGui::BeginTooltip();
                         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.2f, 0.2f, 1.0f));
