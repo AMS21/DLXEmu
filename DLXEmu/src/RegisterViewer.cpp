@@ -18,14 +18,42 @@ namespace dlxemu
         {
             dlx::Processor& proc = m_Emulator->GetProcessor();
 
-            // Int registers
-            for (std::uint32_t index{1}; index < 32; ++index)
+            if (ImGui::BeginTabBar("RegisterTabs"))
             {
-                ImGui::InputInt(fmt::format("R{}", index).c_str(),
-                                reinterpret_cast<std::int32_t*>(
-                                        &proc.GetIntRegister(static_cast<dlx::IntRegisterID>(
+                // Integer Registers
+                if (ImGui::BeginTabItem("Integer"))
+                {
+                    for (std::uint32_t index{1}; index < 32; ++index)
+                    {
+                        ImGui::InputInt(fmt::format("R{}", index).c_str(),
+                                        reinterpret_cast<std::int32_t*>(&proc.GetIntRegister(
+                                                static_cast<dlx::IntRegisterID>(
+                                                        index + static_cast<std::int32_t>(
+                                                                        dlx::IntRegisterID::R0)))));
+                    }
+
+                    ImGui::EndTabItem();
+                }
+
+                // Float Registers
+                if (ImGui::BeginTabItem("Float"))
+                {
+                    for (std::uint32_t index{0}; index < 32; ++index)
+                    {
+                        ImGui::InputFloat(
+                                fmt::format("F{}", index).c_str(),
+                                reinterpret_cast<float*>(
+                                        &proc.GetFloatRegister(static_cast<dlx::FloatRegisterID>(
                                                 index + static_cast<std::int32_t>(
-                                                                dlx::IntRegisterID::R0)))));
+                                                                dlx::FloatRegisterID::F0)))));
+                    }
+
+                    ImGui::Checkbox("FPSR", reinterpret_cast<bool*>(&proc.GetFPSR()));
+
+                    ImGui::EndTabItem();
+                }
+
+                ImGui::EndTabBar();
             }
         }
 
