@@ -361,6 +361,107 @@ TEST_CASE("CodeEditor")
         CHECK(editor.GetTotalLines() == 3);
     }
 
+    SECTION("EnterCharacter")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter('H');
+        editor.VerifyInternalState();
+
+        std::string              text  = editor.GetText();
+        std::vector<std::string> lines = editor.GetTextLines();
+        CHECK(text == "H");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "H");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.EnterCharacter('i');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "Hi");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "Hi");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.MoveHome();
+        editor.VerifyInternalState();
+        editor.EnterCharacter('-');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "-Hi");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "-Hi");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.SelectAll();
+        editor.VerifyInternalState();
+        editor.EnterCharacter('A');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "A");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "A");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.EnterCharacter('\n');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "A\n");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "A");
+        CHECK(lines.at(1).empty());
+        CHECK(editor.GetTotalLines() == 2);
+
+        editor.SetOverwrite(true);
+        editor.VerifyInternalState();
+        editor.MoveUp(31000);
+        editor.VerifyInternalState();
+        editor.EnterCharacter('B');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "B\n");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "B");
+        CHECK(lines.at(1).empty());
+        CHECK(editor.GetTotalLines() == 2);
+
+        editor.EnterCharacter('C');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "BC\n");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "BC");
+        CHECK(lines.at(1).empty());
+        CHECK(editor.GetTotalLines() == 2);
+
+        editor.SetOverwrite(false);
+        editor.VerifyInternalState();
+        editor.SetReadOnly(true);
+        editor.VerifyInternalState();
+        editor.EnterCharacter('D');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "BC\n");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "BC");
+        CHECK(lines.at(1).empty());
+        CHECK(editor.GetTotalLines() == 2);
+    }
+
     SECTION("Overwrite")
     {
         dlxemu::CodeEditor editor{&emulator};
