@@ -95,6 +95,8 @@ namespace dlx
         [[nodiscard]] phi::Boolean empty() const noexcept;
 
         // Iterator
+        [[nodiscard]] iterator current_position() noexcept;
+
         [[nodiscard]] const_iterator current_position() const noexcept;
 
         void set_position(iterator it) noexcept;
