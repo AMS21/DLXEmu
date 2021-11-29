@@ -93,7 +93,9 @@ namespace dlx
             return 10 + (c - 'A');
         }
 
+#if !defined(DLXEMU_COVERAGE_BUILD)
         PHI_ASSERT_NOT_REACHED();
+#endif
     }
 
     /* String functions */

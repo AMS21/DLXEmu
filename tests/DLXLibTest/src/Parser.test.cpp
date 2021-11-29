@@ -1822,6 +1822,12 @@ TEST_CASE("Parser")
             res = dlx::Parser::Parse("ADD");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
+            res = dlx::Parser::Parse("ADD R1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
             res = dlx::Parser::Parse("SW");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
@@ -1835,6 +1841,45 @@ TEST_CASE("Parser")
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse("ADD R1 R1 25(R0)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25(F0)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25(FPSR)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25(");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25()");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25(R0");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25(#1000)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25#1000");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25(label)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25(label");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 25)#1000");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 9999999999(R0)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("ADD R1 R1 -9999999999(R0)");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse("ADD R1 R1 label");
@@ -2040,6 +2085,9 @@ TEST_CASE("Parser")
 
             res = dlx::Parser::Parse("1: NOP");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("123456: NOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
 
         SECTION("No empty labels")
@@ -2054,6 +2102,18 @@ TEST_CASE("Parser")
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse("a:\n//Comment");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("a: NOP\nb:");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("a: NOP\nb:\n");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("a: NOP\nb: // Comment");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("a: NOP\nb:\n // Comment");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
 

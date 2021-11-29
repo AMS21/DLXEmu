@@ -177,8 +177,11 @@ namespace dlx
 
                 //PHI_LOG_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
 
+#if !defined(DLXEMU_COVERAGE_BUILD)
                 return ConstructInstructionArgumentImmediateValue(parsed_value.value().get());
+#endif
             }
+
             default:
                 program.AddParseError(
                         ConstructUnexpectedTokenParseError(token, Token::Type::Unknown));
@@ -197,7 +200,7 @@ namespace dlx
 
         while (tokens.has_more())
         {
-            Token& current_token = tokens.consume();
+            const Token& current_token = tokens.consume();
 
             //PHI_LOG_INFO("Parsing '{}'", current_token.DebugInfo());
 
@@ -207,10 +210,12 @@ namespace dlx
                 case Token::Type::Comment:
                     //PHI_LOG_DEBUG("Ignoring comment");
                     break;
+
                 case Token::Type::NewLine:
                     //PHI_LOG_DEBUG("Ignoring newline");
                     line_has_instruction = false;
                     break;
+
                 case Token::Type::LabelIdentifier: {
                     if (line_has_instruction)
                     {
@@ -251,7 +256,7 @@ namespace dlx
                     {
                         // Find first defintions of label
                         const Token* first_label_definition =
-                                tokens.find_first_token_if([&](Token& t) {
+                                tokens.find_first_token_if([&](const Token& t) {
                                     if (t.GetType() == Token::Type::LabelIdentifier)
                                     {
                                         std::string_view token_label_name = t.GetText();
@@ -282,6 +287,7 @@ namespace dlx
 
                     break;
                 }
+
                 case Token::Type::OpCode: {
                     if (line_has_instruction)
                     {
@@ -324,28 +330,26 @@ namespace dlx
                             break;
                         }
 
-                        current_token = tokens.consume();
+                        const Token& token = tokens.consume();
 
                         // Skip commas
-                        if (current_token.GetType() == Token::Type::Comma)
+                        if (token.GetType() == Token::Type::Comma)
                         {
                             //PHI_LOG_DEBUG("Skipping comma");
                             continue;
                         }
 
-                        if (current_token.GetType() == Token::Type::NewLine)
+                        if (token.GetType() == Token::Type::NewLine)
                         {
                             phi::u8 missing_arguments = number_of_argument_required - argument_num;
                             program.AddParseError(ConstructTooFewArgumentsParseError(
-                                    current_token, number_of_argument_required.get(),
-                                    argument_num.get()));
+                                    token, number_of_argument_required.get(), argument_num.get()));
                             break;
                         }
 
                         std::optional<InstructionArgument> optional_parsed_argument =
-                                parse_instruction_argument(current_token,
-                                                           info.GetArgumentType(argument_num),
-                                                           tokens, program);
+                                parse_instruction_argument(
+                                        token, info.GetArgumentType(argument_num), tokens, program);
                         if (!optional_parsed_argument.has_value())
                         {
                             // The parse_instruction_argument function should already have added a parse error with more detail

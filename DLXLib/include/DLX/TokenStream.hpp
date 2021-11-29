@@ -41,38 +41,15 @@ namespace dlx
 
         [[nodiscard]] phi::Boolean reached_end() const noexcept;
 
-        [[nodiscard]] Token& look_ahead() noexcept;
-
         [[nodiscard]] const Token& look_ahead() const noexcept;
 
-        [[nodiscard]] Token& consume() noexcept;
+        [[nodiscard]] const Token& consume() noexcept;
 
         void skip(phi::usize n = 1u) noexcept;
 
-        [[nodiscard]] Token* find_first_token_of_type(Token::Type type) noexcept;
-
         [[nodiscard]] const Token* find_first_token_of_type(Token::Type type) const noexcept;
 
-        [[nodiscard]] Token* find_last_token_of_type(Token::Type type) noexcept;
-
         [[nodiscard]] const Token* find_last_token_of_type(Token::Type type) const noexcept;
-
-        template <typename PredicateT>
-        [[nodiscard]] Token* find_first_token_if(PredicateT pred) noexcept
-        {
-#if defined(PHI_DEBUG)
-            PHI_ASSERT(m_Finialized);
-#endif
-            for (Token& token : m_Tokens)
-            {
-                if (pred(token))
-                {
-                    return &token;
-                }
-            }
-
-            return nullptr;
-        }
 
         template <typename PredicateT>
         [[nodiscard]] const Token* find_first_token_if(PredicateT pred) const noexcept
@@ -92,25 +69,39 @@ namespace dlx
             return nullptr;
         }
 
+        template <typename PredicateT>
+        [[nodiscard]] const Token* find_last_token_if(PredicateT pred) const noexcept
+        {
+#if defined(PHI_DEBUG)
+            PHI_ASSERT(m_Finialized);
+#endif
+
+            const Token* last = nullptr;
+
+            for (const Token& token : m_Tokens)
+            {
+                if (pred(token))
+                {
+                    last = &token;
+                }
+            }
+
+            return last;
+        }
+
         // Complexity O(n)
         [[nodiscard]] phi::usize size() const noexcept;
 
         [[nodiscard]] phi::Boolean empty() const noexcept;
 
         // Iterator
-        [[nodiscard]] iterator current_position() noexcept;
-
         [[nodiscard]] const_iterator current_position() const noexcept;
 
         void set_position(iterator it) noexcept;
 
-        [[nodiscard]] iterator begin() noexcept;
-
         [[nodiscard]] const_iterator begin() const noexcept;
 
         [[nodiscard]] const_iterator cbegin() const noexcept;
-
-        [[nodiscard]] iterator end() noexcept;
 
         [[nodiscard]] const_iterator end() const noexcept;
 

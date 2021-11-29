@@ -4487,8 +4487,8 @@ TEST_CASE("Empty source code")
     dlx::Processor processor;
 
     // Should be no ops
-    proc.ExecuteCurrentProgram();
-    proc.ExecuteStep();
+    processor.ExecuteCurrentProgram();
+    processor.ExecuteStep();
 
     res = dlx::Parser::Parse("");
     REQUIRE(res.m_ParseErrors.empty());
@@ -4688,6 +4688,7 @@ TEST_CASE("Misaligned addresses - Crash-8cb7670c0bacefed7af9ea62bcb5a03b95296b8e
 
 TEST_CASE("Dump functions")
 {
+    // Empty
     dlx::Processor processor;
 
     CHECK_FALSE(processor.GetRegisterDump().empty());
@@ -4695,9 +4696,34 @@ TEST_CASE("Dump functions")
     CHECK_FALSE(processor.GetProcessorDump().empty());
     CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
 
+    // Single instruction
     res = dlx::Parser::Parse("ADD R1 R1 R1");
     REQUIRE(res.m_ParseErrors.empty());
     REQUIRE(res.IsValid());
+
+    processor.LoadProgram(res);
+
+    CHECK_FALSE(processor.GetRegisterDump().empty());
+    CHECK_FALSE(processor.GetMemoryDump().empty());
+    CHECK_FALSE(processor.GetProcessorDump().empty());
+    CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
+
+    // Jump labels
+    res = dlx::Parser::Parse("a: ADD R1 R1 R1\nb: NOP\nJ a");
+    REQUIRE(res.m_ParseErrors.empty());
+    REQUIRE(res.IsValid());
+
+    processor.LoadProgram(res);
+
+    CHECK_FALSE(processor.GetRegisterDump().empty());
+    CHECK_FALSE(processor.GetMemoryDump().empty());
+    CHECK_FALSE(processor.GetProcessorDump().empty());
+    CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
+
+    // Parse error
+    res = dlx::Parser::Parse("DLX with Parse error");
+    REQUIRE_FALSE(res.m_ParseErrors.empty());
+    REQUIRE_FALSE(res.IsValid());
 
     processor.LoadProgram(res);
 

@@ -85,33 +85,47 @@ namespace dlx
         {
             case Type::Colon:
                 return "Token[Colon]" + pos_info;
+
             case Type::Comma:
                 return "Token[Comma]" + pos_info;
+
             case Type::Comment:
                 return "Token[Comment]" + pos_info + ": '" + GetTextString() + "'";
+
             case Type::OpCode:
                 return "Token[OpCode]" + pos_info + ": '" + GetTextString() + "'";
+
             case Type::RegisterInt:
                 return "Token[RegisterInt]" + pos_info + ": '" + GetTextString() + "'";
+
             case Type::RegisterFloat:
                 return "Token[RegisterFloat]" + pos_info + ": '" + GetTextString() + "'";
+
             case Type::RegisterStatus:
                 return "Token[RegisterStatus]" + pos_info + ": '" + GetTextString() + "'";
+
             case Type::LabelIdentifier:
                 return "Token[LabelIdentifier]" + pos_info + ": '" + GetTextString() + "'";
+
             case Type::NewLine:
                 return "Token[NewLine]" + pos_info;
+
             case Type::OpenBracket:
                 return "Token[OpenBracket]" + pos_info;
+
             case Type::ClosingBracket:
                 return "Token[ClosingBracket]" + pos_info;
+
             case Type::IntegerLiteral:
                 return "Token[IntegerLiteral]" + pos_info + ": '" + GetTextString() + "'";
+
             case Type::ImmediateInteger:
                 return "Token[ImmediateInteger]" + pos_info + ": " + GetTextString() + "'";
+
+#if !defined(DLXEMU_COVERAGE_BUILD)
             case Type::Unknown:
                 return "Token[Unknown]" + pos_info;
-#if !defined(DLXEMU_COVERAGE_BUILD)
+
             default:
                 PHI_ASSERT_NOT_REACHED();
                 return "Token[NotFound]" + pos_info;

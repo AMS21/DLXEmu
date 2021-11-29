@@ -15,6 +15,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::UnexpectedArgumentType);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::UnexpectedArgumentType& detail = err.GetUnexpectedArgumentType();
             CHECK(detail.expected_type == dlx::ArgumentType::FloatRegister);
@@ -29,6 +30,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::UnexpectedArgumentType);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::UnexpectedArgumentType& detail = err.GetUnexpectedArgumentType();
             CHECK(detail.expected_type == dlx::ArgumentType::IntRegister);
@@ -43,6 +45,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::InvalidNumber);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::InvalidNumber& detail = err.GetInvalidNumber();
             CHECK(detail.text == "0b");
@@ -55,6 +58,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::InvalidNumber);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::InvalidNumber& detail = err.GetInvalidNumber();
             CHECK(detail.text == "0b");
@@ -69,6 +73,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::TooFewArgumentsAddressDisplacement);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
         }
 
         {
@@ -78,6 +83,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::TooFewArgumentsAddressDisplacement);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
         }
     }
 
@@ -90,6 +96,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::UnexpectedToken);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::UnexpectedToken& detail = err.GetUnexpectedToken();
             CHECK(detail.expected_type == dlx::Token::Type::NewLine);
@@ -104,6 +111,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::UnexpectedToken);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::UnexpectedToken& detail = err.GetUnexpectedToken();
             CHECK(detail.expected_type == dlx::Token::Type::NewLine);
@@ -119,6 +127,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::ReserverdIdentifier);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::ReserverdIdentifier& detail = err.GetReserverIdentifier();
             CHECK(detail.identifier == "J");
@@ -131,6 +140,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::ReserverdIdentifier);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::ReserverdIdentifier& detail = err.GetReserverIdentifier();
             CHECK(detail.identifier == "J");
@@ -145,6 +155,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::InvalidLabelIdentifier);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::InvalidLabelIdentifier& detail = err.GetInvalidLabelIdentifier();
             CHECK(detail.identifer == "123_");
@@ -157,6 +168,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::InvalidLabelIdentifier);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::InvalidLabelIdentifier& detail = err.GetInvalidLabelIdentifier();
             CHECK(detail.identifer == "123_");
@@ -171,6 +183,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::LabelAlreadyDefined);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::LabelAlreadyDefined& detail = err.GetLabelAlreadyDefined();
             CHECK(detail.label_name == "l");
@@ -187,6 +200,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::LabelAlreadyDefined);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::LabelAlreadyDefined& detail = err.GetLabelAlreadyDefined();
             CHECK(detail.label_name == "l");
@@ -203,6 +217,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
         }
 
         {
@@ -212,6 +227,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
         }
     }
 
@@ -223,6 +239,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::TooFewArgument);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::TooFewArguments& detail = err.GetTooFewArguments();
             CHECK(detail.required == 3);
@@ -236,6 +253,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::TooFewArgument);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::TooFewArguments& detail = err.GetTooFewArguments();
             CHECK(detail.required == 3);
@@ -251,6 +269,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::EmptyLabel);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::EmptyLabel& detail = err.GetEmptyLabel();
             CHECK(detail.label_name == "l");
@@ -263,6 +282,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetType() == dlx::ParseError::Type::EmptyLabel);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
+            CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::EmptyLabel& detail = err.GetEmptyLabel();
             CHECK(detail.label_name == "l");

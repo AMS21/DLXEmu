@@ -21,14 +21,6 @@ namespace dlx
         AddressDisplacement = 32, // Meaning this argument is expected to be an address displacement
     };
 
-    constexpr ArgumentType operator+(ArgumentType lhs, ArgumentType rhs) noexcept
-    {
-        using underlying_t = std::underlying_type_t<ArgumentType>;
-
-        return static_cast<ArgumentType>(static_cast<underlying_t>(lhs) +
-                                         static_cast<underlying_t>(rhs));
-    }
-
     constexpr ArgumentType operator&(ArgumentType lhs, ArgumentType rhs) noexcept
     {
         using underlying_t = std::underlying_type_t<ArgumentType>;
@@ -105,13 +97,18 @@ namespace dlx
             {
                 case 0:
                     return m_Arg1Type;
+
                 case 1:
                     return m_Arg2Type;
+
                 case 2:
                     return m_Arg3Type;
+
+#if !defined(DLXEMU_COVERAGE_BUILD)
                 default:
                     PHI_ASSERT_NOT_REACHED();
                     return m_Arg1Type;
+#endif
             }
         }
 

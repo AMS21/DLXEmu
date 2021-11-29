@@ -125,6 +125,21 @@ TEST_CASE("StringToOpCode")
     CHECK(dlx::StringToOpCode("/") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("\\") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("!") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("\"") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("'") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode(")") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("(") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("[") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("]") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("{") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("}") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("?") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("%") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("&") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("-") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("_") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode(".") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode(",") == dlx::OpCode::NONE);
 
     // Maximize coverage
     CHECK(dlx::StringToOpCode("X") == dlx::OpCode::NONE);
@@ -176,6 +191,7 @@ TEST_CASE("StringToOpCode")
     CHECK(dlx::StringToOpCode("SEXX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SGEX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SGTX") == dlx::OpCode::NONE);
+    CHECK(dlx::StringToOpCode("SLAX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SLEX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SLLX") == dlx::OpCode::NONE);
     CHECK(dlx::StringToOpCode("SLTX") == dlx::OpCode::NONE);
