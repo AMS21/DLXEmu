@@ -31,6 +31,7 @@ SOFTWARE.
 #include <DLX/ParserUtils.hpp>
 #include <DLX/Token.hpp>
 #include <Phi/Core/Assert.hpp>
+#include <Phi/Core/Boolean.hpp>
 #include <Phi/Core/Log.hpp>
 #include <magic_enum.hpp>
 #include <spdlog/fmt/bundled/core.h>
@@ -2987,6 +2988,36 @@ namespace dlxemu
     void CodeEditor::SetBreakpoints(const Breakpoints& markers) noexcept
     {
         m_Breakpoints = markers;
+    }
+
+    phi::Boolean CodeEditor::AddBreakpoint(const std::uint32_t line_number) noexcept
+    {
+        return m_Breakpoints.insert(line_number).second;
+    }
+
+    phi::Boolean CodeEditor::RemoveBreakpoint(const std::uint32_t line_number) noexcept
+    {
+        auto it = m_Breakpoints.find(line_number);
+
+        if (it != m_Breakpoints.end())
+        {
+            m_Breakpoints.erase(it);
+            return true;
+        }
+
+        return false;
+    }
+
+    phi::Boolean CodeEditor::ToggleBreakpoint(const std::uint32_t line_number) noexcept
+    {
+        if (auto it = m_Breakpoints.find(line_number); it != m_Breakpoints.end())
+        {
+            m_Breakpoints.erase(it);
+            return false;
+        }
+
+        AddBreakpoint(line_number);
+        return true;
     }
 
     void CodeEditor::ClearBreakPoints() noexcept

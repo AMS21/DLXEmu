@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include <DLX/OpCode.hpp>
 #include <DLX/Token.hpp>
+#include <Phi/Core/Boolean.hpp>
 #include <Phi/Core/Types.hpp>
 #include <imgui.h>
 #include <array>
@@ -148,6 +149,9 @@ namespace dlxemu
         [[nodiscard]] const ErrorMarkers& GetErrorMarkers() const noexcept;
 
         void                             SetBreakpoints(const Breakpoints& markers) noexcept;
+        phi::Boolean                     AddBreakpoint(const std::uint32_t line_number) noexcept;
+        phi::Boolean                     RemoveBreakpoint(const std::uint32_t line_number) noexcept;
+        phi::Boolean                     ToggleBreakpoint(const std::uint32_t line_number) noexcept;
         void                             ClearBreakPoints() noexcept;
         [[nodiscard]] Breakpoints&       GetBreakpoints() noexcept;
         [[nodiscard]] const Breakpoints& GetBreakpoints() const noexcept;
@@ -181,7 +185,7 @@ namespace dlxemu
         void               SetShowWhitespaces(bool value) noexcept;
         [[nodiscard]] bool IsShowingWhitespaces() const noexcept;
 
-        void                       SetTabSize(std::uint_fast8_t value) noexcept;
+        void                            SetTabSize(std::uint_fast8_t value) noexcept;
         [[nodiscard]] std::uint_fast8_t GetTabSize() const noexcept;
 
         void InsertText(const std::string& value) noexcept;
