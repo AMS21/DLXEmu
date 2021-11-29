@@ -162,7 +162,7 @@ namespace dlxemu
         [[nodiscard]] std::string GetSelectedText() const noexcept;
         [[nodiscard]] std::string GetCurrentLineText() const noexcept;
 
-        std::uint32_t GetTotalLines() const noexcept;
+        std::size_t GetTotalLines() const noexcept;
 
         void               SetOverwrite(bool overwrite) noexcept;
         [[nodiscard]] bool IsOverwrite() const noexcept;

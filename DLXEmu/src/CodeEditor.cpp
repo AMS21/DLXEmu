@@ -3004,9 +3004,9 @@ namespace dlxemu
         return m_Breakpoints;
     }
 
-    std::uint32_t CodeEditor::GetTotalLines() const noexcept
+    std::size_t CodeEditor::GetTotalLines() const noexcept
     {
-        return (std::uint32_t)m_Lines.size();
+        return m_Lines.size();
     }
 
     void CodeEditor::SetOverwrite(bool overwrite) noexcept
