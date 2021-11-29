@@ -27,6 +27,8 @@ TEST_CASE("CodeEditor")
 
         // SetPalette
         editor.SetPalette(dlxemu::CodeEditor::GetRetroBluePalette());
+        editor.VerifyInternalState();
+
         dlxemu::CodeEditor::Palette retro_blue_palette = dlxemu::CodeEditor::GetRetroBluePalette();
         current_palette                                = editor.GetPalette();
 
@@ -53,6 +55,7 @@ TEST_CASE("CodeEditor")
         test_markers[21] = "Awesome";
 
         editor.SetErrorMarkers(test_markers);
+        editor.VerifyInternalState();
         markers = editor.GetErrorMarkers();
 
         CHECK(markers.size() == 4);
@@ -62,6 +65,7 @@ TEST_CASE("CodeEditor")
         CHECK(markers[21] == "Awesome");
 
         editor.ClearErrorMarkers();
+        editor.VerifyInternalState();
 
         // AddErrorMarker
         editor.AddErrorMarker(0, "Hey");
@@ -88,6 +92,7 @@ TEST_CASE("CodeEditor")
         test.insert(0);
         test.insert(3);
         editor.SetBreakpoints(test);
+        editor.VerifyInternalState();
 
         break_points = editor.GetBreakpoints();
         CHECK(break_points.size() == 2);
@@ -96,23 +101,27 @@ TEST_CASE("CodeEditor")
 
         // ClearBreakpoints
         editor.ClearBreakPoints();
+        editor.VerifyInternalState();
 
         CHECK(break_points.empty());
 
         // AddBreakpoint
         CHECK(editor.AddBreakpoint(3));
+        editor.VerifyInternalState();
         break_points = editor.GetBreakpoints();
 
         REQUIRE(break_points.size() == 1);
         CHECK(break_points.contains(3));
 
         CHECK_FALSE(editor.AddBreakpoint(3));
+        editor.VerifyInternalState();
         break_points = editor.GetBreakpoints();
 
         REQUIRE(break_points.size() == 1);
         CHECK(break_points.contains(3));
 
         CHECK(editor.AddBreakpoint(5));
+        editor.VerifyInternalState();
         break_points = editor.GetBreakpoints();
 
         REQUIRE(break_points.size() == 2);
@@ -121,12 +130,14 @@ TEST_CASE("CodeEditor")
 
         // RemoveBreakpoint
         CHECK(editor.RemoveBreakpoint(5));
+        editor.VerifyInternalState();
         break_points = editor.GetBreakpoints();
 
         REQUIRE(break_points.size() == 1);
         CHECK(break_points.contains(3));
 
         CHECK_FALSE(editor.RemoveBreakpoint(5));
+        editor.VerifyInternalState();
         break_points = editor.GetBreakpoints();
 
         REQUIRE(break_points.size() == 1);
@@ -134,6 +145,7 @@ TEST_CASE("CodeEditor")
 
         // ToggleBreakpoint
         CHECK(editor.ToggleBreakpoint(5));
+        editor.VerifyInternalState();
         break_points = editor.GetBreakpoints();
 
         REQUIRE(break_points.size() == 2);
@@ -141,6 +153,7 @@ TEST_CASE("CodeEditor")
         CHECK(break_points.contains(5));
 
         CHECK_FALSE(editor.ToggleBreakpoint(5));
+        editor.VerifyInternalState();
         break_points = editor.GetBreakpoints();
 
         REQUIRE(break_points.size() == 1);
@@ -160,6 +173,7 @@ TEST_CASE("CodeEditor")
 
         constexpr const char* t1{"A simple line"};
         editor.SetText(t1);
+        editor.VerifyInternalState();
         text  = editor.GetText();
         lines = editor.GetTextLines();
         CHECK(text == t1);
@@ -169,6 +183,7 @@ TEST_CASE("CodeEditor")
 
         constexpr const char* t2{"\n"};
         editor.SetText(t2);
+        editor.VerifyInternalState();
         text  = editor.GetText();
         lines = editor.GetTextLines();
         CHECK(text == t2);
@@ -179,6 +194,7 @@ TEST_CASE("CodeEditor")
 
         constexpr const char* t3{"\n\n"};
         editor.SetText(t3);
+        editor.VerifyInternalState();
         text  = editor.GetText();
         lines = editor.GetTextLines();
         CHECK(text == t3);
@@ -190,6 +206,7 @@ TEST_CASE("CodeEditor")
 
         constexpr const char* t4{"Multiple\nLines"};
         editor.SetText(t4);
+        editor.VerifyInternalState();
         text  = editor.GetText();
         lines = editor.GetTextLines();
         CHECK(text == t4);
@@ -200,6 +217,7 @@ TEST_CASE("CodeEditor")
 
         constexpr const char* t5{"Line\nWith\nNewLines\n"};
         editor.SetText(t5);
+        editor.VerifyInternalState();
         text  = editor.GetText();
         lines = editor.GetTextLines();
         CHECK(text == t5);
@@ -221,6 +239,7 @@ TEST_CASE("CodeEditor")
         new_lines.emplace_back("World");
 
         editor.SetTextLines(new_lines);
+        editor.VerifyInternalState();
 
         std::string              text  = editor.GetText();
         std::vector<std::string> lines = editor.GetTextLines();
@@ -234,6 +253,7 @@ TEST_CASE("CodeEditor")
         new_lines.reserve(0);
 
         editor.SetTextLines(new_lines);
+        editor.VerifyInternalState();
 
         text  = editor.GetText();
         lines = editor.GetTextLines();
@@ -348,10 +368,12 @@ TEST_CASE("CodeEditor")
         CHECK_FALSE(editor.IsOverwrite());
 
         editor.SetOverwrite(true);
+        editor.VerifyInternalState();
 
         CHECK(editor.IsOverwrite());
 
         editor.SetOverwrite(false);
+        editor.VerifyInternalState();
 
         CHECK_FALSE(editor.IsOverwrite());
     }
@@ -363,10 +385,12 @@ TEST_CASE("CodeEditor")
         CHECK_FALSE(editor.IsReadOnly());
 
         editor.SetReadOnly(true);
+        editor.VerifyInternalState();
 
         CHECK(editor.IsReadOnly());
 
         editor.SetReadOnly(false);
+        editor.VerifyInternalState();
 
         CHECK_FALSE(editor.IsReadOnly());
     }
@@ -378,10 +402,12 @@ TEST_CASE("CodeEditor")
         CHECK_FALSE(editor.IsShowingWhitespaces());
 
         editor.SetShowWhitespaces(true);
+        editor.VerifyInternalState();
 
         CHECK(editor.IsShowingWhitespaces());
 
         editor.SetShowWhitespaces(false);
+        editor.VerifyInternalState();
 
         CHECK_FALSE(editor.IsShowingWhitespaces());
     }
@@ -393,16 +419,20 @@ TEST_CASE("CodeEditor")
         CHECK(editor.GetTabSize() == 4);
 
         editor.SetTabSize(1);
+        editor.VerifyInternalState();
         CHECK(editor.GetTabSize() == 1);
 
         editor.SetTabSize(5);
+        editor.VerifyInternalState();
         CHECK(editor.GetTabSize() == 5);
 
         // Clamped properly
         editor.SetTabSize(0);
+        editor.VerifyInternalState();
         CHECK(editor.GetTabSize() == 1);
 
         editor.SetTabSize(100);
+        editor.VerifyInternalState();
         CHECK(editor.GetTabSize() == 32);
     }
 
@@ -416,41 +446,49 @@ TEST_CASE("CodeEditor")
         CHECK(pos.m_Column == 0);
 
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
 
         editor.SetText("123456789");
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
 
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0, 5));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 5);
 
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 9);
 
         editor.InsertText("\n123456789\n123456789");
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 2);
         CHECK(pos.m_Column == 9);
 
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1, 7));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 1);
         CHECK(pos.m_Column == 7);
 
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 2);
         CHECK(pos.m_Column == 9);
 
         editor.SetText("");
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
@@ -465,80 +503,99 @@ TEST_CASE("CodeEditor")
         CHECK(pos.m_Column == 0);
 
         editor.MoveUp(1);
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
 
         editor.MoveUp(100);
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
 
         editor.SetText("Line 1\nLine 2\nLine 3\nLine 4\n");
+        editor.VerifyInternalState();
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 4);
         CHECK(pos.m_Column == 0);
 
         editor.MoveUp(1);
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 3);
         CHECK(pos.m_Column == 0);
 
         editor.MoveUp(2);
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 1);
         CHECK(pos.m_Column == 0);
 
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(3, 6));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 3);
         CHECK(pos.m_Column == 6);
 
         editor.MoveUp(1);
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 2);
         CHECK(pos.m_Column == 6);
 
         editor.MoveUp(2);
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 6);
 
         editor.SetText("short line\nA very long line of text");
+        editor.VerifyInternalState();
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1, 100));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 1);
         CHECK(pos.m_Column == 24);
 
         editor.MoveUp();
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 10);
 
         editor.SetText("This is quite a long line of text wow\ncute\nAnother long line of text");
+        editor.VerifyInternalState();
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(2, 25));
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 2);
         CHECK(pos.m_Column == 25);
 
         editor.MoveUp();
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 1);
         CHECK(pos.m_Column == 4);
 
         editor.MoveUp();
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 25);
 
         editor.MoveUp();
+        editor.VerifyInternalState();
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
 
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1, 4));
+        editor.VerifyInternalState();
         editor.MoveUp(2);
+        editor.VerifyInternalState();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
     }
@@ -557,6 +614,7 @@ TEST_CASE("CodeEditor bad calls")
         coords.m_Column = 0;
 
         editor.SetSelectionEnd(coords);
+        editor.VerifyInternalState();
     }
 
     SECTION("SetSelectionStart column negative")
@@ -568,6 +626,7 @@ TEST_CASE("CodeEditor bad calls")
         coords.m_Column = -1;
 
         editor.SetSelectionEnd(coords);
+        editor.VerifyInternalState();
     }
 
     SECTION("SetSelectionStart both negative")
@@ -579,6 +638,7 @@ TEST_CASE("CodeEditor bad calls")
         coords.m_Column = -1;
 
         editor.SetSelectionEnd(coords);
+        editor.VerifyInternalState();
     }
 
     SECTION("SetSelectionStart line very high")
@@ -590,6 +650,7 @@ TEST_CASE("CodeEditor bad calls")
         coords.m_Column = 0;
 
         editor.SetSelectionEnd(coords);
+        editor.VerifyInternalState();
     }
 
     SECTION("SetSelectionStart column very high")
@@ -601,6 +662,7 @@ TEST_CASE("CodeEditor bad calls")
         coords.m_Column = std::numeric_limits<std::int32_t>::max();
 
         editor.SetSelectionEnd(coords);
+        editor.VerifyInternalState();
     }
 
     SECTION("SetSelectionStart both very high")
@@ -612,6 +674,7 @@ TEST_CASE("CodeEditor bad calls")
         coords.m_Column = std::numeric_limits<std::int32_t>::max();
 
         editor.SetSelectionEnd(coords);
+        editor.VerifyInternalState();
     }
 
     SECTION("SetCursorPosition invalid")
@@ -623,9 +686,11 @@ TEST_CASE("CodeEditor bad calls")
         coords.m_Column = -1;
 
         editor.SetCursorPosition(coords);
+        editor.VerifyInternalState();
 
         volatile std::string val = editor.GetCurrentLineText();
         PHI_UNUSED_VARIABLE(val);
+        editor.VerifyInternalState();
     }
 
     SECTION("Delete invalid pos")
@@ -637,7 +702,9 @@ TEST_CASE("CodeEditor bad calls")
         coords.m_Column = 10;
 
         editor.SetCursorPosition(coords);
+        editor.VerifyInternalState();
         editor.Delete();
+        editor.VerifyInternalState();
     }
 
     SECTION("SetText and delete with control character")
@@ -645,13 +712,16 @@ TEST_CASE("CodeEditor bad calls")
         dlxemu::CodeEditor editor{&emulator};
 
         editor.SetText("\x1E");
+        editor.VerifyInternalState();
 
         dlxemu::CodeEditor::Coordinates coords;
         coords.m_Line   = 0;
         coords.m_Column = 10;
 
         editor.SetCursorPosition(coords);
+        editor.VerifyInternalState();
         editor.Delete();
+        editor.VerifyInternalState();
     }
 
     SECTION("InsertText and delete")
@@ -659,13 +729,16 @@ TEST_CASE("CodeEditor bad calls")
         dlxemu::CodeEditor editor{&emulator};
 
         editor.InsertText(";;");
+        editor.VerifyInternalState();
 
         dlxemu::CodeEditor::Coordinates coords;
         coords.m_Line   = 0;
         coords.m_Column = 7935;
 
         editor.SetCursorPosition(coords);
+        editor.VerifyInternalState();
         editor.Delete();
+        editor.VerifyInternalState();
     }
 }
 
@@ -678,12 +751,19 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor{&emulator};
 
         editor.InsertText("\n\n\n");
+        editor.VerifyInternalState();
+
         editor.SetSelection(dlxemu::CodeEditor::Coordinates(0, 1993065),
                             dlxemu::CodeEditor::Coordinates(31, 1761607680));
-        editor.Delete();
-        editor.Undo(24);
-        editor.Delete();
+        editor.VerifyInternalState();
 
+        editor.Delete();
+        editor.VerifyInternalState();
+
+        editor.Undo(24);
+        editor.VerifyInternalState();
+
+        editor.Delete();
         editor.VerifyInternalState();
     }
 
@@ -692,11 +772,18 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.InsertText("\n");
-        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0, 0));
-        editor.Delete();
-        editor.SetSelectionStart(dlxemu::CodeEditor::Coordinates(0, 30));
-        editor.Delete();
+        editor.VerifyInternalState();
 
+        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0, 0));
+        editor.VerifyInternalState();
+
+        editor.Delete();
+        editor.VerifyInternalState();
+
+        editor.SetSelectionStart(dlxemu::CodeEditor::Coordinates(0, 30));
+        editor.VerifyInternalState();
+
+        editor.Delete();
         editor.VerifyInternalState();
     }
 
@@ -705,10 +792,15 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor{&emulator};
 
         editor.SetText("z`3!\n");
-        editor.InsertText("\x1E");
-        editor.MoveBottom(true);
-        editor.Delete();
+        editor.VerifyInternalState();
 
+        editor.InsertText("\x1E");
+        editor.VerifyInternalState();
+
+        editor.MoveBottom(true);
+        editor.VerifyInternalState();
+
+        editor.Delete();
         editor.VerifyInternalState();
     }
 
@@ -717,9 +809,12 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.SetText("!");
-        editor.SelectAll();
-        editor.Delete();
+        editor.VerifyInternalState();
 
+        editor.SelectAll();
+        editor.VerifyInternalState();
+
+        editor.Delete();
         editor.VerifyInternalState();
     }
 
@@ -728,9 +823,12 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.InsertText("\x02\x01");
-        editor.MoveHome(true);
-        editor.InsertText("\n");
+        editor.VerifyInternalState();
 
+        editor.MoveHome(true);
+        editor.VerifyInternalState();
+
+        editor.InsertText("\n");
         editor.VerifyInternalState();
     }
 
@@ -739,9 +837,12 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.InsertText("\x02\x01");
-        editor.MoveHome(true);
-        editor.InsertText("\n\n");
+        editor.VerifyInternalState();
 
+        editor.MoveHome(true);
+        editor.VerifyInternalState();
+
+        editor.InsertText("\n\n");
         editor.VerifyInternalState();
     }
 
@@ -750,10 +851,13 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.SetText("U");
+        editor.VerifyInternalState();
+
         editor.SetSelection(dlxemu::CodeEditor::Coordinates(7, 1537),
                             dlxemu::CodeEditor::Coordinates(738197504, 30));
-        editor.Delete();
+        editor.VerifyInternalState();
 
+        editor.Delete();
         editor.VerifyInternalState();
     }
 
@@ -775,10 +879,13 @@ TEST_CASE("CodeEditor crashes")
         REQUIRE(vec.size() == 7);
 
         editor.SetTextLines(vec);
+        editor.VerifyInternalState();
+
         editor.SetSelection(dlxemu::CodeEditor::Coordinates(0, 30),
                             dlxemu::CodeEditor::Coordinates(30, 2883584));
-        editor.Delete();
+        editor.VerifyInternalState();
 
+        editor.Delete();
         editor.VerifyInternalState();
     }
 
@@ -787,9 +894,12 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.InsertText("(#8(\t");
-        editor.MoveBottom(true);
-        editor.Delete(); // Instead of cut
+        editor.VerifyInternalState();
 
+        editor.MoveBottom(true);
+        editor.VerifyInternalState();
+
+        editor.Delete(); // Instead of cut
         editor.VerifyInternalState();
     }
 
@@ -798,9 +908,12 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.InsertText("\t\x44\x4D");
-        editor.MoveEnd(true);
-        editor.Delete();
+        editor.VerifyInternalState();
 
+        editor.MoveEnd(true);
+        editor.VerifyInternalState();
+
+        editor.Delete();
         editor.VerifyInternalState();
     }
 
@@ -812,10 +925,15 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.InsertText("(#8(\x7F\t\x07");
-        editor.Copy();
-        editor.Paste();
-        editor.Undo(638844961);
+        editor.VerifyInternalState();
 
+        editor.Copy();
+        editor.VerifyInternalState();
+
+        editor.Paste();
+        editor.VerifyInternalState();
+
+        editor.Undo(638844961);
         editor.VerifyInternalState();
 
         ImGui::DestroyContext(ctx);
@@ -826,10 +944,15 @@ TEST_CASE("CodeEditor crashes")
         dlxemu::CodeEditor editor(&emulator);
 
         editor.InsertText("\tDM+");
-        editor.Delete();
-        editor.MoveBottom(true);
-        editor.Delete();
+        editor.VerifyInternalState();
 
+        editor.Delete();
+        editor.VerifyInternalState();
+
+        editor.MoveBottom(true);
+        editor.VerifyInternalState();
+
+        editor.Delete();
         editor.VerifyInternalState();
     }
 }
