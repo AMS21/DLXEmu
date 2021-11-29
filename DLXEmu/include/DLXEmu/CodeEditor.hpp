@@ -188,7 +188,7 @@ namespace dlxemu
         void                            SetTabSize(std::uint_fast8_t value) noexcept;
         [[nodiscard]] std::uint_fast8_t GetTabSize() const noexcept;
 
-        void EnterCharacter(ImWchar character, bool shift) noexcept;
+        void EnterCharacter(ImWchar character, bool shift = false) noexcept;
         void InsertText(const std::string& value) noexcept;
         void InsertText(const char* value) noexcept;
 
