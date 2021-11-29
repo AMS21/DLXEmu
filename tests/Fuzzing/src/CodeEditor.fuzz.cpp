@@ -24,7 +24,7 @@
 #    define FUZZ_LOG(...) PHI_EMPTY_MACRO()
 #endif
 
-static constexpr const std::size_t MaxVectorSize{20u};
+static constexpr const std::size_t MaxVectorSize{0x1000};
 
 [[nodiscard]] bool has_x_more(const std::size_t index, const std::size_t x,
                               const std::size_t size) noexcept
