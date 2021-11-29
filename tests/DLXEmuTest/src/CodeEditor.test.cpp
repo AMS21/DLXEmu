@@ -1,11 +1,11 @@
-#include "DLXEmu/Emulator.hpp"
-#include "Phi/Config/Warning.hpp"
-#include "imgui.h"
-#include "imgui_internal.h"
 #include <catch2/catch_test_macros.hpp>
 
 #include <DLXEmu/CodeEditor.hpp>
+#include <DLXEmu/Emulator.hpp>
+#include <Phi/Config/Warning.hpp>
 #include <Phi/Core/Log.hpp>
+#include <imgui.h>
+#include <imgui_internal.h>
 
 TEST_CASE("CodeEditor")
 {
@@ -94,9 +94,57 @@ TEST_CASE("CodeEditor")
         CHECK(break_points.contains(0));
         CHECK(break_points.contains(3));
 
+        // ClearBreakpoints
         editor.ClearBreakPoints();
 
         CHECK(break_points.empty());
+
+        // AddBreakpoint
+        CHECK(editor.AddBreakpoint(3));
+        break_points = editor.GetBreakpoints();
+
+        REQUIRE(break_points.size() == 1);
+        CHECK(break_points.contains(3));
+
+        CHECK_FALSE(editor.AddBreakpoint(3));
+        break_points = editor.GetBreakpoints();
+
+        REQUIRE(break_points.size() == 1);
+        CHECK(break_points.contains(3));
+
+        CHECK(editor.AddBreakpoint(5));
+        break_points = editor.GetBreakpoints();
+
+        REQUIRE(break_points.size() == 2);
+        CHECK(break_points.contains(3));
+        CHECK(break_points.contains(5));
+
+        // RemoveBreakpoint
+        CHECK(editor.RemoveBreakpoint(5));
+        break_points = editor.GetBreakpoints();
+
+        REQUIRE(break_points.size() == 1);
+        CHECK(break_points.contains(3));
+
+        CHECK_FALSE(editor.RemoveBreakpoint(5));
+        break_points = editor.GetBreakpoints();
+
+        REQUIRE(break_points.size() == 1);
+        CHECK(break_points.contains(3));
+
+        // ToggleBreakpoint
+        CHECK(editor.ToggleBreakpoint(5));
+        break_points = editor.GetBreakpoints();
+
+        REQUIRE(break_points.size() == 2);
+        CHECK(break_points.contains(3));
+        CHECK(break_points.contains(5));
+
+        CHECK_FALSE(editor.ToggleBreakpoint(5));
+        break_points = editor.GetBreakpoints();
+
+        REQUIRE(break_points.size() == 1);
+        CHECK(break_points.contains(3));
     }
 
     SECTION("Get/SetText")
