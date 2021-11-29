@@ -1975,7 +1975,22 @@ TEST_CASE("Parser")
             res = dlx::Parser::Parse("LW R1 1000(F1");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
+            res = dlx::Parser::Parse("LW R1 1000)F1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(F1(");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(F1)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
             res = dlx::Parser::Parse("LW R1 1000(FPSR");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(FPSR)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000((FPSR");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse("LW R1 1000()");
@@ -1988,6 +2003,45 @@ TEST_CASE("Parser")
             REQUIRE_FALSE(res.m_ParseErrors.empty());
 
             res = dlx::Parser::Parse("LW R1 1000(R1 / Comment");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1:");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1(");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1;");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000)R1)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1 #1000");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1 FPSR");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1\n");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1\nNOP");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000(R1]");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000[R1)");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000[R1]");
+            REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+            res = dlx::Parser::Parse("LW R1 1000{R1)");
             REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
 
