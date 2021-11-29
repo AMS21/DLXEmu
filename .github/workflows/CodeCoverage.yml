@@ -60,11 +60,21 @@ jobs:
           # Generate coverage data
           ctest . -C Debug
 
+      - name: Checkout Corpus
+        uses: actions/checkout@v2.3.5
+        with:
+          repository: "AMS21/DLXEmu-Corpus"
+          path: DLXEmu-Corpus
+          token: ${{ secrets.PAT }}
+
       - name: Run fuzzers
         run: |
           cd build
 
-          find bin -type f -iname "fuzz_*" -exec bash -c 'echo Running ${0}; ${0} -max_total_time=$FUZZ_TIME' {} \;
+          all_input_corpus=$(find ../DLXEmu-Corpus -type d -iname "Corpus" -printf "%p ")
+          echo "Input Corpora: $all_input_corpus"
+
+          find bin -type f -iname "fuzz_*" -exec bash -c 'echo Running ${0}; ${0} TempCorpus ../DLXEmu-Corpus/Seed $all_input_corpus -max_total_time=$FUZZ_TIME' {} \;
 
       - name: Process coverage data
         run: |
