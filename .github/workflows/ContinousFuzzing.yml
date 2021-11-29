@@ -32,9 +32,9 @@ jobs:
           - { fuzz_target: "fuzz_structured_execution",           name: "structured_execution", fuzz_options: "-timeout=1" }
           - { fuzz_target: "fuzz_syntax_highlighting",            name: "syntax_highlighting", fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1" }
           - { fuzz_target: "fuzz_structured_syntax_highlighting", name: "structured_syntax_highlighting", fuzz_options: "-timeout=1" }
-          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor", fuzz_options: "-timeout=10 -only_ascii=1" }
-          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_small", fuzz_options: "-timeout=10 -only_ascii=1 -max_len=512" }
-          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_large", fuzz_options: "-timeout=10 -only_ascii=1 -max_len=65536" }
+          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor", fuzz_options: "-timeout=10" }
+          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_small", fuzz_options: "-timeout=10 -max_len=512" }
+          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_large", fuzz_options: "-timeout=10 -max_len=65536" }
 
     steps:
       - name: Setup Git
