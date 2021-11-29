@@ -2192,4 +2192,73 @@ TEST_CASE("Parser")
             REQUIRE_FALSE(res.m_ParseErrors.empty());
         }
     }
+
+    SECTION("Correct errors")
+    {
+        SECTION("EmptyLabel")
+        {
+            {
+                res = dlx::Parser::Parse("a:");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 1);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::EmptyLabel);
+                CHECK(err1.GetLineNumber() == 1u);
+                CHECK(err1.GetColumn() == 1u);
+                const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
+                CHECK(detail.label_name == "a:");
+            }
+
+            {
+                res = dlx::Parser::Parse("a:\nb:");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 2);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::EmptyLabel);
+                CHECK(err1.GetLineNumber() == 2u);
+                CHECK(err1.GetColumn() == 1u);
+                const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
+                CHECK(detail.label_name == "b:");
+
+                const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
+                REQUIRE(err2.GetType() == dlx::ParseError::Type::EmptyLabel);
+                CHECK(err2.GetLineNumber() == 1u);
+                CHECK(err2.GetColumn() == 1u);
+                const dlx::ParseError::EmptyLabel& detail2 = err2.GetEmptyLabel();
+                CHECK(detail2.label_name == "a:");
+            }
+
+            {
+                res = dlx::Parser::Parse("a:\nb:\nc:");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 3);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::EmptyLabel);
+                CHECK(err1.GetLineNumber() == 3u);
+                CHECK(err1.GetColumn() == 1u);
+                const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
+                CHECK(detail.label_name == "c:");
+
+                const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
+                REQUIRE(err2.GetType() == dlx::ParseError::Type::EmptyLabel);
+                CHECK(err2.GetLineNumber() == 2u);
+                CHECK(err2.GetColumn() == 1u);
+                const dlx::ParseError::EmptyLabel& detail2 = err2.GetEmptyLabel();
+                CHECK(detail2.label_name == "b:");
+
+                const dlx::ParseError& err3 = res.m_ParseErrors.at(2);
+                REQUIRE(err3.GetType() == dlx::ParseError::Type::EmptyLabel);
+                CHECK(err3.GetLineNumber() == 1u);
+                CHECK(err3.GetColumn() == 1u);
+                const dlx::ParseError::EmptyLabel& detail3 = err3.GetEmptyLabel();
+                CHECK(detail3.label_name == "a:");
+            }
+        }
+    }
 }
