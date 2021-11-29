@@ -213,12 +213,132 @@ TEST_CASE("CodeEditor")
 
     SECTION("SetTextLines")
     {
-        // TODO:
+        dlxemu::CodeEditor editor{&emulator};
+
+        std::vector<std::string> new_lines;
+        new_lines.reserve(2u);
+        new_lines.emplace_back("Hello");
+        new_lines.emplace_back("World");
+
+        editor.SetTextLines(new_lines);
+
+        std::string              text  = editor.GetText();
+        std::vector<std::string> lines = editor.GetTextLines();
+        CHECK(text == "Hello\nWorld");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "Hello");
+        CHECK(lines.at(1) == "World");
+        CHECK(editor.GetTotalLines() == 2);
+
+        new_lines.clear();
+        new_lines.reserve(0);
+
+        editor.SetTextLines(new_lines);
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text.empty());
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0).empty());
+        CHECK(editor.GetTotalLines() == 1);
     }
 
     SECTION("InsertText")
     {
-        // TODO:
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.InsertText("Hello World!");
+        editor.VerifyInternalState();
+
+        std::string              text  = editor.GetText();
+        std::vector<std::string> lines = editor.GetTextLines();
+        CHECK(text == "Hello World!");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "Hello World!");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.InsertText("\nTest string\n");
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "Hello World!\nTest string\n");
+        CHECK(lines.size() == 3);
+        CHECK(lines.at(0) == "Hello World!");
+        CHECK(lines.at(1) == "Test string");
+        CHECK(lines.at(2).empty());
+        CHECK(editor.GetTotalLines() == 3);
+
+        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0, 0));
+        editor.VerifyInternalState();
+        editor.InsertText("I say hi and ");
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "I say hi and Hello World!\nTest string\n");
+        CHECK(lines.size() == 3);
+        CHECK(lines.at(0) == "I say hi and Hello World!");
+        CHECK(lines.at(1) == "Test string");
+        CHECK(lines.at(2).empty());
+        CHECK(editor.GetTotalLines() == 3);
+
+        editor.SelectAll();
+        editor.VerifyInternalState();
+        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1, 4));
+        editor.VerifyInternalState();
+        editor.InsertText(" awesome");
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "I say hi and Hello World!\nTest awesome string\n");
+        CHECK(lines.size() == 3);
+        CHECK(lines.at(0) == "I say hi and Hello World!");
+        CHECK(lines.at(1) == "Test awesome string");
+        CHECK(lines.at(2).empty());
+        CHECK(editor.GetTotalLines() == 3);
+
+        // Insert nullptr
+        editor.InsertText(nullptr);
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "I say hi and Hello World!\nTest awesome string\n");
+        CHECK(lines.size() == 3);
+        CHECK(lines.at(0) == "I say hi and Hello World!");
+        CHECK(lines.at(1) == "Test awesome string");
+        CHECK(lines.at(2).empty());
+        CHECK(editor.GetTotalLines() == 3);
+
+        // Insert empty string
+        editor.InsertText("");
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "I say hi and Hello World!\nTest awesome string\n");
+        CHECK(lines.size() == 3);
+        CHECK(lines.at(0) == "I say hi and Hello World!");
+        CHECK(lines.at(1) == "Test awesome string");
+        CHECK(lines.at(2).empty());
+        CHECK(editor.GetTotalLines() == 3);
+
+        // Insert while in read-only mode
+        editor.SetReadOnly(true);
+        editor.VerifyInternalState();
+        editor.InsertText("This should be a no-op");
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "I say hi and Hello World!\nTest awesome string\n");
+        CHECK(lines.size() == 3);
+        CHECK(lines.at(0) == "I say hi and Hello World!");
+        CHECK(lines.at(1) == "Test awesome string");
+        CHECK(lines.at(2).empty());
+        CHECK(editor.GetTotalLines() == 3);
     }
 
     SECTION("Overwrite")
