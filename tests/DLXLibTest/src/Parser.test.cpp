@@ -2260,5 +2260,124 @@ TEST_CASE("Parser")
                 CHECK(detail3.label_name == "a");
             }
         }
+
+        SECTION("OneInstructionPerLine")
+        {
+            {
+                res = dlx::Parser::Parse("NOP NOP");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 1);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err1.GetLineNumber() == 1u);
+                CHECK(err1.GetColumn() == 5u);
+            }
+
+            {
+                res = dlx::Parser::Parse("NOP NOP NOP");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 2);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err1.GetLineNumber() == 1u);
+                CHECK(err1.GetColumn() == 5u);
+
+                const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
+                REQUIRE(err2.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err2.GetLineNumber() == 1u);
+                CHECK(err2.GetColumn() == 9u);
+            }
+
+            {
+                res = dlx::Parser::Parse("NOP NOP\nNOP NOP");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 2);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err1.GetLineNumber() == 1u);
+                CHECK(err1.GetColumn() == 5u);
+
+                const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
+                REQUIRE(err2.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err2.GetLineNumber() == 2u);
+                CHECK(err2.GetColumn() == 5u);
+            }
+
+            {
+                res = dlx::Parser::Parse("NOP NOP\nNOP NOP\n");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 2);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err1.GetLineNumber() == 1u);
+                CHECK(err1.GetColumn() == 5u);
+
+                const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
+                REQUIRE(err2.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err2.GetLineNumber() == 2u);
+                CHECK(err2.GetColumn() == 5u);
+            }
+
+            {
+                res = dlx::Parser::Parse("ADD R1 R1 R1 NOP");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 1);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err1.GetLineNumber() == 1u);
+                CHECK(err1.GetColumn() == 14u);
+            }
+
+            {
+                res = dlx::Parser::Parse("ADD R1 R1 R1\nADD R1 R1 R1 NOP\nADD R1 R1 R1");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 1);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err1.GetLineNumber() == 2u);
+                CHECK(err1.GetColumn() == 14u);
+            }
+
+            {
+                res = dlx::Parser::Parse("ADD R1 R1 R1 NOP\nADD R1 R1 R1 NOP\nADD R1 R1 R1");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 2);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err1.GetLineNumber() == 1u);
+                CHECK(err1.GetColumn() == 14u);
+
+                const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
+                REQUIRE(err2.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err2.GetLineNumber() == 2u);
+                CHECK(err2.GetColumn() == 14u);
+            }
+
+            {
+                res = dlx::Parser::Parse("label: NOP NOP");
+                REQUIRE_FALSE(res.m_ParseErrors.empty());
+                REQUIRE_FALSE(res.IsValid());
+                REQUIRE(res.m_ParseErrors.size() == 1);
+
+                const dlx::ParseError& err1 = res.m_ParseErrors.at(0);
+                REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
+                CHECK(err1.GetLineNumber() == 1u);
+                CHECK(err1.GetColumn() == 12u);
+            }
+        }
     }
 }
