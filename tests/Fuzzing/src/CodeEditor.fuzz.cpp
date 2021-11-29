@@ -971,6 +971,28 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
+            // Enter character
+            case 30: {
+                auto character_opt = consume_t<ImWchar>(data, size, index);
+                if (!character_opt)
+                {
+                    return 0;
+                }
+                ImWchar character = character_opt.value();
+
+                auto shift_opt = consume_bool(data, size, index);
+                if (!shift_opt)
+                {
+                    return 0;
+                }
+                bool shift = shift_opt.value();
+
+                FUZZ_LOG("EnterCharacter({:c}, {:s})", character, shift ? "true" : "false");
+                editor.EnterCharacter(character, shift);
+
+                break;
+            }
+
             default: {
                 return 0;
             }
