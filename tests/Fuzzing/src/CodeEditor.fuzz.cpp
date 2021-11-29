@@ -236,6 +236,34 @@ template <typename T>
                        hex_str.substr(0, hex_str.size() - 2));
 }
 
+[[nodiscard]] std::string print_char(const ImWchar c) noexcept
+{
+    std::string print_str;
+
+    // Make some special characters printable
+    switch (c)
+    {
+        case '\n':
+            print_str += "\\n";
+            break;
+        case '\0':
+            print_str += "\\0";
+            break;
+        case '\t':
+            print_str += "\\t";
+            break;
+        case '\r':
+            print_str += "\\r";
+            break;
+
+        default:
+            print_str += static_cast<char>(c);
+            break;
+    }
+
+    return fmt::format(R"(ImWchar("{:s}" (\0x{:02X})))", print_str, static_cast<std::uint32_t>(c));
+}
+
 [[nodiscard]] std::string print_vector_string(const std::vector<std::string>& vec) noexcept
 {
     std::string ret;
@@ -987,7 +1015,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 bool shift = shift_opt.value();
 
-                FUZZ_LOG("EnterCharacter({:c}, {:s})", character, shift ? "true" : "false");
+                FUZZ_LOG("EnterCharacter({:s}, {:s})", print_char(character), print_bool(shift));
                 editor.EnterCharacter(character, shift);
 
                 break;
