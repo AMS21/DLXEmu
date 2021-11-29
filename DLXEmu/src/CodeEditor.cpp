@@ -1060,12 +1060,12 @@ namespace dlxemu
             else if (!IsReadOnly() && !ctrl && !shift && !alt &&
                      ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter)))
             {
-                EnterCharacter('\n', false);
+                EnterCharacterImpl('\n', false);
             }
             else if (!IsReadOnly() && !ctrl && !alt &&
                      ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab)))
             {
-                EnterCharacter('\t', shift);
+                EnterCharacterImpl('\t', shift);
             }
 
             if (!IsReadOnly() && !io.InputQueueCharacters.empty())
@@ -1075,7 +1075,7 @@ namespace dlxemu
                     ImWchar c = io.InputQueueCharacters[i];
                     if (c != 0 && (c == '\n' || c >= 32))
                     {
-                        EnterCharacter(c, shift);
+                        EnterCharacterImpl(c, shift);
                     }
                 }
 
@@ -1634,7 +1634,7 @@ namespace dlxemu
         Colorize();
     }
 
-    void CodeEditor::EnterCharacter(ImWchar character, bool shift) noexcept
+    void CodeEditor::EnterCharacterImpl(ImWchar character, bool shift) noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
 
@@ -1916,6 +1916,13 @@ namespace dlxemu
     void CodeEditor::SetTabSize(std::uint_fast8_t value) noexcept
     {
         m_TabSize = std::clamp(value, MinTabSize, MaxTabSize);
+    }
+
+    void CodeEditor::EnterCharacter(ImWchar character, bool shift) noexcept{
+        if (!IsReadOnly())
+        {
+            EnterCharacterImpl(character, shift);
+        }
     }
 
     void CodeEditor::InsertText(const std::string& value) noexcept

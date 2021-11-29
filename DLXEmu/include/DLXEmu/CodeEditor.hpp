@@ -188,6 +188,7 @@ namespace dlxemu
         void                            SetTabSize(std::uint_fast8_t value) noexcept;
         [[nodiscard]] std::uint_fast8_t GetTabSize() const noexcept;
 
+        void EnterCharacter(ImWchar character, bool shift) noexcept;
         void InsertText(const std::string& value) noexcept;
         void InsertText(const char* value) noexcept;
 
@@ -294,7 +295,7 @@ namespace dlxemu
         void                       RemoveLine(std::int32_t start, std::int32_t end) noexcept;
         void                       RemoveLine(std::int32_t index) noexcept;
         Line&                      InsertLine(std::int32_t index) noexcept;
-        void                       EnterCharacter(ImWchar character, bool shift) noexcept;
+        void                       EnterCharacterImpl(ImWchar character, bool shift) noexcept;
         void                       Backspace() noexcept;
         void                       DeleteSelection() noexcept;
         [[nodiscard]] std::string  GetWordUnderCursor() const noexcept;
