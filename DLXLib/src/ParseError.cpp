@@ -362,7 +362,10 @@ namespace dlx
 
     ParseError ConstructEmptyLabelParseError(const Token& token) noexcept
     {
-        return ConstructEmptyLabelParseError(token.GetLineNumber().get(), token.GetColumn().get(),
-                                             token.GetText());
+        return ConstructEmptyLabelParseError(
+                token.GetLineNumber().get(), token.GetColumn().get(),
+                (token.GetText().back() == ':') ?
+                        token.GetText().substr(0, token.GetText().size() - 1) :
+                        token.GetText());
     }
 } // namespace dlx

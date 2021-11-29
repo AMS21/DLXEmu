@@ -2208,7 +2208,7 @@ TEST_CASE("Parser")
                 CHECK(err1.GetLineNumber() == 1u);
                 CHECK(err1.GetColumn() == 1u);
                 const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
-                CHECK(detail.label_name == "a:");
+                CHECK(detail.label_name == "a");
             }
 
             {
@@ -2222,14 +2222,14 @@ TEST_CASE("Parser")
                 CHECK(err1.GetLineNumber() == 2u);
                 CHECK(err1.GetColumn() == 1u);
                 const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
-                CHECK(detail.label_name == "b:");
+                CHECK(detail.label_name == "b");
 
                 const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
                 REQUIRE(err2.GetType() == dlx::ParseError::Type::EmptyLabel);
                 CHECK(err2.GetLineNumber() == 1u);
                 CHECK(err2.GetColumn() == 1u);
                 const dlx::ParseError::EmptyLabel& detail2 = err2.GetEmptyLabel();
-                CHECK(detail2.label_name == "a:");
+                CHECK(detail2.label_name == "a");
             }
 
             {
@@ -2243,21 +2243,21 @@ TEST_CASE("Parser")
                 CHECK(err1.GetLineNumber() == 3u);
                 CHECK(err1.GetColumn() == 1u);
                 const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
-                CHECK(detail.label_name == "c:");
+                CHECK(detail.label_name == "c");
 
                 const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
                 REQUIRE(err2.GetType() == dlx::ParseError::Type::EmptyLabel);
                 CHECK(err2.GetLineNumber() == 2u);
                 CHECK(err2.GetColumn() == 1u);
                 const dlx::ParseError::EmptyLabel& detail2 = err2.GetEmptyLabel();
-                CHECK(detail2.label_name == "b:");
+                CHECK(detail2.label_name == "b");
 
                 const dlx::ParseError& err3 = res.m_ParseErrors.at(2);
                 REQUIRE(err3.GetType() == dlx::ParseError::Type::EmptyLabel);
                 CHECK(err3.GetLineNumber() == 1u);
                 CHECK(err3.GetColumn() == 1u);
                 const dlx::ParseError::EmptyLabel& detail3 = err3.GetEmptyLabel();
-                CHECK(detail3.label_name == "a:");
+                CHECK(detail3.label_name == "a");
             }
         }
     }
