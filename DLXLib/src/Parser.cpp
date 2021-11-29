@@ -196,7 +196,7 @@ namespace dlx
         program.m_Tokens = tokens;
 
         phi::Boolean line_has_instruction{false};
-        phi::Boolean last_line_was_label{false};
+        phi::usize   label_count{0u};
 
         while (tokens.has_more())
         {
@@ -280,7 +280,7 @@ namespace dlx
 
                     program.m_JumpData[label_name] =
                             static_cast<std::uint32_t>(program.m_Instructions.size());
-                    last_line_was_label = true;
+                    label_count += 1u;
 
                     //PHI_LOG_INFO("Added jump label {} -> {}", label_name,
                     //             program.m_Instructions.size());
@@ -296,7 +296,7 @@ namespace dlx
                         break;
                     }
 
-                    last_line_was_label = false;
+                    label_count = 0u;
 
                     // Handle normal instructions
                     OpCode opcode = static_cast<OpCode>(current_token.GetHint());
@@ -383,13 +383,18 @@ namespace dlx
             }
         }
 
-        if (last_line_was_label)
+        // Check for empty labels
+        if (label_count > 0u)
         {
-            const Token* optional_token =
-                    tokens.find_last_token_of_type(Token::Type::LabelIdentifier);
-            PHI_ASSERT(optional_token);
-
-            program.AddParseError(ConstructEmptyLabelParseError(*optional_token));
+            for (auto it = --tokens.end(); label_count > 0u; --it)
+            {
+                const Token& token = *it;
+                if (token.GetType() == Token::Type::LabelIdentifier)
+                {
+                    program.AddParseError(ConstructEmptyLabelParseError(token));
+                    --label_count;
+                }
+            }
         }
 
         return program;
