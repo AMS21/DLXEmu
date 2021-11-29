@@ -365,14 +365,10 @@ namespace dlx
                         //PHI_LOG_INFO("Successfully parsed argument {}", argument_num.get());
                     }
 
-                    // Only add the instruction if we got no parsing errors
-                    if (program.m_ParseErrors.empty())
-                    {
-                        //PHI_LOG_INFO("Successfully parsed instruction '{}'",
-                        //            instruction.DebugInfo());
-                        program.m_Instructions.emplace_back(instruction);
-                        line_has_instruction = true;
-                    }
+                    //PHI_LOG_INFO("Successfully parsed instruction '{}'",
+                    //            instruction.DebugInfo());
+                    program.m_Instructions.emplace_back(instruction);
+                    line_has_instruction = true;
                     break;
                 }
 
