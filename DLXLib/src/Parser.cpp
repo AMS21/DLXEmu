@@ -56,7 +56,7 @@ namespace dlx
                 }
                 std::int16_t value = displacement_value.value().get();
 
-                if (!tokens.has_x_more(2u))
+                if (!tokens.has_x_more(3u))
                 {
                     program.AddParseError(
                             ConstructTooFewArgumentsAddressDisplacementParseError(token));
@@ -64,9 +64,9 @@ namespace dlx
                 }
 
                 auto         it           = tokens.current_position();
-                const Token& first_token  = *it++;
-                const Token& second_token = *it++;
-                const Token& third_token  = *it++;
+                const Token& first_token  = tokens.consume();
+                const Token& second_token = tokens.consume();
+                const Token& third_token  = tokens.consume();
 
                 if (first_token.GetType() != Token::Type::OpenBracket)
                 {
@@ -91,7 +91,7 @@ namespace dlx
                 }
 
                 // Consume the 3 tokens
-                tokens.set_position(it);
+                tokens.set_position(it + 3u);
 
                 //PHI_LOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
                 //             value, magic_enum::enum_name(reg_id));
