@@ -9,6 +9,7 @@ on:
 jobs:
   fuzz:
     runs-on: ubuntu-20.04
+    name: "Fuzzing ${{ matrix.cfg.name }}"
     env:
       LLVM_VERSION: "13"
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
@@ -24,12 +25,16 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          - { fuzz_target: "fuzz_parser",                         fuzz_options: "-timeout=1  -dict=Dictionary.txt" }
-          - { fuzz_target: "fuzz_execution",                      fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1" }
-          - { fuzz_target: "fuzz_structured_execution",           fuzz_options: "-timeout=1" }
-          - { fuzz_target: "fuzz_syntax_highlighting",            fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1" }
-          - { fuzz_target: "fuzz_structured_syntax_highlighting", fuzz_options: "-timeout=1" }
-          - { fuzz_target: "fuzz_code_editor",                    fuzz_options: "-timeout=10                      -only_ascii=1" }
+          - { fuzz_target: "fuzz_parser",                         name: "parser", fuzz_options: "-timeout=1  -dict=Dictionary.txt" }
+          - { fuzz_target: "fuzz_execution",                      name: "execution",fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1" }
+          - { fuzz_target: "fuzz_execution",                      name: "execution_small",fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1 -max_len=512" }
+          - { fuzz_target: "fuzz_execution",                      name: "execution_large",fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1 -max_len=65536" }
+          - { fuzz_target: "fuzz_structured_execution",           name: "structured_execution", fuzz_options: "-timeout=1" }
+          - { fuzz_target: "fuzz_syntax_highlighting",            name: "syntax_highlighting", fuzz_options: "-timeout=1  -dict=Dictionary.txt -only_ascii=1" }
+          - { fuzz_target: "fuzz_structured_syntax_highlighting", name: "structured_syntax_highlighting"fuzz_options: "-timeout=1" }
+          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor", fuzz_options: "-timeout=10 -only_ascii=1" }
+          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_small", fuzz_options: "-timeout=10 -only_ascii=1 -max_len=512" }
+          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_large", fuzz_options: "-timeout=10 -only_ascii=1 -max_len=65536" }
 
     steps:
       - name: Setup Git
@@ -128,7 +133,7 @@ jobs:
           echo "FUZZ_ARGUMENTS=$fuzz_args" >> $GITHUB_ENV
           echo "Fuzzing arguments: $fuzz_args"
 
-          local_corpus_dir="$CORPUS_ROOT_DIR/${{ matrix.cfg.fuzz_target }}"
+          local_corpus_dir="$CORPUS_ROOT_DIR/${{ matrix.cfg.name }}"
           echo "LOCAL_CORPUS_DIR=$local_corpus_dir" >> $GITHUB_ENV
           echo "Local corpus directory: $local_corpus_dir"
 
@@ -166,6 +171,7 @@ jobs:
 
       - name: Handle crash
         if: steps.fuzzing.outcome == 'failure'
+        continue-on-error: true
         run: |
             cd "$FUZZING_DIR" || exit 1
 
