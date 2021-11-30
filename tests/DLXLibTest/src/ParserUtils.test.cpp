@@ -255,6 +255,8 @@ TEST_CASE("IsValidIdentifier")
     CHECK_FALSE(dlx::IsValidIdentifier("="));
     CHECK_FALSE(dlx::IsValidIdentifier("?"));
     CHECK_FALSE(dlx::IsValidIdentifier("\\"));
+    CHECK_FALSE(dlx::IsValidIdentifier(";"));
+    CHECK_FALSE(dlx::IsValidIdentifier("ident;ifier"));
 }
 
 TEST_CASE("ParseNumber")
