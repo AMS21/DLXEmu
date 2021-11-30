@@ -2,6 +2,7 @@
 
 #include "DLX/ParserUtils.hpp"
 #include "DLX/TokenStream.hpp"
+#include <string_view>
 
 namespace dlx
 {
@@ -108,6 +109,13 @@ namespace dlx
                 if (current_token.empty())
                 {
                     token_begin = i;
+                }
+                else if (!parsing_comment)
+                {
+                    token_begin = i;
+                    tokens.emplace_back(
+                            ParseToken(current_token, current_line_number, current_column - 1u));
+                    current_token = std::string_view{};
                 }
 
                 parsing_comment = true;

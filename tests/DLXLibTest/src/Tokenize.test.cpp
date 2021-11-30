@@ -63,6 +63,127 @@ TEST_CASE("Parser tokenize")
         REQUIRE(bool(res.size() == 1u));
         CHECK(TokenMatches(res.consume(), "; Comment: With (s)peci(a)l chars, /// \\ ;;",
                            dlx::Token::Type::Comment));
+
+        // Comment characters seperate tokens
+        res = dlx::Tokenize("ADD;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "ADD", dlx::Token::Type::OpCode));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("ADD/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "ADD", dlx::Token::Type::OpCode));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("R1;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "R1", dlx::Token::Type::RegisterInt));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("R1/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "R1", dlx::Token::Type::RegisterInt));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("F1;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "F1", dlx::Token::Type::RegisterFloat));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("F1/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "F1", dlx::Token::Type::RegisterFloat));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("FPSR;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "FPSR", dlx::Token::Type::RegisterStatus));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("FPSR/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "FPSR", dlx::Token::Type::RegisterStatus));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("label:;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "label:", dlx::Token::Type::LabelIdentifier));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("label:/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "label:", dlx::Token::Type::LabelIdentifier));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("10;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "10", dlx::Token::Type::IntegerLiteral));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("10/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "10", dlx::Token::Type::IntegerLiteral));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("#10;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "#10", dlx::Token::Type::ImmediateInteger));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("#10/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "#10", dlx::Token::Type::ImmediateInteger));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("(;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "(", dlx::Token::Type::OpenBracket));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("(/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "(", dlx::Token::Type::OpenBracket));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize(");Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), ")", dlx::Token::Type::ClosingBracket));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize(")/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), ")", dlx::Token::Type::ClosingBracket));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize(":;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), ":", dlx::Token::Type::Colon));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize(":/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), ":", dlx::Token::Type::Colon));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize(",;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), ",", dlx::Token::Type::Comma));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize(",/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), ",", dlx::Token::Type::Comma));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("identifier;Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "identifier", dlx::Token::Type::LabelIdentifier));
+        CHECK(TokenMatches(res.consume(), ";Comment", dlx::Token::Type::Comment));
+
+        res = dlx::Tokenize("identifier/Comment");
+        REQUIRE(bool(res.size() == 2u));
+        CHECK(TokenMatches(res.consume(), "identifier", dlx::Token::Type::LabelIdentifier));
+        CHECK(TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment));
     }
 
     SECTION("Colon")
