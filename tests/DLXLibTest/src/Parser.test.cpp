@@ -111,6 +111,73 @@ TEST_CASE("Parser")
         CHECK(res.m_Instructions.empty());
         CHECK(res.m_JumpData.empty());
         CHECK(res.m_ParseErrors.empty());
+
+        // Trailing comments
+        res = dlx::Parser::Parse("ADD R1 R1 R1;Trailing comment");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("ADD R1 R1 R1; Trailing comment");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("ADD R1 R1 R1/Trailing comment");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("ADD R1 R1 R1/ Trailing comment");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK(res.m_JumpData.empty());
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("l:;Comment after label\nNOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK_FALSE(res.m_JumpData.empty());
+        CHECK(res.m_JumpData.size() == 1u);
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("l:; Comment after label\nNOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK_FALSE(res.m_JumpData.empty());
+        CHECK(res.m_JumpData.size() == 1u);
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("l: ;Comment after label\nNOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK_FALSE(res.m_JumpData.empty());
+        CHECK(res.m_JumpData.size() == 1u);
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("l:/Comment after label\nNOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK_FALSE(res.m_JumpData.empty());
+        CHECK(res.m_JumpData.size() == 1u);
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("l:/ Comment after label\nNOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK_FALSE(res.m_JumpData.empty());
+        CHECK(res.m_JumpData.size() == 1u);
+        CHECK(res.m_ParseErrors.empty());
+
+        res = dlx::Parser::Parse("l: /Comment after label\nNOP");
+        CHECK_FALSE(res.m_Instructions.empty());
+        CHECK(res.m_Instructions.size() == 1u);
+        CHECK_FALSE(res.m_JumpData.empty());
+        CHECK(res.m_JumpData.size() == 1u);
+        CHECK(res.m_ParseErrors.empty());
     }
 
     SECTION("Ignoring new lines")
@@ -129,6 +196,14 @@ TEST_CASE("Parser")
     SECTION("Jump labels")
     {
         res = dlx::Parser::Parse("start:");
+        CHECK(res.m_Instructions.empty());
+        REQUIRE_FALSE(res.m_ParseErrors.empty());
+
+        REQUIRE(res.m_JumpData.size() == 1);
+        REQUIRE(res.m_JumpData.find("start") != res.m_JumpData.end());
+        CHECK(res.m_JumpData.at("start") == 0u);
+
+        res = dlx::Parser::Parse("   start:");
         CHECK(res.m_Instructions.empty());
         REQUIRE_FALSE(res.m_ParseErrors.empty());
 
