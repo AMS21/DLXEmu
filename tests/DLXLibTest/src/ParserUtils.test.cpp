@@ -233,6 +233,10 @@ TEST_CASE("IsValidIdentifier")
 
     CHECK_FALSE(dlx::IsValidIdentifier(""));
     CHECK_FALSE(dlx::IsValidIdentifier("_"));
+    CHECK_FALSE(dlx::IsValidIdentifier("__"));
+    CHECK_FALSE(dlx::IsValidIdentifier("___"));
+    CHECK_FALSE(dlx::IsValidIdentifier("____"));
+    CHECK_FALSE(dlx::IsValidIdentifier("_____"));
     CHECK_FALSE(dlx::IsValidIdentifier("1"));
     CHECK_FALSE(dlx::IsValidIdentifier("12"));
     CHECK_FALSE(dlx::IsValidIdentifier("444_123"));

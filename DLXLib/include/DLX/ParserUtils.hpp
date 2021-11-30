@@ -139,6 +139,7 @@ namespace dlx
             return IsAlpha(first_char);
         }
 
+        phi::Boolean just_under_scores = (first_char == '_');
         if (!(IsAlpha(first_char) || (first_char == '_')))
         {
             return false;
@@ -148,13 +149,21 @@ namespace dlx
         {
             const char c{token.at(index)};
 
-            if (!(IsAlpha(c) || IsDigit(c) || (c == '_')))
+            if (IsAlpha(c) || IsDigit(c))
+            {
+                just_under_scores = false;
+            }
+            else if (c == '_')
+            {
+                continue;
+            }
+            else
             {
                 return false;
             }
         }
 
-        return true;
+        return !just_under_scores;
     }
 
     /* Parsing functions */
