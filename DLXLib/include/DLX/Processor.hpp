@@ -29,6 +29,21 @@ namespace dlx
         RegisterOutOfBounds,
     };
 
+    enum class IntRegisterValueType
+    {
+        NotSet,
+        Signed,
+        Unsigned,
+    };
+
+    enum class FloatRegisterValueType
+    {
+        NotSet,
+        Float,
+        DoubleLow,
+        DoubleHigh,
+    };
+
     class Processor
     {
     public:
@@ -116,9 +131,14 @@ namespace dlx
 
     private:
         phi::ObserverPtr<ParsedProgram> m_CurrentProgram;
-        std::array<IntRegister, 32u>    m_IntRegisters;
-        std::array<FloatRegister, 32u>  m_FloatRegisters;
-        StatusRegister                  m_FPSR;
+
+        std::array<IntRegister, 32u>          m_IntRegisters;
+        std::array<IntRegisterValueType, 32u> m_IntRegistersValueTypes;
+
+        std::array<FloatRegister, 32u>          m_FloatRegisters;
+        std::array<FloatRegisterValueType, 32u> m_FloatRegistersValueTypes;
+
+        StatusRegister m_FPSR;
 
         MemoryBlock m_MemoryBlock;
 

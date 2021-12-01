@@ -13,6 +13,7 @@
 #include <magic_enum.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/bundled/format.h>
+#include <type_traits>
 #include <utility>
 
 namespace dlx
@@ -38,6 +39,8 @@ namespace dlx
 
     Processor::Processor() noexcept
         : m_MemoryBlock(1000u, 1000u)
+        , m_IntRegistersValueTypes{}
+        , m_FloatRegistersValueTypes{}
     {
         // Mark R0 as ready only
         m_IntRegisters.at(0).SetReadOnly(true);
@@ -46,8 +49,7 @@ namespace dlx
     IntRegister& Processor::GetIntRegister(IntRegisterID id) noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
-        std::underlying_type_t<IntRegisterID> id_value =
-                static_cast<std::underlying_type_t<IntRegisterID>>(id);
+        std::underlying_type_t<IntRegisterID> id_value = std::to_underlying(id);
 
         PHI_ASSERT(id_value >= 0 && id_value <= 31);
 
@@ -57,8 +59,7 @@ namespace dlx
     const IntRegister& Processor::GetIntRegister(IntRegisterID id) const noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
-        std::underlying_type_t<IntRegisterID> id_value =
-                static_cast<std::underlying_type_t<IntRegisterID>>(id);
+        std::underlying_type_t<IntRegisterID> id_value = std::to_underlying(id);
 
         PHI_ASSERT(id_value >= 0 && id_value <= 31);
 
@@ -72,6 +73,14 @@ namespace dlx
             PHI_LOG_WARN("Mismatch for instruction access type");
         }
 
+        const IntRegisterValueType register_value_type =
+                m_IntRegistersValueTypes[std::to_underlying(id)];
+        if (register_value_type != IntRegisterValueType::NotSet &&
+            register_value_type != IntRegisterValueType::Signed)
+        {
+            PHI_LOG_WARN("Mismatch for register value type");
+        }
+
         return GetIntRegister(id).GetSignedValue();
     }
 
@@ -81,6 +90,14 @@ namespace dlx
                                        RegisterAccessType::Unsigned))
         {
             PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
+        const IntRegisterValueType register_value_type =
+                m_IntRegistersValueTypes[std::to_underlying(id)];
+        if (register_value_type != IntRegisterValueType::NotSet &&
+            register_value_type != IntRegisterValueType::Unsigned)
+        {
+            PHI_LOG_WARN("Mismatch for register value type");
         }
 
         return GetIntRegister(id).GetUnsignedValue();
@@ -101,6 +118,7 @@ namespace dlx
         }
 
         reg.SetSignedValue(value);
+        m_IntRegistersValueTypes[std::to_underlying(id)] = IntRegisterValueType::Signed;
     }
 
     void Processor::IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value) noexcept
@@ -119,6 +137,7 @@ namespace dlx
         }
 
         reg.SetUnsignedValue(value);
+        m_IntRegistersValueTypes[std::to_underlying(id)] = IntRegisterValueType::Unsigned;
     }
 
     FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) noexcept
@@ -150,6 +169,14 @@ namespace dlx
             PHI_LOG_WARN("Mismatch for instruction access type");
         }
 
+        const FloatRegisterValueType register_value_type =
+                m_FloatRegistersValueTypes[std::to_underlying(id)];
+        if (register_value_type != FloatRegisterValueType::NotSet &&
+            register_value_type != FloatRegisterValueType::Float)
+        {
+            PHI_LOG_WARN("Mismatch for register value type");
+        }
+
         const FloatRegister& reg = GetFloatRegister(id);
 
         return reg.GetValue();
@@ -160,6 +187,22 @@ namespace dlx
         if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Double))
         {
             PHI_LOG_WARN("Mismatch for instruction access type");
+        }
+
+        const FloatRegisterValueType register_value_type_low =
+                m_FloatRegistersValueTypes[std::to_underlying(id)];
+        if (register_value_type_low != FloatRegisterValueType::NotSet &&
+            register_value_type_low != FloatRegisterValueType::DoubleLow)
+        {
+            PHI_LOG_WARN("Mismatch for register value type");
+        }
+
+        const FloatRegisterValueType register_value_type_high =
+                m_FloatRegistersValueTypes[std::to_underlying(id) + 1u];
+        if (register_value_type_low != FloatRegisterValueType::NotSet &&
+            register_value_type_low != FloatRegisterValueType::DoubleHigh)
+        {
+            PHI_LOG_WARN("Mismatch for register value type");
         }
 
         if (id == FloatRegisterID::F31)
@@ -196,6 +239,7 @@ namespace dlx
         FloatRegister& reg = GetFloatRegister(id);
 
         reg.SetValue(value);
+        m_FloatRegistersValueTypes[std::to_underlying(id)] = FloatRegisterValueType::Float;
     }
 
     void Processor::FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value) noexcept
@@ -229,6 +273,9 @@ namespace dlx
 
         first_reg.SetValue(first_value);
         second_reg.SetValue(second_value);
+        m_FloatRegistersValueTypes[std::to_underlying(id)] = FloatRegisterValueType::DoubleLow;
+        m_FloatRegistersValueTypes[std::to_underlying(id) + 1u] =
+                FloatRegisterValueType::DoubleHigh;
     }
 
     StatusRegister& Processor::GetFPSR() noexcept
