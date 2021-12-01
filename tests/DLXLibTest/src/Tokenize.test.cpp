@@ -406,24 +406,50 @@ TEST_CASE("Tokenize -  ImmediateInteger")
     REQUIRE(bool(res.size() == 1u));
     TokenMatches(res.consume(), "#1000", dlx::Token::Type::ImmediateInteger, 1, 1);
 
+    res = dlx::Tokenize("#-1000");
+    REQUIRE(bool(res.size() == 1u));
+    TokenMatches(res.consume(), "#-1000", dlx::Token::Type::ImmediateInteger, 1, 1);
+
+    res = dlx::Tokenize("#0");
+    REQUIRE(bool(res.size() == 1u));
+    TokenMatches(res.consume(), "#0", dlx::Token::Type::ImmediateInteger, 1, 1);
+
     res = dlx::Tokenize("#1000 #12");
     REQUIRE(bool(res.size() == 2u));
     TokenMatches(res.consume(), "#1000", dlx::Token::Type::ImmediateInteger, 1, 1);
     TokenMatches(res.consume(), "#12", dlx::Token::Type::ImmediateInteger, 1, 7);
+
+    res = dlx::Tokenize("#-1000 #-12");
+    REQUIRE(bool(res.size() == 2u));
+    TokenMatches(res.consume(), "#-1000", dlx::Token::Type::ImmediateInteger, 1, 1);
+    TokenMatches(res.consume(), "#-12", dlx::Token::Type::ImmediateInteger, 1, 8);
 }
 
 TEST_CASE("Tokenize - IntegerLiteral")
 {
     dlx::TokenStream res;
 
+    res = dlx::Tokenize("0");
+    REQUIRE(bool(res.size() == 1u));
+    TokenMatches(res.consume(), "0", dlx::Token::Type::IntegerLiteral, 1, 1);
+
     res = dlx::Tokenize("1000");
     REQUIRE(bool(res.size() == 1u));
     TokenMatches(res.consume(), "1000", dlx::Token::Type::IntegerLiteral, 1, 1);
+
+    res = dlx::Tokenize("-1000");
+    REQUIRE(bool(res.size() == 1u));
+    TokenMatches(res.consume(), "-1000", dlx::Token::Type::IntegerLiteral, 1, 1);
 
     res = dlx::Tokenize("1000 2000");
     REQUIRE(bool(res.size() == 2u));
     TokenMatches(res.consume(), "1000", dlx::Token::Type::IntegerLiteral, 1, 1);
     TokenMatches(res.consume(), "2000", dlx::Token::Type::IntegerLiteral, 1, 6);
+
+    res = dlx::Tokenize("-1000 -2000");
+    REQUIRE(bool(res.size() == 2u));
+    TokenMatches(res.consume(), "-1000", dlx::Token::Type::IntegerLiteral, 1, 1);
+    TokenMatches(res.consume(), "-2000", dlx::Token::Type::IntegerLiteral, 1, 7);
 }
 
 TEST_CASE("Tokenize - crashes")
