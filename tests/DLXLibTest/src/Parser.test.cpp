@@ -2162,6 +2162,22 @@ TEST_CASE("Parser Error - Label names need to unique")
     REQUIRE_FALSE(res.m_ParseErrors.empty());
 }
 
+TEST_CASE("Parser Error - Trailling comma")
+{
+    res = dlx::Parser::Parse("ADD R1 R1 R1,");
+    REQUIRE_FALSE(res.m_ParseErrors.empty());
+    REQUIRE_FALSE(res.IsValid());
+    REQUIRE(res.m_ParseErrors.size() == 1u);
+
+    const dlx::ParseError& err1 = res.m_ParseErrors.at(0u);
+    REQUIRE(err1.GetType() == dlx::ParseError::Type::UnexpectedToken);
+    CHECK(err1.GetLineNumber() == 1u);
+    CHECK(err1.GetColumn() == 13u);
+    const dlx::ParseError::UnexpectedToken& detail = err1.GetUnexpectedToken();
+    CHECK(detail.expected_type == dlx::Token::Type::NewLine);
+    CHECK(detail.actual_type == dlx::Token::Type::Comma);
+}
+
 TEST_CASE("Parser Error - EmptyLabel")
 {
     {
