@@ -7,1649 +7,11 @@
 static dlx::Processor     proc;
 static dlx::ParsedProgram res;
 
-TEST_CASE("Operation exceptions")
-{
-    constexpr std::int32_t  signed_min   = phi::i32::limits_type::min();
-    constexpr std::int32_t  signed_max   = phi::i32::limits_type::max();
-    constexpr std::uint32_t unsigned_max = phi::u32::limits_type::max();
-
-    SECTION("Signed addition overflow")
-    {
-        res = dlx::Parser::Parse("ADD R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 5);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min + 4);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 5);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
-    }
-
-    SECTION("Signed addition underflow")
-    {
-        res = dlx::Parser::Parse("ADD R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -2);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max - 1);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -2);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
-    }
-
-    SECTION("Unsigned addition overflow")
-    {
-        res = dlx::Parser::Parse("ADDU R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, unsigned_max);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 0u);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 0u);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
-
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, unsigned_max);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 5u);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 4u);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
-    }
-
-    SECTION("Signed subtraction overflow")
-    {
-        res = dlx::Parser::Parse("SUB R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -5);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min + 4);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -5);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
-    }
-
-    SECTION("Signed subtraction underflow")
-    {
-        res = dlx::Parser::Parse("SUB R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 2);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max - 1);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
-    }
-
-    SECTION("Unsigned subtraction underflow")
-    {
-        res = dlx::Parser::Parse("SUBU R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 0u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 0u);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 0u);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
-
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 0u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 1u);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 1u);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
-
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 0u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 5u);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max - 4u);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
-    }
-
-    SECTION("Signed multiplication overflow")
-    {
-        res = dlx::Parser::Parse("MULT R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 2);
-
-        proc.ExecuteCurrentProgram();
-
-        //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -2);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, signed_max);
-
-        proc.ExecuteCurrentProgram();
-
-        //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == signed_max);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
-    }
-
-    SECTION("Signed multiplication underflow")
-    {
-        res = dlx::Parser::Parse("MULT R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 3);
-
-        proc.ExecuteCurrentProgram();
-
-        //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, signed_min);
-
-        proc.ExecuteCurrentProgram();
-
-        //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == signed_min);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
-    }
-
-    SECTION("Unsigned multiplication overflow")
-    {
-        res = dlx::Parser::Parse("MULTU R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, unsigned_max);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
-
-        proc.ExecuteCurrentProgram();
-
-        //CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
-        CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
-    }
-
-    SECTION("Signed division by zero")
-    {
-        res = dlx::Parser::Parse("DIV R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
-
-        proc.ExecuteCurrentProgram();
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
-        CHECK(proc.IsHalted());
-
-        res = dlx::Parser::Parse("DIVI R1 R2 #0");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 5);
-
-        proc.ExecuteCurrentProgram();
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
-        CHECK(proc.IsHalted());
-    }
-
-    SECTION("Unsigned division by zero")
-    {
-        res = dlx::Parser::Parse("DIVU R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 0u);
-
-        proc.ExecuteCurrentProgram();
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
-        CHECK(proc.IsHalted());
-
-        res = dlx::Parser::Parse("DIVUI R1 R2 #0");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
-        proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
-
-        proc.ExecuteCurrentProgram();
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
-        CHECK(proc.IsHalted());
-    }
-
-    SECTION("Float division by zero")
-    {
-        res = dlx::Parser::Parse("DIVF F0 F2 F4");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 2.0f);
-        proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F4, 0.0f);
-
-        proc.ExecuteCurrentProgram();
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
-        CHECK(proc.IsHalted());
-    }
-
-    SECTION("Double division by zero")
-    {
-        res = dlx::Parser::Parse("DIVD F0 F2 F4");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F0, -1.0f);
-        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0f);
-        proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 0.0f);
-
-        proc.ExecuteCurrentProgram();
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
-        CHECK(proc.IsHalted());
-    }
-
-    SECTION("Shift left bad shift")
-    {
-        // Logical
-        res = dlx::Parser::Parse("SLL R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-
-        // Arithmetic
-        res = dlx::Parser::Parse("SLA R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-    }
-
-    SECTION("Shift right bad shift")
-    {
-        // Logical
-        res = dlx::Parser::Parse("SRL R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-
-        // Arithmetic
-        res = dlx::Parser::Parse("SRA R1 R2 R3");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -1);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
-        CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
-    }
-
-    SECTION("Jump to non existing label")
-    {
-        // J
-        res = dlx::Parser::Parse("J label");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::UnknownLabel);
-
-        // JAL
-        res = dlx::Parser::Parse("JAL label");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::UnknownLabel);
-    }
-
-    SECTION("Invalid jump register")
-    {
-        // JR
-        res = dlx::Parser::Parse("JR R1");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, -5);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-        // JALR
-        res = dlx::Parser::Parse("JALR R1");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 1);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-        proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, -5);
-
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-    }
-
-    SECTION("Loading invalid address")
-    {
-        SECTION("LB")
-        {
-            res = dlx::Parser::Parse("LB R1 #4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LB R1 #-4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LB R1 #5000");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LB R1 4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LB R1 -4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LB R1 5000(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("LBU")
-        {
-            res = dlx::Parser::Parse("LBU R1 #4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LBU R1 #-4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LBU R1 #5000");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LBU R1 4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LBU R1 -4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LW R1 5000(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("LH")
-        {
-            res = dlx::Parser::Parse("LH R1 #4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LH R1 #-4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LH R1 #5000");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LH R1 4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LH R1 -4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LH R1 5000(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("LHU")
-        {
-            res = dlx::Parser::Parse("LHU R1 #4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LHU R1 #-4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LHU R1 #5000");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LHU R1 4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LHU R1 -4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LHU R1 5000(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("LW")
-        {
-            res = dlx::Parser::Parse("LW R1 #4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LW R1 #-4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LW R1 #5000");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LW R1 4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LW R1 -4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LW R1 5000(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("LWU")
-        {
-            res = dlx::Parser::Parse("LWU R1 #4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LWU R1 #-4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LWU R1 #5000");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LWU R1 4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LWU R1 -4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LWU R1 5000(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("LF")
-        {
-            res = dlx::Parser::Parse("LF F0 #4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LF F0 #-4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LF F0 #5000");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LF F0 4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LF F0 -4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LF F0 5000(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("LD")
-        {
-            res = dlx::Parser::Parse("LD F0 #4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LD F0 #-4");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LD F0 #5000");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LD F0 4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LD F0 -4(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("LD F0 5000(R0)");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-    }
-
-    SECTION("Storing invalid address")
-    {
-        SECTION("SB")
-        {
-            res = dlx::Parser::Parse("SB #4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SB #-4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SB #5000 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SB 4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SB -4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SB 5000(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("SBU")
-        {
-            res = dlx::Parser::Parse("SBU #4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SBU #-4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SBU #5000 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SBU 4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SBU -4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SBU 5000(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("SH")
-        {
-            res = dlx::Parser::Parse("SH #4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SH #-4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SH #5000 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SH 4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SH -4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SH 5000(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("SHU")
-        {
-            res = dlx::Parser::Parse("SHU #4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SHU #-4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SHU #5000 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SHU 4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SHU -4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SHU 5000(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("SW")
-        {
-            res = dlx::Parser::Parse("SW #4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SW #-4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SW #5000 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SW 4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SW -4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SW 5000(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("SWU")
-        {
-            res = dlx::Parser::Parse("SWU #4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SWU #-4 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SWU #5000 R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SWU 4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SWU -4(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SWU 5000(R0) R1");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("SF")
-        {
-            res = dlx::Parser::Parse("SF #4 F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SF #-4 F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SF #5000 F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SF 4(R0) F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SF -4(R0) F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SF 5000(R0) F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-
-        SECTION("SD")
-        {
-            res = dlx::Parser::Parse("SD #4 F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SD #-4 F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SD #5000 F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SD 4(R0) F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SD -4(R0) F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-
-            res = dlx::Parser::Parse("SD 5000(R0) F0");
-            REQUIRE(res.m_ParseErrors.empty());
-
-            proc.LoadProgram(res);
-
-            proc.ExecuteCurrentProgram();
-
-            CHECK(proc.IsHalted());
-            CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
-        }
-    }
-
-    SECTION("Register out of bounds")
-    {
-        // Write out of bounds
-        res = dlx::Parser::Parse("ADDD F31 F0 F0");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
-
-        // Read out of bounds
-        res = dlx::Parser::Parse("ADDD F0 F31 F0");
-        REQUIRE(res.m_ParseErrors.empty());
-
-        proc.LoadProgram(res);
-        proc.ExecuteCurrentProgram();
-
-        CHECK(proc.IsHalted());
-        CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
-    }
-}
-
+constexpr std::int32_t  signed_min   = phi::i32::limits_type::min();
+constexpr std::int32_t  signed_max   = phi::i32::limits_type::max();
+constexpr std::uint32_t unsigned_max = phi::u32::limits_type::max();
+
+// Correct Implementation
 TEST_CASE("ADD")
 {
     res = dlx::Parser::Parse("ADD R1 R2 R3");
@@ -4461,6 +2823,1641 @@ TEST_CASE("NOP")
 
     CHECK(proc.IsHalted());
 }
+
+// Processor - Operation exceptions
+TEST_CASE("Signed addition overflow")
+{
+    res = dlx::Parser::Parse("ADD R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 5);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min + 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 5);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
+}
+
+TEST_CASE("Signed addition underflow")
+{
+    res = dlx::Parser::Parse("ADD R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -2);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max - 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -2);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
+}
+
+TEST_CASE("Unsigned addition overflow")
+{
+    res = dlx::Parser::Parse("ADDU R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, unsigned_max);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 0u);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 0u);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
+
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, unsigned_max);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 5u);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 4u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
+}
+
+TEST_CASE("Signed subtraction overflow")
+{
+    res = dlx::Parser::Parse("SUB R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -5);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min + 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -5);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
+}
+
+TEST_CASE("Signed subtraction underflow")
+{
+    res = dlx::Parser::Parse("SUB R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 2);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max - 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
+}
+
+TEST_CASE("Unsigned subtraction underflow")
+{
+    res = dlx::Parser::Parse("SUBU R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 0u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 0u);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 0u);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
+
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 0u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 1u);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 1u);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
+
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 0u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 5u);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max - 4u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
+}
+
+TEST_CASE("Signed multiplication overflow")
+{
+    res = dlx::Parser::Parse("MULT R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 2);
+
+    proc.ExecuteCurrentProgram();
+
+    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, signed_max);
+
+    proc.ExecuteCurrentProgram();
+
+    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == signed_max);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
+}
+
+TEST_CASE("Signed multiplication underflow")
+{
+    res = dlx::Parser::Parse("MULT R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_min);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 3);
+
+    proc.ExecuteCurrentProgram();
+
+    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, signed_max);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, signed_min);
+
+    proc.ExecuteCurrentProgram();
+
+    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == signed_min);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
+}
+
+TEST_CASE("Unsigned multiplication overflow")
+{
+    res = dlx::Parser::Parse("MULTU R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, unsigned_max);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 3u);
+
+    proc.ExecuteCurrentProgram();
+
+    //CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
+}
+
+TEST_CASE("Signed division by zero")
+{
+    res = dlx::Parser::Parse("DIV R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
+
+    proc.ExecuteCurrentProgram();
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
+    CHECK(proc.IsHalted());
+
+    res = dlx::Parser::Parse("DIVI R1 R2 #0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 5);
+
+    proc.ExecuteCurrentProgram();
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
+    CHECK(proc.IsHalted());
+}
+
+TEST_CASE("Unsigned division by zero")
+{
+    res = dlx::Parser::Parse("DIVU R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 0u);
+
+    proc.ExecuteCurrentProgram();
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
+    CHECK(proc.IsHalted());
+
+    res = dlx::Parser::Parse("DIVUI R1 R2 #0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
+    proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
+
+    proc.ExecuteCurrentProgram();
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
+    CHECK(proc.IsHalted());
+}
+
+TEST_CASE("Float division by zero")
+{
+    res = dlx::Parser::Parse("DIVF F0 F2 F4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F0, -1.0f);
+    proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F2, 2.0f);
+    proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F4, 0.0f);
+
+    proc.ExecuteCurrentProgram();
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
+    CHECK(proc.IsHalted());
+}
+
+TEST_CASE("Double division by zero")
+{
+    res = dlx::Parser::Parse("DIVD F0 F2 F4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F0, -1.0f);
+    proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0f);
+    proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F4, 0.0f);
+
+    proc.ExecuteCurrentProgram();
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::DivideByZero);
+    CHECK(proc.IsHalted());
+}
+
+TEST_CASE("Shift left bad shift")
+{
+    // Logical
+    res = dlx::Parser::Parse("SLL R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+
+    // Arithmetic
+    res = dlx::Parser::Parse("SLA R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+}
+
+TEST_CASE("Shift right bad shift")
+{
+    // Logical
+    res = dlx::Parser::Parse("SRL R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+
+    // Arithmetic
+    res = dlx::Parser::Parse("SRA R1 R2 R3");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -5);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, -1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 1);
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 32);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
+}
+
+TEST_CASE("Jump to non existing label")
+{
+    // J
+    res = dlx::Parser::Parse("J label");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::UnknownLabel);
+
+    // JAL
+    res = dlx::Parser::Parse("JAL label");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::UnknownLabel);
+}
+
+TEST_CASE("Invalid jump register")
+{
+    // JR
+    res = dlx::Parser::Parse("JR R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, -5);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    // JALR
+    res = dlx::Parser::Parse("JALR R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 1);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, -5);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+// Loading invalid address
+TEST_CASE("Loading invalid address - LB")
+{
+    res = dlx::Parser::Parse("LB R1 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LB R1 #-4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LB R1 #5000");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LB R1 4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LB R1 -4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LB R1 5000(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Loading invalid address - LBU")
+{
+    res = dlx::Parser::Parse("LBU R1 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LBU R1 #-4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LBU R1 #5000");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LBU R1 4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LBU R1 -4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LW R1 5000(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Loading invalid address - LH")
+{
+    res = dlx::Parser::Parse("LH R1 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LH R1 #-4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LH R1 #5000");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LH R1 4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LH R1 -4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LH R1 5000(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Loading invalid address - LHU")
+{
+    res = dlx::Parser::Parse("LHU R1 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LHU R1 #-4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LHU R1 #5000");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LHU R1 4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LHU R1 -4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LHU R1 5000(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Loading invalid address - LW")
+{
+    res = dlx::Parser::Parse("LW R1 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LW R1 #-4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LW R1 #5000");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LW R1 4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LW R1 -4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LW R1 5000(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Loading invalid address - LWU")
+{
+    res = dlx::Parser::Parse("LWU R1 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LWU R1 #-4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LWU R1 #5000");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LWU R1 4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LWU R1 -4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LWU R1 5000(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Loading invalid address - LF")
+{
+    res = dlx::Parser::Parse("LF F0 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LF F0 #-4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LF F0 #5000");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LF F0 4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LF F0 -4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LF F0 5000(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Loading invalid address - LD")
+{
+    res = dlx::Parser::Parse("LD F0 #4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LD F0 #-4");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LD F0 #5000");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LD F0 4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LD F0 -4(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("LD F0 5000(R0)");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+// Storing invalid address
+TEST_CASE("Storing invalid address - SB")
+{
+    res = dlx::Parser::Parse("SB #4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SB #-4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SB #5000 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SB 4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SB -4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SB 5000(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Storing invalid address - SBU")
+{
+    res = dlx::Parser::Parse("SBU #4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SBU #-4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SBU #5000 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SBU 4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SBU -4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SBU 5000(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Storing invalid address - SH")
+{
+    res = dlx::Parser::Parse("SH #4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SH #-4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SH #5000 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SH 4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SH -4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SH 5000(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Storing invalid address - SHU")
+{
+    res = dlx::Parser::Parse("SHU #4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SHU #-4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SHU #5000 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SHU 4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SHU -4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SHU 5000(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Storing invalid address - SW")
+{
+    res = dlx::Parser::Parse("SW #4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SW #-4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SW #5000 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SW 4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SW -4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SW 5000(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Storing invalid address - SWU")
+{
+    res = dlx::Parser::Parse("SWU #4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SWU #-4 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SWU #5000 R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SWU 4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SWU -4(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SWU 5000(R0) R1");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Storing invalid address - SF")
+{
+    res = dlx::Parser::Parse("SF #4 F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SF #-4 F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SF #5000 F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SF 4(R0) F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SF -4(R0) F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SF 5000(R0) F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Storing invalid address - SD")
+{
+    res = dlx::Parser::Parse("SD #4 F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SD #-4 F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SD #5000 F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SD 4(R0) F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SD -4(R0) F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+
+    res = dlx::Parser::Parse("SD 5000(R0) F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
+}
+
+TEST_CASE("Register out of bounds")
+{
+    // Write out of bounds
+    res = dlx::Parser::Parse("ADDD F31 F0 F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
+
+    // Read out of bounds
+    res = dlx::Parser::Parse("ADDD F0 F31 F0");
+    REQUIRE(res.m_ParseErrors.empty());
+
+    proc.LoadProgram(res);
+    proc.ExecuteCurrentProgram();
+
+    CHECK(proc.IsHalted());
+    CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
+}
+
+// Other tests
 
 TEST_CASE("R0 is read only")
 {
