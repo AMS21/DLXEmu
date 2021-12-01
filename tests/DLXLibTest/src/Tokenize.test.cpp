@@ -65,6 +65,53 @@ TEST_CASE("Parser tokenize")
         TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1, 1);
         TokenMatches(res.consume(), "ADD", dlx::Token::Type::OpCode, 2, 1);
         TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2, 4);
+
+        res = dlx::Tokenize(" \n");
+        REQUIRE(bool(res.size() == 1u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 2u);
+
+        res = dlx::Tokenize("  \n");
+        REQUIRE(bool(res.size() == 1u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 3u);
+
+        res = dlx::Tokenize("   \n");
+        REQUIRE(bool(res.size() == 1u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 4u);
+
+        res = dlx::Tokenize("\t\n");
+        REQUIRE(bool(res.size() == 1u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 2u);
+
+        res = dlx::Tokenize("\t\v\n");
+        REQUIRE(bool(res.size() == 1u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 3u);
+
+        res = dlx::Tokenize("\n\n\n");
+        REQUIRE(bool(res.size() == 3u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 3u, 1u);
+
+        res = dlx::Tokenize("\n\n\nNOP");
+        REQUIRE(bool(res.size() == 4u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 3u, 1u);
+        TokenMatches(res.consume(), "NOP", dlx::Token::Type::OpCode, 4u, 1u);
+
+        res = dlx::Tokenize(" \n\n\nNOP");
+        REQUIRE(bool(res.size() == 4u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 2u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 3u, 1u);
+        TokenMatches(res.consume(), "NOP", dlx::Token::Type::OpCode, 4u, 1u);
+
+        res = dlx::Tokenize(" \n\n\n:");
+        REQUIRE(bool(res.size() == 4u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 2u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 3u, 1u);
+        TokenMatches(res.consume(), ":", dlx::Token::Type::Colon, 4u, 1u);
     }
 
     SECTION("Comments")
@@ -224,6 +271,12 @@ TEST_CASE("Parser tokenize")
         REQUIRE(bool(res.size() == 2u));
         TokenMatches(res.consume(), "identifier", dlx::Token::Type::LabelIdentifier, 1, 1);
         TokenMatches(res.consume(), "/Comment", dlx::Token::Type::Comment, 1, 11);
+
+        res = dlx::Tokenize(":x;(");
+        REQUIRE(bool(res.size() == 3u));
+        TokenMatches(res.consume(), ":", dlx::Token::Type::Colon, 1u, 1u);
+        TokenMatches(res.consume(), "x", dlx::Token::Type::LabelIdentifier, 1u, 2u);
+        TokenMatches(res.consume(), ";(", dlx::Token::Type::Comment, 1u, 3u);
     }
 
     SECTION("Colon")
@@ -235,6 +288,11 @@ TEST_CASE("Parser tokenize")
         res = dlx::Tokenize("start:");
         REQUIRE(bool(res.size() == 1u));
         TokenMatches(res.consume(), "start:", dlx::Token::Type::LabelIdentifier, 1, 1);
+
+        res = dlx::Tokenize(":x");
+        REQUIRE(bool(res.size() == 2u));
+        TokenMatches(res.consume(), ":", dlx::Token::Type::Colon, 1, 1);
+        TokenMatches(res.consume(), "x", dlx::Token::Type::LabelIdentifier, 1, 2);
     }
 
     SECTION("Comma")
@@ -336,5 +394,49 @@ TEST_CASE("Parser tokenize")
         REQUIRE(bool(res.size() == 2u));
         TokenMatches(res.consume(), "1000", dlx::Token::Type::IntegerLiteral, 1, 1);
         TokenMatches(res.consume(), "2000", dlx::Token::Type::IntegerLiteral, 1, 6);
+    }
+}
+
+TEST_CASE("Tokenize crashes")
+{
+    SECTION("crash-c567e237f4822cff4cab65198f9ea3b393e6f92c tests")
+    {
+        dlx::TokenStream res;
+
+        res = dlx::Tokenize(" \n\n\n:");
+        REQUIRE(bool(res.size() == 4u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 2u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 3u, 1u);
+        TokenMatches(res.consume(), ":", dlx::Token::Type::Colon, 4u, 1u);
+
+        res = dlx::Tokenize(" \n\n\n:x");
+        REQUIRE(bool(res.size() == 5u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 2u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 3u, 1u);
+        TokenMatches(res.consume(), ":", dlx::Token::Type::Colon, 4u, 1u);
+        TokenMatches(res.consume(), "x", dlx::Token::Type::LabelIdentifier, 4u, 2u);
+
+        res = dlx::Tokenize(" \n\n\n:x;");
+        REQUIRE(bool(res.size() == 6u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 2u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 3u, 1u);
+        TokenMatches(res.consume(), ":", dlx::Token::Type::Colon, 4u, 1u);
+        TokenMatches(res.consume(), "x", dlx::Token::Type::LabelIdentifier, 4u, 2u);
+        TokenMatches(res.consume(), ";", dlx::Token::Type::Comment, 4u, 3u);
+    }
+
+    SECTION("crash-c567e237f4822cff4cab65198f9ea3b393e6f92c")
+    {
+        dlx::TokenStream res = dlx::Tokenize(" \n\n\n:x;(");
+        REQUIRE(bool(res.size() == 6u));
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 1u, 2u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 2u, 1u);
+        TokenMatches(res.consume(), "\n", dlx::Token::Type::NewLine, 3u, 1u);
+        TokenMatches(res.consume(), ":", dlx::Token::Type::Colon, 4u, 1u);
+        TokenMatches(res.consume(), "x", dlx::Token::Type::LabelIdentifier, 4u, 2u);
+        TokenMatches(res.consume(), ";(", dlx::Token::Type::Comment, 4u, 3u);
     }
 }
