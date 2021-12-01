@@ -1056,4 +1056,48 @@ TEST_CASE("CodeEditor crashes")
         editor.Delete();
         editor.VerifyInternalState();
     }
+
+    SECTION("crash-28853252177dc5b6be74f8247bde0d2a2b4f87b5")
+    {
+        ImGuiContext* ctx = ImGui::CreateContext();
+        REQUIRE(ctx);
+
+        ImGuiIO& io = ImGui::GetIO();
+
+        // Enforce valid display size
+        io.DisplaySize.x = 1024.0f;
+        io.DisplaySize.y = 768.0f;
+
+        // Enfore valid DeltaTime
+        io.DeltaTime = 1.0f / 60.0f;
+
+        // Enforce valid space key mapping
+        io.KeyMap[ImGuiKey_Space] = 0;
+
+        // Don't save any config
+        io.IniFilename = nullptr;
+
+        // Build atlas
+        unsigned char* tex_pixels{nullptr};
+        int            tex_w;
+        int            tex_h;
+        io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
+
+        ImGui::NewFrame();
+
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.InsertText("kA`\"#;#");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText().size() == 7);
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.Render({0.0f, 0.0f}, true);
+        editor.VerifyInternalState();
+
+        ImGui::EndFrame();
+
+        ImGui::DestroyContext(ctx);
+    }
 }
