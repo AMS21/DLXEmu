@@ -47,7 +47,7 @@ jobs:
           echo "AUTHOR=AMS21Bot <AMS21Bot.github@gmail.com>" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
         with:
           submodules: recursive
           path: DLXEmu-App
@@ -96,7 +96,7 @@ jobs:
           echo "FUZZER=${{ github.workspace }}/DLXEmu-App/build/bin/${{ matrix.cfg.fuzz_target }}" >> $GITHUB_ENV
 
       - name: Checkout Corpus
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
         with:
           repository: "AMS21/DLXEmu-Corpus"
           path: DLXEmu-Corpus
