@@ -373,8 +373,14 @@ namespace dlx
                 }
 
                 default:
+                    Token::Type expected_token_type = Token::Type::Unknown;
+                    if (line_has_instruction)
+                    {
+                        expected_token_type = Token::Type::NewLine;
+                    }
+
                     program.AddParseError(ConstructUnexpectedTokenParseError(current_token,
-                                                                             Token::Type::Unknown));
+                                                                             expected_token_type));
                     break;
             }
         }
