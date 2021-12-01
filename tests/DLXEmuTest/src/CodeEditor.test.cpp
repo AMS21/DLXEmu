@@ -7,6 +7,42 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+void BeginImGui()
+{
+    ImGuiContext* ctx = ImGui::CreateContext();
+    REQUIRE(ctx);
+
+    ImGuiIO& io = ImGui::GetIO();
+
+    // Enforce valid display size
+    io.DisplaySize.x = 1024.0f;
+    io.DisplaySize.y = 768.0f;
+
+    // Enfore valid DeltaTime
+    io.DeltaTime = 1.0f / 60.0f;
+
+    // Enforce valid space key mapping
+    io.KeyMap[ImGuiKey_Space] = 0;
+
+    // Don't save any config
+    io.IniFilename = nullptr;
+
+    // Build atlas
+    unsigned char* tex_pixels{nullptr};
+    int            tex_w;
+    int            tex_h;
+    io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
+
+    ImGui::NewFrame();
+}
+
+void EndImgui()
+{
+    ImGui::EndFrame();
+
+    ImGui::DestroyContext(ImGui::GetCurrentContext());
+}
+
 TEST_CASE("CodeEditor")
 {
     dlxemu::Emulator emulator;
@@ -1059,31 +1095,7 @@ TEST_CASE("CodeEditor crashes")
 
     SECTION("crash-28853252177dc5b6be74f8247bde0d2a2b4f87b5")
     {
-        ImGuiContext* ctx = ImGui::CreateContext();
-        REQUIRE(ctx);
-
-        ImGuiIO& io = ImGui::GetIO();
-
-        // Enforce valid display size
-        io.DisplaySize.x = 1024.0f;
-        io.DisplaySize.y = 768.0f;
-
-        // Enfore valid DeltaTime
-        io.DeltaTime = 1.0f / 60.0f;
-
-        // Enforce valid space key mapping
-        io.KeyMap[ImGuiKey_Space] = 0;
-
-        // Don't save any config
-        io.IniFilename = nullptr;
-
-        // Build atlas
-        unsigned char* tex_pixels{nullptr};
-        int            tex_w;
-        int            tex_h;
-        io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
-
-        ImGui::NewFrame();
+        BeginImGui();
 
         dlxemu::CodeEditor editor{&emulator};
 
@@ -1096,8 +1108,54 @@ TEST_CASE("CodeEditor crashes")
         editor.Render({0.0f, 0.0f}, true);
         editor.VerifyInternalState();
 
-        ImGui::EndFrame();
+        EndImgui();
+    }
 
-        ImGui::DestroyContext(ctx);
+    SECTION("crash-c567e237f4822cff4cab65198f9ea3b393e6f92c")
+    {
+        BeginImGui();
+
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.SetText(" ");
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
+
+        editor.InsertText(":x;(");
+        editor.VerifyInternalState();
+
+        editor.Render({0.0f, 0.0f}, true);
+        editor.VerifyInternalState();
+
+        EndImgui();
+    }
+
+    SECTION("crash-1e4a2c5c4b7bd8fe934c1eb3b5e0e98ed3474b72")
+    {
+        BeginImGui();
+
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter('\0xFFFF', true);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
+
+        editor.InsertText("(m:M:x;");
+        editor.VerifyInternalState();
+
+        editor.Render({0.0f, 0.0f}, true);
+        editor.VerifyInternalState();
+
+        EndImgui();
     }
 }
