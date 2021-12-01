@@ -79,7 +79,7 @@ namespace dlx
                 if (current_token.empty())
                 {
                     // Skip empty lines
-                    tokens.emplace_back(Token::Type::NewLine, source.substr(token_begin.get(), 1),
+                    tokens.emplace_back(Token::Type::NewLine, source.substr(i.get(), 1u),
                                         current_line_number, current_column);
 
                     parsing_comment = false;
@@ -93,9 +93,7 @@ namespace dlx
                         ParseToken(source.substr(token_begin.get(), current_token.length()),
                                    current_line_number, current_column - current_token.length()));
 
-                token_begin = i;
-
-                tokens.emplace_back(Token::Type::NewLine, source.substr(token_begin.get(), 1),
+                tokens.emplace_back(Token::Type::NewLine, source.substr(i.get(), 1),
                                     current_line_number, current_column);
 
                 current_token   = std::string_view{};
@@ -112,8 +110,9 @@ namespace dlx
                 }
                 else if (!parsing_comment)
                 {
-                    tokens.emplace_back(
-                            ParseToken(current_token, current_line_number, token_begin + 1u));
+                    tokens.emplace_back(ParseToken(
+                            source.substr(token_begin.get(), current_token.length()),
+                            current_line_number, current_column - current_token.length()));
                     token_begin   = i;
                     current_token = std::string_view{};
                 }
