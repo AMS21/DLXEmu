@@ -16,6 +16,12 @@
 #include <type_traits>
 #include <utility>
 
+template <typename EnumT>
+constexpr typename std::underlying_type<EnumT>::type to_underlying(EnumT val) noexcept
+{
+    return static_cast<typename std::underlying_type<EnumT>::type>(val);
+}
+
 namespace dlx
 {
     static phi::Boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
@@ -49,7 +55,7 @@ namespace dlx
     IntRegister& Processor::GetIntRegister(IntRegisterID id) noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
-        std::underlying_type_t<IntRegisterID> id_value = std::to_underlying(id);
+        std::underlying_type_t<IntRegisterID> id_value = to_underlying(id);
 
         PHI_ASSERT(id_value >= 0 && id_value <= 31);
 
@@ -59,7 +65,7 @@ namespace dlx
     const IntRegister& Processor::GetIntRegister(IntRegisterID id) const noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
-        std::underlying_type_t<IntRegisterID> id_value = std::to_underlying(id);
+        std::underlying_type_t<IntRegisterID> id_value = to_underlying(id);
 
         PHI_ASSERT(id_value >= 0 && id_value <= 31);
 
@@ -74,7 +80,7 @@ namespace dlx
         }
 
         const IntRegisterValueType register_value_type =
-                m_IntRegistersValueTypes[std::to_underlying(id)];
+                m_IntRegistersValueTypes[to_underlying(id)];
         if (register_value_type != IntRegisterValueType::NotSet &&
             register_value_type != IntRegisterValueType::Signed)
         {
@@ -93,7 +99,7 @@ namespace dlx
         }
 
         const IntRegisterValueType register_value_type =
-                m_IntRegistersValueTypes[std::to_underlying(id)];
+                m_IntRegistersValueTypes[to_underlying(id)];
         if (register_value_type != IntRegisterValueType::NotSet &&
             register_value_type != IntRegisterValueType::Unsigned)
         {
@@ -118,7 +124,7 @@ namespace dlx
         }
 
         reg.SetSignedValue(value);
-        m_IntRegistersValueTypes[std::to_underlying(id)] = IntRegisterValueType::Signed;
+        m_IntRegistersValueTypes[to_underlying(id)] = IntRegisterValueType::Signed;
     }
 
     void Processor::IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value) noexcept
@@ -137,7 +143,7 @@ namespace dlx
         }
 
         reg.SetUnsignedValue(value);
-        m_IntRegistersValueTypes[std::to_underlying(id)] = IntRegisterValueType::Unsigned;
+        m_IntRegistersValueTypes[to_underlying(id)] = IntRegisterValueType::Unsigned;
     }
 
     FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) noexcept
@@ -170,7 +176,7 @@ namespace dlx
         }
 
         const FloatRegisterValueType register_value_type =
-                m_FloatRegistersValueTypes[std::to_underlying(id)];
+                m_FloatRegistersValueTypes[to_underlying(id)];
         if (register_value_type != FloatRegisterValueType::NotSet &&
             register_value_type != FloatRegisterValueType::Float)
         {
@@ -190,7 +196,7 @@ namespace dlx
         }
 
         const FloatRegisterValueType register_value_type_low =
-                m_FloatRegistersValueTypes[std::to_underlying(id)];
+                m_FloatRegistersValueTypes[to_underlying(id)];
         if (register_value_type_low != FloatRegisterValueType::NotSet &&
             register_value_type_low != FloatRegisterValueType::DoubleLow)
         {
@@ -198,7 +204,7 @@ namespace dlx
         }
 
         const FloatRegisterValueType register_value_type_high =
-                m_FloatRegistersValueTypes[std::to_underlying(id) + 1u];
+                m_FloatRegistersValueTypes[to_underlying(id) + 1u];
         if (register_value_type_low != FloatRegisterValueType::NotSet &&
             register_value_type_low != FloatRegisterValueType::DoubleHigh)
         {
@@ -239,7 +245,7 @@ namespace dlx
         FloatRegister& reg = GetFloatRegister(id);
 
         reg.SetValue(value);
-        m_FloatRegistersValueTypes[std::to_underlying(id)] = FloatRegisterValueType::Float;
+        m_FloatRegistersValueTypes[to_underlying(id)] = FloatRegisterValueType::Float;
     }
 
     void Processor::FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value) noexcept
@@ -273,9 +279,8 @@ namespace dlx
 
         first_reg.SetValue(first_value);
         second_reg.SetValue(second_value);
-        m_FloatRegistersValueTypes[std::to_underlying(id)] = FloatRegisterValueType::DoubleLow;
-        m_FloatRegistersValueTypes[std::to_underlying(id) + 1u] =
-                FloatRegisterValueType::DoubleHigh;
+        m_FloatRegistersValueTypes[to_underlying(id)]      = FloatRegisterValueType::DoubleLow;
+        m_FloatRegistersValueTypes[to_underlying(id) + 1u] = FloatRegisterValueType::DoubleHigh;
     }
 
     StatusRegister& Processor::GetFPSR() noexcept
