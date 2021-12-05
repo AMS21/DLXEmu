@@ -1144,7 +1144,7 @@ TEST_CASE("CodeEditor crashes")
 
         dlxemu::CodeEditor editor{&emulator};
 
-        editor.EnterCharacter('\0xFFFF', true);
+        editor.EnterCharacter('\0xFF', true);
         editor.VerifyInternalState();
 
         editor.EnterCharacter('\n', true);
