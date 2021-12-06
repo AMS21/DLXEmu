@@ -226,7 +226,7 @@ jobs:
             fi
 
             if [ "$is_crash" = 0 ] && [ "$is_timeout" = 0 ] && [ "$is_oom" = 0 ]; then
-              echo "ERROR: No crash and no timeout must be another problem"
+              echo "ERROR: No crash, timeout or out of memory file found must be another problem"
               exit 1
             fi
 
@@ -288,7 +288,7 @@ jobs:
                 echo "No changes detected"
                 break
               else
-                git add ${{ matrix.cfg.fuzz_target }}
+                git add ${{ matrix.cfg.name }}
                 git status
                 git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" --file $FUZZING_DIR/commit_message
                 git push -u origin main | true
@@ -306,12 +306,12 @@ jobs:
             done
 
             # Create GitHub issue
-            title="$err_name: ${{ matrix.cfg.fuzz_target }} $checksum"
+            title="$err_name: ${{ matrix.cfg.name }} $checksum"
             # Body
             {
-              echo "New $err_name discovered by the ${{ matrix.cfg.fuzz_target }} fuzzer."
+              echo "New $err_name discovered by the ${{ matrix.cfg.name }} fuzzer."
               echo ""
-              echo "Faulting input [download]($GITHUB_SERVER_URL/AMS21/DLXEmu-Corpus/blob/main/${{ matrix.cfg.fuzz_target }}/$err_name/$err_name-$checksum):"
+              echo "Faulting input [download]($GITHUB_SERVER_URL/AMS21/DLXEmu-Corpus/blob/main/${{ matrix.cfg.name }}/$err_name/$err_name-$checksum):"
               echo ""
               echo "\`\`\`"
               cat $FUZZING_DIR/$minimized_crash
@@ -382,9 +382,9 @@ jobs:
               echo "No Corpus changes detected"
               break
             else
-              git add ${{ matrix.cfg.fuzz_target }}
+              git add ${{ matrix.cfg.name }}
               git status
-              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Corpus] ${{ matrix.cfg.fuzz_target }}: Automatic corpus update '$(date)'"
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Corpus] ${{ matrix.cfg.name }}: Automatic corpus update '$(date)'"
               git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
@@ -436,9 +436,9 @@ jobs:
               echo "No coverage changes detected"
               break
             else
-              git add ${{ matrix.cfg.fuzz_target }}
+              git add ${{ matrix.cfg.name }}
               git status
-              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Coverage] ${{ matrix.cfg.fuzz_target }}: Automatic coverage update '$(date)'"
+              git commit --gpg-sign --no-verify --signoff --author="$AUTHOR" -m "[Coverage] ${{ matrix.cfg.name }}: Automatic coverage update '$(date)'"
               git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
