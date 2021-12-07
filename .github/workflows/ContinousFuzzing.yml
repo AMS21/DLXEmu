@@ -354,7 +354,7 @@ jobs:
           mkdir -p $FUZZING_DIR/MergeCorpus
 
           # Merge all our corpora
-          $FUZZER $FUZZING_DIR/MergeCorpus $FUZZING_DIR/TempCorpus $INPUT_CORPUS -merge=1
+          $FUZZER $FUZZING_DIR/MergeCorpus $FUZZING_DIR/TempCorpus $INPUT_CORPUS -merge=1 -rss_limit_mb=0
 
           # Update
           cd $CORPUS_ROOT_DIR
