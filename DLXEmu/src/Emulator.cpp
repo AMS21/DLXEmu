@@ -176,10 +176,12 @@ namespace dlxemu
                 if (ImGui::MenuItem("Open", "Ctrl+O"))
                 {}
 
+#if PHI_PLATFORM_IS_NOT(WEB)
                 if (ImGui::MenuItem("Save", "Ctrl+S"))
                 {}
+#endif
 
-                if (ImGui::MenuItem("Save As.."))
+                if (ImGui::MenuItem("Save As..", "Ctrl+Shift+S"))
                 {}
 
                 ImGui::Separator();
@@ -260,6 +262,7 @@ namespace dlxemu
 #if defined(PHI_DEBUG)
             if (ImGui::BeginMenu("Debug"))
             {
+                ImGui::MenuItem("Dear ImGui Demo Window", "", &m_ShowDemoWindow);
                 ImGui::MenuItem("Debug View", "", &m_ShowDebugView);
 
                 ImGui::Separator();
@@ -356,11 +359,11 @@ namespace dlxemu
         {
             static constexpr const char* arch_flag{sizeof(void*) == 8 ? "x64" : "x32"};
             static std::string           about_text = fmt::format(
-                              "Version: {:d}.{:d}.{:d} {:s}\n"
-                                        "Commit: {:s}\n"
+                              "Version:    {:d}.{:d}.{:d} {:s}\n"
+                                        "Commit:     {:s}\n"
                                         "Build date: {:s} {:s}\n"
-                                        "Platform: {:s} {:s}\n"
-                                        "Compiler: {:s} ({:d}.{:d}.{:d})",
+                                        "Platform:   {:s} {:s}\n"
+                                        "Compiler:   {:s} ({:d}.{:d}.{:d})",
                               dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
                               dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
                               PHI_PLATFORM_NAME(), arch_flag, PHI_COMPILER_NAME(),
