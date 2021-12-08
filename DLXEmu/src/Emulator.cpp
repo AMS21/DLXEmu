@@ -1,24 +1,18 @@
 #include "DLXEmu/Emulator.hpp"
 
-#include "DLX/TokenStream.hpp"
+#include <glad/glad.h>
+
 #include "DLXEmu/BuildInfo.hpp"
-#include "Phi/Core/Assert.hpp"
+#include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
 #include <Phi/Config/Compiler.hpp>
 #include <Phi/Config/Platform.hpp>
+#include <Phi/Core/Assert.hpp>
 #include <Phi/Core/Log.hpp>
 #include <imgui.h>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/fmt.h>
 #include <string_view>
-
-struct gladGLversionStruct
-{
-    int major;
-    int minor;
-};
-
-extern struct gladGLversionStruct GLVersion;
 
 namespace dlxemu
 {
