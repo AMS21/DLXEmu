@@ -15,6 +15,9 @@
 
 // Git Branch
 #define DLXEMU_GIT_BRANCH "${DLXEMU_GIT_BRANCH}"
+
+// uname
+#define DLXEMU_UNAME "${DLXEMU_UNAME}"
 // clang-format on
 
 namespace dlxemu
@@ -30,4 +33,6 @@ namespace dlxemu
 
     constexpr static const char BuildDate[]{__DATE__};
     constexpr static const char BuildTime[]{__TIME__};
+
+    constexpr static const char UName[]{DLXEMU_UNAME};
 } // namespace dlxemu

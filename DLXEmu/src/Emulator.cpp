@@ -3,6 +3,7 @@
 #include "DLX/TokenStream.hpp"
 #include "DLXEmu/BuildInfo.hpp"
 #include "Phi/Core/Assert.hpp"
+#include <GLFW/glfw3.h>
 #include <Phi/Config/Compiler.hpp>
 #include <Phi/Config/Platform.hpp>
 #include <Phi/Core/Log.hpp>
@@ -10,6 +11,14 @@
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/fmt.h>
 #include <string_view>
+
+struct gladGLversionStruct
+{
+    int major;
+    int minor;
+};
+
+extern struct gladGLversionStruct GLVersion;
 
 namespace dlxemu
 {
@@ -362,13 +371,18 @@ namespace dlxemu
                               "Version:    {:d}.{:d}.{:d} {:s}\n"
                                         "Commit:     {:s}\n"
                                         "Build date: {:s} {:s}\n"
+                                        "OpenGL:     {:d}.{:d}\n"
+                                        "GLFW:       {:d}.{:d}.{:d}\n"
+                                        "Dear ImGui: {:s}\n"
                                         "Platform:   {:s} {:s}\n"
+                                        "Uname:      {:s}\n"
                                         "Compiler:   {:s} ({:d}.{:d}.{:d})",
                               dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
                               dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
-                              PHI_PLATFORM_NAME(), arch_flag, PHI_COMPILER_NAME(),
-                              PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),
-                              PHI_CURRENT_COMPILER_VERSION_PATCH());
+                              GLVersion.major, GLVersion.minor, GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR,
+                              GLFW_VERSION_REVISION, IMGUI_VERSION, PHI_PLATFORM_NAME(), arch_flag,
+                              DLXEMU_UNAME, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
+                              PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH());
 
             ImGui::TextUnformatted(about_text.c_str());
 
