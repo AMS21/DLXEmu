@@ -48,3 +48,6 @@ define_fuzzer(fuzz_code_editor "src/CodeEditor.fuzz.cpp" DLXEmuLib)
 
 define_fuzzer(fuzz_code_editor_verbose "src/CodeEditor.fuzz.cpp" DLXEmuLib)
 target_compile_definitions(fuzz_code_editor_verbose PRIVATE "FUZZ_VERBOSE_LOG")
+
+# EmulatorArgs
+define_fuzzer(fuzz_emulator_args "src/EmulatorArgs.fuzz.cpp" DLXEmuLib)
