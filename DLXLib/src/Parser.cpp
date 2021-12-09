@@ -379,8 +379,8 @@ namespace dlx
                         expected_token_type = Token::Type::NewLine;
                     }
 
-                    program.AddParseError(ConstructUnexpectedTokenParseError(current_token,
-                                                                             expected_token_type));
+                    program.AddParseError(
+                            ConstructUnexpectedTokenParseError(current_token, expected_token_type));
                     break;
             }
         }
