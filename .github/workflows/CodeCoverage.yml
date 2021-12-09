@@ -76,7 +76,7 @@ jobs:
 
           mkdir -p TempCorpus
 
-          find bin -type f -iname "fuzz_*" -exec bash -c 'echo Running ${0}; ${0} TempCorpus ../DLXEmu-Corpus/Seed $all_input_corpus -max_total_time=$FUZZ_TIME ' {} \;
+          find bin -type f -iname "fuzz_*" -exec bash -c 'echo Running ${0}; ${0} TempCorpus ../DLXEmu-Corpus/Seed $all_input_corpus -max_total_time=$FUZZ_TIME -close_fd_mask=1' {} \;
 
       - name: Process coverage data
         run: |
