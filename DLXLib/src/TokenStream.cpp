@@ -210,4 +210,32 @@ namespace dlx
 
         return m_Tokens.cend();
     }
+
+    [[nodiscard]] TokenStream::const_reverse_iterator TokenStream::rbegin() const noexcept
+    {
+#if defined(PHI_DEBUG)
+        //PHI_ASSERT(m_Finialized);
+#endif
+
+        return m_Tokens.rbegin();
+    }
+
+    [[nodiscard]] TokenStream::const_reverse_iterator TokenStream::rend() const noexcept
+    {
+#if defined(PHI_DEBUG)
+        //PHI_ASSERT(m_Finialized);
+#endif
+
+        return m_Tokens.rend();
+    }
+
+    [[nodiscard]] const Token& TokenStream::front() const noexcept
+    {
+        return m_Tokens.front();
+    }
+
+    [[nodiscard]] const Token& TokenStream::back() const noexcept
+    {
+        return m_Tokens.back();
+    }
 } // namespace dlx

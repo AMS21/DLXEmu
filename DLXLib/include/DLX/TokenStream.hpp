@@ -13,9 +13,11 @@ namespace dlx
     class TokenStream
     {
     public:
-        using storage_type   = std::vector<Token>;
-        using iterator       = typename storage_type::iterator;
-        using const_iterator = typename storage_type::const_iterator;
+        using storage_type           = std::vector<Token>;
+        using iterator               = typename storage_type::iterator;
+        using const_iterator         = typename storage_type::const_iterator;
+        using reverse_iterator       = typename storage_type::reverse_iterator;
+        using const_reverse_iterator = typename storage_type::const_reverse_iterator;
 
         template <typename... ArgsT>
         void emplace_back(ArgsT&&... args) noexcept
@@ -108,6 +110,14 @@ namespace dlx
         [[nodiscard]] const_iterator end() const noexcept;
 
         [[nodiscard]] const_iterator cend() const noexcept;
+
+        [[nodiscard]] const_reverse_iterator rbegin() const noexcept;
+
+        [[nodiscard]] const_reverse_iterator rend() const noexcept;
+
+        [[nodiscard]] const Token& front() const noexcept;
+
+        [[nodiscard]] const Token& back() const noexcept;
 
     private:
         storage_type m_Tokens;
