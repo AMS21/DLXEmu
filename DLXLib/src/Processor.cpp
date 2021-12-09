@@ -7,6 +7,7 @@
 #include "DLX/Parser.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
+#include <Phi/Core/Assert.hpp>
 #include <Phi/Core/Boolean.hpp>
 #include <Phi/Core/Log.hpp>
 #include <Phi/Core/Types.hpp>
@@ -49,27 +50,29 @@ namespace dlx
         , m_FloatRegistersValueTypes{}
     {
         // Mark R0 as ready only
-        m_IntRegisters.at(0).SetReadOnly(true);
+        m_IntRegisters[0].SetReadOnly(true);
     }
 
     IntRegister& Processor::GetIntRegister(IntRegisterID id) noexcept
     {
-        PHI_ASSERT(id != IntRegisterID::None);
+        PHI_DBG_ASSERT(id != IntRegisterID::None);
         std::underlying_type_t<IntRegisterID> id_value = to_underlying(id);
 
-        PHI_ASSERT(id_value >= 0 && id_value <= 31);
+        PHI_DBG_ASSERT(id_value >= 0);
+        PHI_DBG_ASSERT(id_value < m_IntRegisters.size());
 
-        return m_IntRegisters.at(id_value);
+        return m_IntRegisters[id_value];
     }
 
     const IntRegister& Processor::GetIntRegister(IntRegisterID id) const noexcept
     {
-        PHI_ASSERT(id != IntRegisterID::None);
+        PHI_DBG_ASSERT(id != IntRegisterID::None);
         std::underlying_type_t<IntRegisterID> id_value = to_underlying(id);
 
-        PHI_ASSERT(id_value >= 0 && id_value <= 31);
+        PHI_DBG_ASSERT(id_value >= 0);
+        PHI_DBG_ASSERT(id_value < m_IntRegisters.size());
 
-        return m_IntRegisters.at(id_value);
+        return m_IntRegisters[id_value];
     }
 
     phi::i32 Processor::IntRegisterGetSignedValue(IntRegisterID id) const noexcept
@@ -79,6 +82,8 @@ namespace dlx
             PHI_LOG_WARN("Mismatch for instruction access type");
         }
 
+        PHI_DBG_ASSERT(to_underlying(id) >= 0);
+        PHI_DBG_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
         const IntRegisterValueType register_value_type =
                 m_IntRegistersValueTypes[to_underlying(id)];
         if (register_value_type != IntRegisterValueType::NotSet &&
@@ -98,6 +103,8 @@ namespace dlx
             PHI_LOG_WARN("Mismatch for instruction access type");
         }
 
+        PHI_DBG_ASSERT(to_underlying(id) >= 0);
+        PHI_DBG_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
         const IntRegisterValueType register_value_type =
                 m_IntRegistersValueTypes[to_underlying(id)];
         if (register_value_type != IntRegisterValueType::NotSet &&
@@ -124,6 +131,9 @@ namespace dlx
         }
 
         reg.SetSignedValue(value);
+
+        PHI_DBG_ASSERT(to_underlying(id) >= 0);
+        PHI_DBG_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
         m_IntRegistersValueTypes[to_underlying(id)] = IntRegisterValueType::Signed;
     }
 
@@ -143,29 +153,34 @@ namespace dlx
         }
 
         reg.SetUnsignedValue(value);
+
+        PHI_DBG_ASSERT(to_underlying(id) >= 0);
+        PHI_DBG_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
         m_IntRegistersValueTypes[to_underlying(id)] = IntRegisterValueType::Unsigned;
     }
 
     FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) noexcept
     {
-        PHI_ASSERT(id != FloatRegisterID::None);
+        PHI_DBG_ASSERT(id != FloatRegisterID::None);
         std::underlying_type_t<FloatRegisterID> id_value =
                 static_cast<std::underlying_type_t<FloatRegisterID>>(id);
 
-        PHI_ASSERT(id_value >= 0 && id_value <= 31);
+        PHI_DBG_ASSERT(id_value >= 0);
+        PHI_DBG_ASSERT(id_value < m_FloatRegisters.size());
 
-        return m_FloatRegisters.at(id_value);
+        return m_FloatRegisters[id_value];
     }
 
     const FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) const noexcept
     {
-        PHI_ASSERT(id != FloatRegisterID::None);
+        PHI_DBG_ASSERT(id != FloatRegisterID::None);
         std::underlying_type_t<FloatRegisterID> id_value =
                 static_cast<std::underlying_type_t<FloatRegisterID>>(id);
 
-        PHI_ASSERT(id_value >= 0 && id_value <= 31);
+        PHI_DBG_ASSERT(id_value >= 0);
+        PHI_DBG_ASSERT(id_value < m_FloatRegisters.size());
 
-        return m_FloatRegisters.at(id_value);
+        return m_FloatRegisters[id_value];
     }
 
     [[nodiscard]] phi::f32 Processor::FloatRegisterGetFloatValue(FloatRegisterID id) const noexcept
@@ -175,6 +190,8 @@ namespace dlx
             PHI_LOG_WARN("Mismatch for instruction access type");
         }
 
+        PHI_DBG_ASSERT(to_underlying(id) >= 0);
+        PHI_DBG_ASSERT(to_underlying(id) < m_FloatRegistersValueTypes.size());
         const FloatRegisterValueType register_value_type =
                 m_FloatRegistersValueTypes[to_underlying(id)];
         if (register_value_type != FloatRegisterValueType::NotSet &&
@@ -195,6 +212,14 @@ namespace dlx
             PHI_LOG_WARN("Mismatch for instruction access type");
         }
 
+        if (id == FloatRegisterID::F31)
+        {
+            Raise(Exception::RegisterOutOfBounds);
+            return phi::f64(0.0);
+        }
+
+        PHI_DBG_ASSERT(to_underlying(id) >= 0);
+        PHI_DBG_ASSERT(to_underlying(id) + 1u < m_FloatRegistersValueTypes.size());
         const FloatRegisterValueType register_value_type_low =
                 m_FloatRegistersValueTypes[to_underlying(id)];
         if (register_value_type_low != FloatRegisterValueType::NotSet &&
@@ -209,12 +234,6 @@ namespace dlx
             register_value_type_low != FloatRegisterValueType::DoubleHigh)
         {
             PHI_LOG_WARN("Mismatch for register value type");
-        }
-
-        if (id == FloatRegisterID::F31)
-        {
-            Raise(Exception::RegisterOutOfBounds);
-            return phi::f64(0.0);
         }
 
         const FloatRegister& first_reg = GetFloatRegister(id);
@@ -245,6 +264,9 @@ namespace dlx
         FloatRegister& reg = GetFloatRegister(id);
 
         reg.SetValue(value);
+
+        PHI_DBG_ASSERT(to_underlying(id) >= 0);
+        PHI_DBG_ASSERT(to_underlying(id) < m_FloatRegistersValueTypes.size());
         m_FloatRegistersValueTypes[to_underlying(id)] = FloatRegisterValueType::Float;
     }
 
@@ -279,6 +301,9 @@ namespace dlx
 
         first_reg.SetValue(first_value);
         second_reg.SetValue(second_value);
+
+        PHI_DBG_ASSERT(to_underlying(id) >= 0);
+        PHI_DBG_ASSERT(to_underlying(id) + 1u < m_FloatRegistersValueTypes.size());
         m_FloatRegistersValueTypes[to_underlying(id)]      = FloatRegisterValueType::DoubleLow;
         m_FloatRegistersValueTypes[to_underlying(id) + 1u] = FloatRegisterValueType::DoubleHigh;
     }
