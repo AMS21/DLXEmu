@@ -388,8 +388,10 @@ namespace dlx
         // Check for empty labels
         if (label_count > 0u)
         {
-            for (auto it = --tokens.end(); label_count > 0u; --it)
+            for (auto it = tokens.rbegin(); label_count > 0u; ++it)
             {
+                PHI_DBG_ASSERT(it != tokens.rend(), "Iterator should never reach the end");
+
                 const Token& token = *it;
                 if (token.GetType() == Token::Type::LabelIdentifier)
                 {
