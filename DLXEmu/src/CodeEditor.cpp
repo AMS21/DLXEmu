@@ -1920,7 +1920,8 @@ namespace dlxemu
         m_TabSize = std::clamp(value, MinTabSize, MaxTabSize);
     }
 
-    void CodeEditor::EnterCharacter(ImWchar character, bool shift) noexcept{
+    void CodeEditor::EnterCharacter(ImWchar character, bool shift) noexcept
+    {
         if (!IsReadOnly())
         {
             EnterCharacterImpl(character, shift);
