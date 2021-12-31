@@ -43,6 +43,8 @@ void EndImgui()
     ImGui::DestroyContext(ImGui::GetCurrentContext());
 }
 
+// TODO: MoveX with 0 amount being noop
+
 TEST_CASE("CodeEditor")
 {
     dlxemu::Emulator emulator;
@@ -1157,5 +1159,131 @@ TEST_CASE("CodeEditor crashes")
         editor.VerifyInternalState();
 
         EndImgui();
+    }
+
+    SECTION("Crash-b969d74f5fc10237a879950cd37541614ee459e4")
+    {
+        BeginImGui();
+
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.InsertText("A\tJ");
+        editor.VerifyInternalState();
+
+        editor.Render({0.0, 0.0}, true);
+        editor.VerifyInternalState();
+
+        editor.AddErrorMarker(0, "");
+        editor.VerifyInternalState();
+
+        editor.AddErrorMarker(0, "");
+        editor.VerifyInternalState();
+
+        editor.MoveRight(0, true, true);
+        editor.VerifyInternalState();
+
+        editor.AddErrorMarker(0, "");
+        editor.VerifyInternalState();
+
+        EndImgui();
+    }
+
+    SECTION("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
+    {
+        // Crash
+        {
+            BeginImGui();
+
+            dlxemu::CodeEditor editor{&emulator};
+
+            editor.InsertText(" \tJ");
+            editor.VerifyInternalState();
+
+            editor.Render({0.0, 0.0}, true);
+            editor.VerifyInternalState();
+
+            editor.AddErrorMarker(538976288, "       ");
+            editor.VerifyInternalState();
+
+            editor.AddErrorMarker(538976288, "      ");
+            editor.VerifyInternalState();
+
+            editor.MoveRight(0, true, true);
+            editor.VerifyInternalState();
+
+            EndImgui();
+        }
+
+        // MoveLeft
+        {
+            BeginImGui();
+
+            dlxemu::CodeEditor editor{&emulator};
+
+            editor.InsertText(" \tJ");
+            editor.VerifyInternalState();
+
+            editor.Render({0.0, 0.0}, true);
+            editor.VerifyInternalState();
+
+            editor.AddErrorMarker(538976288, "       ");
+            editor.VerifyInternalState();
+
+            editor.AddErrorMarker(538976288, "      ");
+            editor.VerifyInternalState();
+
+            editor.MoveLeft(0, true, true);
+            editor.VerifyInternalState();
+
+            EndImgui();
+        }
+
+        // MoveUp
+        {
+            BeginImGui();
+
+            dlxemu::CodeEditor editor{&emulator};
+
+            editor.InsertText(" \tJ");
+            editor.VerifyInternalState();
+
+            editor.Render({0.0, 0.0}, true);
+            editor.VerifyInternalState();
+
+            editor.AddErrorMarker(538976288, "       ");
+            editor.VerifyInternalState();
+
+            editor.AddErrorMarker(538976288, "      ");
+            editor.VerifyInternalState();
+
+            editor.MoveUp(0, true);
+            editor.VerifyInternalState();
+
+            EndImgui();
+        }
+
+        // MoveDown
+        {
+            BeginImGui();
+
+            dlxemu::CodeEditor editor{&emulator};
+
+            editor.InsertText(" \tJ");
+            editor.VerifyInternalState();
+
+            editor.Render({0.0, 0.0}, true);
+            editor.VerifyInternalState();
+
+            editor.AddErrorMarker(538976288, "       ");
+            editor.VerifyInternalState();
+
+            editor.AddErrorMarker(538976288, "      ");
+            editor.VerifyInternalState();
+
+            editor.MoveDown(0, true);
+            editor.VerifyInternalState();
+
+            EndImgui();
+        }
     }
 }
