@@ -1967,6 +1967,11 @@ namespace dlxemu
 
     void CodeEditor::MoveUp(std::uint32_t amount, bool select) noexcept
     {
+        if (amount == 0u)
+        {
+            return;
+        }
+
         Coordinates old_pos = m_State.m_CursorPosition;
         m_State.m_CursorPosition.m_Line =
                 std::max(0, static_cast<std::int32_t>(m_State.m_CursorPosition.m_Line - amount));
@@ -2008,6 +2013,11 @@ namespace dlxemu
 
     void CodeEditor::MoveDown(std::uint32_t amount, bool select) noexcept
     {
+        if (amount == 0u)
+        {
+            return;
+        }
+
         PHI_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
         Coordinates old_pos = m_State.m_CursorPosition;
@@ -2051,7 +2061,7 @@ namespace dlxemu
 
     void CodeEditor::MoveLeft(std::uint32_t amount, bool select, bool word_mode) noexcept
     {
-        if (m_Lines.empty())
+        if (m_Lines.empty() || amount == 0u)
         {
             return;
         }
@@ -2137,7 +2147,7 @@ namespace dlxemu
     {
         Coordinates old_pos = m_State.m_CursorPosition;
 
-        if (m_Lines.empty() || old_pos.m_Line >= m_Lines.size())
+        if (m_Lines.empty() || old_pos.m_Line >= m_Lines.size() || amount == 0u)
         {
             return;
         }
