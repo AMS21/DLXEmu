@@ -47,14 +47,10 @@ namespace dlx
                     return {};
                 }
 
-                // Parse address displacement
-                auto displacement_value = ParseNumber(token.GetText());
-                if (!displacement_value)
-                {
-                    program.AddParseError(ConstructInvalidNumberParseError(token));
-                    return {};
-                }
-                std::int16_t value = displacement_value.value().get();
+                // Get address displacement
+                PHI_ASSERT(token.HasHint());
+
+                std::int16_t value = static_cast<std::int16_t>(token.GetHint());
 
                 if (!tokens.has_x_more(3u))
                 {
