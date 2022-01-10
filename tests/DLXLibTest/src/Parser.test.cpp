@@ -2015,6 +2015,13 @@ TEST_CASE("Parser Error - Incomplete Address displacement")
     REQUIRE_FALSE(res.m_ParseErrors.empty());
 }
 
+TEST_CASE("Parser Error - Displacement value too large")
+{
+    res = dlx::Parser::Parse("LW R1 999999999999(R1)");
+    REQUIRE_FALSE(res.m_ParseErrors.empty());
+    REQUIRE_FALSE(res.IsValid());
+}
+
 TEST_CASE("Parser Error - Immediate integer value too large")
 {
     res = dlx::Parser::Parse("ADDI R1 R0 #999999999999");
