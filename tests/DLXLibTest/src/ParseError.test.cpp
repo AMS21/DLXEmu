@@ -288,4 +288,28 @@ TEST_CASE("ParseError")
             CHECK(detail.label_name == "l");
         }
     }
+
+    SECTION("TooManyComma")
+    {
+        {
+            {
+                dlx::ParseError err = dlx::ConstructTooManyCommaParseError(1, 2);
+
+                CHECK(err.GetType() == dlx::ParseError::Type::TooManyComma);
+                CHECK(err.GetLineNumber() == 1);
+                CHECK(err.GetColumn() == 2);
+                CHECK_FALSE(err.ConstructMessage().empty());
+            }
+
+            {
+                dlx::Token      token{dlx::Token::Type::Comma, ",", 1u, 2u};
+                dlx::ParseError err = dlx::ConstructTooManyCommaParseError(token);
+
+                CHECK(err.GetType() == dlx::ParseError::Type::TooManyComma);
+                CHECK(err.GetLineNumber() == 1);
+                CHECK(err.GetColumn() == 2);
+                CHECK_FALSE(err.ConstructMessage().empty());
+            }
+        }
+    }
 }
