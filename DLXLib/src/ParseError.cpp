@@ -92,6 +92,10 @@ namespace dlx
                 return fmt::format("Label '{:s}' does not have any instruction", detail.label_name);
             }
 
+            case Type::TooManyComma: {
+                return fmt::format("Only one comma is allowed");
+            }
+
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
                 PHI_ASSERT_NOT_REACHED();
