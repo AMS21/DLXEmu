@@ -22,6 +22,7 @@ namespace dlx
             OneInstructionPerLine,
             TooFewArgument,
             EmptyLabel,
+            TooManyComma,
 
             MAX_ITEMS,
         };
@@ -156,6 +157,9 @@ namespace dlx
         friend ParseError ConstructEmptyLabelParseError(std::uint32_t    line_number,
                                                         std::uint32_t    column,
                                                         std::string_view label_name) noexcept;
+
+        friend ParseError ConstructTooManyCommaParseError(std::uint32_t line_number,
+                                                          std::uint32_t column) noexcept;
     };
 
     ParseError ConstructUnexpectedArgumentTypeParseError(std::uint32_t line_number,
@@ -220,4 +224,9 @@ namespace dlx
                                              std::string_view label_name) noexcept;
 
     ParseError ConstructEmptyLabelParseError(const Token& token) noexcept;
+
+    ParseError ConstructTooManyCommaParseError(std::uint32_t line_number,
+                                               std::uint32_t column) noexcept;
+
+    ParseError ConstructTooManyCommaParseError(const Token& token) noexcept;
 } // namespace dlx

@@ -368,4 +368,22 @@ namespace dlx
                         token.GetText().substr(0, token.GetText().size() - 1) :
                         token.GetText());
     }
+
+    ParseError ConstructTooManyCommaParseError(std::uint32_t line_number,
+                                               std::uint32_t column) noexcept
+    {
+        ParseError err;
+
+        err.m_Type       = ParseError::Type::TooManyComma;
+        err.m_LineNumber = line_number;
+        err.m_Column     = column;
+
+        return err;
+    }
+
+    ParseError ConstructTooManyCommaParseError(const Token& token) noexcept
+    {
+        return ConstructTooManyCommaParseError(token.GetLineNumber().get(),
+                                               token.GetColumn().get());
+    }
 } // namespace dlx

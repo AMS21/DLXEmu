@@ -2369,3 +2369,59 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         CHECK(err1.GetColumn() == 12u);
     }
 }
+
+TEST_CASE("Parse Error - More than one comma")
+{
+    {
+        res = dlx::Parser::Parse("ADD R1,, R1 R1");
+        REQUIRE_FALSE(res.m_ParseErrors.empty());
+        REQUIRE_FALSE(res.IsValid());
+        REQUIRE(res.m_ParseErrors.size() == 1u);
+
+        const dlx::ParseError& err1 = res.m_ParseErrors.at(0u);
+        REQUIRE(err1.GetType() == dlx::ParseError::Type::TooManyComma);
+        CHECK(err1.GetLineNumber() == 1u);
+        CHECK(err1.GetColumn() == 8u);
+    }
+
+    {
+        res = dlx::Parser::Parse("ADD, R1,, R1 R1");
+        REQUIRE_FALSE(res.m_ParseErrors.empty());
+        REQUIRE_FALSE(res.IsValid());
+        REQUIRE(res.m_ParseErrors.size() == 1u);
+
+        const dlx::ParseError& err1 = res.m_ParseErrors.at(0u);
+        REQUIRE(err1.GetType() == dlx::ParseError::Type::TooManyComma);
+        CHECK(err1.GetLineNumber() == 1u);
+        CHECK(err1.GetColumn() == 9u);
+    }
+
+    {
+        res = dlx::Parser::Parse("ADD, R1, , , R1 R1");
+        REQUIRE_FALSE(res.m_ParseErrors.empty());
+        REQUIRE_FALSE(res.IsValid());
+        REQUIRE(res.m_ParseErrors.size() == 2u);
+
+        const dlx::ParseError& err1 = res.m_ParseErrors.at(0u);
+        REQUIRE(err1.GetType() == dlx::ParseError::Type::TooManyComma);
+        CHECK(err1.GetLineNumber() == 1u);
+        CHECK(err1.GetColumn() == 10u);
+
+        const dlx::ParseError& err2 = res.m_ParseErrors.at(1u);
+        REQUIRE(err2.GetType() == dlx::ParseError::Type::TooManyComma);
+        CHECK(err2.GetLineNumber() == 1u);
+        CHECK(err2.GetColumn() == 12u);
+    }
+
+    {
+        res = dlx::Parser::Parse("ADD, R1, R1,, R1");
+        REQUIRE_FALSE(res.m_ParseErrors.empty());
+        REQUIRE_FALSE(res.IsValid());
+        REQUIRE(res.m_ParseErrors.size() == 1u);
+
+        const dlx::ParseError& err1 = res.m_ParseErrors.at(0u);
+        REQUIRE(err1.GetType() == dlx::ParseError::Type::TooManyComma);
+        CHECK(err1.GetLineNumber() == 1u);
+        CHECK(err1.GetColumn() == 13u);
+    }
+}

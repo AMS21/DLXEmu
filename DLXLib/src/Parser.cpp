@@ -295,6 +295,7 @@ namespace dlx
                     label_count = 0u;
 
                     // Handle normal instructions
+                    PHI_DBG_ASSERT(current_token.HasHint());
                     OpCode opcode = static_cast<OpCode>(current_token.GetHint());
 
                     //PHI_LOG_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
@@ -302,17 +303,18 @@ namespace dlx
                     const InstructionInfo& info = LookUpIntructionInfo(opcode);
 
                     // Make sure we got no problems here
-                    PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
-                    PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
-                    PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
-                    PHI_ASSERT(info.GetExecutor());
+                    PHI_DBG_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
+                    PHI_DBG_ASSERT(info.GetArgumentType(1_u8) != ArgumentType::Unknown);
+                    PHI_DBG_ASSERT(info.GetArgumentType(2_u8) != ArgumentType::Unknown);
+                    PHI_DBG_ASSERT(info.GetExecutor());
 
                     phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
                     //PHI_LOG_INFO("Instruction requires {} arguments",
                     //             number_of_argument_required.get());
 
                     // Create instruction
-                    Instruction instruction(info);
+                    Instruction  instruction(info);
+                    phi::Boolean consumed_comma{false};
 
                     // Parse arguments
                     for (phi::u8 argument_num{0_u8}; argument_num < number_of_argument_required;)
@@ -331,6 +333,12 @@ namespace dlx
                         // Skip commas
                         if (token.GetType() == Token::Type::Comma)
                         {
+                            if (consumed_comma)
+                            {
+                                program.AddParseError(ConstructTooManyCommaParseError(token));
+                            }
+
+                            consumed_comma = true;
                             //PHI_LOG_DEBUG("Skipping comma");
                             continue;
                         }
@@ -357,6 +365,7 @@ namespace dlx
 
                         instruction.SetArgument(argument_num, parsed_argument);
                         argument_num++;
+                        consumed_comma = false;
 
                         //PHI_LOG_INFO("Successfully parsed argument {}", argument_num.get());
                     }
