@@ -50,9 +50,12 @@ namespace dlx
         None,
         Signed,
         Unsigned,
+        MixedSignedUnsigned,
         Float,
         Double,
         MixedFloatDouble,
+        MixedFloatSigned,
+        MixedDoubleSigned,
         Ignored,
     };
 

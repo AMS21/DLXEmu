@@ -2367,10 +2367,9 @@ namespace dlx
 
             const float source_value = processor.FloatRegisterGetFloatValue(source_reg).get();
 
-            const std::uint32_t moved_value =
-                    *reinterpret_cast<const std::uint32_t*>(&source_value);
+            const std::int32_t moved_value = *reinterpret_cast<const std::int32_t*>(&source_value);
 
-            processor.IntRegisterSetUnsignedValue(dest_reg, moved_value);
+            processor.IntRegisterSetSignedValue(dest_reg, moved_value);
         }
 
         void MOVI2FP(Processor& processor, const InstructionArgument& arg1,
@@ -2383,8 +2382,7 @@ namespace dlx
             const FloatRegisterID dest_reg   = arg1.AsRegisterFloat().register_id;
             const IntRegisterID   source_reg = arg2.AsRegisterInt().register_id;
 
-            const std::uint32_t source_value =
-                    processor.IntRegisterGetUnsignedValue(source_reg).get();
+            const std::int32_t source_value = processor.IntRegisterGetSignedValue(source_reg).get();
 
             const float moved_value = *reinterpret_cast<const float*>(&source_value);
 

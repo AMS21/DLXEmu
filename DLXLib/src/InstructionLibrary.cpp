@@ -285,7 +285,7 @@ namespace dlx
         // Load byte unsigned
         InitInstruction(table, OpCode::LBU, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::None, RegisterAccessType::Unsigned, impl::LBU);
+                        ArgumentType::None, RegisterAccessType::MixedSignedUnsigned, impl::LBU);
 
         // Load half word
         InitInstruction(table, OpCode::LH, ArgumentType::IntRegister,
@@ -295,7 +295,7 @@ namespace dlx
         // Load half word unsigned
         InitInstruction(table, OpCode::LHU, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::None, RegisterAccessType::Unsigned, impl::LHU);
+                        ArgumentType::None, RegisterAccessType::MixedSignedUnsigned, impl::LHU);
 
         // Load word
         InitInstruction(table, OpCode::LW, ArgumentType::IntRegister,
@@ -305,17 +305,17 @@ namespace dlx
         // Load word unsigned
         InitInstruction(table, OpCode::LWU, ArgumentType::IntRegister,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::None, RegisterAccessType::Unsigned, impl::LWU);
+                        ArgumentType::None, RegisterAccessType::MixedSignedUnsigned, impl::LWU);
 
         // Load float
         InitInstruction(table, OpCode::LF, ArgumentType::FloatRegister,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::None, RegisterAccessType::Float, impl::LF);
+                        ArgumentType::None, RegisterAccessType::MixedFloatSigned, impl::LF);
 
         // Load double
         InitInstruction(table, OpCode::LD, ArgumentType::FloatRegister,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::None, RegisterAccessType::Double, impl::LD);
+                        ArgumentType::None, RegisterAccessType::MixedDoubleSigned, impl::LD);
 
         /* Storing data */
 
@@ -328,8 +328,8 @@ namespace dlx
         // Store byte unsigned
         InitInstruction(table, OpCode::SBU,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::IntRegister, ArgumentType::None, RegisterAccessType::Unsigned,
-                        impl::SBU);
+                        ArgumentType::IntRegister, ArgumentType::None,
+                        RegisterAccessType::MixedSignedUnsigned, impl::SBU);
 
         // Store half word
         InitInstruction(table, OpCode::SH,
@@ -340,8 +340,8 @@ namespace dlx
         // Store half word unsigned
         InitInstruction(table, OpCode::SHU,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::IntRegister, ArgumentType::None, RegisterAccessType::Unsigned,
-                        impl::SHU);
+                        ArgumentType::IntRegister, ArgumentType::None,
+                        RegisterAccessType::MixedSignedUnsigned, impl::SHU);
 
         // Store word
         InitInstruction(table, OpCode::SW,
@@ -352,20 +352,20 @@ namespace dlx
         // Store word unsigned
         InitInstruction(table, OpCode::SWU,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::IntRegister, ArgumentType::None, RegisterAccessType::Unsigned,
-                        impl::SWU);
+                        ArgumentType::IntRegister, ArgumentType::None,
+                        RegisterAccessType::MixedSignedUnsigned, impl::SWU);
 
         // Store float
         InitInstruction(table, OpCode::SF,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::FloatRegister, ArgumentType::None, RegisterAccessType::Float,
-                        impl::SF);
+                        ArgumentType::FloatRegister, ArgumentType::None,
+                        RegisterAccessType::MixedFloatSigned, impl::SF);
 
         // Store double
         InitInstruction(table, OpCode::SD,
                         ArgumentType::ImmediateInteger | ArgumentType::AddressDisplacement,
-                        ArgumentType::FloatRegister, ArgumentType::None, RegisterAccessType::Double,
-                        impl::SD);
+                        ArgumentType::FloatRegister, ArgumentType::None,
+                        RegisterAccessType::MixedDoubleSigned, impl::SD);
 
         /* Moving data */
 
@@ -381,13 +381,13 @@ namespace dlx
 
         // Move float to int
         InitInstruction(table, OpCode::MOVFP2I, ArgumentType::IntRegister,
-                        ArgumentType::FloatRegister, ArgumentType::None, RegisterAccessType::Float,
-                        impl::MOVFP2I);
+                        ArgumentType::FloatRegister, ArgumentType::None,
+                        RegisterAccessType::MixedFloatSigned, impl::MOVFP2I);
 
         // Move int to float
         InitInstruction(table, OpCode::MOVI2FP, ArgumentType::FloatRegister,
-                        ArgumentType::IntRegister, ArgumentType::None, RegisterAccessType::Float,
-                        impl::MOVI2FP);
+                        ArgumentType::IntRegister, ArgumentType::None,
+                        RegisterAccessType::MixedFloatSigned, impl::MOVI2FP);
 
         /* Converting data */
 

@@ -39,6 +39,13 @@ namespace dlx
                 return false;
             case RegisterAccessType::MixedFloatDouble:
                 return access == RegisterAccessType::Float || access == RegisterAccessType::Double;
+            case RegisterAccessType::MixedSignedUnsigned:
+                return access == RegisterAccessType::Signed ||
+                       access == RegisterAccessType::Unsigned;
+            case RegisterAccessType::MixedFloatSigned:
+                return access == RegisterAccessType::Float || access == RegisterAccessType::Signed;
+            case RegisterAccessType::MixedDoubleSigned:
+                return access == RegisterAccessType::Double || access == RegisterAccessType::Signed;
             default:
                 return expected_access == access;
         }
@@ -77,10 +84,9 @@ namespace dlx
 
     phi::i32 Processor::IntRegisterGetSignedValue(IntRegisterID id) const noexcept
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Signed))
-        {
-            PHI_LOG_WARN("Mismatch for instruction access type");
-        }
+        PHI_DBG_ASSERT(RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                                 RegisterAccessType::Signed),
+                       "Mismatch for instruction access type");
 
         PHI_DBG_ASSERT(to_underlying(id) >= 0);
         PHI_DBG_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
@@ -97,11 +103,9 @@ namespace dlx
 
     phi::u32 Processor::IntRegisterGetUnsignedValue(IntRegisterID id) const noexcept
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
-                                       RegisterAccessType::Unsigned))
-        {
-            PHI_LOG_WARN("Mismatch for instruction access type");
-        }
+        PHI_DBG_ASSERT(RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                                 RegisterAccessType::Unsigned),
+                       "Mismatch for instruction access type");
 
         PHI_DBG_ASSERT(to_underlying(id) >= 0);
         PHI_DBG_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
@@ -118,10 +122,9 @@ namespace dlx
 
     void Processor::IntRegisterSetSignedValue(IntRegisterID id, phi::i32 value) noexcept
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Signed))
-        {
-            PHI_LOG_WARN("Mismatch for instruction access type");
-        }
+        PHI_DBG_ASSERT(RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                                 RegisterAccessType::Signed),
+                       "Mismatch for instruction access type");
 
         IntRegister& reg = GetIntRegister(id);
 
@@ -139,11 +142,9 @@ namespace dlx
 
     void Processor::IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value) noexcept
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
-                                       RegisterAccessType::Unsigned))
-        {
-            PHI_LOG_WARN("Mismatch for instruction access type");
-        }
+        PHI_DBG_ASSERT(RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                                 RegisterAccessType::Unsigned),
+                       "Mismatch for instruction access type");
 
         IntRegister& reg = GetIntRegister(id);
 
@@ -185,10 +186,9 @@ namespace dlx
 
     [[nodiscard]] phi::f32 Processor::FloatRegisterGetFloatValue(FloatRegisterID id) const noexcept
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Float))
-        {
-            PHI_LOG_WARN("Mismatch for instruction access type");
-        }
+        PHI_DBG_ASSERT(RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                                 RegisterAccessType::Float),
+                       "Mismatch for instruction access type");
 
         PHI_DBG_ASSERT(to_underlying(id) >= 0);
         PHI_DBG_ASSERT(to_underlying(id) < m_FloatRegistersValueTypes.size());
@@ -207,10 +207,9 @@ namespace dlx
 
     [[nodiscard]] phi::f64 Processor::FloatRegisterGetDoubleValue(FloatRegisterID id) noexcept
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Double))
-        {
-            PHI_LOG_WARN("Mismatch for instruction access type");
-        }
+        PHI_DBG_ASSERT(RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                                 RegisterAccessType::Double),
+                       "Mismatch for instruction access type");
 
         if (id == FloatRegisterID::F31)
         {
@@ -256,10 +255,9 @@ namespace dlx
 
     void Processor::FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value) noexcept
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Float))
-        {
-            PHI_LOG_WARN("Mismatch for instruction access type");
-        }
+        PHI_DBG_ASSERT(RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                                 RegisterAccessType::Float),
+                       "Mismatch for instruction access type");
 
         FloatRegister& reg = GetFloatRegister(id);
 
@@ -272,10 +270,9 @@ namespace dlx
 
     void Processor::FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value) noexcept
     {
-        if (!RegisterAccessTypeMatches(m_CurrentInstructionAccessType, RegisterAccessType::Double))
-        {
-            PHI_LOG_WARN("Mismatch for instruction access type");
-        }
+        PHI_DBG_ASSERT(RegisterAccessTypeMatches(m_CurrentInstructionAccessType,
+                                                 RegisterAccessType::Double),
+                       "Mismatch for instruction access type");
 
         if (id == FloatRegisterID::F31)
         {
@@ -374,7 +371,8 @@ namespace dlx
         // Halt if there are no instruction to execute
         if (m_CurrentProgram->m_Instructions.empty())
         {
-            m_Halted = true;
+            m_Halted                       = true;
+            m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
         }
 
         // Do nothing when processor is halted
@@ -400,7 +398,8 @@ namespace dlx
         if ((m_MaxNumberOfSteps != 0u && m_CurrentStepCount >= m_MaxNumberOfSteps) ||
             (m_ProgramCounter >= m_CurrentProgram->m_Instructions.size()))
         {
-            m_Halted = true;
+            m_Halted                       = true;
+            m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
         }
     }
 
@@ -422,6 +421,9 @@ namespace dlx
         {
             ExecuteStep();
         }
+
+        PHI_DBG_ASSERT(m_CurrentInstructionAccessType == RegisterAccessType::Ignored,
+                       "RegisterAccessType was not reset correctly");
     }
 
     void Processor::ClearRegisters() noexcept
@@ -472,7 +474,8 @@ namespace dlx
                 PHI_LOG_ERROR("Trapped");
                 return;
             case Exception::Halt:
-                m_Halted = true;
+                m_Halted                       = true;
+                m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
                 return;
             case Exception::UnknownLabel:
                 m_Halted = true;
