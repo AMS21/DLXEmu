@@ -2183,6 +2183,7 @@ TEST_CASE("Parser Error - Trailling comma")
     const dlx::ParseError::UnexpectedToken& detail = err1.GetUnexpectedToken();
     CHECK(detail.expected_type == dlx::Token::Type::NewLine);
     CHECK(detail.actual_type == dlx::Token::Type::Comma);
+    CHECK_FALSE(err1.ConstructMessage().empty());
 }
 
 TEST_CASE("Parser Error - EmptyLabel")
@@ -2199,6 +2200,7 @@ TEST_CASE("Parser Error - EmptyLabel")
         CHECK(err1.GetColumn() == 1u);
         const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
         CHECK(detail.label_name == "a");
+        CHECK_FALSE(err1.ConstructMessage().empty());
     }
 
     {
@@ -2213,6 +2215,7 @@ TEST_CASE("Parser Error - EmptyLabel")
         CHECK(err1.GetColumn() == 1u);
         const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
         CHECK(detail.label_name == "b");
+        CHECK_FALSE(err1.ConstructMessage().empty());
 
         const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
         REQUIRE(err2.GetType() == dlx::ParseError::Type::EmptyLabel);
@@ -2220,6 +2223,7 @@ TEST_CASE("Parser Error - EmptyLabel")
         CHECK(err2.GetColumn() == 1u);
         const dlx::ParseError::EmptyLabel& detail2 = err2.GetEmptyLabel();
         CHECK(detail2.label_name == "a");
+        CHECK_FALSE(err2.ConstructMessage().empty());
     }
 
     {
@@ -2234,6 +2238,7 @@ TEST_CASE("Parser Error - EmptyLabel")
         CHECK(err1.GetColumn() == 1u);
         const dlx::ParseError::EmptyLabel& detail = err1.GetEmptyLabel();
         CHECK(detail.label_name == "c");
+        CHECK_FALSE(err1.ConstructMessage().empty());
 
         const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
         REQUIRE(err2.GetType() == dlx::ParseError::Type::EmptyLabel);
@@ -2241,6 +2246,7 @@ TEST_CASE("Parser Error - EmptyLabel")
         CHECK(err2.GetColumn() == 1u);
         const dlx::ParseError::EmptyLabel& detail2 = err2.GetEmptyLabel();
         CHECK(detail2.label_name == "b");
+        CHECK_FALSE(err2.ConstructMessage().empty());
 
         const dlx::ParseError& err3 = res.m_ParseErrors.at(2);
         REQUIRE(err3.GetType() == dlx::ParseError::Type::EmptyLabel);
@@ -2248,6 +2254,7 @@ TEST_CASE("Parser Error - EmptyLabel")
         CHECK(err3.GetColumn() == 1u);
         const dlx::ParseError::EmptyLabel& detail3 = err3.GetEmptyLabel();
         CHECK(detail3.label_name == "a");
+        CHECK_FALSE(err3.ConstructMessage().empty());
     }
 }
 
@@ -2263,6 +2270,7 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 5u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
     }
 
     {
@@ -2275,11 +2283,13 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 5u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
 
         const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
         REQUIRE(err2.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err2.GetLineNumber() == 1u);
         CHECK(err2.GetColumn() == 9u);
+        CHECK_FALSE(err2.ConstructMessage().empty());
     }
 
     {
@@ -2292,11 +2302,13 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 5u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
 
         const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
         REQUIRE(err2.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err2.GetLineNumber() == 2u);
         CHECK(err2.GetColumn() == 5u);
+        CHECK_FALSE(err2.ConstructMessage().empty());
     }
 
     {
@@ -2309,11 +2321,13 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 5u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
 
         const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
         REQUIRE(err2.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err2.GetLineNumber() == 2u);
         CHECK(err2.GetColumn() == 5u);
+        CHECK_FALSE(err2.ConstructMessage().empty());
     }
 
     {
@@ -2326,6 +2340,7 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 14u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
     }
 
     {
@@ -2338,6 +2353,7 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err1.GetLineNumber() == 2u);
         CHECK(err1.GetColumn() == 14u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
     }
 
     {
@@ -2350,11 +2366,13 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 14u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
 
         const dlx::ParseError& err2 = res.m_ParseErrors.at(1);
         REQUIRE(err2.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err2.GetLineNumber() == 2u);
         CHECK(err2.GetColumn() == 14u);
+        CHECK_FALSE(err2.ConstructMessage().empty());
     }
 
     {
@@ -2367,6 +2385,7 @@ TEST_CASE("Parser Error - OneInstructionPerLine")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::OneInstructionPerLine);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 12u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
     }
 }
 
@@ -2382,6 +2401,7 @@ TEST_CASE("Parse Error - More than one comma")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::TooManyComma);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 8u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
     }
 
     {
@@ -2394,6 +2414,7 @@ TEST_CASE("Parse Error - More than one comma")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::TooManyComma);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 9u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
     }
 
     {
@@ -2406,11 +2427,13 @@ TEST_CASE("Parse Error - More than one comma")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::TooManyComma);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 10u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
 
         const dlx::ParseError& err2 = res.m_ParseErrors.at(1u);
         REQUIRE(err2.GetType() == dlx::ParseError::Type::TooManyComma);
         CHECK(err2.GetLineNumber() == 1u);
         CHECK(err2.GetColumn() == 12u);
+        CHECK_FALSE(err2.ConstructMessage().empty());
     }
 
     {
@@ -2423,5 +2446,6 @@ TEST_CASE("Parse Error - More than one comma")
         REQUIRE(err1.GetType() == dlx::ParseError::Type::TooManyComma);
         CHECK(err1.GetLineNumber() == 1u);
         CHECK(err1.GetColumn() == 13u);
+        CHECK_FALSE(err1.ConstructMessage().empty());
     }
 }
