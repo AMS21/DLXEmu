@@ -329,10 +329,6 @@ namespace dlx
         void ADD(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -346,10 +342,6 @@ namespace dlx
         void ADDI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -362,10 +354,6 @@ namespace dlx
         void ADDU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -379,10 +367,6 @@ namespace dlx
         void ADDUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -395,10 +379,6 @@ namespace dlx
         void ADDF(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
-
             const auto& dest_reg = arg1.AsRegisterFloat().register_id;
             const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
             const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
@@ -414,10 +394,6 @@ namespace dlx
         void ADDD(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
-
             const auto& dest_reg = arg1.AsRegisterFloat().register_id;
             const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
             const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
@@ -433,10 +409,6 @@ namespace dlx
         void SUB(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -450,10 +422,6 @@ namespace dlx
         void SUBI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -466,10 +434,6 @@ namespace dlx
         void SUBU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -483,10 +447,6 @@ namespace dlx
         void SUBUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -499,10 +459,6 @@ namespace dlx
         void SUBF(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
-
             const auto& dest_reg = arg1.AsRegisterFloat().register_id;
             const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
             const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
@@ -518,10 +474,6 @@ namespace dlx
         void SUBD(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
-
             const auto& dest_reg = arg1.AsRegisterFloat().register_id;
             const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
             const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
@@ -537,10 +489,6 @@ namespace dlx
         void MULT(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -554,10 +502,6 @@ namespace dlx
         void MULTI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -570,10 +514,6 @@ namespace dlx
         void MULTU(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -587,10 +527,6 @@ namespace dlx
         void MULTUI(Processor& processor, const InstructionArgument& arg1,
                     const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -603,10 +539,6 @@ namespace dlx
         void MULTF(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
-
             const auto& dest_reg = arg1.AsRegisterFloat().register_id;
             const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
             const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
@@ -622,10 +554,6 @@ namespace dlx
         void MULTD(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
-
             const auto& dest_reg = arg1.AsRegisterFloat().register_id;
             const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
             const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
@@ -641,10 +569,6 @@ namespace dlx
         void DIV(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -658,10 +582,6 @@ namespace dlx
         void DIVI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -674,10 +594,6 @@ namespace dlx
         void DIVU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -691,10 +607,6 @@ namespace dlx
         void DIVUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -707,10 +619,6 @@ namespace dlx
         void DIVF(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
-
             const auto& dest_reg = arg1.AsRegisterFloat().register_id;
             const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
             const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
@@ -732,10 +640,6 @@ namespace dlx
         void DIVD(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::FloatRegister);
-
             const auto& dest_reg = arg1.AsRegisterFloat().register_id;
             const auto& lhs_reg  = arg2.AsRegisterFloat().register_id;
             const auto& rhs_reg  = arg3.AsRegisterFloat().register_id;
@@ -757,10 +661,6 @@ namespace dlx
         void SLL(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -774,10 +674,6 @@ namespace dlx
         void SLLI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -791,10 +687,6 @@ namespace dlx
         void SRL(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -808,10 +700,6 @@ namespace dlx
         void SRLI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -825,10 +713,6 @@ namespace dlx
         void SLA(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -842,10 +726,6 @@ namespace dlx
         void SLAI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -859,10 +739,6 @@ namespace dlx
         void SRA(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -876,10 +752,6 @@ namespace dlx
         void SRAI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -893,10 +765,6 @@ namespace dlx
         void AND(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -911,10 +779,6 @@ namespace dlx
         void ANDI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -928,10 +792,6 @@ namespace dlx
         void OR(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -946,10 +806,6 @@ namespace dlx
         void ORI(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -963,10 +819,6 @@ namespace dlx
         void XOR(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -981,10 +833,6 @@ namespace dlx
         void XORI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -998,10 +846,6 @@ namespace dlx
         void SLT(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1017,10 +861,6 @@ namespace dlx
         void SLTI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1035,10 +875,6 @@ namespace dlx
         void SLTU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1054,10 +890,6 @@ namespace dlx
         void SLTUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1072,10 +904,6 @@ namespace dlx
         void LTF(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1090,10 +918,6 @@ namespace dlx
         void LTD(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1108,10 +932,6 @@ namespace dlx
         void SGT(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1127,10 +947,6 @@ namespace dlx
         void SGTI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1145,10 +961,6 @@ namespace dlx
         void SGTU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1164,10 +976,6 @@ namespace dlx
         void SGTUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1182,10 +990,6 @@ namespace dlx
         void GTF(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1200,10 +1004,6 @@ namespace dlx
         void GTD(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1218,10 +1018,6 @@ namespace dlx
         void SLE(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1237,10 +1033,6 @@ namespace dlx
         void SLEI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1255,10 +1047,6 @@ namespace dlx
         void SLEU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1274,10 +1062,6 @@ namespace dlx
         void SLEUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1292,10 +1076,6 @@ namespace dlx
         void LEF(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1310,10 +1090,6 @@ namespace dlx
         void LED(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1328,10 +1104,6 @@ namespace dlx
         void SGE(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1347,10 +1119,6 @@ namespace dlx
         void SGEI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1365,10 +1133,6 @@ namespace dlx
         void SGEU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1384,10 +1148,6 @@ namespace dlx
         void SGEUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1402,10 +1162,6 @@ namespace dlx
         void GEF(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1420,10 +1176,6 @@ namespace dlx
         void GED(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1438,10 +1190,6 @@ namespace dlx
         void SEQ(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1457,10 +1205,6 @@ namespace dlx
         void SEQI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1475,10 +1219,6 @@ namespace dlx
         void SEQU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1494,10 +1234,6 @@ namespace dlx
         void SEQUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1512,10 +1248,6 @@ namespace dlx
         void EQF(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1530,10 +1262,6 @@ namespace dlx
         void EQD(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1548,10 +1276,6 @@ namespace dlx
         void SNE(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1567,10 +1291,6 @@ namespace dlx
         void SNEI(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1585,10 +1305,6 @@ namespace dlx
         void SNEU(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::IntRegister);
-
             const auto& dest_reg = arg1.AsRegisterInt();
             const auto& lhs_reg  = arg2.AsRegisterInt();
             const auto& rhs_reg  = arg3.AsRegisterInt();
@@ -1604,10 +1320,6 @@ namespace dlx
         void SNEUI(Processor& processor, const InstructionArgument& arg1,
                    const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::ImmediateInteger);
-
             const auto& dest_reg  = arg1.AsRegisterInt();
             const auto& src_reg   = arg2.AsRegisterInt();
             const auto& imm_value = arg3.AsImmediateValue();
@@ -1622,10 +1334,6 @@ namespace dlx
         void NEF(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1640,10 +1348,6 @@ namespace dlx
         void NED(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID lhs_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID rhs_reg = arg2.AsRegisterFloat().register_id;
 
@@ -1658,10 +1362,6 @@ namespace dlx
         void BEQZ(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::Label);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& test_reg   = arg1.AsRegisterInt();
             const auto& jump_label = arg2.AsLabel();
 
@@ -1676,10 +1376,6 @@ namespace dlx
         void BNEZ(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::Label);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& test_reg   = arg1.AsRegisterInt();
             const auto& jump_label = arg2.AsLabel();
 
@@ -1694,10 +1390,6 @@ namespace dlx
         void BFPT(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::Label);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& jump_label = arg1.AsLabel();
 
             phi::Boolean test_value = processor.GetFPSRValue();
@@ -1711,10 +1403,6 @@ namespace dlx
         void BFPF(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::Label);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& jump_label = arg1.AsLabel();
 
             phi::Boolean test_value = processor.GetFPSRValue();
@@ -1728,10 +1416,6 @@ namespace dlx
         void J(Processor& processor, const InstructionArgument& arg1,
                const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::Label);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& jump_label = arg1.AsLabel();
 
             JumpToLabel(processor, jump_label.label_name);
@@ -1740,10 +1424,6 @@ namespace dlx
         void JR(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& jump_register = arg1.AsRegisterInt();
 
             JumpToRegister(processor, jump_register.register_id);
@@ -1752,10 +1432,6 @@ namespace dlx
         void JAL(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::Label);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& jump_label = arg1.AsLabel();
 
             processor.IntRegisterSetUnsignedValue(IntRegisterID::R31,
@@ -1767,10 +1443,6 @@ namespace dlx
         void JALR(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& jump_register = arg1.AsRegisterInt();
 
             processor.IntRegisterSetUnsignedValue(IntRegisterID::R31,
@@ -1782,10 +1454,6 @@ namespace dlx
         void LHI(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const IntRegisterID dest_reg  = arg1.AsRegisterInt().register_id;
             std::int32_t        imm_value = arg2.AsImmediateValue().signed_value.get();
 
@@ -1797,11 +1465,6 @@ namespace dlx
         void LB(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
-                       arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& dest_reg = arg1.AsRegisterInt();
 
             auto optional_address = GetLoadStoreAddress(processor, arg2);
@@ -1832,11 +1495,6 @@ namespace dlx
         void LBU(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
-                       arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& dest_reg = arg1.AsRegisterInt();
 
             auto optional_address = GetLoadStoreAddress(processor, arg2);
@@ -1867,11 +1525,6 @@ namespace dlx
         void LH(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
-                       arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& dest_reg = arg1.AsRegisterInt();
 
             auto optional_address = GetLoadStoreAddress(processor, arg2);
@@ -1902,11 +1555,6 @@ namespace dlx
         void LHU(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
-                       arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& dest_reg = arg1.AsRegisterInt();
 
             auto optional_address = GetLoadStoreAddress(processor, arg2);
@@ -1937,11 +1585,6 @@ namespace dlx
         void LW(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
-                       arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& dest_reg = arg1.AsRegisterInt();
 
             auto optional_address = GetLoadStoreAddress(processor, arg2);
@@ -1970,11 +1613,6 @@ namespace dlx
         void LWU(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
-                       arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& dest_reg = arg1.AsRegisterInt();
 
             auto optional_address = GetLoadStoreAddress(processor, arg2);
@@ -2003,11 +1641,6 @@ namespace dlx
         void LF(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
-                       arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& dest_reg = arg1.AsRegisterFloat();
 
             auto optional_address = GetLoadStoreAddress(processor, arg2);
@@ -2036,11 +1669,6 @@ namespace dlx
         void LD(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::AddressDisplacement ||
-                       arg2.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const auto& dest_reg = arg1.AsRegisterFloat();
 
             auto optional_address = GetLoadStoreAddress(processor, arg2);
@@ -2069,11 +1697,6 @@ namespace dlx
         void SB(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
-                       arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             auto optional_address = GetLoadStoreAddress(processor, arg1);
 
             if (!optional_address.has_value())
@@ -2101,11 +1724,6 @@ namespace dlx
         void SBU(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
-                       arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             auto optional_address = GetLoadStoreAddress(processor, arg1);
 
             if (!optional_address.has_value())
@@ -2134,11 +1752,6 @@ namespace dlx
         void SH(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
-                       arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             auto optional_address = GetLoadStoreAddress(processor, arg1);
 
             if (!optional_address.has_value())
@@ -2167,11 +1780,6 @@ namespace dlx
         void SHU(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
-                       arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             auto optional_address = GetLoadStoreAddress(processor, arg1);
 
             if (!optional_address.has_value())
@@ -2200,11 +1808,6 @@ namespace dlx
         void SW(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
-                       arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             auto optional_address = GetLoadStoreAddress(processor, arg1);
 
             if (!optional_address.has_value())
@@ -2232,11 +1835,6 @@ namespace dlx
         void SWU(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
-                       arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             auto optional_address = GetLoadStoreAddress(processor, arg1);
 
             if (!optional_address.has_value())
@@ -2264,11 +1862,6 @@ namespace dlx
         void SF(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
-                       arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             auto optional_address = GetLoadStoreAddress(processor, arg1);
 
             if (!optional_address.has_value())
@@ -2296,11 +1889,6 @@ namespace dlx
         void SD(Processor& processor, const InstructionArgument& arg1,
                 const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::AddressDisplacement ||
-                       arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             auto optional_address = GetLoadStoreAddress(processor, arg1);
 
             if (!optional_address.has_value())
@@ -2328,10 +1916,6 @@ namespace dlx
         void MOVF(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg   = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID source_reg = arg2.AsRegisterFloat().register_id;
 
@@ -2343,10 +1927,6 @@ namespace dlx
         void MOVD(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg   = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID source_reg = arg2.AsRegisterFloat().register_id;
 
@@ -2358,10 +1938,6 @@ namespace dlx
         void MOVFP2I(Processor& processor, const InstructionArgument& arg1,
                      const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const IntRegisterID   dest_reg   = arg1.AsRegisterInt().register_id;
             const FloatRegisterID source_reg = arg2.AsRegisterFloat().register_id;
 
@@ -2375,10 +1951,6 @@ namespace dlx
         void MOVI2FP(Processor& processor, const InstructionArgument& arg1,
                      const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::IntRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg   = arg1.AsRegisterFloat().register_id;
             const IntRegisterID   source_reg = arg2.AsRegisterInt().register_id;
 
@@ -2392,10 +1964,6 @@ namespace dlx
         void CVTF2D(Processor& processor, const InstructionArgument& arg1,
                     const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
@@ -2407,10 +1975,6 @@ namespace dlx
         void CVTF2I(Processor& processor, const InstructionArgument& arg1,
                     const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
@@ -2425,10 +1989,6 @@ namespace dlx
         void CVTD2F(Processor& processor, const InstructionArgument& arg1,
                     const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
@@ -2441,10 +2001,6 @@ namespace dlx
         void CVTD2I(Processor& processor, const InstructionArgument& arg1,
                     const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
@@ -2459,10 +2015,6 @@ namespace dlx
         void CVTI2F(Processor& processor, const InstructionArgument& arg1,
                     const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
@@ -2477,10 +2029,6 @@ namespace dlx
         void CVTI2D(Processor& processor, const InstructionArgument& arg1,
                     const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::FloatRegister);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
@@ -2495,30 +2043,18 @@ namespace dlx
         void TRAP(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::ImmediateInteger);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             processor.Raise(Exception::Trap);
         }
 
         void HALT(Processor& processor, const InstructionArgument& arg1,
                   const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             processor.Raise(Exception::Halt);
         }
 
         void NOP(Processor& processor, const InstructionArgument& arg1,
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
-            PHI_ASSERT(arg1.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg2.GetType() == ArgumentType::None);
-            PHI_ASSERT(arg3.GetType() == ArgumentType::None);
-
             /* Do nothing */
         }
     } // namespace impl
