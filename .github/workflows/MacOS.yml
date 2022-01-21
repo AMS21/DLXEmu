@@ -35,7 +35,6 @@ jobs:
           #- { compiler: clang++, compiler_version: "12.4", dynamic_test: "msan" }
           - { compiler: clang++, compiler_version: "12.4", dynamic_test: "tsan" }
           - { compiler: clang++, compiler_version: "12.4", dynamic_test: "ubsan" }
-          - { compiler: clang++, compiler_version: "12.4", dynamic_test: "valgrind" }
 
     steps:
       - name: Checkout
@@ -59,12 +58,6 @@ jobs:
             echo "CXX=g++-${{ matrix.cfg.compiler_version }}" >> $GITHUB_ENV
           elif [ "${{ matrix.cfg.compiler}}" = "clang++" ]; then
             echo "CXX=clang++" >> $GITHUB_ENV
-          fi
-
-          # Install valgrind
-          if [ "${{ matrix.cfg.dynamic_test }}" = "valgrind" ]; then
-            brew tap LouisBrunner/valgrind
-            brew install --HEAD LouisBrunner/valgrind/valgrind
           fi
 
       - name: Configure build directory
