@@ -9697,10 +9697,6 @@ var ASM_CONSTS = {
       return GLFW.monitors;
     }
 
-  function _glfwGetMouseButton(winid, button) {
-      return GLFW.getMouseButton(winid, button);
-    }
-
   function _glfwGetTime() {
       return GLFW.getTime() - GLFW.initialTime;
     }
@@ -9777,6 +9773,10 @@ var ASM_CONSTS = {
 
   function _glfwSetCursorPos(winid, x, y) {
       GLFW.setCursorPos(winid, x, y);
+    }
+
+  function _glfwSetCursorPosCallback(winid, cbfun) {
+      return GLFW.setCursorPosCallback(winid, cbfun);
     }
 
   function _glfwSetErrorCallback(cbfun) {
@@ -10924,7 +10924,6 @@ var asmLibraryArg = {
   "glfwGetJoystickButtons": _glfwGetJoystickButtons,
   "glfwGetMonitorPos": _glfwGetMonitorPos,
   "glfwGetMonitors": _glfwGetMonitors,
-  "glfwGetMouseButton": _glfwGetMouseButton,
   "glfwGetTime": _glfwGetTime,
   "glfwGetVideoMode": _glfwGetVideoMode,
   "glfwGetWindowAttrib": _glfwGetWindowAttrib,
@@ -10938,6 +10937,7 @@ var asmLibraryArg = {
   "glfwSetCursor": _glfwSetCursor,
   "glfwSetCursorEnterCallback": _glfwSetCursorEnterCallback,
   "glfwSetCursorPos": _glfwSetCursorPos,
+  "glfwSetCursorPosCallback": _glfwSetCursorPosCallback,
   "glfwSetErrorCallback": _glfwSetErrorCallback,
   "glfwSetInputMode": _glfwSetInputMode,
   "glfwSetKeyCallback": _glfwSetKeyCallback,
