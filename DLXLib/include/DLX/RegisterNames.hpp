@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Phi/Core/Boolean.hpp"
+#include <phi/core/boolean.hpp>
 #include <string>
 
 namespace dlx

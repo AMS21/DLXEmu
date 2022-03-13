@@ -3,8 +3,8 @@
 #include "DLX/MemoryBlock.hpp"
 #include "DLX/Processor.hpp"
 #include "DLXEmu/Emulator.hpp"
-#include "Phi/Core/Types.hpp"
 #include <imgui.h>
+#include <phi/core/types.hpp>
 
 namespace dlxemu
 {

@@ -36,5 +36,6 @@ target_include_directories("DLXLibUnittest" PRIVATE "include")
 #target_compile_definitions("DLXLibUnittest" PRIVATE "_GLIBCXX_DEBUG;_LIBCPP_DEBUG=1;_ITERATOR_DEBUG_LEVEL=2")
 
 set_target_properties("DLXLibUnittest" PROPERTIES FOLDER "Tests")
+set_target_properties("DLXLibUnittest" PROPERTIES CXX_STANDARD 20)
 
 phi_add_test(TARGET DLXLibUnittest)

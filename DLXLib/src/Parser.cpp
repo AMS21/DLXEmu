@@ -11,16 +11,15 @@
 #include "DLX/Token.hpp"
 #include "DLX/TokenStream.hpp"
 #include "DLX/Tokenize.hpp"
-#include <Phi/Config/FunctionLikeMacro.hpp>
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Boolean.hpp>
-#include <Phi/Core/Conversion.hpp>
-#include <Phi/Core/Log.hpp>
-#include <Phi/Core/Types.hpp>
 #include <magic_enum.hpp>
+#include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
+#include <phi/core/conversion.hpp>
+#include <phi/core/optional.hpp>
+#include <phi/core/types.hpp>
+#include <phi/preprocessor/function_like_macro.hpp>
 #include <algorithm>
 #include <limits>
-#include <optional>
 #include <stdexcept>
 #include <string_view>
 
@@ -28,11 +27,11 @@ using namespace phi::literals;
 
 namespace dlx
 {
-    static std::optional<InstructionArgument> parse_instruction_argument(
+    static phi::optional<InstructionArgument> parse_instruction_argument(
             const Token& token, ArgumentType expected_argument_type, TokenStream& tokens,
             ParsedProgram& program) noexcept
     {
-        // PHI_LOG_INFO("Parsing argument with token '{}' and expected type '{}'", token.DebugInfo(),
+        // SPDLOG_INFO("Parsing argument with token '{}' and expected type '{}'", token.DebugInfo(),
         //              magic_enum::enum_name(expected_argument_type));
 
         switch (token.GetType())
@@ -89,7 +88,7 @@ namespace dlx
                 // Consume the 3 tokens
                 tokens.set_position(it + 3u);
 
-                //PHI_LOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
+                //SPDLOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
                 //             value, magic_enum::enum_name(reg_id));
 
                 return ConstructInstructionArgumentAddressDisplacement(
@@ -103,7 +102,7 @@ namespace dlx
                     return {};
                 }
 
-                //PHI_LOG_INFO("Parsed identifier as int register {}",
+                //SPDLOG_INFO("Parsed identifier as int register {}",
                 //             magic_enum::enum_name(reg_id));
 
                 return ConstructInstructionArgumentRegisterInt(
@@ -117,7 +116,7 @@ namespace dlx
                     return {};
                 }
 
-                //PHI_LOG_INFO("Parsed identifier as float register {}",
+                //SPDLOG_INFO("Parsed identifier as float register {}",
                 //             magic_enum::enum_name(float_reg_id));
 
                 return ConstructInstructionArgumentRegisterFloat(
@@ -146,7 +145,7 @@ namespace dlx
                     return {};
                 }
 
-                //PHI_LOG_INFO("Parsed Label identifier as '{}'", token.GetText());
+                //SPDLOG_INFO("Parsed Label identifier as '{}'", token.GetText());
 
                 return ConstructInstructionArgumentLabel(token.GetText());
             }
@@ -171,7 +170,7 @@ namespace dlx
                     return {};
                 }
 
-                //PHI_LOG_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
+                //SPDLOG_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
                 return ConstructInstructionArgumentImmediateValue(parsed_value.value().get());
@@ -191,24 +190,24 @@ namespace dlx
 
         program.m_Tokens = tokens;
 
-        phi::Boolean line_has_instruction{false};
+        phi::boolean line_has_instruction{false};
         phi::usize   label_count{0u};
 
         while (tokens.has_more())
         {
             const Token& current_token = tokens.consume();
 
-            //PHI_LOG_INFO("Parsing '{}'", current_token.DebugInfo());
+            //SPDLOG_INFO("Parsing '{}'", current_token.DebugInfo());
 
             switch (current_token.GetType())
             {
                 // Ignore comments
                 case Token::Type::Comment:
-                    //PHI_LOG_DEBUG("Ignoring comment");
+                    //SPDLOG_DEBUG("Ignoring comment");
                     break;
 
                 case Token::Type::NewLine:
-                    //PHI_LOG_DEBUG("Ignoring newline");
+                    //SPDLOG_DEBUG("Ignoring newline");
                     line_has_instruction = false;
                     break;
 
@@ -278,7 +277,7 @@ namespace dlx
                             static_cast<std::uint32_t>(program.m_Instructions.size());
                     label_count += 1u;
 
-                    //PHI_LOG_INFO("Added jump label {} -> {}", label_name,
+                    //SPDLOG_INFO("Added jump label {} -> {}", label_name,
                     //             program.m_Instructions.size());
 
                     break;
@@ -298,7 +297,7 @@ namespace dlx
                     PHI_DBG_ASSERT(current_token.HasHint());
                     OpCode opcode = static_cast<OpCode>(current_token.GetHint());
 
-                    //PHI_LOG_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
+                    //SPDLOG_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
 
                     const InstructionInfo& info = LookUpIntructionInfo(opcode);
 
@@ -309,12 +308,12 @@ namespace dlx
                     PHI_DBG_ASSERT(info.GetExecutor());
 
                     phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
-                    //PHI_LOG_INFO("Instruction requires {} arguments",
+                    //SPDLOG_INFO("Instruction requires {} arguments",
                     //             number_of_argument_required.get());
 
                     // Create instruction
                     Instruction  instruction(info);
-                    phi::Boolean consumed_comma{false};
+                    phi::boolean consumed_comma{false};
 
                     // Parse arguments
                     for (phi::u8 argument_num{0_u8}; argument_num < number_of_argument_required;)
@@ -339,7 +338,7 @@ namespace dlx
                             }
 
                             consumed_comma = true;
-                            //PHI_LOG_DEBUG("Skipping comma");
+                            //SPDLOG_DEBUG("Skipping comma");
                             continue;
                         }
 
@@ -351,7 +350,7 @@ namespace dlx
                             break;
                         }
 
-                        std::optional<InstructionArgument> optional_parsed_argument =
+                        phi::optional<InstructionArgument> optional_parsed_argument =
                                 parse_instruction_argument(
                                         token, info.GetArgumentType(argument_num), tokens, program);
                         if (!optional_parsed_argument.has_value())
@@ -367,10 +366,10 @@ namespace dlx
                         argument_num++;
                         consumed_comma = false;
 
-                        //PHI_LOG_INFO("Successfully parsed argument {}", argument_num.get());
+                        //SPDLOG_INFO("Successfully parsed argument {}", argument_num.get());
                     }
 
-                    //PHI_LOG_INFO("Successfully parsed instruction '{}'",
+                    //SPDLOG_INFO("Successfully parsed instruction '{}'",
                     //            instruction.DebugInfo());
                     program.m_Instructions.emplace_back(instruction);
                     line_has_instruction = true;

@@ -7,13 +7,13 @@
 #include "DLX/Parser.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Boolean.hpp>
-#include <Phi/Core/Log.hpp>
-#include <Phi/Core/Types.hpp>
 #include <magic_enum.hpp>
+#include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
+#include <phi/core/types.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/bundled/format.h>
+#include <spdlog/spdlog.h>
 #include <type_traits>
 #include <utility>
 
@@ -25,7 +25,7 @@ constexpr typename std::underlying_type<EnumT>::type to_underlying(EnumT val) no
 
 namespace dlx
 {
-    static phi::Boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
+    static phi::boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
                                                   RegisterAccessType access) noexcept
     {
         PHI_ASSERT(access == RegisterAccessType::Signed || access == RegisterAccessType::Unsigned ||
@@ -95,7 +95,7 @@ namespace dlx
         if (register_value_type != IntRegisterValueType::NotSet &&
             register_value_type != IntRegisterValueType::Signed)
         {
-            PHI_LOG_WARN("Mismatch for register value type");
+            SPDLOG_WARN("Mismatch for register value type");
         }
 
         return GetIntRegister(id).GetSignedValue();
@@ -114,7 +114,7 @@ namespace dlx
         if (register_value_type != IntRegisterValueType::NotSet &&
             register_value_type != IntRegisterValueType::Unsigned)
         {
-            PHI_LOG_WARN("Mismatch for register value type");
+            SPDLOG_WARN("Mismatch for register value type");
         }
 
         return GetIntRegister(id).GetUnsignedValue();
@@ -197,7 +197,9 @@ namespace dlx
         if (register_value_type != FloatRegisterValueType::NotSet &&
             register_value_type != FloatRegisterValueType::Float)
         {
-            PHI_LOG_WARN("Mismatch for register value type");
+            /*
+            SPDLOG_WARN("Mismatch for register value type");
+            */
         }
 
         const FloatRegister& reg = GetFloatRegister(id);
@@ -224,7 +226,7 @@ namespace dlx
         if (register_value_type_low != FloatRegisterValueType::NotSet &&
             register_value_type_low != FloatRegisterValueType::DoubleLow)
         {
-            PHI_LOG_WARN("Mismatch for register value type");
+            SPDLOG_WARN("Mismatch for register value type");
         }
 
         const FloatRegisterValueType register_value_type_high =
@@ -232,7 +234,7 @@ namespace dlx
         if (register_value_type_low != FloatRegisterValueType::NotSet &&
             register_value_type_low != FloatRegisterValueType::DoubleHigh)
         {
-            PHI_LOG_WARN("Mismatch for register value type");
+            SPDLOG_WARN("Mismatch for register value type");
         }
 
         const FloatRegister& first_reg = GetFloatRegister(id);
@@ -315,14 +317,14 @@ namespace dlx
         return m_FPSR;
     }
 
-    phi::Boolean Processor::GetFPSRValue() const noexcept
+    phi::boolean Processor::GetFPSRValue() const noexcept
     {
         const StatusRegister& status_reg = GetFPSR();
 
         return status_reg.Get();
     }
 
-    void Processor::SetFPSRValue(phi::Boolean value) noexcept
+    void Processor::SetFPSRValue(phi::boolean value) noexcept
     {
         StatusRegister& status_reg = GetFPSR();
 
@@ -336,11 +338,11 @@ namespace dlx
         inst.Execute(*this);
     }
 
-    phi::Boolean Processor::LoadProgram(ParsedProgram& program) noexcept
+    phi::boolean Processor::LoadProgram(ParsedProgram& program) noexcept
     {
         if (!program.m_ParseErrors.empty())
         {
-            PHI_LOG_WARN("Trying to load program with parsing errors");
+            SPDLOG_WARN("Trying to load program with parsing errors");
             return false;
         }
 
@@ -355,7 +357,7 @@ namespace dlx
         return true;
     }
 
-    phi::ObserverPtr<ParsedProgram> Processor::GetCurrentProgramm() const noexcept
+    phi::observer_ptr<ParsedProgram> Processor::GetCurrentProgramm() const noexcept
     {
         return m_CurrentProgram;
     }
@@ -461,17 +463,17 @@ namespace dlx
 #endif
             case Exception::DivideByZero:
                 m_Halted = true;
-                PHI_LOG_ERROR("Division through zero");
+                SPDLOG_ERROR("Division through zero");
                 return;
             case Exception::Overflow:
-                PHI_LOG_WARN("Overflow");
+                SPDLOG_WARN("Overflow");
                 return;
             case Exception::Underflow:
-                PHI_LOG_WARN("Underflow");
+                SPDLOG_WARN("Underflow");
                 return;
             case Exception::Trap:
                 m_Halted = true;
-                PHI_LOG_ERROR("Trapped");
+                SPDLOG_ERROR("Trapped");
                 return;
             case Exception::Halt:
                 m_Halted                       = true;
@@ -479,17 +481,17 @@ namespace dlx
                 return;
             case Exception::UnknownLabel:
                 m_Halted = true;
-                PHI_LOG_ERROR("Unknown label");
+                SPDLOG_ERROR("Unknown label");
                 return;
             case Exception::BadShift:
-                PHI_LOG_ERROR("Bad shift");
+                SPDLOG_ERROR("Bad shift");
                 return;
             case Exception::AddressOutOfBounds:
-                PHI_LOG_ERROR("Address out of bounds");
+                SPDLOG_ERROR("Address out of bounds");
                 m_Halted = true;
                 return;
             case Exception::RegisterOutOfBounds:
-                PHI_LOG_ERROR("Register out of bounds");
+                SPDLOG_ERROR("Register out of bounds");
                 m_Halted = true;
                 return;
         }
@@ -504,7 +506,7 @@ namespace dlx
         return m_LastRaisedException;
     }
 
-    phi::Boolean Processor::IsHalted() const noexcept
+    phi::boolean Processor::IsHalted() const noexcept
     {
         return m_Halted;
     }

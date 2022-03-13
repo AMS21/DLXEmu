@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Token.hpp"
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Boolean.hpp>
-#include <Phi/Core/Types.hpp>
-#include <optional>
+#include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
+#include <phi/core/optional.hpp>
+#include <phi/core/types.hpp>
 #include <utility>
 #include <vector>
 
@@ -37,11 +37,11 @@ namespace dlx
 
         void reset() noexcept;
 
-        [[nodiscard]] phi::Boolean has_x_more(phi::usize x) const noexcept;
+        [[nodiscard]] phi::boolean has_x_more(phi::usize x) const noexcept;
 
-        [[nodiscard]] phi::Boolean has_more() const noexcept;
+        [[nodiscard]] phi::boolean has_more() const noexcept;
 
-        [[nodiscard]] phi::Boolean reached_end() const noexcept;
+        [[nodiscard]] phi::boolean reached_end() const noexcept;
 
         [[nodiscard]] const Token& look_ahead() const noexcept;
 
@@ -94,7 +94,7 @@ namespace dlx
         // Complexity O(n)
         [[nodiscard]] phi::usize size() const noexcept;
 
-        [[nodiscard]] phi::Boolean empty() const noexcept;
+        [[nodiscard]] phi::boolean empty() const noexcept;
 
         // Iterator
         [[nodiscard]] iterator current_position() noexcept;
@@ -123,7 +123,7 @@ namespace dlx
         storage_type m_Tokens;
         iterator     m_Iterator = m_Tokens.begin();
 #if defined(PHI_DEBUG)
-        phi::Boolean m_Finialized{false};
+        phi::boolean m_Finialized{false};
 #endif
     };
 } // namespace dlx

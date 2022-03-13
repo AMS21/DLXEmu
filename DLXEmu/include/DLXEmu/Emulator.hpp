@@ -10,7 +10,7 @@
 #include <DLX/Parser.hpp>
 #include <DLX/Processor.hpp>
 #include <DLX/Token.hpp>
-#include <Phi/Core/Boolean.hpp>
+#include <phi/core/boolean.hpp>
 #include <vector>
 
 namespace dlxemu
@@ -26,11 +26,11 @@ namespace dlxemu
         Emulator() noexcept;
 
         // Returns true if we should continue initialitation
-        [[nodiscard]] phi::Boolean HandleCommandLineArguments(phi::i32 argc, char** argv) noexcept;
+        [[nodiscard]] phi::boolean HandleCommandLineArguments(phi::i32 argc, char** argv) noexcept;
 
-        phi::Boolean Initialize() noexcept;
+        phi::boolean Initialize() noexcept;
 
-        [[nodiscard]] phi::Boolean IsRunning() const noexcept;
+        [[nodiscard]] phi::boolean IsRunning() const noexcept;
 
         void MainLoop() noexcept;
 

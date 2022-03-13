@@ -5,13 +5,13 @@
 #include "DLXEmu/BuildInfo.hpp"
 #include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
-#include <Phi/Config/Compiler.hpp>
-#include <Phi/Config/Platform.hpp>
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Log.hpp>
 #include <imgui.h>
+#include <phi/compiler_support/compiler.hpp>
+#include <phi/compiler_support/platform.hpp>
+#include <phi/core/assert.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/fmt.h>
+#include <spdlog/spdlog.h>
 #include <string_view>
 
 namespace dlxemu
@@ -25,12 +25,12 @@ namespace dlxemu
 #endif
     {}
 
-    phi::Boolean Emulator::HandleCommandLineArguments(phi::i32 argc, char** argv) noexcept
+    phi::boolean Emulator::HandleCommandLineArguments(phi::i32 argc, char** argv) noexcept
     {
         // No args
         if (argc <= 1)
         {
-            PHI_LOG_DEBUG("No args provides");
+            SPDLOG_DEBUG("No args provides");
             return true;
         }
 
@@ -47,7 +47,7 @@ namespace dlxemu
                 if (arg_value == "-h" || arg_value == "-help" || arg_value == "-?" ||
                     arg_value == "--help")
                 {
-                    PHI_LOG_INFO("Help");
+                    SPDLOG_INFO("Help");
                     return false;
                 }
                 // Display version
@@ -59,29 +59,29 @@ namespace dlxemu
                 }
 
                 // Unknown option
-                PHI_LOG_WARN("Unknown option '{:s}'", arg_value);
+                SPDLOG_WARN("Unknown option '{:s}'", arg_value);
                 break;
             }
 
-            PHI_LOG_WARN("Ignore command line argument '{:s}'", arg_value);
+            SPDLOG_WARN("Ignore command line argument '{:s}'", arg_value);
         }
 
         return true;
     }
 
-    phi::Boolean Emulator::Initialize() noexcept
+    phi::boolean Emulator::Initialize() noexcept
     {
         // Initialize Window
         if (!m_Window.Initialize())
         {
-            PHI_LOG_ERROR("Failed to initialize window");
+            SPDLOG_ERROR("Failed to initialize window");
             return false;
         }
 
         return true;
     }
 
-    phi::Boolean Emulator::IsRunning() const noexcept
+    phi::boolean Emulator::IsRunning() const noexcept
     {
         return m_Window.IsOpen();
     }
@@ -272,30 +272,30 @@ namespace dlxemu
 
                 if (ImGui::MenuItem("Dump registers to console"))
                 {
-                    PHI_LOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
+                    SPDLOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
                 }
 
                 if (ImGui::MenuItem("Dump memory to console"))
                 {
-                    PHI_LOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
+                    SPDLOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
                 }
 
                 if (ImGui::MenuItem("Dump processor to console"))
                 {
-                    PHI_LOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
+                    SPDLOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
                 }
 
                 if (ImGui::MenuItem("Dump current program to console"))
                 {
-                    PHI_LOG_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
+                    SPDLOG_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
                 }
 
                 if (ImGui::MenuItem("Full console dump"))
                 {
-                    PHI_LOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
-                    PHI_LOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
-                    PHI_LOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
-                    PHI_LOG_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
+                    SPDLOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
+                    SPDLOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
+                    SPDLOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
+                    SPDLOG_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
                 }
 
                 ImGui::EndMenu();
@@ -316,12 +316,12 @@ namespace dlxemu
                 if (m_DLXProgram.m_ParseErrors.empty())
                 {
                     m_Processor.ExecuteCurrentProgram();
-                    PHI_LOG_INFO("Executed current program");
+                    SPDLOG_INFO("Executed current program");
                 }
                 else
                 {
-                    PHI_LOG_INFO("Can't execute program since it contains {} parse errors",
-                                 m_DLXProgram.m_ParseErrors.size());
+                    SPDLOG_INFO("Can't execute program since it contains {} parse errors",
+                                m_DLXProgram.m_ParseErrors.size());
                 }
             }
 
@@ -331,13 +331,13 @@ namespace dlxemu
                 // Step
                 if (m_Processor.GetCurrentStepCount() == 0u)
                 {
-                    PHI_LOG_INFO("Loaded program");
+                    SPDLOG_INFO("Loaded program");
                     m_Processor.LoadProgram(m_DLXProgram);
                 }
 
                 m_Processor.ExecuteStep();
 
-                PHI_LOG_INFO("Executed step");
+                SPDLOG_INFO("Executed step");
             }
 
             ImGui::SameLine();

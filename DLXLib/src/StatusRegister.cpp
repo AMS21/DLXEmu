@@ -2,12 +2,12 @@
 
 namespace dlx
 {
-    void StatusRegister::SetStatus(phi::Boolean value) noexcept
+    void StatusRegister::SetStatus(phi::boolean value) noexcept
     {
         m_Value = value;
     }
 
-    phi::Boolean StatusRegister::Get() const noexcept
+    phi::boolean StatusRegister::Get() const noexcept
     {
         return m_Value;
     }

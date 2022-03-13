@@ -1,10 +1,33 @@
+find_package(Threads REQUIRED)
+
 # Phi
 add_subdirectory(Phi)
 
 include(Phi/scripts/cmake/Environment.cmake)
 
+# Use latest standard available but at least C++-11
+if(DEFINED CMAKE_CXX23_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX23_EXTENSION_COMPILE_OPTION)
+  set(LatestCXXStandard 23)
+elseif(DEFINED CMAKE_CXX20_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX20_EXTENSION_COMPILE_OPTION)
+  set(LatestCXXStandard 20)
+elseif(DEFINED CMAKE_CXX17_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX17_EXTENSION_COMPILE_OPTION)
+  set(LatestCXXStandard 17)
+elseif(DEFINED CMAKE_CXX14_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX14_EXTENSION_COMPILE_OPTION)
+  set(LatestCXXStandard 14)
+else()
+  set(LatestCXXStandard 11)
+endif()
+
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD ${LatestCXXStandard})
+
 # Catch2
 add_subdirectory(Catch2)
+
+# https://cmake.org/cmake/help/latest/policy/CMP0079.html
+cmake_policy(SET CMP0079 NEW)
+# Need to link threads with catch2 for emscripten to build
+target_link_libraries(Catch2 PUBLIC Threads::Threads)
 
 # glad
 add_subdirectory(glad)

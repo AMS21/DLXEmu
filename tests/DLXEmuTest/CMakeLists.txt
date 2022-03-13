@@ -18,5 +18,6 @@ target_include_directories("DLXEmuUnittest" PRIVATE "include")
 #target_compile_definitions("DLXEmuUnittest" PRIVATE "_GLIBCXX_DEBUG;_LIBCPP_DEBUG=1;_ITERATOR_DEBUG_LEVEL=2")
 
 set_target_properties("DLXEmuUnittest" PROPERTIES FOLDER "Tests")
+set_target_properties("DLXEmuUnittest" PROPERTIES CXX_STANDARD 20)
 
 phi_add_test(TARGET DLXEmuUnittest)

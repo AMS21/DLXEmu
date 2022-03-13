@@ -1,6 +1,6 @@
 #include "DLX/TokenStream.hpp"
 
-#include <Phi/Core/Assert.hpp>
+#include <phi/core/assert.hpp>
 
 namespace dlx
 {
@@ -43,7 +43,7 @@ namespace dlx
         m_Iterator = m_Tokens.begin();
     }
 
-    phi::Boolean TokenStream::has_x_more(phi::usize x) const noexcept
+    phi::boolean TokenStream::has_x_more(phi::usize x) const noexcept
     {
         auto it = m_Iterator;
         for (; x > 0u; ++it, --x)
@@ -57,12 +57,12 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean TokenStream::has_more() const noexcept
+    phi::boolean TokenStream::has_more() const noexcept
     {
         return m_Iterator != m_Tokens.end();
     }
 
-    phi::Boolean TokenStream::reached_end() const noexcept
+    phi::boolean TokenStream::reached_end() const noexcept
     {
         return m_Iterator == m_Tokens.end();
     }
@@ -151,7 +151,7 @@ namespace dlx
         return count;
     }
 
-    [[nodiscard]] phi::Boolean TokenStream::empty() const noexcept
+    [[nodiscard]] phi::boolean TokenStream::empty() const noexcept
     {
         return m_Tokens.empty();
     }

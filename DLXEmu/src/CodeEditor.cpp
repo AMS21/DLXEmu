@@ -30,10 +30,9 @@ SOFTWARE.
 #include <DLX/Parser.hpp>
 #include <DLX/ParserUtils.hpp>
 #include <DLX/Token.hpp>
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Boolean.hpp>
-#include <Phi/Core/Log.hpp>
 #include <magic_enum.hpp>
+#include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <algorithm>
 #include <cctype>
@@ -1104,8 +1103,8 @@ namespace dlxemu
                         (m_LastClick != -1.0f && (t - m_LastClick) < io.MouseDoubleClickTime);
 
                 /*
-			        Left mouse button triple click
-			    */
+                    Left mouse button triple click
+                */
 
                 if (triple_click)
                 {
@@ -1121,8 +1120,8 @@ namespace dlxemu
                 }
 
                 /*
-			        Left mouse button double click
-			    */
+                    Left mouse button double click
+                */
 
                 else if (double_click)
                 {
@@ -1145,8 +1144,8 @@ namespace dlxemu
                 }
 
                 /*
-			        Left mouse button click
-			    */
+                    Left mouse button click
+                */
                 else if (click)
                 {
                     m_State.m_CursorPosition = m_InteractiveStart = m_InteractiveEnd =
@@ -1658,7 +1657,7 @@ namespace dlxemu
                     std::swap(start, end);
                 }
                 start.m_Column = 0;
-                //			end.mColumn = end.mLine < mLines.size() ? mLines[end.mLine].size() : 0;
+                //          end.mColumn = end.mLine < mLines.size() ? mLines[end.mLine].size() : 0;
                 if (end.m_Column == 0 && end.m_Line > 0)
                 {
                     --end.m_Line;
@@ -1670,7 +1669,7 @@ namespace dlxemu
                 end.m_Column = GetLineMaxColumn(end.m_Line);
 
                 //if (end.mColumn >= GetLineMaxColumn(end.mLine))
-                //	end.mColumn = GetLineMaxColumn(end.mLine) - 1;
+                //  end.mColumn = GetLineMaxColumn(end.mLine) - 1;
 
                 u.m_RemovedStart = start;
                 u.m_RemovedEnd   = end;
@@ -2474,7 +2473,7 @@ namespace dlxemu
                 }
 
                 //if (cindex > 0 && UTF8CharLength(line[cindex]) > 1)
-                //	--cindex;
+                //  --cindex;
 
                 u.m_RemovedStart = u.m_RemovedEnd = GetActualCursorCoordinates();
                 --u.m_RemovedStart.m_Column;
@@ -3010,12 +3009,12 @@ namespace dlxemu
         m_Breakpoints = markers;
     }
 
-    phi::Boolean CodeEditor::AddBreakpoint(const std::uint32_t line_number) noexcept
+    phi::boolean CodeEditor::AddBreakpoint(const std::uint32_t line_number) noexcept
     {
         return m_Breakpoints.insert(line_number).second;
     }
 
-    phi::Boolean CodeEditor::RemoveBreakpoint(const std::uint32_t line_number) noexcept
+    phi::boolean CodeEditor::RemoveBreakpoint(const std::uint32_t line_number) noexcept
     {
         auto it = m_Breakpoints.find(line_number);
 
@@ -3028,7 +3027,7 @@ namespace dlxemu
         return false;
     }
 
-    phi::Boolean CodeEditor::ToggleBreakpoint(const std::uint32_t line_number) noexcept
+    phi::boolean CodeEditor::ToggleBreakpoint(const std::uint32_t line_number) noexcept
     {
         if (auto it = m_Breakpoints.find(line_number); it != m_Breakpoints.end())
         {
@@ -3122,7 +3121,7 @@ namespace dlxemu
 
     void CodeEditor::ColorizeToken(const dlx::Token& token) noexcept
     {
-        //PHI_LOG_DEBUG("Colorizing token: {}", token.DebugInfo());
+        //SPDLOG_DEBUG("Colorizing token: {}", token.DebugInfo());
 
         PaletteIndex palette_index{PaletteIndex::Default};
 
@@ -3150,34 +3149,34 @@ namespace dlxemu
                 break;
         }
 
-        //PHI_LOG_DEBUG("palette_index: {}", magic_enum::enum_name(palette_index));
-        //PHI_LOG_DEBUG("token length: {}", token.GetLength().get());
+        //SPDLOG_DEBUG("palette_index: {}", magic_enum::enum_name(palette_index));
+        //SPDLOG_DEBUG("token length: {}", token.GetLength().get());
 
         Line& line = m_Lines[(token.GetLineNumber() - 1u).get()];
-        //PHI_LOG_DEBUG("Line number: {}", (token.GetLineNumber() - 1u).get());
-        //PHI_LOG_DEBUG("line empty: {}", line.empty());
+        //SPDLOG_DEBUG("Line number: {}", (token.GetLineNumber() - 1u).get());
+        //SPDLOG_DEBUG("line empty: {}", line.empty());
 
         for (std::size_t index{static_cast<std::size_t>((token.GetColumn() - 1u).get())};
              index < token.GetColumn() + token.GetLength() - 1u; ++index)
         {
-            //PHI_LOG_DEBUG("index:{:d}, max size: {:d}", index, line.size());
+            //SPDLOG_DEBUG("index:{:d}, max size: {:d}", index, line.size());
             PHI_DBG_ASSERT(index < line.size());
             line[index].m_ColorIndex = palette_index;
         }
 
-        //PHI_LOG_DEBUG("Finished colorizing");
+        //SPDLOG_DEBUG("Finished colorizing");
     }
 
     void CodeEditor::ColorizeInternal() noexcept
     {
         const dlx::ParsedProgram& program = m_Emulator->GetProgram();
 
-        //PHI_LOG_DEBUG("Tokens: ");
+        //SPDLOG_DEBUG("Tokens: ");
         for (const dlx::Token& token : program.m_Tokens)
         {
             ColorizeToken(token);
         }
-        //PHI_LOG_DEBUG("End of Tokens\n");
+        //SPDLOG_DEBUG("End of Tokens\n");
     }
 
     void CodeEditor::ResetState() noexcept

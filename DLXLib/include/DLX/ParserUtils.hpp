@@ -1,34 +1,34 @@
 #pragma once
 
 #include "OpCode.hpp"
-#include "Phi/Core/Assert.hpp"
-#include "Phi/Core/Boolean.hpp"
 #include "RegisterNames.hpp"
-#include <Phi/Core/Types.hpp>
+#include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
+#include <phi/core/optional.hpp>
+#include <phi/core/types.hpp>
 #include <limits>
-#include <optional>
 #include <string_view>
 
 namespace dlx
 {
     /* Character functions */
 
-    constexpr phi::Boolean IsBeginCommentCharacter(const char c) noexcept
+    constexpr phi::boolean IsBeginCommentCharacter(const char c) noexcept
     {
         return (c == ';') || (c == '/');
     }
 
-    constexpr phi::Boolean IsDigit(const char c) noexcept
+    constexpr phi::boolean IsDigit(const char c) noexcept
     {
         return (c >= '0' && c <= '9');
     }
 
-    constexpr phi::Boolean IsAlpha(const char c) noexcept
+    constexpr phi::boolean IsAlpha(const char c) noexcept
     {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
-    constexpr phi::Boolean IsBlank(const char c) noexcept
+    constexpr phi::boolean IsBlank(const char c) noexcept
     {
         switch (c)
         {
@@ -40,7 +40,7 @@ namespace dlx
         }
     }
 
-    constexpr phi::Boolean IsSpace(const char c) noexcept
+    constexpr phi::boolean IsSpace(const char c) noexcept
     {
         switch (c)
         {
@@ -56,22 +56,22 @@ namespace dlx
         }
     }
 
-    constexpr phi::Boolean IsAlphaNumeric(const char c) noexcept
+    constexpr phi::boolean IsAlphaNumeric(const char c) noexcept
     {
         return IsDigit(c) || IsAlpha(c);
     }
 
-    constexpr phi::Boolean IsBinaryChar(const char c) noexcept
+    constexpr phi::boolean IsBinaryChar(const char c) noexcept
     {
         return (c == '0') || (c == '1');
     }
 
-    constexpr phi::Boolean IsOctalChar(const char c) noexcept
+    constexpr phi::boolean IsOctalChar(const char c) noexcept
     {
         return (c >= '0') && (c <= '7');
     }
 
-    constexpr phi::Boolean IsHexadecimalChar(const char c) noexcept
+    constexpr phi::boolean IsHexadecimalChar(const char c) noexcept
     {
         return IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
@@ -100,7 +100,7 @@ namespace dlx
 
     /* String functions */
 
-    [[nodiscard]] inline phi::Boolean IsReservedIdentifier(std::string_view token) noexcept
+    [[nodiscard]] inline phi::boolean IsReservedIdentifier(std::string_view token) noexcept
     {
         if (StringToIntRegister(token) != IntRegisterID::None)
         {
@@ -125,7 +125,7 @@ namespace dlx
         return false;
     }
 
-    constexpr phi::Boolean IsValidIdentifier(std::string_view token) noexcept
+    constexpr phi::boolean IsValidIdentifier(std::string_view token) noexcept
     {
         if (token.empty())
         {
@@ -139,7 +139,7 @@ namespace dlx
             return IsAlpha(first_char);
         }
 
-        phi::Boolean just_under_scores = (first_char == '_');
+        phi::boolean just_under_scores = (first_char == '_');
         if (!(IsAlpha(first_char) || (first_char == '_')))
         {
             return false;
@@ -168,7 +168,7 @@ namespace dlx
 
     /* Parsing functions */
 
-    constexpr std::optional<phi::i16> ParseNumber(std::string_view token) noexcept
+    constexpr phi::optional<phi::i16> ParseNumber(std::string_view token) noexcept
     {
         if (token.empty())
         {

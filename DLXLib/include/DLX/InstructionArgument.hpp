@@ -2,7 +2,7 @@
 
 #include "InstructionLibrary.hpp"
 #include "RegisterNames.hpp"
-#include <Phi/Core/ScopePtr.hpp>
+#include <phi/core/scope_ptr.hpp>
 #include <string_view>
 
 namespace dlx
@@ -87,10 +87,10 @@ namespace dlx
         ArgumentType m_Type;
     };
 
-    phi::Boolean operator==(const InstructionArgument& lhs,
+    phi::boolean operator==(const InstructionArgument& lhs,
                             const InstructionArgument& rhs) noexcept;
 
-    phi::Boolean operator!=(const InstructionArgument& lhs,
+    phi::boolean operator!=(const InstructionArgument& lhs,
                             const InstructionArgument& rhs) noexcept;
 
     InstructionArgument ConstructInstructionArgumentRegisterInt(IntRegisterID id) noexcept;

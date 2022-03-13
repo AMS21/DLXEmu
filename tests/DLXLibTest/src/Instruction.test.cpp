@@ -6,7 +6,7 @@
 
 #include <DLX/Instruction.hpp>
 #include <DLX/InstructionLibrary.hpp>
-#include <Phi/Core/Types.hpp>
+#include <phi/core/types.hpp>
 
 using namespace phi::literals;
 

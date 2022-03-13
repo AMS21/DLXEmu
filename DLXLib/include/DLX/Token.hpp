@@ -1,8 +1,8 @@
 #pragma once
 
 #include "DLX/OpCode.hpp"
-#include <Phi/Core/Boolean.hpp>
-#include <Phi/Core/Types.hpp>
+#include <phi/core/boolean.hpp>
+#include <phi/core/types.hpp>
 #include <string>
 #include <string_view>
 
@@ -50,7 +50,7 @@ namespace dlx
 
         [[nodiscard]] std::string GetTextString() const noexcept;
 
-        [[nodiscard]] phi::Boolean HasHint() const noexcept;
+        [[nodiscard]] phi::boolean HasHint() const noexcept;
 
         [[nodiscard]] std::uint32_t GetHint() const noexcept;
 
@@ -62,6 +62,6 @@ namespace dlx
         phi::u64         m_LineNumber;
         phi::u64         m_Column;
         std::uint32_t    m_Hint;
-        phi::Boolean     m_HasHint;
+        phi::boolean     m_HasHint;
     };
 } // namespace dlx

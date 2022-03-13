@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Phi/Core/Boolean.hpp"
+#include <phi/core/boolean.hpp>
 
 namespace dlx
 {
     class StatusRegister
     {
     public:
-        void SetStatus(phi::Boolean value) noexcept;
+        void SetStatus(phi::boolean value) noexcept;
 
-        [[nodiscard]] phi::Boolean Get() const noexcept;
+        [[nodiscard]] phi::boolean Get() const noexcept;
 
     private:
-        phi::Boolean m_Value{false};
+        phi::boolean m_Value{false};
     };
 } // namespace dlx

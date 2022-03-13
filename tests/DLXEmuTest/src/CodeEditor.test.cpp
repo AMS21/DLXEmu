@@ -2,10 +2,10 @@
 
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
-#include <Phi/Config/Warning.hpp>
-#include <Phi/Core/Log.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <phi/compiler_support/unused.hpp>
+#include <phi/compiler_support/warning.hpp>
 
 void BeginImGui()
 {
@@ -1146,8 +1146,16 @@ TEST_CASE("CodeEditor crashes")
 
         dlxemu::CodeEditor editor{&emulator};
 
+        PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wconstant-conversion")
+        PHI_GCC_SUPPRESS_WARNING_PUSH()
+        PHI_GCC_SUPPRESS_WARNING("-Wmultichar")
+        PHI_GCC_SUPPRESS_WARNING("-Woverflow")
+
         editor.EnterCharacter('\0xFF', true);
         editor.VerifyInternalState();
+
+        PHI_GCC_SUPPRESS_WARNING_POP()
+        PHI_CLANG_SUPPRESS_WARNING_POP()
 
         editor.EnterCharacter('\n', true);
         editor.VerifyInternalState();

@@ -1,11 +1,11 @@
 #include "DLXEmu/Window.hpp"
 
-#include <Phi/Core/Boolean.hpp>
-#include <Phi/Core/Log.hpp>
+#include <spdlog/spdlog.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <glad/glad.h>
 #include <imgui.h>
+#include <phi/core/boolean.hpp>
 
 #if PHI_PLATFORM_IS(WEB)
 #    include <emscripten.h>
@@ -25,7 +25,7 @@ namespace dlxemu
 {
     static void glfw_error_callback(int error, const char* message) noexcept
     {
-        PHI_LOG_ERROR("GLFW error {:d}: {:s}", error, message);
+        SPDLOG_ERROR("GLFW error {:d}: {:s}", error, message);
     }
 
     Window::~Window() noexcept
@@ -33,14 +33,14 @@ namespace dlxemu
         Shutdown();
     }
 
-    phi::Boolean Window::Initialize() noexcept
+    phi::boolean Window::Initialize() noexcept
     {
         // Set error callback
         glfwSetErrorCallback(&glfw_error_callback);
 
         if (glfwInit() == GLFW_FALSE)
         {
-            PHI_LOG_ERROR("Failed to initialize GLFW!");
+            SPDLOG_ERROR("Failed to initialize GLFW!");
             return false;
         }
 
@@ -70,7 +70,7 @@ namespace dlxemu
         m_Window = glfwCreateWindow(1280, 720, "DLXEmu", nullptr, nullptr);
         if (m_Window == nullptr)
         {
-            PHI_LOG_ERROR("Failed to create window!");
+            SPDLOG_ERROR("Failed to create window!");
             return false;
         }
 
@@ -84,7 +84,7 @@ namespace dlxemu
         if (!gladLoadGL())
 #endif
         {
-            PHI_LOG_ERROR("Failed to load OpenGL!");
+            SPDLOG_ERROR("Failed to load OpenGL!");
             return false;
         }
 
@@ -93,7 +93,7 @@ namespace dlxemu
         glad_glPolygonMode = [](GLenum /*face*/, GLenum /*mode*/) -> void { return; };
 #endif
 
-        PHI_LOG_INFO("Successfully loaded OpenGL version {}.{}", GLVersion.major, GLVersion.minor);
+        SPDLOG_INFO("Successfully loaded OpenGL version {}.{}", GLVersion.major, GLVersion.minor);
 
         InitializeImGui();
 
@@ -118,7 +118,7 @@ namespace dlxemu
         }
     }
 
-    phi::Boolean Window::IsOpen() const noexcept
+    phi::boolean Window::IsOpen() const noexcept
     {
         return glfwWindowShouldClose(m_Window) == 0;
     }
@@ -186,7 +186,7 @@ namespace dlxemu
         m_ImGuiContext = ImGui::CreateContext();
         if (m_ImGuiContext == nullptr)
         {
-            PHI_LOG_ERROR("Failed to create ImGuiContext");
+            SPDLOG_ERROR("Failed to create ImGuiContext");
             return;
         }
 
@@ -277,7 +277,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1280,701 Split=X
         ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
         ImGui_ImplOpenGL3_Init(glsl_version);
 
-        PHI_LOG_INFO("Successfully initialized ImGui with glsl {:s}", glsl_version);
+        SPDLOG_INFO("Successfully initialized ImGui with glsl {:s}", glsl_version);
 
         imgui_initialized = true;
     }

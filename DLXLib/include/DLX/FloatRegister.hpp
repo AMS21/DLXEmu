@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Phi/Core/Types.hpp>
+#include <phi/core/types.hpp>
 
 namespace dlx
 {

@@ -28,9 +28,9 @@ SOFTWARE.
 
 #include <DLX/OpCode.hpp>
 #include <DLX/Token.hpp>
-#include <Phi/Core/Boolean.hpp>
-#include <Phi/Core/Types.hpp>
 #include <imgui.h>
+#include <phi/core/boolean.hpp>
+#include <phi/core/types.hpp>
 #include <array>
 #include <cstdint>
 #include <map>
@@ -149,9 +149,9 @@ namespace dlxemu
         [[nodiscard]] const ErrorMarkers& GetErrorMarkers() const noexcept;
 
         void                             SetBreakpoints(const Breakpoints& markers) noexcept;
-        phi::Boolean                     AddBreakpoint(const std::uint32_t line_number) noexcept;
-        phi::Boolean                     RemoveBreakpoint(const std::uint32_t line_number) noexcept;
-        phi::Boolean                     ToggleBreakpoint(const std::uint32_t line_number) noexcept;
+        phi::boolean                     AddBreakpoint(const std::uint32_t line_number) noexcept;
+        phi::boolean                     RemoveBreakpoint(const std::uint32_t line_number) noexcept;
+        phi::boolean                     ToggleBreakpoint(const std::uint32_t line_number) noexcept;
         void                             ClearBreakPoints() noexcept;
         [[nodiscard]] Breakpoints&       GetBreakpoints() noexcept;
         [[nodiscard]] const Breakpoints& GetBreakpoints() const noexcept;

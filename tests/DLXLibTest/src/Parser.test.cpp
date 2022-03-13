@@ -12,7 +12,7 @@
 
 static dlx::ParsedProgram res;
 
-[[nodiscard]] phi::Boolean InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcode,
+[[nodiscard]] phi::boolean InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcode,
                                               dlx::InstructionArgument arg1,
                                               dlx::InstructionArgument arg2,
                                               dlx::InstructionArgument arg3)

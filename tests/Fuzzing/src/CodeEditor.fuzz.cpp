@@ -1,25 +1,26 @@
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
-#include <Phi/Config/FunctionLikeMacro.hpp>
-#include <Phi/Config/Warning.hpp>
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Log.hpp>
-#include <Phi/Core/ScopeGuard.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <magic_enum.hpp>
+#include <phi/compiler_support/unused.hpp>
+#include <phi/compiler_support/warning.hpp>
+#include <phi/core/assert.hpp>
+#include <phi/core/optional.hpp>
+#include <string>
+#include <phi/core/scope_guard.hpp>
+#include <phi/preprocessor/function_like_macro.hpp>
 #include <spdlog/fmt/bundled/core.h>
+#include <spdlog/spdlog.h>
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <limits>
-#include <optional>
-#include <string>
 #include <type_traits>
 #include <vector>
 
 #if defined(FUZZ_VERBOSE_LOG)
-#    define FUZZ_LOG(...) PHI_LOG_DEBUG(__VA_ARGS__)
+#    define FUZZ_LOG(...) SPDLOG_DEBUG(__VA_ARGS__)
 #else
 #    define FUZZ_LOG(...) PHI_EMPTY_MACRO()
 #endif
@@ -39,7 +40,7 @@ template <typename T>
 }
 
 template <typename T>
-[[nodiscard]] std::optional<T> consume_t(const std::uint8_t* data, const std::size_t size,
+[[nodiscard]] phi::optional<T> consume_t(const std::uint8_t* data, const std::size_t size,
                                          std::size_t& index) noexcept
 {
     if (!has_x_more(index, sizeof(T), size))
@@ -55,7 +56,7 @@ template <typename T>
     return value;
 }
 
-[[nodiscard]] std::optional<bool> consume_bool(const std::uint8_t* data, const std::size_t size,
+[[nodiscard]] phi::optional<bool> consume_bool(const std::uint8_t* data, const std::size_t size,
                                                std::size_t& index) noexcept
 {
     if (!has_x_more(index, sizeof(bool), size))
@@ -71,21 +72,21 @@ template <typename T>
     return value;
 }
 
-[[nodiscard]] std::optional<std::uint32_t> consume_uint32(const std::uint8_t* data,
+[[nodiscard]] phi::optional<std::uint32_t> consume_uint32(const std::uint8_t* data,
                                                           const std::size_t   size,
                                                           std::size_t&        index) noexcept
 {
     return consume_t<std::uint32_t>(data, size, index);
 }
 
-[[nodiscard]] std::optional<std::size_t> consume_size_t(const std::uint8_t* data,
+[[nodiscard]] phi::optional<std::size_t> consume_size_t(const std::uint8_t* data,
                                                         const std::size_t   size,
                                                         std::size_t&        index) noexcept
 {
     return consume_t<std::size_t>(data, size, index);
 }
 
-[[nodiscard]] std::optional<std::string> consume_string(const std::uint8_t* data,
+[[nodiscard]] phi::optional<std::string> consume_string(const std::uint8_t* data,
                                                         const std::size_t   size,
                                                         std::size_t&        index) noexcept
 {
@@ -114,7 +115,7 @@ template <typename T>
     return c == '\0' || c == '\t' || (c >= 32 && c <= 126);
 }
 
-[[nodiscard]] std::optional<std::string> consume_ascii_string(const std::uint8_t* data,
+[[nodiscard]] phi::optional<std::string> consume_ascii_string(const std::uint8_t* data,
                                                               const std::size_t   size,
                                                               std::size_t&        index) noexcept
 {
@@ -144,7 +145,7 @@ template <typename T>
     return value;
 }
 
-[[nodiscard]] std::optional<std::vector<std::string>> consume_vector_string(
+[[nodiscard]] phi::optional<std::vector<std::string>> consume_vector_string(
         const std::uint8_t* data, const std::size_t size, std::size_t& index) noexcept
 {
     auto number_of_lines_opt = consume_size_t(data, size, index);
@@ -171,7 +172,7 @@ template <typename T>
     return result;
 }
 
-[[nodiscard]] std::optional<dlxemu::CodeEditor::Coordinates> consume_coordinates(
+[[nodiscard]] phi::optional<dlxemu::CodeEditor::Coordinates> consume_coordinates(
         const std::uint8_t* data, const std::size_t size, std::size_t& index) noexcept
 {
     auto column_opt = consume_t<std::int16_t>(data, size, index);
@@ -387,10 +388,6 @@ void EndImGui() noexcept
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
 {
-#if defined(FUZZ_VERBOSE_LOG)
-    phi::Log::initialize_default_loggers();
-#endif
-
     static bool imgui_init = SetupImGui();
 
     // Ensure frame count doesn't overflow

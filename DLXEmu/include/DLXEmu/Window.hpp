@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Phi/Core/Boolean.hpp>
+#include <phi/core/boolean.hpp>
 
 struct GLFWwindow;
 struct ImGuiContext;
@@ -14,11 +14,11 @@ namespace dlxemu
 
         ~Window() noexcept;
 
-        phi::Boolean Initialize() noexcept;
+        phi::boolean Initialize() noexcept;
 
         void Shutdown() noexcept;
 
-        [[nodiscard]] phi::Boolean IsOpen() const noexcept;
+        [[nodiscard]] phi::boolean IsOpen() const noexcept;
 
         void Close() noexcept;
 

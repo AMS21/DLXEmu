@@ -1,7 +1,7 @@
 #include "DLX/InstructionInfo.hpp"
 
 #include "DLX/InstructionArgument.hpp"
-#include "Phi/Core/Assert.hpp"
+#include <phi/core/assert.hpp>
 
 namespace dlx
 {

@@ -1,8 +1,8 @@
 #include "DLX/Token.hpp"
 
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Boolean.hpp>
 #include <magic_enum.hpp>
+#include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
 #include <string>
 
 namespace dlx
@@ -61,7 +61,7 @@ namespace dlx
         return std::string(m_Text.data(), m_Text.length());
     }
 
-    phi::Boolean Token::HasHint() const noexcept
+    phi::boolean Token::HasHint() const noexcept
     {
         return m_HasHint;
     }

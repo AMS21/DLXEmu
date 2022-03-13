@@ -26,7 +26,7 @@ namespace dlx
             return {Token::Type::Comment, token, line_number, column};
         }
 
-        if (std::optional<phi::i16> number = ParseNumber(token); number.has_value())
+        if (phi::optional<phi::i16> number = ParseNumber(token); number.has_value())
         {
             return {Token::Type::IntegerLiteral, token, line_number, column,
                     static_cast<std::uint32_t>(number->get())};
@@ -68,7 +68,7 @@ namespace dlx
         phi::u64 current_column{1u};
         phi::u64 token_begin{0u};
 
-        phi::Boolean parsing_comment{false};
+        phi::boolean parsing_comment{false};
 
         for (phi::usize i{0u}; i < source.length(); ++i)
         {

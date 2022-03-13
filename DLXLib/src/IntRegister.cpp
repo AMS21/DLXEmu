@@ -27,12 +27,12 @@ namespace dlx
         return m_ValueUnsigned;
     }
 
-    phi::Boolean IntRegister::IsReadOnly() const noexcept
+    phi::boolean IntRegister::IsReadOnly() const noexcept
     {
         return m_IsReadOnly;
     }
 
-    void IntRegister::SetReadOnly(phi::Boolean read_only) noexcept
+    void IntRegister::SetReadOnly(phi::boolean read_only) noexcept
     {
         m_IsReadOnly = read_only;
     }

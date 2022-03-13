@@ -1,8 +1,8 @@
 #include "DLX/ParseError.hpp"
 
 #include "DLX/InstructionInfo.hpp"
-#include <Phi/Core/Assert.hpp>
 #include <magic_enum.hpp>
+#include <phi/core/assert.hpp>
 #include <spdlog/fmt/bundled/core.h>
 
 namespace dlx

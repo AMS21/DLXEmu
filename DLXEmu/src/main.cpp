@@ -1,6 +1,6 @@
 #include "DLXEmu/Emulator.hpp"
-#include <Phi/Config/Platform.hpp>
-#include <Phi/Core/Log.hpp>
+#include <phi/compiler_support/platform.hpp>
+#include <spdlog/spdlog.h>
 #include <cstddef>
 
 #if PHI_PLATFORM_IS(WEB)
@@ -19,12 +19,12 @@ extern "C" void main_loop(void* data) noexcept
     {
         if (!emulator.Initialize())
         {
-            PHI_LOG_ERROR("Failed to initialize Emulator!");
+            SPDLOG_ERROR("Failed to initialize Emulator!");
             std::exit(1);
         }
 
         inited = true;
-        PHI_LOG_INFO("Successfully initialized Emulator");
+        SPDLOG_INFO("Successfully initialized Emulator");
         return;
     }
 
@@ -34,9 +34,6 @@ extern "C" void main_loop(void* data) noexcept
 
 int main(int argc, char* argv[])
 {
-    // Initialize logger
-    phi::Log::initialize_default_loggers();
-
 #if PHI_PLATFORM_IS(WEB)
     emscripten_set_main_loop_arg(main_loop, nullptr, 0, false);
 #else
@@ -49,7 +46,7 @@ int main(int argc, char* argv[])
 
     if (!emulator.Initialize())
     {
-        PHI_LOG_ERROR("Failed to initialize Emulator!");
+        SPDLOG_ERROR("Failed to initialize Emulator!");
         return 1;
     }
 

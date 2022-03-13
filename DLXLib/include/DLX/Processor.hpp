@@ -6,9 +6,9 @@
 #include "DLX/MemoryBlock.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
-#include "Phi/Core/Boolean.hpp"
-#include <Phi/Core/ObserverPtr.hpp>
-#include <Phi/Core/ScopePtr.hpp>
+#include <phi/core/boolean.hpp>
+#include <phi/core/observer_ptr.hpp>
+#include <phi/core/scope_ptr.hpp>
 #include <array>
 
 namespace dlx
@@ -79,17 +79,17 @@ namespace dlx
 
         [[nodiscard]] const StatusRegister& GetFPSR() const noexcept;
 
-        [[nodiscard]] phi::Boolean GetFPSRValue() const noexcept;
+        [[nodiscard]] phi::boolean GetFPSRValue() const noexcept;
 
-        void SetFPSRValue(phi::Boolean value) noexcept;
+        void SetFPSRValue(phi::boolean value) noexcept;
 
         //
 
         void ExecuteInstruction(const Instruction& inst) noexcept;
 
-        phi::Boolean LoadProgram(ParsedProgram& programm) noexcept;
+        phi::boolean LoadProgram(ParsedProgram& programm) noexcept;
 
-        [[nodiscard]] phi::ObserverPtr<ParsedProgram> GetCurrentProgramm() const noexcept;
+        [[nodiscard]] phi::observer_ptr<ParsedProgram> GetCurrentProgramm() const noexcept;
 
         void ExecuteStep() noexcept;
 
@@ -103,7 +103,7 @@ namespace dlx
 
         [[nodiscard]] Exception GetLastRaisedException() const noexcept;
 
-        [[nodiscard]] phi::Boolean IsHalted() const noexcept;
+        [[nodiscard]] phi::boolean IsHalted() const noexcept;
 
         [[nodiscard]] const MemoryBlock& GetMemory() const noexcept;
 
@@ -130,7 +130,7 @@ namespace dlx
         [[nodiscard]] std::string GetCurrentProgrammDump() const noexcept;
 
     private:
-        phi::ObserverPtr<ParsedProgram> m_CurrentProgram;
+        phi::observer_ptr<ParsedProgram> m_CurrentProgram;
 
         std::array<IntRegister, 32u>          m_IntRegisters;
         std::array<IntRegisterValueType, 32u> m_IntRegistersValueTypes;
@@ -149,7 +149,7 @@ namespace dlx
 
         Exception m_LastRaisedException{Exception::None};
 
-        phi::Boolean m_Halted{false};
+        phi::boolean m_Halted{false};
 
         RegisterAccessType m_CurrentInstructionAccessType{RegisterAccessType::Ignored};
     };

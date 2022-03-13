@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Phi/Core/Types.hpp>
+#include <phi/core/types.hpp>
 #include <cstdint>
 #include <string>
 
@@ -19,9 +19,9 @@ namespace dlx
 
         [[nodiscard]] phi::u32 GetUnsignedValue() const noexcept;
 
-        [[nodiscard]] phi::Boolean IsReadOnly() const noexcept;
+        [[nodiscard]] phi::boolean IsReadOnly() const noexcept;
 
-        void SetReadOnly(phi::Boolean read_only) noexcept;
+        void SetReadOnly(phi::boolean read_only) noexcept;
 
     protected:
         union
@@ -30,6 +30,6 @@ namespace dlx
             phi::u32 m_ValueUnsigned;
         };
 
-        phi::Boolean m_IsReadOnly;
+        phi::boolean m_IsReadOnly;
     };
 } // namespace dlx

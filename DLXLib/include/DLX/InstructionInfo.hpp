@@ -1,8 +1,8 @@
 #pragma once
 
 #include "DLX/OpCode.hpp"
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Types.hpp>
+#include <phi/core/assert.hpp>
+#include <phi/core/types.hpp>
 #include <type_traits>
 
 namespace dlx
@@ -37,7 +37,7 @@ namespace dlx
                                          static_cast<underlying_t>(rhs));
     }
 
-    [[nodiscard]] constexpr phi::Boolean ArgumentTypeIncludes(ArgumentType type,
+    [[nodiscard]] constexpr phi::boolean ArgumentTypeIncludes(ArgumentType type,
                                                               ArgumentType test) noexcept
     {
         using underlying_t = std::underlying_type_t<ArgumentType>;

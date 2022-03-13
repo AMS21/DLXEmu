@@ -1,7 +1,7 @@
 #include "DLX/OpCode.hpp"
 
-#include <Phi/Config/Inline.hpp>
 #include <magic_enum.hpp>
+#include <phi/compiler_support/inline.hpp>
 #include <algorithm>
 
 namespace dlx

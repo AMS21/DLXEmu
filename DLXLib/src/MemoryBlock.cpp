@@ -1,6 +1,7 @@
 #include "DLX/MemoryBlock.hpp"
-#include "Phi/Core/Boolean.hpp"
-#include "Phi/Core/Log.hpp"
+
+#include <phi/core/boolean.hpp>
+#include <spdlog/spdlog.h>
 #include <cstdint>
 
 namespace dlx
@@ -11,11 +12,11 @@ namespace dlx
         m_Values.resize(starting_size.get());
     }
 
-    std::optional<phi::i8> MemoryBlock::LoadByte(phi::usize address) const noexcept
+    phi::optional<phi::i8> MemoryBlock::LoadByte(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 1u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
 
@@ -23,11 +24,11 @@ namespace dlx
         return m_Values[index].signed_value;
     }
 
-    std::optional<phi::u8> MemoryBlock::LoadUnsignedByte(phi::usize address) const noexcept
+    phi::optional<phi::u8> MemoryBlock::LoadUnsignedByte(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 1u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
 
@@ -35,16 +36,16 @@ namespace dlx
         return m_Values[index].unsigned_value;
     }
 
-    std::optional<phi::i16> MemoryBlock::LoadHalfWord(phi::usize address) const noexcept
+    phi::optional<phi::i16> MemoryBlock::LoadHalfWord(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 2u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 2u))
         {
-            PHI_LOG_ERROR("Address {} is misaligned", address.get());
+            SPDLOG_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -52,16 +53,16 @@ namespace dlx
         return *reinterpret_cast<const std::int16_t*>(&m_Values[index].signed_value);
     }
 
-    std::optional<phi::u16> MemoryBlock::LoadUnsignedHalfWord(phi::usize address) const noexcept
+    phi::optional<phi::u16> MemoryBlock::LoadUnsignedHalfWord(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 2u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 2u))
         {
-            PHI_LOG_ERROR("Address {} is misaligned", address.get());
+            SPDLOG_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -69,16 +70,16 @@ namespace dlx
         return *reinterpret_cast<const std::uint16_t*>(&m_Values[index].unsigned_value);
     }
 
-    std::optional<phi::i32> MemoryBlock::LoadWord(phi::usize address) const noexcept
+    phi::optional<phi::i32> MemoryBlock::LoadWord(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 4u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 4u))
         {
-            PHI_LOG_ERROR("Address {} is misaligned", address.get());
+            SPDLOG_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -86,16 +87,16 @@ namespace dlx
         return *reinterpret_cast<const std::int32_t*>(&m_Values[index].signed_value);
     }
 
-    std::optional<phi::u32> MemoryBlock::LoadUnsignedWord(phi::usize address) const noexcept
+    phi::optional<phi::u32> MemoryBlock::LoadUnsignedWord(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 4u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 4u))
         {
-            PHI_LOG_ERROR("Address {} is misaligned", address.get());
+            SPDLOG_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -103,11 +104,11 @@ namespace dlx
         return *reinterpret_cast<const std::uint32_t*>(&m_Values[index].unsigned_value);
     }
 
-    std::optional<phi::f32> MemoryBlock::LoadFloat(phi::usize address) const noexcept
+    phi::optional<phi::f32> MemoryBlock::LoadFloat(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 4u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
 
@@ -115,11 +116,11 @@ namespace dlx
         return *reinterpret_cast<const float*>(&m_Values[index].signed_value);
     }
 
-    std::optional<phi::f64> MemoryBlock::LoadDouble(phi::usize address) const noexcept
+    phi::optional<phi::f64> MemoryBlock::LoadDouble(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 8u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
 
@@ -127,11 +128,11 @@ namespace dlx
         return *reinterpret_cast<const double*>(&m_Values[(index)].signed_value);
     }
 
-    phi::Boolean MemoryBlock::StoreByte(phi::usize address, phi::i8 value) noexcept
+    phi::boolean MemoryBlock::StoreByte(phi::usize address, phi::i8 value) noexcept
     {
         if (!IsAddressValid(address, 1u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -139,11 +140,11 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean MemoryBlock::StoreUnsignedByte(phi::usize address, phi::u8 value) noexcept
+    phi::boolean MemoryBlock::StoreUnsignedByte(phi::usize address, phi::u8 value) noexcept
     {
         if (!IsAddressValid(address, 1u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -151,11 +152,11 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean MemoryBlock::StoreHalfWord(phi::usize address, phi::i16 value) noexcept
+    phi::boolean MemoryBlock::StoreHalfWord(phi::usize address, phi::i16 value) noexcept
     {
         if (!IsAddressValid(address, 2u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -165,11 +166,11 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean MemoryBlock::StoreUnsignedHalfWord(phi::usize address, phi::u16 value) noexcept
+    phi::boolean MemoryBlock::StoreUnsignedHalfWord(phi::usize address, phi::u16 value) noexcept
     {
         if (!IsAddressValid(address, 2u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -179,11 +180,11 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean MemoryBlock::StoreWord(phi::usize address, phi::i32 value) noexcept
+    phi::boolean MemoryBlock::StoreWord(phi::usize address, phi::i32 value) noexcept
     {
         if (!IsAddressValid(address, 4u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -193,11 +194,11 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean MemoryBlock::StoreUnsignedWord(phi::usize address, phi::u32 value) noexcept
+    phi::boolean MemoryBlock::StoreUnsignedWord(phi::usize address, phi::u32 value) noexcept
     {
         if (!IsAddressValid(address, 4u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -207,11 +208,11 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean MemoryBlock::StoreFloat(phi::usize address, phi::f32 value) noexcept
+    phi::boolean MemoryBlock::StoreFloat(phi::usize address, phi::f32 value) noexcept
     {
         if (!IsAddressValid(address, 4u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -221,11 +222,11 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean MemoryBlock::StoreDouble(phi::usize address, phi::f64 value) noexcept
+    phi::boolean MemoryBlock::StoreDouble(phi::usize address, phi::f64 value) noexcept
     {
         if (!IsAddressValid(address, 8u))
         {
-            PHI_LOG_ERROR("Address {} is out of bounds", address.get());
+            SPDLOG_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -235,13 +236,13 @@ namespace dlx
         return true;
     }
 
-    phi::Boolean MemoryBlock::IsAddressValid(phi::usize address, phi::usize size) const noexcept
+    phi::boolean MemoryBlock::IsAddressValid(phi::usize address, phi::usize size) const noexcept
     {
         return address >= m_StartingAddress &&
                (address + size) <= (m_StartingAddress + m_Values.size());
     }
 
-    phi::Boolean MemoryBlock::IsAddressAlignedCorrectly(phi::usize address,
+    phi::boolean MemoryBlock::IsAddressAlignedCorrectly(phi::usize address,
                                                         phi::usize size) noexcept
     {
         return (address % size) == 0u;

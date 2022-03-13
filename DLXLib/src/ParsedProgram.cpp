@@ -1,5 +1,6 @@
 #include "DLX/ParsedProgram.hpp"
 
+#include <spdlog/fmt/bundled/core.h>
 #include <utility>
 
 namespace dlx
@@ -9,7 +10,7 @@ namespace dlx
         m_ParseErrors.emplace_back(std::move(error));
     }
 
-    phi::Boolean ParsedProgram::IsValid() const noexcept
+    phi::boolean ParsedProgram::IsValid() const noexcept
     {
         return m_ParseErrors.empty() && !m_Instructions.empty();
     }

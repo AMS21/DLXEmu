@@ -2,11 +2,11 @@
 
 #include "DLXEmu/CodeEditor.hpp"
 #include "DLXEmu/Emulator.hpp"
-#include "Phi/Config/Warning.hpp"
 #include <DLX/Processor.hpp>
-#include <Phi/Core/Assert.hpp>
-#include <Phi/Core/Log.hpp>
 #include <imgui.h>
+#include <phi/compiler_support/unused.hpp>
+#include <phi/compiler_support/warning.hpp>
+#include <phi/core/assert.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <limits>
 #include <random>
@@ -146,7 +146,7 @@ namespace dlxemu
                 std::size_t   message_length = message_length_distrib(engine);
                 std::string   message        = generate_random_line(engine, message_length);
 
-                //PHI_LOG_DEBUG("AddErrorMarker: {:d}, '{:s}'", line_number, message);
+                //SPDLOG_DEBUG("AddErrorMarker: {:d}, '{:s}'", line_number, message);
 
                 editor.AddErrorMarker(line_number, message);
                 break;
@@ -154,7 +154,7 @@ namespace dlxemu
 
             // ClearErrorMarkers
             case 1: {
-                //PHI_LOG_DEBUG("ClearErrorMarkers");
+                //SPDLOG_DEBUG("ClearErrorMarkers");
 
                 editor.ClearErrorMarkers();
 
@@ -165,7 +165,7 @@ namespace dlxemu
             case 2: {
                 std::string str = editor.GetText();
                 PHI_UNUSED_VARIABLE(str);
-                //PHI_LOG_DEBUG("GetText: {:s}", str);
+                //SPDLOG_DEBUG("GetText: {:s}", str);
                 break;
             }
 
@@ -184,10 +184,10 @@ namespace dlxemu
                 }
 
                 /*
-                PHI_LOG_DEBUG("SetTextLines: {:d}", number_of_lines);
+                SPDLOG_DEBUG("SetTextLines: {:d}", number_of_lines);
                 for (std::size_t i{0}; i < lines.size(); ++i)
                 {
-                    PHI_LOG_DEBUG("[{:02d}]: {:s}", i, lines.at(i));
+                    SPDLOG_DEBUG("[{:02d}]: {:s}", i, lines.at(i));
                 }
                 */
 
@@ -263,7 +263,7 @@ namespace dlxemu
                 std::size_t message_length = message_length_distrib(engine);
                 std::string text           = generate_random_code_string(engine, message_length);
 
-                //PHI_LOG_DEBUG("InsertText: {:s}", text);
+                //SPDLOG_DEBUG("InsertText: {:s}", text);
 
                 editor.InsertText(text);
                 break;
@@ -274,7 +274,7 @@ namespace dlxemu
                 std::uint32_t amount = uint32_t_distrib(engine);
                 bool          select = bool_distrib(engine) == 1;
 
-                //PHI_LOG_DEBUG("MoveUp: {:d} {:s}", amount, select ? "True" : "False");
+                //SPDLOG_DEBUG("MoveUp: {:d} {:s}", amount, select ? "True" : "False");
 
                 editor.MoveUp(amount, select);
                 break;
@@ -285,7 +285,7 @@ namespace dlxemu
                 std::uint32_t amount = uint32_t_distrib(engine);
                 bool          select = bool_distrib(engine) == 1;
 
-                //PHI_LOG_DEBUG("MoveDown: {:d} {:s}", amount, select ? "True" : "False");
+                //SPDLOG_DEBUG("MoveDown: {:d} {:s}", amount, select ? "True" : "False");
 
                 editor.MoveDown(amount, select);
                 break;
@@ -297,7 +297,7 @@ namespace dlxemu
                 bool          select    = bool_distrib(engine) == 1;
                 bool          word_mode = bool_distrib(engine) == 1;
 
-                //PHI_LOG_DEBUG("MoveLeft: {:d} {:s} {:s}", amount, select ? "True" : "False",
+                //SPDLOG_DEBUG("MoveLeft: {:d} {:s} {:s}", amount, select ? "True" : "False",
                 //              word_mode ? "True" : "False");
 
                 editor.MoveLeft(amount, select, word_mode);
@@ -310,7 +310,7 @@ namespace dlxemu
                 bool          select    = bool_distrib(engine) == 1;
                 bool          word_mode = bool_distrib(engine) == 1;
 
-                //PHI_LOG_DEBUG("MoveRight: {:d} {:s} {:s}", amount, select ? "True" : "False",
+                //SPDLOG_DEBUG("MoveRight: {:d} {:s} {:s}", amount, select ? "True" : "False",
                 //              word_mode ? "True" : "False");
 
                 editor.MoveRight(amount, select, word_mode);
@@ -321,7 +321,7 @@ namespace dlxemu
             case 17: {
                 bool select = bool_distrib(engine) == 1;
 
-                //PHI_LOG_DEBUG("MoveTop: {:s}", select ? "True" : "False");
+                //SPDLOG_DEBUG("MoveTop: {:s}", select ? "True" : "False");
 
                 editor.MoveTop(select);
                 break;
@@ -331,7 +331,7 @@ namespace dlxemu
             case 18: {
                 bool select = bool_distrib(engine) == 1;
 
-                //PHI_LOG_DEBUG("MoveBottom: {:s}", select ? "True" : "False");
+                //SPDLOG_DEBUG("MoveBottom: {:s}", select ? "True" : "False");
 
                 editor.MoveBottom(select);
                 break;
@@ -341,7 +341,7 @@ namespace dlxemu
             case 19: {
                 bool select = bool_distrib(engine) == 1;
 
-                //PHI_LOG_DEBUG("MoveHome: {:s}", select ? "True" : "False");
+                //SPDLOG_DEBUG("MoveHome: {:s}", select ? "True" : "False");
 
                 editor.MoveHome(select);
                 break;
@@ -351,7 +351,7 @@ namespace dlxemu
             case 20: {
                 bool select = bool_distrib(engine) == 1;
 
-                //PHI_LOG_DEBUG("MoveEnd: {:s}", select ? "True" : "False");
+                //SPDLOG_DEBUG("MoveEnd: {:s}", select ? "True" : "False");
 
                 editor.MoveEnd(select);
                 break;
@@ -422,7 +422,7 @@ namespace dlxemu
 
             // Copy
             case 26: {
-                //PHI_LOG_DEBUG("Copy");
+                //SPDLOG_DEBUG("Copy");
 
                 editor.Copy();
                 break;
@@ -430,7 +430,7 @@ namespace dlxemu
 
             // Cut
             case 27: {
-                //PHI_LOG_DEBUG("Cut");
+                //SPDLOG_DEBUG("Cut");
 
                 editor.Cut();
                 break;
@@ -438,7 +438,7 @@ namespace dlxemu
 
             // Paste
             case 28: {
-                //PHI_LOG_DEBUG("Paste");
+                //SPDLOG_DEBUG("Paste");
 
                 editor.Paste();
                 break;
@@ -446,7 +446,7 @@ namespace dlxemu
 
             // Delete
             case 29: {
-                //PHI_LOG_DEBUG("Delete");
+                //SPDLOG_DEBUG("Delete");
 
                 editor.Delete();
                 break;
@@ -456,7 +456,7 @@ namespace dlxemu
             case 30: {
                 std::uint32_t steps = uint32_t_distrib(engine);
 
-                //PHI_LOG_DEBUG("Undo: {:d}", steps);
+                //SPDLOG_DEBUG("Undo: {:d}", steps);
 
                 editor.Undo(steps);
                 break;
@@ -466,7 +466,7 @@ namespace dlxemu
             case 31: {
                 std::uint32_t steps = uint32_t_distrib(engine);
 
-                //PHI_LOG_DEBUG("Redo: {:d}", steps);
+                //SPDLOG_DEBUG("Redo: {:d}", steps);
 
                 editor.Redo(steps);
                 break;

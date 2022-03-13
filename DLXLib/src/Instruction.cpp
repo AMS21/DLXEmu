@@ -1,8 +1,8 @@
 #include "DLX/Instruction.hpp"
 
 #include "DLX/InstructionArgument.hpp"
-#include <Phi/Core/Assert.hpp>
 #include <magic_enum.hpp>
+#include <phi/core/assert.hpp>
 #include <spdlog/fmt/bundled/format.h>
 #include <spdlog/fmt/fmt.h>
 

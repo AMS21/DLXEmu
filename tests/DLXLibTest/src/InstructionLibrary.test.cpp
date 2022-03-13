@@ -3,7 +3,7 @@
 #include <DLX/InstructionInfo.hpp>
 #include <DLX/InstructionLibrary.hpp>
 #include <DLX/OpCode.hpp>
-#include <Phi/Core/Types.hpp>
+#include <phi/core/types.hpp>
 #include <algorithm>
 #include <array>
 
