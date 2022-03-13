@@ -5,6 +5,7 @@ branch = docking
 [submodule "external/Phi"]
 path = external/Phi
 url = https://github.com/AMS21/Phi.git
+branch = develop
 [submodule "external/magic_enum"]
 path = external/magic_enum
 url = https://github.com/Neargye/magic_enum.git
