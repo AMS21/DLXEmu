@@ -38,3 +38,6 @@ find_package(OpenGL REQUIRED)
 
 # magic_enum
 add_subdirectory(magic_enum)
+
+# spdlog
+add_subdirectory(spdlog)

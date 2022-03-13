@@ -21,3 +21,7 @@ url = https://github.com/glfw/glfw.git
 path = external/Catch2
 url = https://github.com/catchorg/Catch2.git
 branch = devel
+[submodule "external/spdlog"]
+path = external/spdlog
+url = https://github.com/gabime/spdlog.git
+branch = v1.x
