@@ -3,6 +3,9 @@ add_subdirectory(Phi)
 
 include(Phi/scripts/cmake/Environment.cmake)
 
+# Catch2
+add_subdirectory(Catch2)
+
 # glad
 add_subdirectory(glad)
 
