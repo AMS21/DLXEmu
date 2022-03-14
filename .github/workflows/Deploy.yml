@@ -54,7 +54,7 @@ jobs:
           html-minifier ../data/index.html --collapse-boolean-attributes --collapse-inline-tag-whitespace --collapse-whitespace --decode-entities --minify-css true --minify-js true --minify-urkl true --remove-attribute-quotes --remove-comments --remove-empty-attributes --remove-empty-elements --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-style-link-type-attributes --sort-attributes --sort-class-name --use-short-doctype > bin/index.html
 
           # Minify all .js files
-          find . -maxdepth 1 -type f -iname "*.js" -exec bash -c 'uglifyjs ${0} --compress drop_console,expression,hoist_funs,hoist_vars,passes=5,toplevel --no-annotations --mangle eval,toplevel --source-map --toplevel --output ${0}' {} \;
+          find bin -maxdepth 1 -type f -iname "*.js" -exec bash -c 'uglifyjs ${0} --compress drop_console,expression,hoist_funs,hoist_vars,passes=5,toplevel --no-annotations --mangle eval,toplevel --source-map --toplevel --output ${0}' {} \;
 
           # Copy to output directory
           mkdir -p $GITHUB_WORKSPACE/output
