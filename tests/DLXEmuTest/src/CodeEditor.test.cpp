@@ -227,6 +227,12 @@ TEST_CASE("CodeEditor")
 
         REQUIRE(break_points.size() == 1);
         CHECK(break_points.contains(3));
+
+        // const
+        const dlxemu::CodeEditor const_editor{&emulator};
+
+        const dlxemu::CodeEditor::Breakpoints& const_break_points = const_editor.GetBreakpoints();
+        CHECK(const_break_points.empty());
     }
 
     SECTION("Get/SetText")
