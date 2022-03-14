@@ -1901,8 +1901,10 @@ namespace dlxemu
                 m_State.m_SelectionEnd   = Coordinates(line_no, GetLineMaxColumn(line_no));
                 break;
             }
+#if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                break;
+                PHI_DBG_ASSERT_NOT_REACHED();
+#endif
         }
 
         if (m_State.m_SelectionStart != old_sel_start || m_State.m_SelectionEnd != old_sel_end)
