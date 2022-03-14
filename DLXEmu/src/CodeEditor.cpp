@@ -2632,7 +2632,7 @@ namespace dlxemu
 
     const CodeEditor::Palette& CodeEditor::GetDarkPalette() noexcept
     {
-        const static Palette p = {{
+        constexpr const static Palette p = {{
                 0xff7f7f7f, // Default
                 0xffd69c56, // OpCode
                 0xff00ff00, // Register
@@ -2653,7 +2653,7 @@ namespace dlxemu
 
     const CodeEditor::Palette& CodeEditor::GetLightPalette() noexcept
     {
-        const static Palette p = {{
+        constexpr const static Palette p = {{
                 0xff7f7f7f, // Default
                 0xffff0c06, // OpCode
                 0xff008000, // Register
@@ -2674,7 +2674,7 @@ namespace dlxemu
 
     const CodeEditor::Palette& CodeEditor::GetRetroBluePalette() noexcept
     {
-        const static Palette p = {{
+        constexpr const static Palette p = {{
                 0xff00ffff, // Default
                 0xffffff00, // OpCode
                 0xff00ff00, // Register
