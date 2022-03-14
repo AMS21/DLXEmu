@@ -33,6 +33,11 @@ jobs:
           sudo apt-get update -m
           sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
+      - name: Install minifiers
+        run: |
+          sudo npm install html-minifier -g
+          sudo npm install uglify-js -g
+
       - name: Install cmake
         uses: lukka/get-cmake@v3.22.2
 
@@ -44,7 +49,12 @@ jobs:
           emcmake cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Release
           emmake cmake --build . --clean-first --target DLXEmu
 
-          cp ../data/index.html bin/index.html
+          # Move minified html
+          # See option reference here: https://github.com/kangax/html-minifier#options-quick-reference
+          html-minifier ../data/index.html --collapse-boolean-attributes --collapse-inline-tag-whitespace --collapse-whitespace --decode-entities --minify-css true --minify-js true --minify-urkl true --remove-attribute-quotes --remove-comments --remove-empty-attributes --remove-empty-elements --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-style-link-type-attributes --sort-attributes --sort-class-name --use-short-doctype > bin/index.html
+
+          # Minify all .js files
+          find . -maxdepth 1 -type f -iname "*.js" -exec bash -c 'uglifyjs ${0} --compress drop_console,expression,hoist_funs,hoist_vars,passes=5,toplevel --no-annotations --mangle eval,toplevel --source-map --toplevel --output ${0}' {} \;
 
           # Copy to output directory
           mkdir -p $GITHUB_WORKSPACE/output
