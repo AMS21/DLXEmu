@@ -140,6 +140,12 @@ TEST_CASE("CodeEditor")
         CHECK(markers.size() == 2);
         CHECK(markers[0] == "Hey\nTest");
         CHECK(markers[2] == "Coolio");
+
+        // const
+        const dlxemu::CodeEditor const_editor{&emulator};
+
+        const dlxemu::CodeEditor::ErrorMarkers& const_markers = const_editor.GetErrorMarkers();
+        CHECK(const_markers.empty());
     }
 
     SECTION("Breakpoints")
