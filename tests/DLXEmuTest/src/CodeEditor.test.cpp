@@ -29,8 +29,8 @@ void BeginImGui()
 
     // Build atlas
     unsigned char* tex_pixels{nullptr};
-    int            tex_w;
-    int            tex_h;
+    int            tex_w{0};
+    int            tex_h{0};
     io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
 
     ImGui::NewFrame();
