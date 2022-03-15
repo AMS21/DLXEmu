@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "DLXEmu/BuildInfo.hpp"
+#include "DLXEmu/generated/BuildInfo.hpp"
 #include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
