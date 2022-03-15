@@ -2698,6 +2698,12 @@ namespace dlxemu
         return GetText(Coordinates(), Coordinates((std::int32_t)m_Lines.size(), 0));
     }
 
+    void CodeEditor::ClearText() noexcept
+    {
+        m_Lines.clear();
+        m_Lines.push_back(Line{});
+    }
+
     std::vector<std::string> CodeEditor::GetTextLines() const noexcept
     {
         std::vector<std::string> result;

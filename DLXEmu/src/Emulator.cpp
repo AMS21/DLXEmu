@@ -173,8 +173,7 @@ namespace dlxemu
             {
                 if (ImGui::MenuItem("New"))
                 {
-                    m_CodeEditor.SelectAll();
-                    m_CodeEditor.Delete();
+                    m_CodeEditor.ClearText();
                 }
 
                 if (ImGui::MenuItem("Open", "Ctrl+O"))
