@@ -114,7 +114,7 @@ namespace dlxemu
 
     void execute_random_editor_function(std::mt19937& engine, CodeEditor& editor) noexcept
     {
-        std::uniform_int_distribution<> function_distrib(0, 31);
+        std::uniform_int_distribution<> function_distrib(0, 32);
         const int                       function_index = function_distrib(engine);
 
         std::uniform_int_distribution<std::size_t>   message_length_distrib(0, 20);
@@ -469,6 +469,13 @@ namespace dlxemu
                 //SPDLOG_DEBUG("Redo: {:d}", steps);
 
                 editor.Redo(steps);
+                break;
+            }
+
+            case 32: {
+                //SPDLOG_DEBUG("ClearText");
+
+                editor.ClearText();
                 break;
             }
 

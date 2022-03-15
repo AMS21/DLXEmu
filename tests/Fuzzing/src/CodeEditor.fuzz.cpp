@@ -7,7 +7,6 @@
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/optional.hpp>
-#include <string>
 #include <phi/core/scope_guard.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
 #include <spdlog/fmt/bundled/core.h>
@@ -16,6 +15,7 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <string>
 #include <type_traits>
 #include <vector>
 
@@ -1015,6 +1015,14 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 FUZZ_LOG("EnterCharacter({:s}, {:s})", print_char(character), print_bool(shift));
                 editor.EnterCharacter(character, shift);
 
+                break;
+            }
+
+            // ClearText
+            case 31: {
+                FUZZ_LOG("ClearText()");
+
+                editor.ClearText();
                 break;
             }
 

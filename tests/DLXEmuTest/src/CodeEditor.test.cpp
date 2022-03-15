@@ -304,6 +304,21 @@ TEST_CASE("CodeEditor")
         CHECK(editor.GetTotalLines() == 4);
     }
 
+    SECTION("ClearText")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.SetText("Hello World");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "Hello World");
+
+        editor.ClearText();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText().empty());
+    }
+
     SECTION("SetTextLines")
     {
         dlxemu::CodeEditor editor{&emulator};
