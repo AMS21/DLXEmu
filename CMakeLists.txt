@@ -22,6 +22,17 @@ execute_process(COMMAND git branch --show-current  WORKING_DIRECTORY ${CMAKE_CUR
 # Get uname info
 execute_process(COMMAND uname -s -r -m -o OUTPUT_VARIABLE DLXEMU_UNAME OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+# Linux Standand base info
+execute_process(COMMAND lsb_release --id          --short OUTPUT_VARIABLE DLXEMU_LSB_ID          OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND lsb_release --description --short OUTPUT_VARIABLE DLXEMU_LSB_DESCRIPTION OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND lsb_release --release     --short OUTPUT_VARIABLE DLXEMU_LSB_RELEASE     OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND lsb_release --codename    --short OUTPUT_VARIABLE DLXEMU_LSB_CODENAME    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# Sanitize values
+string(REPLACE "\""
+       "" DLXEMU_LSB_DESCRIPTION
+       ${DLXEMU_LSB_DESCRIPTION})
+
 # Project
 project("DLXEmu" LANGUAGES CXX C VERSION ${DLXEMU_VERSION_MAJOR}.${DLXEMU_VERSION_MINOR}.${DLXEMU_VERSION_PATCH})
 

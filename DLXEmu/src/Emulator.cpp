@@ -6,6 +6,7 @@
 #include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
+#include <phi/algorithm/string_length.hpp>
 #include <phi/compiler_support/compiler.hpp>
 #include <phi/compiler_support/platform.hpp>
 #include <phi/core/assert.hpp>
@@ -351,6 +352,17 @@ namespace dlxemu
         ImGui::End();
     }
 
+    constexpr static const char* get_lsb_info() noexcept
+    {
+        if (phi::string_length(dlxemu::LSBId) == 0u)
+        {
+            return "";
+        }
+
+        return "\nLSB:        " DLXEMU_LSB_DESCRIPTION " - " DLXEMU_LSB_RELEASE
+               " " DLXEMU_LSB_CODENAME;
+    }
+
     void Emulator::RenderAbout() noexcept
     {
         constexpr static ImGuiWindowFlags about_flags =
@@ -361,22 +373,25 @@ namespace dlxemu
         if (ImGui::Begin("DLXEmu - About", &m_ShowAbout, about_flags))
         {
             static constexpr const char* arch_flag{sizeof(void*) == 8 ? "x64" : "x32"};
-            static std::string           about_text = fmt::format(
-                              "Version:    {:d}.{:d}.{:d} {:s}\n"
-                                        "Commit:     {:s}\n"
-                                        "Build date: {:s} {:s}\n"
-                                        "OpenGL:     {:d}.{:d}\n"
-                                        "GLFW:       {:d}.{:d}.{:d}\n"
-                                        "Dear ImGui: {:s}\n"
-                                        "Platform:   {:s} {:s}\n"
-                                        "Uname:      {:s}\n"
-                                        "Compiler:   {:s} ({:d}.{:d}.{:d})",
-                              dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
-                              dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
-                              GLVersion.major, GLVersion.minor, GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR,
-                              GLFW_VERSION_REVISION, IMGUI_VERSION, PHI_PLATFORM_NAME(), arch_flag,
-                              DLXEMU_UNAME, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
-                              PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH());
+            static constexpr const char* lsb_info{get_lsb_info()};
+
+            static std::string about_text = fmt::format(
+                    "Version:    {:d}.{:d}.{:d} {:s}\n"
+                    "Commit:     {:s}\n"
+                    "Build date: {:s} {:s}\n"
+                    "OpenGL:     {:d}.{:d}\n"
+                    "GLFW:       {:d}.{:d}.{:d}\n"
+                    "Dear ImGui: {:s}\n"
+                    "Platform:   {:s} {:s}\n"
+                    "Uname:      {:s}\n"
+                    "Compiler:   {:s} ({:d}.{:d}.{:d}){}",
+                    dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
+                    dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
+                    GLVersion.major, GLVersion.minor, GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR,
+                    GLFW_VERSION_REVISION, IMGUI_VERSION, PHI_PLATFORM_NAME(), arch_flag,
+                    DLXEMU_UNAME, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
+                    PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH(),
+                    lsb_info);
 
             ImGui::TextUnformatted(about_text.c_str());
 

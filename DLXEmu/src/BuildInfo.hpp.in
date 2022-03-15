@@ -10,7 +10,7 @@
 #define DLXEMU_VERSION_PATCH ${DLXEMU_VERSION_PATCH}
 
 // Git Sha
-#define DLXEMU_GIT_SHA_FULL ${DLXEMU_GIT_SHA_FULL}
+#define DLXEMU_GIT_SHA_FULL  ${DLXEMU_GIT_SHA_FULL}
 #define DLXEMU_GIT_SHA_SHORT ${DLXEMU_GIT_SHA_SHORT}
 
 // Git Branch
@@ -18,6 +18,12 @@
 
 // uname
 #define DLXEMU_UNAME "${DLXEMU_UNAME}"
+
+// LSB (Linux Standard Base)
+#define DLXEMU_LSB_ID          "${DLXEMU_LSB_ID}"
+#define DLXEMU_LSB_DESCRIPTION "${DLXEMU_LSB_DESCRIPTION}"
+#define DLXEMU_LSB_RELEASE     "${DLXEMU_LSB_RELEASE}"
+#define DLXEMU_LSB_CODENAME    "${DLXEMU_LSB_CODENAME}"
 // clang-format on
 
 namespace dlxemu
@@ -35,4 +41,9 @@ namespace dlxemu
     constexpr static const char BuildTime[]{__TIME__};
 
     constexpr static const char UName[]{DLXEMU_UNAME};
+
+    constexpr static const char LSBId[]{DLXEMU_LSB_ID};
+    constexpr static const char LSBDescription[]{DLXEMU_LSB_DESCRIPTION};
+    constexpr static const char LSBRelease[]{DLXEMU_LSB_RELEASE};
+    constexpr static const char LSBCodeName[]{DLXEMU_LSB_CODENAME};
 } // namespace dlxemu
