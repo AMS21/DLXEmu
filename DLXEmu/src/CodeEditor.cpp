@@ -2700,8 +2700,24 @@ namespace dlxemu
 
     void CodeEditor::ClearText() noexcept
     {
+        if (m_Lines.empty() || IsReadOnly())
+        {
+            return;
+        }
+
+        UndoRecord u;
+        u.m_Before = m_State;
+
+        u.m_Removed            = GetText();
+        u.m_RemovedStart       = Coordinates(0, 0);
+        std::uint32_t max_line = m_Lines.size() - 1u;
+        u.m_RemovedEnd         = Coordinates(max_line, GetLineMaxColumn(max_line));
+
         m_Lines.clear();
-        m_Lines.push_back(Line{});
+        m_Lines.emplace_back(Line{});
+
+        u.m_After = m_State;
+        AddUndo(u);
     }
 
     std::vector<std::string> CodeEditor::GetTextLines() const noexcept
