@@ -1040,6 +1040,14 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
+            // ClearSelection
+            case 32: {
+                FUZZ_LOG("ClearSelection");
+
+                editor.ClearSelection();
+                break;
+            }
+
             default: {
                 return 0;
             }
