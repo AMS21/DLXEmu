@@ -2509,6 +2509,11 @@ namespace dlxemu
         SetSelection(Coordinates(0, 0), Coordinates((std::int32_t)m_Lines.size(), 0));
     }
 
+    void CodeEditor::ClearSelection() noexcept
+    {
+        SetSelection(Coordinates(0, 0), Coordinates(0, 0));
+    }
+
     bool CodeEditor::HasSelection() const noexcept
     {
         return m_State.m_SelectionEnd > m_State.m_SelectionStart;

@@ -210,6 +210,7 @@ namespace dlxemu
                                                SelectionMode mode = SelectionMode::Normal) noexcept;
         void                      SelectWordUnderCursor() noexcept;
         void                      SelectAll() noexcept;
+        void                      ClearSelection() noexcept;
         [[nodiscard]] bool        HasSelection() const noexcept;
         [[nodiscard]] Coordinates GetSelectionStart() const noexcept;
         [[nodiscard]] Coordinates GetSelectionEnd() const noexcept;
