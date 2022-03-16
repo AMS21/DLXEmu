@@ -2720,6 +2720,7 @@ namespace dlxemu
 
         m_Lines.clear();
         m_Lines.emplace_back(Line{});
+        ClearSelection();
 
         u.m_After = m_State;
         AddUndo(u);
