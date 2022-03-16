@@ -159,7 +159,7 @@ namespace dlxemu
         void Render(const ImVec2& size = ImVec2(), bool border = false) noexcept;
         void SetText(const std::string& text) noexcept;
         [[nodiscard]] std::string GetText() const noexcept;
-        void ClearText() noexcept;
+        void                      ClearText() noexcept;
 
         void SetTextLines(const std::vector<std::string>& lines) noexcept;
         [[nodiscard]] std::vector<std::string> GetTextLines() const noexcept;
