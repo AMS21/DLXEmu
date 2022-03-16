@@ -1378,4 +1378,18 @@ TEST_CASE("CodeEditor crashes")
         editor.Undo();
         editor.VerifyInternalState();
     }
+
+    SECTION("crash-b98edbf987ccf89dabea024daa1e7ef0d6d4617e")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
+
+        editor.SelectAll();
+        editor.VerifyInternalState();
+
+        editor.ClearText();
+        editor.VerifyInternalState();
+    }
 }
