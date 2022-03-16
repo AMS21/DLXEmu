@@ -22,6 +22,8 @@ function(define_fuzzer name source libraries)
   add_executable(${name} ${source})
   target_link_libraries(${name} PRIVATE Phi::ProjectOptions Threads::Threads -fsanitize=fuzzer ${libraries})
   target_compile_options(${name} PRIVATE -fsanitize=fuzzer)
+  # Don't inline functions defined always inline
+  target_compile_definitions(${name} PRIVATE PHI_CONFIG_ALWAYS_INLINE_OVERWRITE=PHI_NEVER_INLINE)
   target_include_directories(${name} PRIVATE "include")
 endfunction()
 
