@@ -1,12 +1,3 @@
-#if defined(FUZZ_VERBOSE_LOG)
-#    define FUZZ_LOG(...)       SPDLOG_DEBUG(__VA_ARGS__)
-#    define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
-#else
-#    define FUZZ_LOG(...)       PHI_EMPTY_MACRO()
-#    define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_OFF
-#endif
-
-#include "spdlog/common.h"
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
 #include <imgui.h>
@@ -19,7 +10,6 @@
 #include <phi/core/scope_guard.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
 #include <spdlog/fmt/bundled/core.h>
-#include <spdlog/spdlog.h>
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -27,6 +17,15 @@
 #include <string>
 #include <type_traits>
 #include <vector>
+
+#if defined(FUZZ_VERBOSE_LOG)
+#    define FUZZ_LOG(...)                                                                          \
+        fmt::print(stderr, __VA_ARGS__);                                                           \
+        std::putc('\n', stderr);                                                                   \
+        std::fflush(stderr);
+#else
+#    define FUZZ_LOG(...) PHI_EMPTY_MACRO()
+#endif
 
 static constexpr const std::size_t MaxVectorSize{0x1000};
 
@@ -388,20 +387,9 @@ void EndImGui() noexcept
     ImGui::EndFrame();
 }
 
-bool SetupLog()
-{
-#if defined(FUZZ_VERBOSE_LOG)
-    spdlog::set_level(spdlog::level::trace);
-    spdlog::flush_on(spdlog::level::trace);
-#endif
-
-    return true;
-}
-
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
 {
-    static bool log_init   = SetupLog();
     static bool imgui_init = SetupImGui();
 
     // Ensure frame count doesn't overflow
