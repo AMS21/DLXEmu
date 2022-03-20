@@ -1,6 +1,6 @@
 #include "DLXEmu/Window.hpp"
 
-#include <spdlog/spdlog.h>
+#include "DLX/Logger.hpp"
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <glad/glad.h>
@@ -25,7 +25,7 @@ namespace dlxemu
 {
     static void glfw_error_callback(int error, const char* message) noexcept
     {
-        SPDLOG_ERROR("GLFW error {:d}: {:s}", error, message);
+        DLX_ERROR("GLFW error {:d}: {:s}", error, message);
     }
 
     Window::~Window() noexcept
@@ -40,7 +40,7 @@ namespace dlxemu
 
         if (glfwInit() == GLFW_FALSE)
         {
-            SPDLOG_ERROR("Failed to initialize GLFW!");
+            DLX_ERROR("Failed to initialize GLFW!");
             return false;
         }
 
@@ -70,7 +70,7 @@ namespace dlxemu
         m_Window = glfwCreateWindow(1280, 720, "DLXEmu", nullptr, nullptr);
         if (m_Window == nullptr)
         {
-            SPDLOG_ERROR("Failed to create window!");
+            DLX_ERROR("Failed to create window!");
             return false;
         }
 
@@ -84,7 +84,7 @@ namespace dlxemu
         if (!gladLoadGL())
 #endif
         {
-            SPDLOG_ERROR("Failed to load OpenGL!");
+            DLX_ERROR("Failed to load OpenGL!");
             return false;
         }
 
@@ -93,7 +93,7 @@ namespace dlxemu
         glad_glPolygonMode = [](GLenum /*face*/, GLenum /*mode*/) -> void { return; };
 #endif
 
-        SPDLOG_INFO("Successfully loaded OpenGL version {}.{}", GLVersion.major, GLVersion.minor);
+        DLX_INFO("Successfully loaded OpenGL version {}.{}", GLVersion.major, GLVersion.minor);
 
         InitializeImGui();
 
@@ -186,7 +186,7 @@ namespace dlxemu
         m_ImGuiContext = ImGui::CreateContext();
         if (m_ImGuiContext == nullptr)
         {
-            SPDLOG_ERROR("Failed to create ImGuiContext");
+            DLX_ERROR("Failed to create ImGuiContext");
             return;
         }
 
@@ -277,7 +277,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1280,701 Split=X
         ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
         ImGui_ImplOpenGL3_Init(glsl_version);
 
-        SPDLOG_INFO("Successfully initialized ImGui with glsl {:s}", glsl_version);
+        DLX_INFO("Successfully initialized ImGui with glsl {:s}", glsl_version);
 
         imgui_initialized = true;
     }

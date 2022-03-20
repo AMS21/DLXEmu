@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 
+#include "DLX/Logger.hpp"
 #include "DLXEmu/generated/BuildInfo.hpp"
 #include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
@@ -12,7 +13,6 @@
 #include <phi/core/assert.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/fmt.h>
-#include <spdlog/spdlog.h>
 #include <string_view>
 
 namespace dlxemu
@@ -31,7 +31,7 @@ namespace dlxemu
         // No args
         if (argc <= 1)
         {
-            SPDLOG_DEBUG("No args provides");
+            DLX_DEBUG("No args provides");
             return true;
         }
 
@@ -40,7 +40,7 @@ namespace dlxemu
             std::string arg_value = argv[arg_num.get()];
             std::transform(arg_value.begin(), arg_value.end(), arg_value.begin(), ::tolower);
 
-            PHI_ASSERT(!arg_value.empty());
+            PHI_DBG_ASSERT(!arg_value.empty());
 
             if (arg_value.front() == '-')
             {
@@ -48,7 +48,7 @@ namespace dlxemu
                 if (arg_value == "-h" || arg_value == "-help" || arg_value == "-?" ||
                     arg_value == "--help")
                 {
-                    SPDLOG_INFO("Help");
+                    DLX_INFO("Help");
                     return false;
                 }
                 // Display version
@@ -60,11 +60,11 @@ namespace dlxemu
                 }
 
                 // Unknown option
-                SPDLOG_WARN("Unknown option '{:s}'", arg_value);
+                DLX_WARN("Unknown option '{:s}' ignored", arg_value);
                 break;
             }
 
-            SPDLOG_WARN("Ignore command line argument '{:s}'", arg_value);
+            DLX_WARN("Ignore command line argument '{:s}'", arg_value);
         }
 
         return true;
@@ -75,7 +75,7 @@ namespace dlxemu
         // Initialize Window
         if (!m_Window.Initialize())
         {
-            SPDLOG_ERROR("Failed to initialize window");
+            DLX_ERROR("Failed to initialize window");
             return false;
         }
 
@@ -226,7 +226,7 @@ namespace dlxemu
                     m_CodeEditor.Copy();
                 }
 
-                bool can_paste = std::strcmp(ImGui::GetClipboardText(), "") != 0;
+                const bool can_paste = phi::string_length(ImGui::GetClipboardText()) != 0u;
 
                 if (ImGui::MenuItem("Paste", "CTRL+V", false, can_paste))
                 {
@@ -272,30 +272,30 @@ namespace dlxemu
 
                 if (ImGui::MenuItem("Dump registers to console"))
                 {
-                    SPDLOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
+                    DLX_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
                 }
 
                 if (ImGui::MenuItem("Dump memory to console"))
                 {
-                    SPDLOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
+                    DLX_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
                 }
 
                 if (ImGui::MenuItem("Dump processor to console"))
                 {
-                    SPDLOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
+                    DLX_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
                 }
 
                 if (ImGui::MenuItem("Dump current program to console"))
                 {
-                    SPDLOG_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
+                    DLX_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
                 }
 
                 if (ImGui::MenuItem("Full console dump"))
                 {
-                    SPDLOG_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
-                    SPDLOG_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
-                    SPDLOG_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
-                    SPDLOG_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
+                    DLX_TRACE("Register dump:\n" + m_Processor.GetRegisterDump());
+                    DLX_TRACE("Memory dump:\n" + m_Processor.GetMemoryDump());
+                    DLX_TRACE("Processor dump:\n" + m_Processor.GetProcessorDump());
+                    DLX_TRACE("Current program dump:\n" + m_DLXProgram.GetDump());
                 }
 
                 ImGui::EndMenu();
@@ -316,12 +316,12 @@ namespace dlxemu
                 if (m_DLXProgram.m_ParseErrors.empty())
                 {
                     m_Processor.ExecuteCurrentProgram();
-                    SPDLOG_INFO("Executed current program");
+                    DLX_INFO("Executed current program");
                 }
                 else
                 {
-                    SPDLOG_INFO("Can't execute program since it contains {} parse errors",
-                                m_DLXProgram.m_ParseErrors.size());
+                    DLX_INFO("Can't execute program since it contains {} parse errors",
+                             m_DLXProgram.m_ParseErrors.size());
                 }
             }
 
@@ -331,13 +331,13 @@ namespace dlxemu
                 // Step
                 if (m_Processor.GetCurrentStepCount() == 0u)
                 {
-                    SPDLOG_INFO("Loaded program");
+                    DLX_INFO("Loaded program");
                     m_Processor.LoadProgram(m_DLXProgram);
                 }
 
                 m_Processor.ExecuteStep();
 
-                SPDLOG_INFO("Executed step");
+                DLX_INFO("Executed step");
             }
 
             ImGui::SameLine();
@@ -436,7 +436,7 @@ namespace dlxemu
                                 ImGui::StyleColorsClassic();
                                 break;
                             default:
-                                PHI_ASSERT_NOT_REACHED();
+                                PHI_DBG_ASSERT_NOT_REACHED();
                         }
                     }
 
@@ -455,7 +455,7 @@ namespace dlxemu
                                 m_CodeEditor.SetPalette(dlxemu::CodeEditor::GetRetroBluePalette());
                                 break;
                             default:
-                                PHI_ASSERT_NOT_REACHED();
+                                PHI_DBG_ASSERT_NOT_REACHED();
                         }
                     }
 

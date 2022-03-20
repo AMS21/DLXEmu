@@ -4,6 +4,7 @@
 #include "DLX/InstructionArgument.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/InstructionLibrary.hpp"
+#include "DLX/Logger.hpp"
 #include "DLX/OpCode.hpp"
 #include "DLX/ParseError.hpp"
 #include "DLX/ParserUtils.hpp"
@@ -31,7 +32,7 @@ namespace dlx
             const Token& token, ArgumentType expected_argument_type, TokenStream& tokens,
             ParsedProgram& program) noexcept
     {
-        // SPDLOG_INFO("Parsing argument with token '{}' and expected type '{}'", token.DebugInfo(),
+        // DLX_INFO("Parsing argument with token '{}' and expected type '{}'", token.DebugInfo(),
         //              magic_enum::enum_name(expected_argument_type));
 
         switch (token.GetType())
@@ -47,7 +48,7 @@ namespace dlx
                 }
 
                 // Get address displacement
-                PHI_ASSERT(token.HasHint());
+                PHI_DBG_ASSERT(token.HasHint());
 
                 std::int16_t value = static_cast<std::int16_t>(token.GetHint());
 
@@ -88,7 +89,7 @@ namespace dlx
                 // Consume the 3 tokens
                 tokens.set_position(it + 3u);
 
-                //SPDLOG_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
+                //DLX_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
                 //             value, magic_enum::enum_name(reg_id));
 
                 return ConstructInstructionArgumentAddressDisplacement(
@@ -102,7 +103,7 @@ namespace dlx
                     return {};
                 }
 
-                //SPDLOG_INFO("Parsed identifier as int register {}",
+                //DLX_INFO("Parsed identifier as int register {}",
                 //             magic_enum::enum_name(reg_id));
 
                 return ConstructInstructionArgumentRegisterInt(
@@ -116,7 +117,7 @@ namespace dlx
                     return {};
                 }
 
-                //SPDLOG_INFO("Parsed identifier as float register {}",
+                //DLX_INFO("Parsed identifier as float register {}",
                 //             magic_enum::enum_name(float_reg_id));
 
                 return ConstructInstructionArgumentRegisterFloat(
@@ -145,7 +146,7 @@ namespace dlx
                     return {};
                 }
 
-                //SPDLOG_INFO("Parsed Label identifier as '{}'", token.GetText());
+                //DLX_INFO("Parsed Label identifier as '{}'", token.GetText());
 
                 return ConstructInstructionArgumentLabel(token.GetText());
             }
@@ -170,7 +171,7 @@ namespace dlx
                     return {};
                 }
 
-                //SPDLOG_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
+                //DLX_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
                 return ConstructInstructionArgumentImmediateValue(parsed_value.value().get());
@@ -197,17 +198,17 @@ namespace dlx
         {
             const Token& current_token = tokens.consume();
 
-            //SPDLOG_INFO("Parsing '{}'", current_token.DebugInfo());
+            //DLX_INFO("Parsing '{}'", current_token.DebugInfo());
 
             switch (current_token.GetType())
             {
                 // Ignore comments
                 case Token::Type::Comment:
-                    //SPDLOG_DEBUG("Ignoring comment");
+                    //DLX_DEBUG("Ignoring comment");
                     break;
 
                 case Token::Type::NewLine:
-                    //SPDLOG_DEBUG("Ignoring newline");
+                    //DLX_DEBUG("Ignoring newline");
                     line_has_instruction = false;
                     break;
 
@@ -266,7 +267,7 @@ namespace dlx
                                     return false;
                                 });
 
-                        PHI_ASSERT(first_label_definition);
+                        PHI_DBG_ASSERT(first_label_definition);
 
                         program.AddParseError(ConstructLabelAlreadyDefinedParseError(
                                 current_token, *first_label_definition));
@@ -277,7 +278,7 @@ namespace dlx
                             static_cast<std::uint32_t>(program.m_Instructions.size());
                     label_count += 1u;
 
-                    //SPDLOG_INFO("Added jump label {} -> {}", label_name,
+                    //DLX_INFO("Added jump label {} -> {}", label_name,
                     //             program.m_Instructions.size());
 
                     break;
@@ -297,7 +298,7 @@ namespace dlx
                     PHI_DBG_ASSERT(current_token.HasHint());
                     OpCode opcode = static_cast<OpCode>(current_token.GetHint());
 
-                    //SPDLOG_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
+                    //DLX_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
 
                     const InstructionInfo& info = LookUpIntructionInfo(opcode);
 
@@ -308,7 +309,7 @@ namespace dlx
                     PHI_DBG_ASSERT(info.GetExecutor());
 
                     phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
-                    //SPDLOG_INFO("Instruction requires {} arguments",
+                    //DLX_INFO("Instruction requires {} arguments",
                     //             number_of_argument_required.get());
 
                     // Create instruction
@@ -338,7 +339,7 @@ namespace dlx
                             }
 
                             consumed_comma = true;
-                            //SPDLOG_DEBUG("Skipping comma");
+                            //DLX_DEBUG("Skipping comma");
                             continue;
                         }
 
@@ -366,10 +367,10 @@ namespace dlx
                         argument_num++;
                         consumed_comma = false;
 
-                        //SPDLOG_INFO("Successfully parsed argument {}", argument_num.get());
+                        //DLX_INFO("Successfully parsed argument {}", argument_num.get());
                     }
 
-                    //SPDLOG_INFO("Successfully parsed instruction '{}'",
+                    //DLX_INFO("Successfully parsed instruction '{}'",
                     //            instruction.DebugInfo());
                     program.m_Instructions.emplace_back(instruction);
                     line_has_instruction = true;

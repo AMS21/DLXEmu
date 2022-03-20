@@ -197,7 +197,7 @@ namespace dlx
                                 break;
 #if !defined(DLXEMU_COVERAGE_BUILD)
                             default:
-                                PHI_ASSERT_NOT_REACHED();
+                                PHI_DBG_ASSERT_NOT_REACHED();
                                 break;
 #endif
                         }

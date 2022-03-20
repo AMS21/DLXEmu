@@ -3,7 +3,6 @@
 #include "DLX/InstructionArgument.hpp"
 #include <magic_enum.hpp>
 #include <phi/core/assert.hpp>
-#include <spdlog/fmt/bundled/format.h>
 #include <spdlog/fmt/fmt.h>
 
 namespace dlx
@@ -14,7 +13,7 @@ namespace dlx
 
     void Instruction::SetArgument(phi::u8 argument_number, InstructionArgument argument) noexcept
     {
-        PHI_ASSERT(argument_number < 3u);
+        PHI_DBG_ASSERT(argument_number < 3u);
 
         switch (argument_number.get())
         {
@@ -29,7 +28,7 @@ namespace dlx
                 break;
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                PHI_ASSERT_NOT_REACHED();
+                PHI_DBG_ASSERT_NOT_REACHED();
 #endif
         }
     }
@@ -52,13 +51,13 @@ namespace dlx
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                PHI_ASSERT_NOT_REACHED();
+                PHI_DBG_ASSERT_NOT_REACHED();
                 break;
 #endif
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_ASSERT_NOT_REACHED();
+        PHI_DBG_ASSERT_NOT_REACHED();
         return "Unknown";
 #endif
     }

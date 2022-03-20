@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.10.2)
 project("DLXEmuTest" CXX)
 
 # Files
-file(GLOB DLXEMU_TEST_SOURCES "src/CodeEditor.test.cpp")
-file(GLOB DLXEMU_TEST_HEADERS )
+file(GLOB DLXEMU_TEST_SOURCES "src/CodeEditor.test.cpp" "src/CodeEditorCrashes.test.cpp" "src/SetupImGui.cpp")
+file(GLOB DLXEMU_TEST_HEADERS "include/SetupImGui.hpp")
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${DLXEMU_TEST_SOURCES} ${DLXEMU_TEST_HEADERS})
 

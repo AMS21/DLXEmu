@@ -1,6 +1,6 @@
+#include "DLX/Logger.hpp"
 #include <DLX/OpCode.hpp>
 #include <DLX/RegisterNames.hpp>
-#include <spdlog/spdlog.h>
 #include <magic_enum.hpp>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <iostream>

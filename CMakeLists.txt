@@ -29,12 +29,14 @@ execute_process(COMMAND lsb_release --release     --short OUTPUT_VARIABLE DLXEMU
 execute_process(COMMAND lsb_release --codename    --short OUTPUT_VARIABLE DLXEMU_LSB_CODENAME    OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # Sanitize values
-string(REPLACE "\""
-       "" DLXEMU_LSB_DESCRIPTION
-       ${DLXEMU_LSB_DESCRIPTION})
+if (DLXEMU_LSB_DESCRIPTION)
+  string(REPLACE "\""
+         "" DLXEMU_LSB_DESCRIPTION
+         ${DLXEMU_LSB_DESCRIPTION})
+endif()
 
 # Project
-project("DLXEmu" LANGUAGES CXX C VERSION ${DLXEMU_VERSION_MAJOR}.${DLXEMU_VERSION_MINOR}.${DLXEMU_VERSION_PATCH})
+project("DLXEmu" LANGUAGES CXX VERSION ${DLXEMU_VERSION_MAJOR}.${DLXEMU_VERSION_MINOR}.${DLXEMU_VERSION_PATCH})
 
 # Dependencies
 add_subdirectory(external)

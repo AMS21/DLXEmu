@@ -57,7 +57,7 @@ namespace dlx
         [[nodiscard]] const Token* find_first_token_if(PredicateT pred) const noexcept
         {
 #if defined(PHI_DEBUG)
-            PHI_ASSERT(m_Finialized);
+            PHI_DBG_ASSERT(m_Finialized);
 #endif
 
             for (const Token& token : m_Tokens)
@@ -75,7 +75,7 @@ namespace dlx
         [[nodiscard]] const Token* find_last_token_if(PredicateT pred) const noexcept
         {
 #if defined(PHI_DEBUG)
-            PHI_ASSERT(m_Finialized);
+            PHI_DBG_ASSERT(m_Finialized);
 #endif
 
             const Token* last = nullptr;

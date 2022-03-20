@@ -95,6 +95,8 @@ namespace dlx
 
         void ExecuteCurrentProgram() noexcept;
 
+        void Reset() noexcept;
+
         void ClearRegisters() noexcept;
 
         void ClearMemory() noexcept;

@@ -7,7 +7,7 @@ namespace dlx
     void TokenStream::push_back(const Token& value) noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(!m_Finialized);
+        PHI_DBG_ASSERT(!m_Finialized);
 #endif
 
         m_Tokens.push_back(value);
@@ -16,7 +16,7 @@ namespace dlx
     void TokenStream::push_back(Token&& value) noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(!m_Finialized);
+        PHI_DBG_ASSERT(!m_Finialized);
 #endif
 
         m_Tokens.push_back(value);
@@ -25,7 +25,7 @@ namespace dlx
     void TokenStream::finalize() noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(!m_Finialized);
+        PHI_DBG_ASSERT(!m_Finialized);
 #endif
 
         m_Iterator = m_Tokens.begin();
@@ -37,7 +37,7 @@ namespace dlx
     void TokenStream::reset() noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         m_Iterator = m_Tokens.begin();
@@ -69,9 +69,9 @@ namespace dlx
 
     const Token& TokenStream::look_ahead() const noexcept
     {
-        PHI_ASSERT(!reached_end());
+        PHI_DBG_ASSERT(!reached_end());
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         return *m_Iterator;
@@ -79,9 +79,9 @@ namespace dlx
 
     const Token& TokenStream::consume() noexcept
     {
-        PHI_ASSERT(!reached_end());
+        PHI_DBG_ASSERT(!reached_end());
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         return *m_Iterator++;
@@ -89,11 +89,11 @@ namespace dlx
 
     void TokenStream::skip(phi::usize n) noexcept
     {
-        PHI_ASSERT(!reached_end());
+        PHI_DBG_ASSERT(!reached_end());
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_DBG_ASSERT(m_Finialized);
 #endif
-        PHI_ASSERT(has_x_more(n));
+        PHI_DBG_ASSERT(has_x_more(n));
         PHI_DBG_ASSERT(n != 0u);
 
         for (; n > 0u; --n, ++m_Iterator)
@@ -103,7 +103,7 @@ namespace dlx
     const Token* TokenStream::find_first_token_of_type(Token::Type type) const noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         for (const Token& token : m_Tokens)
@@ -120,7 +120,7 @@ namespace dlx
     const Token* TokenStream::find_last_token_of_type(Token::Type type) const noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         const Token* last = nullptr;
@@ -139,7 +139,7 @@ namespace dlx
     phi::usize TokenStream::size() const noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_DBG_ASSERT(m_Finialized);
 #endif
         phi::usize count{0u};
 
@@ -169,7 +169,7 @@ namespace dlx
     void TokenStream::set_position(TokenStream::iterator it) noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         m_Iterator = it;
@@ -178,7 +178,7 @@ namespace dlx
     TokenStream::const_iterator TokenStream::begin() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         return m_Tokens.begin();
@@ -187,7 +187,7 @@ namespace dlx
     TokenStream::const_iterator TokenStream::cbegin() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         return m_Tokens.cbegin();
@@ -196,7 +196,7 @@ namespace dlx
     TokenStream::const_iterator TokenStream::end() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         return m_Tokens.end();
@@ -205,7 +205,7 @@ namespace dlx
     TokenStream::const_iterator TokenStream::cend() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         return m_Tokens.cend();
@@ -214,7 +214,7 @@ namespace dlx
     [[nodiscard]] TokenStream::const_reverse_iterator TokenStream::rbegin() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         return m_Tokens.rbegin();
@@ -223,7 +223,7 @@ namespace dlx
     [[nodiscard]] TokenStream::const_reverse_iterator TokenStream::rend() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_DBG_ASSERT(m_Finialized);
 #endif
 
         return m_Tokens.rend();

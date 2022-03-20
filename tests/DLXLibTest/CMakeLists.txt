@@ -18,6 +18,7 @@ file(GLOB DLXLIB_TEST_SOURCES
      "src/Parser.test.cpp"
      "src/ParserUtils.test.cpp"
      "src/Processor.test.cpp"
+     "src/ProcessorCrashes.test.cpp"
      "src/RegisterNames.test.cpp"
      "src/StatusRegister.test.cpp"
      "src/Token.test.cpp"

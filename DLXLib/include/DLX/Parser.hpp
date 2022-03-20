@@ -1,8 +1,8 @@
 #pragma once
 
+#include "DLX/ParsedProgram.hpp"
+#include "DLX/Token.hpp"
 #include "DLX/TokenStream.hpp"
-#include "ParsedProgram.hpp"
-#include "Token.hpp"
 #include <string_view>
 #include <vector>
 

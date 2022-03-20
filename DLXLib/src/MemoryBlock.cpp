@@ -1,7 +1,7 @@
 #include "DLX/MemoryBlock.hpp"
 
+#include "DLX/Logger.hpp"
 #include <phi/core/boolean.hpp>
-#include <spdlog/spdlog.h>
 #include <cstdint>
 
 namespace dlx
@@ -16,7 +16,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 1u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
 
@@ -28,7 +28,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 1u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
 
@@ -40,12 +40,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 2u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 2u))
         {
-            SPDLOG_ERROR("Address {} is misaligned", address.get());
+            DLX_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -57,12 +57,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 2u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 2u))
         {
-            SPDLOG_ERROR("Address {} is misaligned", address.get());
+            DLX_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -74,12 +74,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 4u))
         {
-            SPDLOG_ERROR("Address {} is misaligned", address.get());
+            DLX_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -91,12 +91,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 4u))
         {
-            SPDLOG_ERROR("Address {} is misaligned", address.get());
+            DLX_ERROR("Address {} is misaligned", address.get());
             return {};
         }
 
@@ -108,7 +108,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
 
@@ -120,7 +120,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 8u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return {};
         }
 
@@ -132,7 +132,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 1u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -144,7 +144,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 1u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -156,7 +156,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 2u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -170,7 +170,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 2u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -184,7 +184,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -198,7 +198,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -212,7 +212,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 
@@ -226,7 +226,7 @@ namespace dlx
     {
         if (!IsAddressValid(address, 8u))
         {
-            SPDLOG_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.get());
             return false;
         }
 

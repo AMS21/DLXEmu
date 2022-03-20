@@ -4,6 +4,7 @@
 #include "DLX/Instruction.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/IntRegister.hpp"
+#include "DLX/Logger.hpp"
 #include "DLX/Parser.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
@@ -13,7 +14,6 @@
 #include <phi/core/types.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/bundled/format.h>
-#include <spdlog/spdlog.h>
 #include <type_traits>
 #include <utility>
 
@@ -28,8 +28,9 @@ namespace dlx
     static phi::boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
                                                   RegisterAccessType access) noexcept
     {
-        PHI_ASSERT(access == RegisterAccessType::Signed || access == RegisterAccessType::Unsigned ||
-                   access == RegisterAccessType::Float || access == RegisterAccessType::Double);
+        PHI_DBG_ASSERT(access == RegisterAccessType::Signed ||
+                       access == RegisterAccessType::Unsigned ||
+                       access == RegisterAccessType::Float || access == RegisterAccessType::Double);
 
         switch (expected_access)
         {
@@ -95,7 +96,7 @@ namespace dlx
         if (register_value_type != IntRegisterValueType::NotSet &&
             register_value_type != IntRegisterValueType::Signed)
         {
-            SPDLOG_WARN("Mismatch for register value type");
+            DLX_WARN("Mismatch for register value type");
         }
 
         return GetIntRegister(id).GetSignedValue();
@@ -114,7 +115,7 @@ namespace dlx
         if (register_value_type != IntRegisterValueType::NotSet &&
             register_value_type != IntRegisterValueType::Unsigned)
         {
-            SPDLOG_WARN("Mismatch for register value type");
+            DLX_WARN("Mismatch for register value type");
         }
 
         return GetIntRegister(id).GetUnsignedValue();
@@ -198,7 +199,7 @@ namespace dlx
             register_value_type != FloatRegisterValueType::Float)
         {
             /*
-            SPDLOG_WARN("Mismatch for register value type");
+            DLX_WARN("Mismatch for register value type");
             */
         }
 
@@ -226,7 +227,7 @@ namespace dlx
         if (register_value_type_low != FloatRegisterValueType::NotSet &&
             register_value_type_low != FloatRegisterValueType::DoubleLow)
         {
-            SPDLOG_WARN("Mismatch for register value type");
+            DLX_WARN("Mismatch for register value type");
         }
 
         const FloatRegisterValueType register_value_type_high =
@@ -234,7 +235,7 @@ namespace dlx
         if (register_value_type_low != FloatRegisterValueType::NotSet &&
             register_value_type_low != FloatRegisterValueType::DoubleHigh)
         {
-            SPDLOG_WARN("Mismatch for register value type");
+            DLX_WARN("Mismatch for register value type");
         }
 
         const FloatRegister& first_reg = GetFloatRegister(id);
@@ -342,7 +343,7 @@ namespace dlx
     {
         if (!program.m_ParseErrors.empty())
         {
-            SPDLOG_WARN("Trying to load program with parsing errors");
+            DLX_WARN("Trying to load program with parsing errors");
             return false;
         }
 
@@ -393,6 +394,13 @@ namespace dlx
         // Execute current instruction
         ExecuteInstruction(current_instruction);
 
+        // Stop executing if the last instruction halted the processor
+        if (m_Halted)
+        {
+            m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
+            return;
+        }
+
         m_ProgramCounter = m_NextProgramCounter;
 
         ++m_CurrentStepCount;
@@ -428,6 +436,19 @@ namespace dlx
                        "RegisterAccessType was not reset correctly");
     }
 
+    void Processor::Reset() noexcept
+    {
+        ClearMemory();
+        ClearMemory();
+        m_CurrentProgram.reset();
+        m_ProgramCounter               = 0u;
+        m_NextProgramCounter           = 0u;
+        m_Halted                       = true;
+        m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
+        m_LastRaisedException          = Exception::None;
+        m_CurrentStepCount             = 0u;
+    }
+
     void Processor::ClearRegisters() noexcept
     {
         for (auto& reg : m_IntRegisters)
@@ -450,7 +471,7 @@ namespace dlx
 
     void Processor::Raise(Exception exception) noexcept
     {
-        PHI_ASSERT(exception != Exception::None, "Cannot raise None exception");
+        PHI_DBG_ASSERT(exception != Exception::None, "Cannot raise None exception");
 
         m_LastRaisedException = exception;
 
@@ -458,22 +479,22 @@ namespace dlx
         {
 #if !defined(DLXEMU_COVERAGE_BUILD)
             case Exception::None:
-                PHI_ASSERT_NOT_REACHED();
+                PHI_DBG_ASSERT_NOT_REACHED();
                 return;
 #endif
             case Exception::DivideByZero:
                 m_Halted = true;
-                SPDLOG_ERROR("Division through zero");
+                DLX_ERROR("Division through zero");
                 return;
             case Exception::Overflow:
-                SPDLOG_WARN("Overflow");
+                DLX_WARN("Overflow");
                 return;
             case Exception::Underflow:
-                SPDLOG_WARN("Underflow");
+                DLX_WARN("Underflow");
                 return;
             case Exception::Trap:
                 m_Halted = true;
-                SPDLOG_ERROR("Trapped");
+                DLX_ERROR("Trapped");
                 return;
             case Exception::Halt:
                 m_Halted                       = true;
@@ -481,23 +502,23 @@ namespace dlx
                 return;
             case Exception::UnknownLabel:
                 m_Halted = true;
-                SPDLOG_ERROR("Unknown label");
+                DLX_ERROR("Unknown label");
                 return;
             case Exception::BadShift:
-                SPDLOG_ERROR("Bad shift");
+                DLX_ERROR("Bad shift");
                 return;
             case Exception::AddressOutOfBounds:
-                SPDLOG_ERROR("Address out of bounds");
+                DLX_ERROR("Address out of bounds");
                 m_Halted = true;
                 return;
             case Exception::RegisterOutOfBounds:
-                SPDLOG_ERROR("Register out of bounds");
+                DLX_ERROR("Register out of bounds");
                 m_Halted = true;
                 return;
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_ASSERT_NOT_REACHED();
+        PHI_DBG_ASSERT_NOT_REACHED();
 #endif
     }
 

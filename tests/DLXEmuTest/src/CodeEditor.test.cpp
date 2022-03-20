@@ -1,47 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include "SetupImGui.hpp"
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
-#include <imgui.h>
-#include <imgui_internal.h>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
-
-void BeginImGui()
-{
-    ImGuiContext* ctx = ImGui::CreateContext();
-    REQUIRE(ctx);
-
-    ImGuiIO& io = ImGui::GetIO();
-
-    // Enforce valid display size
-    io.DisplaySize.x = 1024.0f;
-    io.DisplaySize.y = 768.0f;
-
-    // Enfore valid DeltaTime
-    io.DeltaTime = 1.0f / 60.0f;
-
-    // Enforce valid space key mapping
-    io.KeyMap[ImGuiKey_Space] = 0;
-
-    // Don't save any config
-    io.IniFilename = nullptr;
-
-    // Build atlas
-    unsigned char* tex_pixels{nullptr};
-    int            tex_w{0};
-    int            tex_h{0};
-    io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
-
-    ImGui::NewFrame();
-}
-
-void EndImgui()
-{
-    ImGui::EndFrame();
-
-    ImGui::DestroyContext(ImGui::GetCurrentContext());
-}
 
 // TODO: MoveX with 0 amount being noop
 
@@ -449,6 +412,21 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(1) == "Test awesome string");
         CHECK(lines.at(2).empty());
         CHECK(editor.GetTotalLines() == 3);
+
+        // Characters should be skipped
+        editor.SetReadOnly(false);
+        editor.VerifyInternalState();
+        editor.ClearText();
+        editor.VerifyInternalState();
+        editor.InsertText("\r\r\r");
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text.empty());
+        CHECK(lines.size() == 1u);
+        CHECK(lines.at(0u).empty());
+        CHECK(editor.GetTotalLines() == 1u);
     }
 
     SECTION("EnterCharacter")
@@ -588,6 +566,8 @@ TEST_CASE("CodeEditor")
 
     SECTION("ShowWhitespaces")
     {
+        BeginImGui();
+
         dlxemu::CodeEditor editor{&emulator};
 
         CHECK_FALSE(editor.IsShowingWhitespaces());
@@ -597,10 +577,32 @@ TEST_CASE("CodeEditor")
 
         CHECK(editor.IsShowingWhitespaces());
 
+        editor.Render();
+        editor.VerifyInternalState();
+
+        editor.SetText("This is a string with whitespaces.");
+        editor.VerifyInternalState();
+        editor.Render();
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsShowingWhitespaces());
+
         editor.SetShowWhitespaces(false);
         editor.VerifyInternalState();
 
         CHECK_FALSE(editor.IsShowingWhitespaces());
+
+        editor.Render();
+        editor.VerifyInternalState();
+
+        editor.ClearText();
+        editor.VerifyInternalState();
+        editor.Render();
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsShowingWhitespaces());
+
+        EndImgui();
     }
 
     SECTION("Colorizer")
@@ -808,6 +810,59 @@ TEST_CASE("CodeEditor")
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
     }
+
+    SECTION("MoveDown")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        dlxemu::CodeEditor::Coordinates pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 0);
+
+        editor.MoveDown(1);
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 0);
+
+        editor.MoveDown(100);
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 0);
+
+        editor.SetText("Line number 1 awesome\nLine 2\nLast Line is this and its pretty long wow");
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 0);
+
+        editor.MoveDown();
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 1);
+        CHECK(pos.m_Column == 0);
+
+        editor.MoveEnd();
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 1);
+        CHECK(pos.m_Column == 6);
+
+        // Column is not changed when moving down and the last line has enough characters
+        editor.MoveDown();
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 2);
+        CHECK(pos.m_Column == 6);
+
+        // Moving down on the final line moves to the end of the line
+        editor.MoveDown();
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 2);
+        CHECK(pos.m_Column == 41);
+    }
 }
 
 TEST_CASE("CodeEditor bad calls")
@@ -947,449 +1002,6 @@ TEST_CASE("CodeEditor bad calls")
         editor.SetCursorPosition(coords);
         editor.VerifyInternalState();
         editor.Delete();
-        editor.VerifyInternalState();
-    }
-}
-
-TEST_CASE("CodeEditor crashes")
-{
-    dlxemu::Emulator emulator;
-
-    SECTION("crash-6ededd1eef55e21130e51a28a22b1275a0929cfd")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        editor.InsertText("\n\n\n");
-        editor.VerifyInternalState();
-
-        editor.SetSelection(dlxemu::CodeEditor::Coordinates(0, 1993065),
-                            dlxemu::CodeEditor::Coordinates(31, 1761607680));
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-
-        editor.Undo(24);
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("Crash-1c525126120b9931b78d5b724f6338435e211037")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.InsertText("\n");
-        editor.VerifyInternalState();
-
-        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0, 0));
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-
-        editor.SetSelectionStart(dlxemu::CodeEditor::Coordinates(0, 30));
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("Crash-a37f577acccdcbfa8bdc8f53a570e1c6385c13da")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        editor.SetText("z`3!\n");
-        editor.VerifyInternalState();
-
-        editor.InsertText("\x1E");
-        editor.VerifyInternalState();
-
-        editor.MoveBottom(true);
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-2b9e8952b4d9676e2af93db7032ebca1dc2a9480")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.SetText("!");
-        editor.VerifyInternalState();
-
-        editor.SelectAll();
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-4161f8892d023e82832c668012743711e7e8c263")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.InsertText("\x02\x01");
-        editor.VerifyInternalState();
-
-        editor.MoveHome(true);
-        editor.VerifyInternalState();
-
-        editor.InsertText("\n");
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-9caa85410b9d43f4c105d38ab169f0540d159648")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.InsertText("\x02\x01");
-        editor.VerifyInternalState();
-
-        editor.MoveHome(true);
-        editor.VerifyInternalState();
-
-        editor.InsertText("\n\n");
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-0c744fcdb9b8193836417ce839daa3174ce89e16")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.SetText("U");
-        editor.VerifyInternalState();
-
-        editor.SetSelection(dlxemu::CodeEditor::Coordinates(7, 1537),
-                            dlxemu::CodeEditor::Coordinates(738197504, 30));
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-4620fed3f283876c8534a78e77bbb319a9def029")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        std::vector<std::string> vec;
-        vec.reserve(7);
-
-        vec.emplace_back("");
-        vec.emplace_back("");
-        vec.emplace_back("");
-        vec.emplace_back("");
-        vec.emplace_back("");
-        vec.emplace_back("");
-        vec.emplace_back("\x1E");
-
-        REQUIRE(vec.size() == 7);
-
-        editor.SetTextLines(vec);
-        editor.VerifyInternalState();
-
-        editor.SetSelection(dlxemu::CodeEditor::Coordinates(0, 30),
-                            dlxemu::CodeEditor::Coordinates(30, 2883584));
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-73ef47764c46d77f157ef9399720189dbbeaeee3")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.InsertText("(#8(\t");
-        editor.VerifyInternalState();
-
-        editor.MoveBottom(true);
-        editor.VerifyInternalState();
-
-        editor.Delete(); // Instead of cut
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-ebbfccfff485022666d0448d53c7634d31f98c9a")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.InsertText("\t\x44\x4D");
-        editor.VerifyInternalState();
-
-        editor.MoveEnd(true);
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-aeb78eb087c7e15d3bc53666d21575ec7b73bd02")
-    {
-        ImGuiContext* ctx = ImGui::CreateContext();
-        REQUIRE(ctx);
-
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.InsertText("(#8(\x7F\t\x07");
-        editor.VerifyInternalState();
-
-        editor.Copy();
-        editor.VerifyInternalState();
-
-        editor.Paste();
-        editor.VerifyInternalState();
-
-        editor.Undo(638844961);
-        editor.VerifyInternalState();
-
-        ImGui::DestroyContext(ctx);
-    }
-
-    SECTION("crash-1bc6fd5daba7cdfcacbc166f238326b0b3ed7b1e")
-    {
-        dlxemu::CodeEditor editor(&emulator);
-
-        editor.InsertText("\tDM+");
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-
-        editor.MoveBottom(true);
-        editor.VerifyInternalState();
-
-        editor.Delete();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-28853252177dc5b6be74f8247bde0d2a2b4f87b5")
-    {
-        BeginImGui();
-
-        dlxemu::CodeEditor editor{&emulator};
-
-        editor.InsertText("kA`\"#;#");
-        editor.VerifyInternalState();
-
-        CHECK(editor.GetText().size() == 7);
-        CHECK(editor.GetTotalLines() == 1);
-
-        editor.Render({0.0f, 0.0f}, true);
-        editor.VerifyInternalState();
-
-        EndImgui();
-    }
-
-    SECTION("crash-c567e237f4822cff4cab65198f9ea3b393e6f92c")
-    {
-        BeginImGui();
-
-        dlxemu::CodeEditor editor{&emulator};
-
-        editor.SetText(" ");
-        editor.VerifyInternalState();
-
-        editor.EnterCharacter('\n', true);
-        editor.VerifyInternalState();
-
-        editor.EnterCharacter('\n', true);
-        editor.VerifyInternalState();
-
-        editor.EnterCharacter('\n', true);
-        editor.VerifyInternalState();
-
-        editor.InsertText(":x;(");
-        editor.VerifyInternalState();
-
-        editor.Render({0.0f, 0.0f}, true);
-        editor.VerifyInternalState();
-
-        EndImgui();
-    }
-
-    SECTION("crash-1e4a2c5c4b7bd8fe934c1eb3b5e0e98ed3474b72")
-    {
-        BeginImGui();
-
-        dlxemu::CodeEditor editor{&emulator};
-
-        PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wconstant-conversion")
-        PHI_GCC_SUPPRESS_WARNING_PUSH()
-        PHI_GCC_SUPPRESS_WARNING("-Wmultichar")
-        PHI_GCC_SUPPRESS_WARNING("-Woverflow")
-
-        editor.EnterCharacter('\0xFF', true);
-        editor.VerifyInternalState();
-
-        PHI_GCC_SUPPRESS_WARNING_POP()
-        PHI_CLANG_SUPPRESS_WARNING_POP()
-
-        editor.EnterCharacter('\n', true);
-        editor.VerifyInternalState();
-
-        editor.InsertText("(m:M:x;");
-        editor.VerifyInternalState();
-
-        editor.Render({0.0f, 0.0f}, true);
-        editor.VerifyInternalState();
-
-        EndImgui();
-    }
-
-    SECTION("Crash-b969d74f5fc10237a879950cd37541614ee459e4")
-    {
-        BeginImGui();
-
-        dlxemu::CodeEditor editor{&emulator};
-
-        editor.InsertText("A\tJ");
-        editor.VerifyInternalState();
-
-        editor.Render({0.0, 0.0}, true);
-        editor.VerifyInternalState();
-
-        editor.AddErrorMarker(0, "");
-        editor.VerifyInternalState();
-
-        editor.AddErrorMarker(0, "");
-        editor.VerifyInternalState();
-
-        editor.MoveRight(0, true, true);
-        editor.VerifyInternalState();
-
-        editor.AddErrorMarker(0, "");
-        editor.VerifyInternalState();
-
-        EndImgui();
-    }
-
-    SECTION("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
-    {
-        // Crash
-        {
-            BeginImGui();
-
-            dlxemu::CodeEditor editor{&emulator};
-
-            editor.InsertText(" \tJ");
-            editor.VerifyInternalState();
-
-            editor.Render({0.0, 0.0}, true);
-            editor.VerifyInternalState();
-
-            editor.AddErrorMarker(538976288, "       ");
-            editor.VerifyInternalState();
-
-            editor.AddErrorMarker(538976288, "      ");
-            editor.VerifyInternalState();
-
-            editor.MoveRight(0, true, true);
-            editor.VerifyInternalState();
-
-            EndImgui();
-        }
-
-        // MoveLeft
-        {
-            BeginImGui();
-
-            dlxemu::CodeEditor editor{&emulator};
-
-            editor.InsertText(" \tJ");
-            editor.VerifyInternalState();
-
-            editor.Render({0.0, 0.0}, true);
-            editor.VerifyInternalState();
-
-            editor.AddErrorMarker(538976288, "       ");
-            editor.VerifyInternalState();
-
-            editor.AddErrorMarker(538976288, "      ");
-            editor.VerifyInternalState();
-
-            editor.MoveLeft(0, true, true);
-            editor.VerifyInternalState();
-
-            EndImgui();
-        }
-
-        // MoveUp
-        {
-            BeginImGui();
-
-            dlxemu::CodeEditor editor{&emulator};
-
-            editor.InsertText(" \tJ");
-            editor.VerifyInternalState();
-
-            editor.Render({0.0, 0.0}, true);
-            editor.VerifyInternalState();
-
-            editor.AddErrorMarker(538976288, "       ");
-            editor.VerifyInternalState();
-
-            editor.AddErrorMarker(538976288, "      ");
-            editor.VerifyInternalState();
-
-            editor.MoveUp(0, true);
-            editor.VerifyInternalState();
-
-            EndImgui();
-        }
-
-        // MoveDown
-        {
-            BeginImGui();
-
-            dlxemu::CodeEditor editor{&emulator};
-
-            editor.InsertText(" \tJ");
-            editor.VerifyInternalState();
-
-            editor.Render({0.0, 0.0}, true);
-            editor.VerifyInternalState();
-
-            editor.AddErrorMarker(538976288, "       ");
-            editor.VerifyInternalState();
-
-            editor.AddErrorMarker(538976288, "      ");
-            editor.VerifyInternalState();
-
-            editor.MoveDown(0, true);
-            editor.VerifyInternalState();
-
-            EndImgui();
-        }
-    }
-
-    SECTION("crash-57d1660b624969ec7a302988f2a6a3941dbcd5ef")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        editor.EnterCharacter('\n', true);
-        editor.VerifyInternalState();
-
-        editor.ClearText();
-        editor.VerifyInternalState();
-
-        editor.Undo();
-        editor.VerifyInternalState();
-    }
-
-    SECTION("crash-b98edbf987ccf89dabea024daa1e7ef0d6d4617e")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        editor.EnterCharacter('\n', true);
-        editor.VerifyInternalState();
-
-        editor.SelectAll();
-        editor.VerifyInternalState();
-
-        editor.ClearText();
         editor.VerifyInternalState();
     }
 }

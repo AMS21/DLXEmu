@@ -1,3 +1,4 @@
+#include "DLX/Logger.hpp"
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
 #include <imgui.h>
@@ -50,7 +51,7 @@ template <typename T>
         return {};
     }
 
-    PHI_ASSERT(index % sizeof(void*) == 0);
+    PHI_DBG_ASSERT(index % sizeof(void*) == 0);
 
     T value = *reinterpret_cast<const T*>(data + index);
     index += aligned_size<T>();
@@ -66,7 +67,7 @@ template <typename T>
         return {};
     }
 
-    PHI_ASSERT(index % sizeof(void*) == 0);
+    PHI_DBG_ASSERT(index % sizeof(void*) == 0);
 
     bool value = static_cast<bool>((data + index));
     index += aligned_size<bool>();
@@ -387,10 +388,18 @@ void EndImGui() noexcept
     ImGui::EndFrame();
 }
 
+bool InitializeLogger()
+{
+    return dlx::InitializeDefaultLogger();
+}
+
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
 {
     static bool imgui_init = SetupImGui();
+#if defined(FUZZ_LOG)
+    static bool log_init = dlx::InitializeDefaultLogger();
+#endif
 
     // Ensure frame count doesn't overflow
     if (GImGui)

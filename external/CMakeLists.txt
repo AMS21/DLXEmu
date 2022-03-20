@@ -63,4 +63,7 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(magic_enum)
 
 # spdlog
+set(SPDLOG_DISABLE_DEFAULT_LOGGER
+      ON
+      CACHE INTERNAL "")
 add_subdirectory(spdlog)

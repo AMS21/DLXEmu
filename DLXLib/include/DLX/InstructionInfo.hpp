@@ -94,7 +94,7 @@ namespace dlx
 
         [[nodiscard]] constexpr ArgumentType GetArgumentType(phi::u8 index) const noexcept
         {
-            PHI_ASSERT(index < 3u);
+            PHI_DBG_ASSERT(index < 3u);
 
             switch (index.get())
             {
@@ -109,7 +109,7 @@ namespace dlx
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
                 default:
-                    PHI_ASSERT_NOT_REACHED();
+                    PHI_DBG_ASSERT_NOT_REACHED();
                     return m_Arg1Type;
 #endif
             }

@@ -2,20 +2,20 @@
 
 #include "DLX/InstructionArgument.hpp"
 #include "DLX/InstructionInfo.hpp"
+#include "DLX/Logger.hpp"
 #include "DLX/Parser.hpp"
 #include "DLX/Processor.hpp"
 #include "DLX/RegisterNames.hpp"
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
-#include <spdlog/spdlog.h>
 #include <string_view>
 
 namespace dlx
 {
     static std::int32_t clear_top_n_bits(std::int32_t value, std::int32_t n) noexcept
     {
-        PHI_ASSERT(n > 0 && n < 32, "Would invoke undefined behaviour");
+        PHI_DBG_ASSERT(n > 0 && n < 32, "Would invoke undefined behaviour");
 
         return value & ~(-1 << (32 - n));
     }
@@ -24,18 +24,18 @@ namespace dlx
     {
         // Lookup the label
         const phi::observer_ptr<ParsedProgram> program = processor.GetCurrentProgramm();
-        PHI_ASSERT(program);
-        PHI_ASSERT(!label_name.empty(), "Can't jump to empty label");
+        PHI_DBG_ASSERT(program != nullptr);
+        PHI_DBG_ASSERT(!label_name.empty(), "Can't jump to empty label");
 
         if (program->m_JumpData.find(label_name) == program->m_JumpData.end())
         {
-            SPDLOG_ERROR("Unable to find jump label {}", label_name);
+            DLX_ERROR("Unable to find jump label {}", label_name);
             processor.Raise(Exception::UnknownLabel);
             return;
         }
 
         const std::uint32_t jump_point = program->m_JumpData.at(label_name);
-        PHI_ASSERT(jump_point < program->m_Instructions.size(), "Jump point out of bounds");
+        PHI_DBG_ASSERT(jump_point < program->m_Instructions.size(), "Jump point out of bounds");
 
         // Set program counter
         processor.SetNextProgramCounter(jump_point);
@@ -95,7 +95,7 @@ namespace dlx
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_ASSERT_NOT_REACHED();
+        PHI_DBG_ASSERT_NOT_REACHED();
 #endif
     }
 
@@ -120,8 +120,8 @@ namespace dlx
             value = min + (value % (max + 1));
         }
 
-        PHI_ASSERT(value >= min);
-        PHI_ASSERT(value <= max);
+        PHI_DBG_ASSERT(value >= min);
+        PHI_DBG_ASSERT(value <= max);
 
         processor.IntRegisterSetSignedValue(dest_reg, static_cast<std::int32_t>(value.get()));
     }
@@ -140,7 +140,7 @@ namespace dlx
             value %= max + 1u;
         }
 
-        PHI_ASSERT(value <= max);
+        PHI_DBG_ASSERT(value <= max);
 
         processor.IntRegisterSetUnsignedValue(dest_reg, static_cast<std::uint32_t>(value.get()));
     }
@@ -1484,7 +1484,7 @@ namespace dlx
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to load byte at address {}", address.get());
+                DLX_ERROR("Failed to load byte at address {}", address.get());
                 return;
             }
 
@@ -1514,7 +1514,7 @@ namespace dlx
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to load unsigned byte at address {}", address.get());
+                DLX_ERROR("Failed to load unsigned byte at address {}", address.get());
                 return;
             }
 
@@ -1544,7 +1544,7 @@ namespace dlx
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to load half byte at address {}", address.get());
+                DLX_ERROR("Failed to load half byte at address {}", address.get());
                 return;
             }
 
@@ -1574,7 +1574,7 @@ namespace dlx
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to load unsigned half byte at address {}", address.get());
+                DLX_ERROR("Failed to load unsigned half byte at address {}", address.get());
                 return;
             }
 
@@ -1604,7 +1604,7 @@ namespace dlx
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to load word at address {}", address.get());
+                DLX_ERROR("Failed to load word at address {}", address.get());
                 return;
             }
 
@@ -1632,7 +1632,7 @@ namespace dlx
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to load unsigned word at address {}", address.get());
+                DLX_ERROR("Failed to load unsigned word at address {}", address.get());
                 return;
             }
 
@@ -1660,7 +1660,7 @@ namespace dlx
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to load float at address {}", address.get());
+                DLX_ERROR("Failed to load float at address {}", address.get());
                 return;
             }
 
@@ -1688,7 +1688,7 @@ namespace dlx
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to load double at address {}", address.get());
+                DLX_ERROR("Failed to load double at address {}", address.get());
                 return;
             }
 
@@ -1718,7 +1718,7 @@ namespace dlx
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to store byte at address {}", address.get());
+                DLX_ERROR("Failed to store byte at address {}", address.get());
             }
         }
 
@@ -1746,7 +1746,7 @@ namespace dlx
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to store unsigned byte at address {}", address.get());
+                DLX_ERROR("Failed to store unsigned byte at address {}", address.get());
             }
         }
 
@@ -1774,7 +1774,7 @@ namespace dlx
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to store half word at address {}", address.get());
+                DLX_ERROR("Failed to store half word at address {}", address.get());
             }
         }
 
@@ -1802,7 +1802,7 @@ namespace dlx
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to store unsigned half word at address {}", address.get());
+                DLX_ERROR("Failed to store unsigned half word at address {}", address.get());
             }
         }
 
@@ -1829,7 +1829,7 @@ namespace dlx
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to store word at address {}", address.get());
+                DLX_ERROR("Failed to store word at address {}", address.get());
             }
         }
 
@@ -1856,7 +1856,7 @@ namespace dlx
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to store unsigned word at address {}", address.get());
+                DLX_ERROR("Failed to store unsigned word at address {}", address.get());
             }
         }
 
@@ -1883,7 +1883,7 @@ namespace dlx
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to store float at address {}", address.get());
+                DLX_ERROR("Failed to store float at address {}", address.get());
             }
         }
 
@@ -1910,7 +1910,7 @@ namespace dlx
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                SPDLOG_ERROR("Failed to store float at address {}", address.get());
+                DLX_ERROR("Failed to store float at address {}", address.get());
             }
         }
 

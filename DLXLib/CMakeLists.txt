@@ -12,6 +12,7 @@ file(
   "src/InstructionInfo.cpp"
   "src/InstructionLibrary.cpp"
   "src/IntRegister.cpp"
+  "src/Logger.cpp"
   "src/MemoryBlock.cpp"
   "src/OpCode.cpp"
   "src/ParsedProgram.cpp"
@@ -35,6 +36,7 @@ file(
   "include/DLX/InstructionInfo.hpp"
   "include/DLX/InstructionLibrary.hpp"
   "include/DLX/IntRegister.hpp"
+  "include/DLX/Logger.hpp"
   "include/DLX/MemoryBlock.hpp"
   "include/DLX/OpCode.hpp"
   "include/DLX/ParsedProgram.hpp"
@@ -56,6 +58,7 @@ target_link_libraries(
   PUBLIC Phi::Core magic_enum::magic_enum spdlog::spdlog
   PRIVATE Phi::ProjectOptions)
 target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELWITHDBGINFO>:PHI_DEBUG>")
+# We don't want a default logger
 phi_enable_static_analyzers(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 
