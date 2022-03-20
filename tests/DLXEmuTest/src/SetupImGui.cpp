@@ -18,9 +18,6 @@ void BeginImGui() noexcept
     // Enfore valid DeltaTime
     io.DeltaTime = 1.0f / 60.0f;
 
-    // Enforce valid space key mapping
-    io.KeyMap[ImGuiKey_Space] = 0;
-
     // Don't save any config
     io.IniFilename = nullptr;
 
