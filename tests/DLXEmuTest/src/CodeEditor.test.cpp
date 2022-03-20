@@ -655,9 +655,27 @@ TEST_CASE("CodeEditor")
 
     SECTION("SetTextLines")
     {
-        dlxemu::CodeEditor editor{&emulator};
-
+        dlxemu::CodeEditor       editor{&emulator};
         std::vector<std::string> new_lines;
+        std::string              text;
+        std::vector<std::string> lines;
+
+        // single line
+        new_lines.reserve(1u);
+        new_lines.emplace_back("Hi");
+
+        editor.SetTextLines(new_lines);
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "Hi");
+        CHECK(lines.size() == 1u);
+        CHECK(lines.at(0u) == "Hi");
+        CHECK(editor.GetTotalLines() == 1u);
+
+        // Two lines
+        new_lines.clear();
         new_lines.reserve(2u);
         new_lines.emplace_back("Hello");
         new_lines.emplace_back("World");
@@ -665,13 +683,13 @@ TEST_CASE("CodeEditor")
         editor.SetTextLines(new_lines);
         editor.VerifyInternalState();
 
-        std::string              text  = editor.GetText();
-        std::vector<std::string> lines = editor.GetTextLines();
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
         CHECK(text == "Hello\nWorld");
-        CHECK(lines.size() == 2);
-        CHECK(lines.at(0) == "Hello");
-        CHECK(lines.at(1) == "World");
-        CHECK(editor.GetTotalLines() == 2);
+        CHECK(lines.size() == 2u);
+        CHECK(lines.at(0u) == "Hello");
+        CHECK(lines.at(1u) == "World");
+        CHECK(editor.GetTotalLines() == 2u);
 
         new_lines.clear();
         new_lines.reserve(0);
@@ -685,6 +703,42 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 1);
         CHECK(lines.at(0).empty());
         CHECK(editor.GetTotalLines() == 1);
+
+        // Test with embeded null characters
+        new_lines.clear();
+        new_lines.reserve(2u);
+        new_lines.emplace_back("A single line with newline at the end\n");
+        new_lines.emplace_back("Normal everyday line");
+
+        editor.SetTextLines(new_lines);
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "A single line with newline at the end\n\nNormal everyday line");
+        CHECK(lines.size() == 3u);
+        CHECK(lines.at(0u) == "A single line with newline at the end");
+        CHECK(lines.at(1u).empty());
+        CHECK(lines.at(2u) == "Normal everyday line");
+        CHECK(editor.GetTotalLines() == 3u);
+
+        // New line in the middle
+        new_lines.clear();
+        new_lines.reserve(1u);
+        new_lines.emplace_back("Wow\nSetTextLines supports\nEmbedded new lines\nAwesome");
+
+        editor.SetTextLines(new_lines);
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "Wow\nSetTextLines supports\nEmbedded new lines\nAwesome");
+        CHECK(lines.size() == 4u);
+        CHECK(lines.at(0u) == "Wow");
+        CHECK(lines.at(1u) == "SetTextLines supports");
+        CHECK(lines.at(2u) == "Embedded new lines");
+        CHECK(lines.at(3u) == "Awesome");
+        CHECK(editor.GetTotalLines() == 4u);
     }
 
     SECTION("InsertText")
