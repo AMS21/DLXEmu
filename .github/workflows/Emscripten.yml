@@ -44,7 +44,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          emcmake cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..
+          emcmake cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" ..
 
       - name: Build Debug
         run: |

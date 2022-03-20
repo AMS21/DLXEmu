@@ -70,7 +70,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO" ..
+          cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" ..
 
       - name: Configure Sanitizers
         shell: bash

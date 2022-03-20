@@ -54,7 +54,7 @@ jobs:
           cd build
 
           # Build it
-          cmake -DCMAKE_BUILD_TYPE=Debug -DPHI_COVERAGE_BUILD=ON -DDLXEMU_COVERAGE_BUILD=On ..
+          cmake -DCMAKE_BUILD_TYPE=Debug -DPHI_COVERAGE_BUILD=ON -DDLXEMU_COVERAGE_BUILD=On -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN -DPHI_DEBUG" ..
           cmake --build . --clean-first
 
           # Generate coverage data
