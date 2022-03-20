@@ -40,6 +40,7 @@ SOFTWARE.
 #include <cctype>
 #include <chrono>
 #include <cmath>
+#include <limits>
 #include <regex>
 #include <string>
 #include <string_view>
@@ -362,8 +363,8 @@ namespace dlxemu
                 ImGui::ColorConvertU32ToFloat4(m_Palette[(std::int32_t)PaletteIndex::Background]));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-        static constexpr const float min_size = 4.0f;
-        static constexpr const float max_size = 10'000.0f;
+        static constexpr const float min_size = 0.0f;
+        static constexpr const float max_size = static_cast<float>(std::numeric_limits<int>::max());
 
         // Properly sanitize size
         ImVec2 sanitized_size;
