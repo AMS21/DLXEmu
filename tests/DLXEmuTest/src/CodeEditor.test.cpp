@@ -227,6 +227,17 @@ TEST_CASE("CodeEditor::Coordinates")
     }
 }
 
+TEST_CASE("CodeEditor::Glyph")
+{
+    const dlxemu::CodeEditor::Glyph a{'a', dlxemu::CodeEditor::PaletteIndex::Default};
+    CHECK(a.m_Char == 'a');
+    CHECK(a.m_ColorIndex == dlxemu::CodeEditor::PaletteIndex::Default);
+
+    const dlxemu::CodeEditor::Glyph b{'b', dlxemu::CodeEditor::PaletteIndex::OpCode};
+    CHECK(b.m_Char == 'b');
+    CHECK(b.m_ColorIndex == dlxemu::CodeEditor::PaletteIndex::OpCode);
+}
+
 TEST_CASE("CodeEditor")
 {
     dlxemu::Emulator emulator;
