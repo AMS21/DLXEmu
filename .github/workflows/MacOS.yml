@@ -64,7 +64,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..
+          cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO" ..
 
       - name: Configure dynamic analysis
         run: |

@@ -50,6 +50,8 @@ SOFTWARE.
 #include <imgui.h> // for imGui::GetCurrentWindow()
 #include <imgui_internal.h>
 
+//#define DLXEMU_VERIFY_UNDO_REDO
+
 // Free Helper functions
 
 [[nodiscard]] static constexpr bool IsUTFSequence(const char c) noexcept
@@ -2014,9 +2016,37 @@ namespace dlxemu
     {
         PHI_DBG_ASSERT(!m_ReadOnly);
 
+#if defined(DLXEMU_VERIFY_UNDO_REDO)
+        VerifyInternalState();
+#endif
+
         m_UndoBuffer.resize(m_UndoIndex + 1u);
         m_UndoBuffer.back() = value;
         ++m_UndoIndex;
+
+#if defined(DLXEMU_VERIFY_UNDO_REDO)
+        VerifyInternalState();
+
+        PHI_DBG_ASSERT(CanUndo());
+
+        std::string text_before  = GetText();
+        EditorState state_before = m_State;
+
+        // Test the undo
+        Undo();
+        VerifyInternalState();
+
+        PHI_DBG_ASSERT(CanRedo());
+
+        // Test the redo
+        Redo();
+        VerifyInternalState();
+
+        std::string text_after  = GetText();
+        EditorState state_after = m_State;
+        PHI_DBG_ASSERT(text_before == text_after);
+        PHI_DBG_ASSERT(state_before == state_after);
+#endif
     }
 
     CodeEditor::Coordinates CodeEditor::ScreenPosToCoordinates(

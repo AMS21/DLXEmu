@@ -36,6 +36,7 @@ jobs:
           - { fuzz_target: "fuzz_code_editor",                    name: "code_editor", fuzz_options: "-timeout=10 -max_len=4096" }
           - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_small", fuzz_options: "-timeout=10 -max_len=512" }
           - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_large", fuzz_options: "-timeout=10 -max_len=65536" }
+          - { fuzz_target: "fuzz_code_editor",                    name: "code_editor_undo_redo", fuzz_options: "-timeout=10 -max_len=4096", build_options: "-DDLXEMU_VERIFY_UNDO_REDO" }
           - { fuzz_target: "fuzz_emulator_args",                  name: "emulator_args", fuzz_options: "-timeout=1 -max_len=4096 -close_fd_mask=1" }
 
     steps:
@@ -84,7 +85,7 @@ jobs:
 
           mkdir -p build
           cd build
-          cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDLXEMU_FUZZ_BUILD=ON -DCMAKE_CXX_FLAGS="${{ env.FUZZING_BUILD_FLAGS }}"
+          cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDLXEMU_FUZZ_BUILD=ON -DCMAKE_CXX_FLAGS="${{ env.FUZZING_BUILD_FLAGS }} ${{ env.build_options }}"
 
       - name: Build
         run: |
