@@ -454,3 +454,24 @@ TEST_CASE("crash-f84b5dc1d1204536f7f1c21183d53d46e01dbd55")
     (void)editor.GetCurrentLineText();
     editor.VerifyInternalState();
 }
+
+TEST_CASE("crash-f6475d7a88e545cb6d3a8530149b0dcd7619cbc2")
+{
+    // NOTE: Requires DLXEMU_VERIFY_UNDO_REDO
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter('\r', true);
+    editor.VerifyInternalState();
+}
+
+TEST_CASE("crash-ff503611dc08748de0b5757421d910d75d775424")
+{
+    // NOTE: Requires DLXEMU_VERIFY_UNDO_REDO
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.InsertText(" ");
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+}
