@@ -26,13 +26,14 @@ namespace dlxemu
 #endif
     {}
 
-    phi::boolean Emulator::HandleCommandLineArguments(phi::i32 argc, char** argv) noexcept
+    Emulator::ShouldContinueInitilization Emulator::HandleCommandLineArguments(phi::i32 argc,
+                                                                               char** argv) noexcept
     {
         // No args
         if (argc <= 1)
         {
             DLX_DEBUG("No args provides");
-            return true;
+            return ShouldContinueInitilization::Yes;
         }
 
         for (phi::i32 arg_num{1}; arg_num < argc; ++arg_num)
@@ -49,14 +50,14 @@ namespace dlxemu
                     arg_value == "--help")
                 {
                     DLX_INFO("Help");
-                    return false;
+                    return ShouldContinueInitilization::No;
                 }
                 // Display version
                 if (arg_value == "-v" || arg_value == "--value")
                 {
                     fmt::print("DLXEmu version {:d}.{:d}.{:d} {:s}-{:s}\n", VersionMajor,
                                VersionMinor, VersionPatch, GitBranch, GitShaFull);
-                    return false;
+                    return ShouldContinueInitilization::No;
                 }
 
                 // Unknown option
@@ -67,7 +68,7 @@ namespace dlxemu
             DLX_WARN("Ignore command line argument '{:s}'", arg_value);
         }
 
-        return true;
+        return ShouldContinueInitilization::Yes;
     }
 
     phi::boolean Emulator::Initialize() noexcept

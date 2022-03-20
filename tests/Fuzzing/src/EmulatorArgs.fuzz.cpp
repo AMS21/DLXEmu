@@ -41,7 +41,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
         return 1;
     }
 
-    bool val = emulator.HandleCommandLineArguments(static_cast<std::int32_t>(argv.size()),
+    (void)emulator.HandleCommandLineArguments(static_cast<std::int32_t>(argv.size()),
                                                    argv.data());
 
     return 0;

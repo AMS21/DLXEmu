@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 #else
     dlxemu::Emulator emulator{};
 
-    if (!emulator.HandleCommandLineArguments(argc, argv))
+    if (emulator.HandleCommandLineArguments(argc, argv) == dlxemu::Emulator::ShouldContinueInitilization::No)
     {
         return 0;
     }
