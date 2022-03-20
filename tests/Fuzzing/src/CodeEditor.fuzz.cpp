@@ -481,19 +481,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
                 std::vector<std::string> lines = lines_opt.value();
 
-                // SetTextLines doesn not allow newlines
-                // TODO: Remove this limitation
-                for (std::string& line : lines)
-                {
-                    for (char& c : line)
-                    {
-                        if (c == '\n')
-                        {
-                            c = 'x';
-                        }
-                    }
-                }
-
                 FUZZ_LOG("SetTextLines({:s})", print_vector_string(lines));
 
                 editor.SetTextLines(lines);

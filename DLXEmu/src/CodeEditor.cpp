@@ -481,15 +481,26 @@ namespace dlxemu
         {
             m_Lines.resize(lines.size());
 
-            for (size_t i = 0; i < lines.size(); ++i)
+            std::size_t line_number{0u};
+            for (std::size_t index = 0u; index < lines.size(); ++index, ++line_number)
             {
-                const std::string& line = lines[i];
+                const std::string& line = lines[index];
 
-                m_Lines[i].reserve(line.size());
-                for (char j : line)
+                m_Lines[line_number].reserve(line.size());
+                for (char character : line)
                 {
-                    PHI_DBG_ASSERT(j != '\n');
-                    m_Lines[i].emplace_back(Glyph(j, PaletteIndex::Default));
+                    if (character == '\n')
+                    {
+                        // Hang on an extra line at the end
+                        m_Lines.emplace_back(Line{});
+
+                        // Increase line number
+                        line_number += 1;
+                    }
+                    else
+                    {
+                        m_Lines[line_number].emplace_back(Glyph(character, PaletteIndex::Default));
+                    }
                 }
             }
         }
