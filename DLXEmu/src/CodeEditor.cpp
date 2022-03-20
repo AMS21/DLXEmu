@@ -364,7 +364,8 @@ namespace dlxemu
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
         static constexpr const float min_size = 0.0f;
-        static constexpr const float max_size = static_cast<float>(std::numeric_limits<int>::max());
+        static constexpr const float max_size =
+                static_cast<float>(std::numeric_limits<int>::max()) * 0.95f;
 
         // Properly sanitize size
         ImVec2 sanitized_size;
