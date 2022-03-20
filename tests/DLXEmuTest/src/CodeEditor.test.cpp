@@ -579,15 +579,78 @@ TEST_CASE("CodeEditor")
     {
         dlxemu::CodeEditor editor{&emulator};
 
+        // Basic usage
         editor.SetText("Hello World");
         editor.VerifyInternalState();
 
         CHECK(editor.GetText() == "Hello World");
 
+        editor.SetCursorPosition({0u, 3u});
+        editor.VerifyInternalState();
+
+        editor.SelectAll();
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "Hello World");
+
         editor.ClearText();
         editor.VerifyInternalState();
 
         CHECK(editor.GetText().empty());
+        CHECK_FALSE(editor.HasSelection());
+        dlxemu::CodeEditor::Coordinates coords = editor.GetCursorPosition();
+        CHECK(coords.m_Line == 0u);
+        CHECK(coords.m_Column == 0u);
+
+        // Undo restores correctly
+        CHECK(editor.CanUndo());
+        editor.Undo();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "Hello World");
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "Hello World");
+        coords = editor.GetCursorPosition();
+        CHECK(coords.m_Line == 0u);
+        CHECK(coords.m_Column == 3u);
+
+        // Redo works correctly
+        CHECK(editor.CanRedo());
+        editor.Redo();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText().empty());
+        CHECK_FALSE(editor.HasSelection());
+        coords = editor.GetCursorPosition();
+        CHECK(coords.m_Line == 0u);
+        CHECK(coords.m_Column == 0u);
+
+        // ClearText in ReadOnly mode does nothing
+        editor.SetText("Hello World!");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "Hello World!");
+
+        editor.SetReadOnly(true);
+        editor.VerifyInternalState();
+
+        editor.SetCursorPosition({0u, 3u});
+        editor.VerifyInternalState();
+
+        editor.SelectAll();
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "Hello World!");
+
+        editor.ClearText();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "Hello World!");
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "Hello World!");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 3u});
     }
 
     SECTION("SetTextLines")
