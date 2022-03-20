@@ -2048,18 +2048,17 @@ namespace dlxemu
 
     CodeEditor::Coordinates CodeEditor::FindWordStart(const Coordinates& from) const noexcept
     {
-        Coordinates at = from;
-        if (at.m_Line >= (std::int32_t)m_Lines.size())
+        if (from.m_Line >= (std::int32_t)m_Lines.size())
         {
-            return at;
+            return from;
         }
 
-        const Line&  line   = m_Lines[at.m_Line];
-        std::int32_t cindex = GetCharacterIndex(at);
+        const Line&  line   = m_Lines[from.m_Line];
+        std::int32_t cindex = GetCharacterIndex(from);
 
         if (cindex >= (std::int32_t)line.size())
         {
-            return at;
+            return from;
         }
 
         while (cindex > 0 && dlx::IsSpace(line[cindex].m_Char))
@@ -2087,7 +2086,8 @@ namespace dlxemu
 
             --cindex;
         }
-        return Coordinates(at.m_Line, GetCharacterColumn(at.m_Line, cindex));
+
+        return Coordinates(from.m_Line, GetCharacterColumn(from.m_Line, cindex));
     }
 
     CodeEditor::Coordinates CodeEditor::FindWordEnd(const Coordinates& from) const noexcept
