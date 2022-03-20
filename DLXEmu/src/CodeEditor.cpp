@@ -34,6 +34,7 @@ SOFTWARE.
 #include <phi/algorithm/clamp.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
+#include <phi/math/is_nan.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <algorithm>
 #include <cctype>
@@ -361,9 +362,32 @@ namespace dlxemu
                 ImGui::ColorConvertU32ToFloat4(m_Palette[(std::int32_t)PaletteIndex::Background]));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
+        static constexpr const float min_size = 4.0f;
+        static constexpr const float max_size = 10'000.0f;
+
+        // Properly sanitize size
+        ImVec2 sanitized_size;
+        if (phi::is_nan(size.x) || std::isinf(size.x))
+        {
+            sanitized_size.x = min_size;
+        }
+        else
+        {
+            sanitized_size.x = phi::clamp(size.x, min_size, max_size);
+        }
+
+        if (phi::is_nan(size.y) || std::isinf(size.y))
+        {
+            sanitized_size.y = min_size;
+        }
+        else
+        {
+            sanitized_size.y = phi::clamp(size.y, min_size, max_size);
+        }
+
         if (ImGui::Begin("Code Editor"))
         {
-            ImGui::BeginChild("Code Editor", size, border,
+            ImGui::BeginChild("Code Editor", sanitized_size, border,
                               ImGuiWindowFlags_HorizontalScrollbar |
                                       ImGuiWindowFlags_AlwaysHorizontalScrollbar |
                                       ImGuiWindowFlags_NoMove);
