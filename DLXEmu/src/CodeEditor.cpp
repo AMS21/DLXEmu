@@ -51,6 +51,7 @@ SOFTWARE.
 #include <imgui_internal.h>
 
 //#define DLXEMU_VERIFY_UNDO_REDO
+//#define DLXEMU_VERIFY_COLUMN
 
 // Free Helper functions
 
@@ -1508,7 +1509,7 @@ namespace dlxemu
         PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Line < m_Lines.size());
 
         // This should also always be true. But its implementation is way to slow when fuzzing
-#if 0
+#if defined(DLXEMU_VERIFY_COLUMN)
         PHI_DBG_ASSERT(m_State.m_SelectionStart.m_Column <=
                        GetLineMaxColumn(m_State.m_SelectionStart.m_Line));
         PHI_DBG_ASSERT(m_State.m_SelectionEnd.m_Column <=
