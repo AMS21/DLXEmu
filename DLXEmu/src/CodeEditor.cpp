@@ -1575,6 +1575,19 @@ namespace dlxemu
         return p;
     }
 
+    // EditorState
+    bool CodeEditor::EditorState::operator==(const EditorState& other) const noexcept
+    {
+        return other.m_CursorPosition == m_CursorPosition &&
+               other.m_SelectionStart == m_SelectionStart && other.m_SelectionEnd == m_SelectionEnd;
+    }
+
+    bool CodeEditor::EditorState::operator!=(const EditorState& other) const noexcept
+    {
+        return other.m_CursorPosition != m_CursorPosition ||
+               other.m_SelectionStart != m_SelectionStart || other.m_SelectionEnd != m_SelectionEnd;
+    }
+
     // UndoRecord
     CodeEditor::UndoRecord::UndoRecord(
             const std::string& added, const CodeEditor::Coordinates added_start,

@@ -248,6 +248,10 @@ namespace dlxemu
             Coordinates m_SelectionStart;
             Coordinates m_SelectionEnd;
             Coordinates m_CursorPosition;
+
+            bool operator==(const EditorState& other) const noexcept;
+
+            bool operator!=(const EditorState& other) const noexcept;
         };
 
         class UndoRecord
