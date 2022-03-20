@@ -30,6 +30,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 return 1;
             }
 
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
             argv.push_back(const_cast<char*>(reinterpret_cast<const char*>(data + begin)));
             begin = index + 1u;
         }
@@ -41,8 +42,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
         return 1;
     }
 
-    (void)emulator.HandleCommandLineArguments(static_cast<std::int32_t>(argv.size()),
-                                                   argv.data());
+    (void)emulator.HandleCommandLineArguments(static_cast<std::int32_t>(argv.size()), argv.data());
 
     return 0;
 }
