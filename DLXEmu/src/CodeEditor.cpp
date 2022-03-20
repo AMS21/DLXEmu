@@ -948,7 +948,7 @@ namespace dlxemu
 
     void CodeEditor::CodeEditor::MoveBottom(bool select) noexcept
     {
-        Coordinates        old_pos  = GetCursorPosition();
+        Coordinates old_pos = GetCursorPosition();
 
         const std::int32_t end_line = static_cast<std::int32_t>(m_Lines.size() - 1u);
         Coordinates        new_pos  = Coordinates(end_line, GetLineMaxColumn(end_line));
