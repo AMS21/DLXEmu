@@ -2626,14 +2626,15 @@ namespace dlxemu
         if (character == '\n')
         {
             InsertLine(coord.m_Line + 1);
+            u.m_Added += static_cast<char>(character);
+
             Line& line     = m_Lines[coord.m_Line];
             Line& new_line = m_Lines[coord.m_Line + 1];
 
-            for (std::size_t it = 0;
-                 it < line.size() && isascii(line[it].m_Char) && dlx::IsBlank(line[it].m_Char);
-                 ++it)
+            for (std::size_t it = 0u; it < line.size() && dlx::IsBlank(line[it].m_Char); ++it)
             {
                 new_line.push_back(line[it]);
+                u.m_Added += static_cast<char>(line[it].m_Char);
             }
 
             const std::size_t whitespace_size = new_line.size();
@@ -2642,7 +2643,6 @@ namespace dlxemu
             line.erase(line.begin() + cindex, line.begin() + line.size());
             SetCursorPosition(Coordinates(
                     coord.m_Line + 1, GetCharacterColumn(coord.m_Line + 1, (int)whitespace_size)));
-            u.m_Added = (char)character;
         }
         else
         {
