@@ -893,6 +893,23 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 1u);
         CHECK(lines.at(0u) == "\r\r\r");
         CHECK(editor.GetTotalLines() == 1u);
+
+        // Insert text with tab character
+        editor.ClearText();
+        editor.VerifyInternalState();
+        editor.InsertText("\x7F\t\a");
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "\x7F\t\a");
+        CHECK(lines.size() == 1u);
+        CHECK(lines.at(0u) == "\x7F\t\a");
+        CHECK(editor.GetTotalLines() == 1u);
+        // Make sure were at the end
+        dlxemu::CodeEditor::Coordinates coord = editor.GetCursorPosition();
+        editor.MoveEnd();
+        CHECK(editor.GetCursorPosition() == coord);
     }
 
     SECTION("EnterCharacter")
