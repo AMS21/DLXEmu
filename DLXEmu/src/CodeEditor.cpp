@@ -1983,6 +1983,14 @@ namespace dlxemu
                 ++total_lines;
                 ++value;
             }
+            else if (*value == '\t')
+            {
+                Line& line = m_Lines[where.m_Line];
+
+                line.insert(line.begin() + cindex++, Glyph(*value++, PaletteIndex::Default));
+
+                where.m_Column += GetTabSizeAt(where.m_Column);
+            }
             else
             {
                 Line&        line = m_Lines[where.m_Line];
