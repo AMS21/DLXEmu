@@ -879,7 +879,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(2).empty());
         CHECK(editor.GetTotalLines() == 3);
 
-        // Characters should be skipped
+        // Not skipping characters
         editor.SetReadOnly(false);
         editor.VerifyInternalState();
         editor.ClearText();
@@ -889,9 +889,9 @@ TEST_CASE("CodeEditor")
 
         text  = editor.GetText();
         lines = editor.GetTextLines();
-        CHECK(text.empty());
+        CHECK(text == "\r\r\r");
         CHECK(lines.size() == 1u);
-        CHECK(lines.at(0u).empty());
+        CHECK(lines.at(0u) == "\r\r\r");
         CHECK(editor.GetTotalLines() == 1u);
     }
 

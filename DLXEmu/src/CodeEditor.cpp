@@ -1962,12 +1962,7 @@ namespace dlxemu
         {
             PHI_DBG_ASSERT(!m_Lines.empty());
 
-            if (*value == '\r')
-            {
-                // skip
-                ++value;
-            }
-            else if (*value == '\n')
+            if (*value == '\n')
             {
                 if (cindex < (std::int32_t)m_Lines[where.m_Line].size())
                 {
