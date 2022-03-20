@@ -242,6 +242,11 @@ TEST_CASE("CodeEditor")
 {
     dlxemu::Emulator emulator;
 
+    SECTION("Construct/Destruct")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+    }
+
     SECTION("Set/GetPalette")
     {
         dlxemu::CodeEditor editor{&emulator};
