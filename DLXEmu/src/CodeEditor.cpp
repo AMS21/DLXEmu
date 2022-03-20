@@ -2345,7 +2345,7 @@ namespace dlxemu
             char c = line[i].m_Char;
             if (c == '\t')
             {
-                col = (col / m_TabSize) * m_TabSize + m_TabSize;
+                col = GetTabSizeAt(col);
             }
             else
             {
