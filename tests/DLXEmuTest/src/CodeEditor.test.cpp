@@ -5,6 +5,7 @@
 #include <DLXEmu/Emulator.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
+#include <limits>
 
 // TODO: MoveX with 0 amount being noop
 
@@ -431,6 +432,78 @@ TEST_CASE("CodeEditor")
 
         const dlxemu::CodeEditor::Breakpoints& const_break_points = const_editor.GetBreakpoints();
         CHECK(const_break_points.empty());
+    }
+
+    SECTION("Render")
+    {
+        // We can't really test here much expect that calling the function "works" and doesn't crash
+        // TODO: Maybe this is an area where we could improve our test suite
+        dlxemu::CodeEditor editor{&emulator};
+
+        BeginImGui();
+        editor.Render();
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With size
+        BeginImGui();
+        editor.Render(ImVec2{1024.0f, 720.0f});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With border
+        BeginImGui();
+        editor.Render({}, true);
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With size and border
+        BeginImGui();
+        editor.Render(ImVec2{1024.0f, 720.0f}, true);
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With negative size
+        BeginImGui();
+        editor.Render(ImVec2{-100.0f, -100.0f});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With float max
+        BeginImGui();
+        static constexpr const float max_float = std::numeric_limits<float>::max();
+        editor.Render(ImVec2{max_float, max_float});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With float min
+        BeginImGui();
+        static constexpr const float min_float = std::numeric_limits<float>::min();
+        editor.Render(ImVec2{min_float, min_float});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With quiet NaN
+        BeginImGui();
+        static constexpr const float float_quiet_nan = std::numeric_limits<float>::quiet_NaN();
+        editor.Render(ImVec2{float_quiet_nan, float_quiet_nan});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With signaling NaN
+        BeginImGui();
+        static constexpr const float float_signaling_nan =
+                std::numeric_limits<float>::signaling_NaN();
+        editor.Render(ImVec2{float_signaling_nan, float_signaling_nan});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With Infinity
+        BeginImGui();
+        static constexpr const float float_inf = std::numeric_limits<float>::infinity();
+        editor.Render(ImVec2{float_inf, float_inf});
+        editor.VerifyInternalState();
+        EndImgui();
     }
 
     SECTION("Get/SetText")
