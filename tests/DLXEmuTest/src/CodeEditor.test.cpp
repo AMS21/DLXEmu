@@ -8,6 +8,225 @@
 
 // TODO: MoveX with 0 amount being noop
 
+TEST_CASE("CodeEditor::Coordinates")
+{
+    const dlxemu::CodeEditor::Coordinates default_coord{};
+    CHECK(default_coord.m_Line == 0u);
+    CHECK(default_coord.m_Column == 0u);
+
+    const dlxemu::CodeEditor::Coordinates coords{42u, 22u};
+    CHECK(coords.m_Line == 42u);
+    CHECK(coords.m_Column == 22);
+
+    const dlxemu::CodeEditor::Coordinates invalid{dlxemu::CodeEditor::Coordinates::Invalid()};
+    CHECK(invalid.m_Line == -1);
+    CHECK(invalid.m_Column == -1);
+
+    const dlxemu::CodeEditor::Coordinates a{1u, 0u};
+    const dlxemu::CodeEditor::Coordinates b{1u, 1u};
+    const dlxemu::CodeEditor::Coordinates c{2u, 0u};
+    const dlxemu::CodeEditor::Coordinates d{2u, 2u};
+    const dlxemu::CodeEditor::Coordinates e{1u, 0u};
+
+    SECTION("operator==")
+    {
+        CHECK(a == a);
+        CHECK_FALSE(a == b);
+        CHECK_FALSE(a == c);
+        CHECK_FALSE(a == d);
+        CHECK(a == e);
+
+        CHECK_FALSE(b == a);
+        CHECK(b == b);
+        CHECK_FALSE(b == c);
+        CHECK_FALSE(b == d);
+        CHECK_FALSE(b == e);
+
+        CHECK_FALSE(c == a);
+        CHECK_FALSE(c == b);
+        CHECK(c == c);
+        CHECK_FALSE(c == d);
+        CHECK_FALSE(c == e);
+
+        CHECK_FALSE(d == a);
+        CHECK_FALSE(d == b);
+        CHECK_FALSE(d == c);
+        CHECK(d == d);
+        CHECK_FALSE(d == e);
+
+        CHECK(e == a);
+        CHECK_FALSE(e == b);
+        CHECK_FALSE(e == c);
+        CHECK_FALSE(e == d);
+        CHECK(e == e);
+    }
+
+    SECTION("operator!=")
+    {
+        CHECK_FALSE(a != a);
+        CHECK(a != b);
+        CHECK(a != c);
+        CHECK(a != d);
+        CHECK_FALSE(a != e);
+
+        CHECK(b != a);
+        CHECK_FALSE(b != b);
+        CHECK(b != c);
+        CHECK(b != d);
+        CHECK(b != e);
+
+        CHECK(c != a);
+        CHECK(c != b);
+        CHECK_FALSE(c != c);
+        CHECK(c != d);
+        CHECK(c != e);
+
+        CHECK(d != a);
+        CHECK(d != b);
+        CHECK(d != c);
+        CHECK_FALSE(d != d);
+        CHECK(d != e);
+
+        CHECK_FALSE(e != a);
+        CHECK(e != b);
+        CHECK(e != c);
+        CHECK(e != d);
+        CHECK_FALSE(e != e);
+    }
+
+    SECTION("operator<")
+    {
+        CHECK_FALSE(a < a);
+        CHECK(a < b);
+        CHECK(a < c);
+        CHECK(a < d);
+        CHECK_FALSE(a < e);
+
+        CHECK_FALSE(b < a);
+        CHECK_FALSE(b < b);
+        CHECK(b < c);
+        CHECK(b < d);
+        CHECK_FALSE(b < e);
+
+        CHECK_FALSE(c < a);
+        CHECK_FALSE(c < b);
+        CHECK_FALSE(c < c);
+        CHECK(c < d);
+        CHECK_FALSE(c < e);
+
+        CHECK_FALSE(d < a);
+        CHECK_FALSE(d < b);
+        CHECK_FALSE(d < c);
+        CHECK_FALSE(d < d);
+        CHECK_FALSE(d < e);
+
+        CHECK_FALSE(e < a);
+        CHECK(e < b);
+        CHECK(e < c);
+        CHECK(e < d);
+        CHECK_FALSE(e < e);
+    }
+
+    SECTION("operator>")
+    {
+        CHECK_FALSE(a > a);
+        CHECK_FALSE(a > b);
+        CHECK_FALSE(a > c);
+        CHECK_FALSE(a > d);
+        CHECK_FALSE(a > e);
+
+        CHECK(b > a);
+        CHECK_FALSE(b > b);
+        CHECK_FALSE(b > c);
+        CHECK_FALSE(b > d);
+        CHECK(b > e);
+
+        CHECK(c > a);
+        CHECK(c > b);
+        CHECK_FALSE(c > c);
+        CHECK_FALSE(c > d);
+        CHECK(c > e);
+
+        CHECK(d > a);
+        CHECK(d > b);
+        CHECK(d > c);
+        CHECK_FALSE(d > d);
+        CHECK(d > e);
+
+        CHECK_FALSE(e > a);
+        CHECK_FALSE(e > b);
+        CHECK_FALSE(e > c);
+        CHECK_FALSE(e > d);
+        CHECK_FALSE(e > e);
+    }
+
+    SECTION("operator<=")
+    {
+        CHECK(a <= a);
+        CHECK(a <= b);
+        CHECK(a <= c);
+        CHECK(a <= d);
+        CHECK(a <= e);
+
+        CHECK_FALSE(b <= a);
+        CHECK(b <= b);
+        CHECK(b <= c);
+        CHECK(b <= d);
+        CHECK_FALSE(b <= e);
+
+        CHECK_FALSE(c <= a);
+        CHECK_FALSE(c <= b);
+        CHECK(c <= c);
+        CHECK(c <= d);
+        CHECK_FALSE(c <= e);
+
+        CHECK_FALSE(d <= a);
+        CHECK_FALSE(d <= b);
+        CHECK_FALSE(d <= c);
+        CHECK(d <= d);
+        CHECK_FALSE(d <= e);
+
+        CHECK(e <= a);
+        CHECK(e <= b);
+        CHECK(e <= c);
+        CHECK(e <= d);
+        CHECK(e <= e);
+    }
+
+    SECTION("operator >=")
+    {
+        CHECK(a >= a);
+        CHECK_FALSE(a >= b);
+        CHECK_FALSE(a >= c);
+        CHECK_FALSE(a >= d);
+        CHECK(a >= e);
+
+        CHECK(b >= a);
+        CHECK(b >= b);
+        CHECK_FALSE(b >= c);
+        CHECK_FALSE(b >= d);
+        CHECK(b >= e);
+
+        CHECK(c >= a);
+        CHECK(c >= b);
+        CHECK(c >= c);
+        CHECK_FALSE(c >= d);
+        CHECK(c >= e);
+
+        CHECK(d >= a);
+        CHECK(d >= b);
+        CHECK(d >= c);
+        CHECK(d >= d);
+        CHECK(d >= e);
+
+        CHECK(e >= a);
+        CHECK_FALSE(e >= b);
+        CHECK_FALSE(e >= c);
+        CHECK_FALSE(e >= d);
+        CHECK(e >= e);
+    }
+}
+
 TEST_CASE("CodeEditor")
 {
     dlxemu::Emulator emulator;
