@@ -741,6 +741,47 @@ TEST_CASE("CodeEditor")
         CHECK(editor.GetTotalLines() == 4u);
     }
 
+    SECTION("GetSelectedText")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.SetText("WoW cool\ntext we have here");
+        editor.VerifyInternalState();
+
+        editor.SetSelection({0u, 0u}, {0u, 3u}); // Select "WoW"
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 3u});
+        CHECK(editor.GetSelectedText() == "WoW");
+
+        editor.SetSelection({0u, 4u}, {1u, 17u}); // Select "cool\ntext we have here"
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 4u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 17u});
+        CHECK(editor.GetSelectedText() == "cool\ntext we have here");
+
+        editor.SetSelection({1u, 1u}, {1u, 2u}); // Select "e"
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{1u, 1u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 2u});
+        CHECK(editor.GetSelectedText() == "e");
+
+        // No selection
+        editor.ClearSelection();
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+        CHECK(editor.GetSelectedText().empty());
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
