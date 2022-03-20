@@ -3427,4 +3427,9 @@ namespace dlxemu
         m_State.m_SelectionStart = Coordinates(0, 0);
         m_State.m_SelectionEnd   = Coordinates(0, 0);
     }
+
+    std::uint_fast8_t CodeEditor::GetTabSizeAt(std::int32_t column) const noexcept
+    {
+        return (column / m_TabSize) * m_TabSize + m_TabSize;
+    }
 } // namespace dlxemu

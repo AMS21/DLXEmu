@@ -335,6 +335,8 @@ namespace dlxemu
         void ColorizeToken(const dlx::Token& token) noexcept;
         void ColorizeInternal() noexcept;
 
+        [[nodiscard]] std::uint_fast8_t GetTabSizeAt(std::int32_t column) const noexcept;
+
         void ResetState() noexcept;
 
         float       m_LineSpacing;
