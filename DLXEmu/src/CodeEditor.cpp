@@ -689,7 +689,7 @@ namespace dlxemu
 
     void CodeEditor::EnterCharacter(ImWchar character, bool shift) noexcept
     {
-        if (!IsReadOnly())
+        if (!IsReadOnly() && character != '\0')
         {
             EnterCharacterImpl(character, shift);
         }
