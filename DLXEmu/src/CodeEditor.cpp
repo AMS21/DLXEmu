@@ -2385,7 +2385,7 @@ namespace dlxemu
             char c = line[i].m_Char;
             if (c == '\t')
             {
-                col = GetTabSizeAt(col);
+                col = (col / m_TabSize) * m_TabSize + m_TabSize;
             }
             else
             {
@@ -3475,6 +3475,6 @@ namespace dlxemu
 
     std::uint_fast8_t CodeEditor::GetTabSizeAt(std::int32_t column) const noexcept
     {
-        return (column / m_TabSize) * m_TabSize + m_TabSize;
+        return m_TabSize - (column % m_TabSize);
     }
 } // namespace dlxemu
