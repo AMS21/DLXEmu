@@ -32,6 +32,7 @@ SOFTWARE.
 #include <DLX/Token.hpp>
 #include <magic_enum.hpp>
 #include <phi/algorithm/clamp.hpp>
+#include <phi/algorithm/string_length.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/math/is_nan.hpp>
@@ -1213,28 +1214,31 @@ namespace dlxemu
         }
 
         const char* clip_text = ImGui::GetClipboardText();
-        if (clip_text != nullptr && strlen(clip_text) > 0)
+        PHI_DBG_ASSERT(clip_text);
+        if (phi::string_length(clip_text) == 0u)
         {
-            UndoRecord u;
-            u.m_Before = m_State;
-
-            if (HasSelection())
-            {
-                u.m_Removed      = GetSelectedText();
-                u.m_RemovedStart = m_State.m_SelectionStart;
-                u.m_RemovedEnd   = m_State.m_SelectionEnd;
-                DeleteSelection();
-            }
-
-            u.m_Added      = clip_text;
-            u.m_AddedStart = GetActualCursorCoordinates();
-
-            InsertText(clip_text);
-
-            u.m_AddedEnd = GetActualCursorCoordinates();
-            u.m_After    = m_State;
-            AddUndo(u);
+            return;
         }
+
+        UndoRecord u;
+        u.m_Before = m_State;
+
+        if (HasSelection())
+        {
+            u.m_Removed      = GetSelectedText();
+            u.m_RemovedStart = m_State.m_SelectionStart;
+            u.m_RemovedEnd   = m_State.m_SelectionEnd;
+            DeleteSelection();
+        }
+
+        u.m_Added      = clip_text;
+        u.m_AddedStart = GetActualCursorCoordinates();
+
+        InsertText(clip_text);
+
+        u.m_AddedEnd = GetActualCursorCoordinates();
+        u.m_After    = m_State;
+        AddUndo(u);
     }
 
     void CodeEditor::Delete() noexcept
