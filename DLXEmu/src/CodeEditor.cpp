@@ -2548,17 +2548,14 @@ namespace dlxemu
 
         if (HasSelection())
         {
-            if (character == '\t' &&
-                m_State.m_SelectionStart.m_Line != m_State.m_SelectionEnd.m_Line)
+            // Do indenting
+            if (character == '\t')
             {
                 Coordinates start        = m_State.m_SelectionStart;
                 Coordinates end          = m_State.m_SelectionEnd;
                 Coordinates original_end = end;
 
-                if (start > end)
-                {
-                    std::swap(start, end);
-                }
+                PHI_DBG_ASSERT(start < end);
                 start.m_Column = 0;
                 //          end.mColumn = end.mLine < mLines.size() ? mLines[end.mLine].size() : 0;
                 if (end.m_Column == 0 && end.m_Line > 0)
