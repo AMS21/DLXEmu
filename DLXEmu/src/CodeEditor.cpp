@@ -1293,11 +1293,6 @@ namespace dlxemu
                 }
 
                 std::int32_t cindex = GetCharacterIndex(pos);
-                // TODO: Bit of a hack to get around invalid acceses the assert below should always be true
-                if (cindex >= line.size())
-                {
-                    return;
-                }
                 PHI_DBG_ASSERT(cindex < line.size());
 
                 Coordinates current_cursor_pos = GetActualCursorCoordinates();
