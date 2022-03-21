@@ -579,6 +579,13 @@ TEST_CASE("CodeEditor")
     {
         dlxemu::CodeEditor editor{&emulator};
 
+        // Works with no text
+        editor.ClearText();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText().empty());
+        CHECK_FALSE(editor.CanUndo());
+
         // Basic usage
         editor.SetText("Hello World");
         editor.VerifyInternalState();
