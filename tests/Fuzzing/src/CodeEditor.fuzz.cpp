@@ -235,6 +235,9 @@ template <typename T>
             case '\v':
                 print_str += "\\v";
                 break;
+            case '"':
+                print_str += "\\\"";
+                break;
 
             default:
                 print_str += c;
