@@ -475,3 +475,43 @@ TEST_CASE("crash-ff503611dc08748de0b5757421d910d75d775424")
     editor.EnterCharacter('\n', true);
     editor.VerifyInternalState();
 }
+
+TEST_CASE("crash-de742aa77c3a1338ef0599275189c8347865a332")
+{
+    // NOTE: Requires DLXEMU_VERIFY_UNDO_REDO
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.InsertText(" \"    ");
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    editor.SelectAll();
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\t', true);
+    editor.VerifyInternalState();
+}
+
+TEST_CASE("crash-bba9ac4113ff3363a258b04abd8a8ef6d247d2bc")
+{
+    // NOTE: Requires DLXEMU_VERIFY_UNDO_REDO
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter('\0', true);
+    editor.VerifyInternalState();
+}
+
+TEST_CASE("crash-6fe3797808cf5badc66c5647c9bcad8a3b789c44")
+{
+    // NOTE: Requires DLXEMU_VERIFY_UNDO_REDO
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.InsertText("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
+                      "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t)(N");
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+}
