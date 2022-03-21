@@ -2028,6 +2028,10 @@ namespace dlxemu
 
 #if defined(DLXEMU_VERIFY_UNDO_REDO)
         VerifyInternalState();
+        // Reject empty undos
+        PHI_DBG_ASSERT(!(value.m_Added.empty() && value.m_Removed.empty()));
+        // Reject nonsensical undo record
+        PHI_DBG_ASSERT(value.m_Added != value.m_Removed);
 #endif
 
         m_UndoBuffer.resize(m_UndoIndex + 1u);
@@ -2039,12 +2043,17 @@ namespace dlxemu
 
         PHI_DBG_ASSERT(CanUndo());
 
-        std::string text_before  = GetText();
-        EditorState state_before = m_State;
+        const std::string text_before  = GetText();
+        const EditorState state_before = m_State;
 
         // Test the undo
         Undo();
         VerifyInternalState();
+
+        const std::string text_after_undo  = GetText();
+        const EditorState state_after_undo = m_State;
+        // Undo() Should do "something"
+        PHI_DBG_ASSERT(text_after_undo != text_before);
 
         PHI_DBG_ASSERT(CanRedo());
 
@@ -2052,8 +2061,8 @@ namespace dlxemu
         Redo();
         VerifyInternalState();
 
-        std::string text_after  = GetText();
-        EditorState state_after = m_State;
+        const std::string text_after  = GetText();
+        const EditorState state_after = m_State;
         PHI_DBG_ASSERT(text_before == text_after);
         PHI_DBG_ASSERT(state_before == state_after);
 #endif
