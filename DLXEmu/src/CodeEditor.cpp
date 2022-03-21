@@ -480,6 +480,11 @@ namespace dlxemu
         {
             return;
         }
+        // No text to clear
+        if (m_Lines.size() == 1u && m_Lines[0u].empty())
+        {
+            return;
+        }
 
         UndoRecord u;
         u.m_Before = m_State;
