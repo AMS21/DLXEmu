@@ -2562,7 +2562,9 @@ namespace dlxemu
         if (HasSelection())
         {
             // Do indenting
-            if (character == '\t')
+            if (character == '\t' &&
+                (m_State.m_SelectionStart.m_Column == 0u ||
+                 m_State.m_SelectionStart.m_Line != m_State.m_SelectionEnd.m_Line))
             {
                 Coordinates start        = m_State.m_SelectionStart;
                 Coordinates end          = m_State.m_SelectionEnd;
@@ -2591,32 +2593,36 @@ namespace dlxemu
 
                 bool modified = false;
 
-                for (int32_t i = start.m_Line; i <= end.m_Line; i++)
+                for (int32_t line_index = start.m_Line; line_index <= end.m_Line; ++line_index)
                 {
-                    Line& line = m_Lines[i];
+                    Line& line = m_Lines[line_index];
                     if (shift)
                     {
-                        if (!line.empty())
+                        // Remove idention
+                        if (line.empty())
                         {
-                            if (line.front().m_Char == '\t')
+                            // Skip already empty lines
+                            continue;
+                        }
+
+                        if (line.front().m_Char == '\t')
+                        {
+                            line.erase(line.begin());
+                            modified = true;
+                        }
+                        else
+                        {
+                            for (int32_t j = 0;
+                                 j < m_TabSize && !line.empty() && line.front().m_Char == ' '; j++)
                             {
                                 line.erase(line.begin());
                                 modified = true;
-                            }
-                            else
-                            {
-                                for (int32_t j = 0;
-                                     j < m_TabSize && !line.empty() && line.front().m_Char == ' ';
-                                     j++)
-                                {
-                                    line.erase(line.begin());
-                                    modified = true;
-                                }
                             }
                         }
                     }
                     else
                     {
+                        // Add indention
                         line.insert(line.begin(), Glyph('\t', PaletteIndex::Background));
                         modified = true;
                     }
@@ -2640,12 +2646,12 @@ namespace dlxemu
                         u.m_Added = GetText(start, range_end);
                     }
 
-                    u.m_AddedStart = start;
-                    u.m_AddedEnd   = range_end;
-                    u.m_After      = m_State;
-
+                    u.m_AddedStart           = start;
+                    u.m_AddedEnd             = range_end;
                     m_State.m_SelectionStart = start;
                     m_State.m_SelectionEnd   = end;
+
+                    u.m_After = m_State;
                     AddUndo(u);
 
                     m_TextChanged = true;
