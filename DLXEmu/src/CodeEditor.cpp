@@ -2025,8 +2025,6 @@ namespace dlxemu
         VerifyInternalState();
         // Reject empty undos
         PHI_DBG_ASSERT(!(value.m_Added.empty() && value.m_Removed.empty()));
-        // Reject nonsensical undo record
-        PHI_DBG_ASSERT(value.m_Added != value.m_Removed);
 #endif
 
         m_UndoBuffer.resize(m_UndoIndex + 1u);
@@ -2047,8 +2045,6 @@ namespace dlxemu
 
         const std::string text_after_undo  = GetText();
         const EditorState state_after_undo = m_State;
-        // Undo() Should do "something"
-        PHI_DBG_ASSERT(text_after_undo != text_before);
 
         PHI_DBG_ASSERT(CanRedo());
 
