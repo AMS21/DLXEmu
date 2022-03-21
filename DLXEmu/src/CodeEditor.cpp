@@ -2673,7 +2673,7 @@ namespace dlxemu
         if (character == '\n')
         {
             InsertLine(coord.m_Line + 1);
-            u.m_Added += static_cast<char>(character);
+            u.m_Added = static_cast<char>(character);
 
             Line& line     = m_Lines[coord.m_Line];
             Line& new_line = m_Lines[coord.m_Line + 1];
