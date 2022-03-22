@@ -809,6 +809,43 @@ TEST_CASE("CodeEditor")
         CHECK(editor.GetSelectedText() == "WoW cool\ntext we have here");
     }
 
+    SECTION("GetCurrentLineText")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        // Default
+        std::string line = editor.GetCurrentLineText();
+        CHECK(line.empty());
+
+        // With text
+        editor.SetText("1.\n2.\n3.");
+        editor.VerifyInternalState();
+
+        line = editor.GetCurrentLineText();
+        CHECK(line == "1.");
+
+        // Same line different column
+        editor.SetCursorPosition({0u, 1u});
+        editor.VerifyInternalState();
+
+        line = editor.GetCurrentLineText();
+        CHECK(line == "1.");
+
+        // Different line
+        editor.SetCursorPosition({1u, 0u});
+        editor.VerifyInternalState();
+
+        line = editor.GetCurrentLineText();
+        CHECK(line == "2.");
+
+        // Last line
+        editor.MoveBottom();
+        editor.VerifyInternalState();
+
+        line = editor.GetCurrentLineText();
+        CHECK(line == "3.");
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
