@@ -132,7 +132,7 @@ jobs:
             TOTAL_RUN_TIME=20
           fi
 
-          fuzz_args="-max_total_time=$TOTAL_RUN_TIME -use_value_profile=1 -print_pcs=1 -print_final_stats=1 ${{ matrix.cfg.fuzz_options }}"
+          fuzz_args="-max_total_time=$TOTAL_RUN_TIME -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -rss_limit_mb=4096 ${{ matrix.cfg.fuzz_options }}"
 
           echo "FUZZ_ARGUMENTS=$fuzz_args" >> $GITHUB_ENV
           echo "Fuzzing arguments: $fuzz_args"
