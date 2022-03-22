@@ -1057,6 +1057,57 @@ TEST_CASE("CodeEditor")
         CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
     }
 
+    SECTION("ShowWhitespaces")
+    {
+        BeginImGui();
+
+        dlxemu::CodeEditor editor{&emulator};
+
+        CHECK_FALSE(editor.IsShowingWhitespaces());
+
+        editor.SetShowWhitespaces(true);
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsShowingWhitespaces());
+
+        editor.Render();
+        editor.VerifyInternalState();
+
+        editor.SetText("This is a string with whitespaces.");
+        editor.VerifyInternalState();
+        editor.Render();
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsShowingWhitespaces());
+
+        editor.SetShowWhitespaces(false);
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsShowingWhitespaces());
+
+        editor.Render();
+        editor.VerifyInternalState();
+
+        editor.ClearText();
+        editor.VerifyInternalState();
+        editor.Render();
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsShowingWhitespaces());
+
+        editor.ToggleShowWhitespaces();
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsShowingWhitespaces());
+
+        editor.ToggleShowWhitespaces();
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsShowingWhitespaces());
+
+        EndImgui();
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
@@ -1286,47 +1337,6 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "BC");
         CHECK(lines.at(1).empty());
         CHECK(editor.GetTotalLines() == 2);
-    }
-
-    SECTION("ShowWhitespaces")
-    {
-        BeginImGui();
-
-        dlxemu::CodeEditor editor{&emulator};
-
-        CHECK_FALSE(editor.IsShowingWhitespaces());
-
-        editor.SetShowWhitespaces(true);
-        editor.VerifyInternalState();
-
-        CHECK(editor.IsShowingWhitespaces());
-
-        editor.Render();
-        editor.VerifyInternalState();
-
-        editor.SetText("This is a string with whitespaces.");
-        editor.VerifyInternalState();
-        editor.Render();
-        editor.VerifyInternalState();
-
-        CHECK(editor.IsShowingWhitespaces());
-
-        editor.SetShowWhitespaces(false);
-        editor.VerifyInternalState();
-
-        CHECK_FALSE(editor.IsShowingWhitespaces());
-
-        editor.Render();
-        editor.VerifyInternalState();
-
-        editor.ClearText();
-        editor.VerifyInternalState();
-        editor.Render();
-        editor.VerifyInternalState();
-
-        CHECK_FALSE(editor.IsShowingWhitespaces());
-
-        EndImgui();
     }
 
     SECTION("TabSize")
