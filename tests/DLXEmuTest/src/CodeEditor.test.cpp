@@ -1067,6 +1067,63 @@ TEST_CASE("CodeEditor")
         editor.VerifyInternalState();
 
         CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+        dlxemu::CodeEditor::Coordinates pos;
+
+        editor.ClearText();
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 0);
+
+        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 0);
+
+        editor.SetText("123456789");
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 0);
+
+        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0, 5));
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 5);
+
+        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 9);
+
+        editor.InsertText("\n123456789\n123456789");
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 2);
+        CHECK(pos.m_Column == 9);
+
+        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1, 7));
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 1);
+        CHECK(pos.m_Column == 7);
+
+        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 2);
+        CHECK(pos.m_Column == 9);
+
+        editor.SetText("");
+        editor.VerifyInternalState();
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0);
+        CHECK(pos.m_Column == 0);
     }
 
     SECTION("ShowWhitespaces")
@@ -1491,64 +1548,6 @@ TEST_CASE("CodeEditor")
         dlxemu::CodeEditor::Coordinates coord = editor.GetCursorPosition();
         editor.MoveEnd();
         CHECK(editor.GetCursorPosition() == coord);
-    }
-
-    SECTION("SetCursorPosition")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        dlxemu::CodeEditor::Coordinates pos = editor.GetCursorPosition();
-
-        CHECK(pos.m_Line == 0);
-        CHECK(pos.m_Column == 0);
-
-        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
-        editor.VerifyInternalState();
-        pos = editor.GetCursorPosition();
-        CHECK(pos.m_Line == 0);
-        CHECK(pos.m_Column == 0);
-
-        editor.SetText("123456789");
-        editor.VerifyInternalState();
-        pos = editor.GetCursorPosition();
-        CHECK(pos.m_Line == 0);
-        CHECK(pos.m_Column == 0);
-
-        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0, 5));
-        editor.VerifyInternalState();
-        pos = editor.GetCursorPosition();
-        CHECK(pos.m_Line == 0);
-        CHECK(pos.m_Column == 5);
-
-        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
-        editor.VerifyInternalState();
-        pos = editor.GetCursorPosition();
-        CHECK(pos.m_Line == 0);
-        CHECK(pos.m_Column == 9);
-
-        editor.InsertText("\n123456789\n123456789");
-        editor.VerifyInternalState();
-        pos = editor.GetCursorPosition();
-        CHECK(pos.m_Line == 2);
-        CHECK(pos.m_Column == 9);
-
-        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1, 7));
-        editor.VerifyInternalState();
-        pos = editor.GetCursorPosition();
-        CHECK(pos.m_Line == 1);
-        CHECK(pos.m_Column == 7);
-
-        editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100, 100));
-        editor.VerifyInternalState();
-        pos = editor.GetCursorPosition();
-        CHECK(pos.m_Line == 2);
-        CHECK(pos.m_Column == 9);
-
-        editor.SetText("");
-        editor.VerifyInternalState();
-        pos = editor.GetCursorPosition();
-        CHECK(pos.m_Line == 0);
-        CHECK(pos.m_Column == 0);
     }
 
     SECTION("MoveUp")
