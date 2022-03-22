@@ -929,6 +929,29 @@ TEST_CASE("CodeEditor")
         CHECK_FALSE(editor.IsReadOnly());
     }
 
+    SECTION("IsTextChanged")
+    {
+        BeginImGui();
+
+        dlxemu::CodeEditor editor{&emulator};
+
+        // Default
+        CHECK_FALSE(editor.IsTextChanged());
+
+        editor.EnterCharacter('A');
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsTextChanged());
+
+        // Cleared after rendering
+        editor.Render();
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsTextChanged());
+
+        EndImgui();
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
