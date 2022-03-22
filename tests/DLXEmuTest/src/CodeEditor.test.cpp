@@ -1108,6 +1108,30 @@ TEST_CASE("CodeEditor")
         EndImgui();
     }
 
+    SECTION("TabSize")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        CHECK(editor.GetTabSize() == 4);
+
+        editor.SetTabSize(1);
+        editor.VerifyInternalState();
+        CHECK(editor.GetTabSize() == 1);
+
+        editor.SetTabSize(5);
+        editor.VerifyInternalState();
+        CHECK(editor.GetTabSize() == 5);
+
+        // Clamped properly
+        editor.SetTabSize(0);
+        editor.VerifyInternalState();
+        CHECK(editor.GetTabSize() == 1);
+
+        editor.SetTabSize(100);
+        editor.VerifyInternalState();
+        CHECK(editor.GetTabSize() == 32);
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
@@ -1337,30 +1361,6 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "BC");
         CHECK(lines.at(1).empty());
         CHECK(editor.GetTotalLines() == 2);
-    }
-
-    SECTION("TabSize")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        CHECK(editor.GetTabSize() == 4);
-
-        editor.SetTabSize(1);
-        editor.VerifyInternalState();
-        CHECK(editor.GetTabSize() == 1);
-
-        editor.SetTabSize(5);
-        editor.VerifyInternalState();
-        CHECK(editor.GetTabSize() == 5);
-
-        // Clamped properly
-        editor.SetTabSize(0);
-        editor.VerifyInternalState();
-        CHECK(editor.GetTabSize() == 1);
-
-        editor.SetTabSize(100);
-        editor.VerifyInternalState();
-        CHECK(editor.GetTabSize() == 32);
     }
 
     SECTION("SetCursorPosition")
