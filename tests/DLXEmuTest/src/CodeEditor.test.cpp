@@ -952,6 +952,33 @@ TEST_CASE("CodeEditor")
         EndImgui();
     }
 
+    SECTION("IsCursorPositionChanged")
+    {
+        BeginImGui();
+
+        dlxemu::CodeEditor editor{&emulator};
+
+        // Default
+        CHECK_FALSE(editor.IsTextChanged());
+
+        // SetCursorPosition
+        editor.SetText("Hello");
+        editor.VerifyInternalState();
+
+        editor.SetCursorPosition({0u, 3u});
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsCursorPositionChanged());
+
+        // Cleared after rendering
+        editor.Render();
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsCursorPositionChanged());
+
+        EndImgui();
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
