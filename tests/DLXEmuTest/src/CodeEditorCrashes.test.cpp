@@ -551,3 +551,15 @@ TEST_CASE("crash-1201e7588fb65fb8bd0e21402378cd2eddcd46f0")
     editor.Delete();
     editor.VerifyInternalState();
 }
+
+TEST_CASE("crash-e96ca65627e2d85a40faf1ac32d475e9cad6f6f2")
+{
+    // NOTE: Requires DLXEMU_VERIFY_UNDO_REDO
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.InsertText("\t");
+    editor.VerifyInternalState();
+
+    editor.Backspace();
+    editor.VerifyInternalState();
+}
