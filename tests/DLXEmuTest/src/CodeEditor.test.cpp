@@ -902,6 +902,33 @@ TEST_CASE("CodeEditor")
         CHECK_FALSE(editor.IsOverwrite());
     }
 
+    SECTION("ReadOnly")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        CHECK_FALSE(editor.IsReadOnly());
+
+        editor.SetReadOnly(true);
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsReadOnly());
+
+        editor.SetReadOnly(false);
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsReadOnly());
+
+        editor.ToggleReadOnly();
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsReadOnly());
+
+        editor.ToggleReadOnly();
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsReadOnly());
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
@@ -1131,23 +1158,6 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "BC");
         CHECK(lines.at(1).empty());
         CHECK(editor.GetTotalLines() == 2);
-    }
-
-    SECTION("ReadOnly")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        CHECK_FALSE(editor.IsReadOnly());
-
-        editor.SetReadOnly(true);
-        editor.VerifyInternalState();
-
-        CHECK(editor.IsReadOnly());
-
-        editor.SetReadOnly(false);
-        editor.VerifyInternalState();
-
-        CHECK_FALSE(editor.IsReadOnly());
     }
 
     SECTION("ShowWhitespaces")
