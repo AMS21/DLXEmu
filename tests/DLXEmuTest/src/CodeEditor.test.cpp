@@ -846,6 +846,35 @@ TEST_CASE("CodeEditor")
         CHECK(line == "3.");
     }
 
+    SECTION("GetTotalLines")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        // Default
+        CHECK(editor.GetTotalLines() == 1u);
+
+        editor.SetText("One line");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetTotalLines() == 1u);
+
+        editor.SetText("Two\nLines");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetTotalLines() == 2u);
+
+        editor.SetText("Three\nLines\nNow");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetTotalLines() == 3u);
+
+        // Empty lines
+        editor.SetText("\n\n\n\n\n\n\n\n\n");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetTotalLines() == 10u);
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
