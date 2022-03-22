@@ -1508,11 +1508,14 @@ namespace dlxemu
         // Verify Selection is still in a valid state
         PHI_DBG_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
         PHI_DBG_ASSERT(m_State.m_SelectionStart.m_Line < m_Lines.size());
+        PHI_DBG_ASSERT(m_State.m_SelectionStart.m_Column >= 0);
         PHI_DBG_ASSERT(m_State.m_SelectionEnd.m_Line < m_Lines.size());
+        PHI_DBG_ASSERT(m_State.m_SelectionEnd.m_Column >= 0);
 
         // Verify cursor position
-        PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Line >= 0u);
+        PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Line >= 0);
         PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Line < m_Lines.size());
+        PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
         // This should also always be true. But its implementation is way to slow when fuzzing
 #if defined(DLXEMU_VERIFY_COLUMN)
