@@ -2030,6 +2030,9 @@ namespace dlxemu
         VerifyInternalState();
         // Reject empty undos
         PHI_DBG_ASSERT(!(value.m_Added.empty() && value.m_Removed.empty()));
+        // Start and end are valid
+        PHI_DBG_ASSERT(value.m_AddedStart <= value.m_AddedEnd);
+        PHI_DBG_ASSERT(value.m_RemovedStart <= value.m_RemovedEnd);
 #endif
 
         m_UndoBuffer.resize(m_UndoIndex + 1u);
