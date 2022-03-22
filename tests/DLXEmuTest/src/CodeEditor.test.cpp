@@ -577,12 +577,24 @@ TEST_CASE("CodeEditor")
         // Empty text
         editor.SetText("");
         editor.VerifyInternalState();
+
         text  = editor.GetText();
         lines = editor.GetTextLines();
         CHECK(text.empty());
         CHECK(lines.size() == 1u);
         CHECK(lines.at(0u).empty());
         CHECK(editor.GetTotalLines() == 1u);
+
+        // SetText doesn't ignore tabs
+        editor.SetText("\t");
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "\t");
+        CHECK(lines.size() == 1u);
+        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(lines.at(0u) == "\t");
     }
 
     SECTION("ClearText")
