@@ -1007,6 +1007,56 @@ TEST_CASE("CodeEditor")
         CHECK(editor.IsColorizerEnabled());
     }
 
+    SECTION("Get/SetCursorPosition")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        // Default
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+        editor.SetText("Some Text\nOn this line aswell");
+        editor.VerifyInternalState();
+
+        editor.SetCursorPosition({0u, 5u});
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 5u});
+
+        editor.SetCursorPosition({1u, 7u});
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 7u});
+
+        // Column is too big
+        editor.SetCursorPosition({0u, 999u});
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 9u});
+
+        // Column negative
+        dlxemu::CodeEditor::Coordinates coord;
+        coord.m_Line   = 0u;
+        coord.m_Column = -1;
+        editor.SetCursorPosition(coord);
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+        // Line too big
+        editor.SetCursorPosition({13u, 0u});
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 19u});
+
+        // Line negative
+        coord.m_Line   = -1;
+        coord.m_Column = 2u;
+        editor.SetCursorPosition(coord);
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
