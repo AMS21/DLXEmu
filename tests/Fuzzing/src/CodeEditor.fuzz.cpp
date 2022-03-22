@@ -1038,6 +1038,14 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
+            // Backspace
+            case 33: {
+                FUZZ_LOG("Backspace");
+
+                editor.Backspace();
+                break;
+            }
+
             default: {
                 return 0;
             }

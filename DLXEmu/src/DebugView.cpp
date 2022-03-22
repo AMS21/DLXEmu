@@ -114,7 +114,7 @@ namespace dlxemu
 
     void execute_random_editor_function(std::mt19937& engine, CodeEditor& editor) noexcept
     {
-        std::uniform_int_distribution<> function_distrib(0, 33);
+        std::uniform_int_distribution<> function_distrib(0, 34);
         const int                       function_index = function_distrib(engine);
 
         std::uniform_int_distribution<std::size_t>   message_length_distrib(0, 20);
@@ -483,6 +483,13 @@ namespace dlxemu
                 //DLX_DEBUG("ClearSelection");
 
                 editor.ClearSelection();
+                break;
+            }
+
+            case 34: {
+                //DLX_DEBUG("Backspace");
+
+                editor.Backspace();
                 break;
             }
 
