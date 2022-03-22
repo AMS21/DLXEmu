@@ -2809,23 +2809,34 @@ namespace dlxemu
             {
                 Line&        line   = m_Lines[m_State.m_CursorPosition.m_Line];
                 std::int32_t cindex = GetCharacterIndex(pos) - 1;
-                std::int32_t cend   = cindex + 1;
-                while (cindex > 0 && IsUTFSequence(line[cindex].m_Char))
+
+                if (line[cindex].m_Char == '\t')
                 {
-                    --cindex;
-                }
+                    const std::uint_fast8_t tab_size = GetTabSizeAt(pos.m_Column);
+                    u.m_RemovedStart                 = GetActualCursorCoordinates();
+                    u.m_RemovedStart.m_Column -= tab_size;
+                    u.m_RemovedEnd = GetActualCursorCoordinates();
+                    u.m_Removed    = '\t';
 
-                //if (cindex > 0 && UTF8CharLength(line[cindex]) > 1)
-                //  --cindex;
-
-                u.m_RemovedStart = u.m_RemovedEnd = GetActualCursorCoordinates();
-                --u.m_RemovedStart.m_Column;
-                --m_State.m_CursorPosition.m_Column;
-
-                while (cindex < line.size() && cend-- > cindex)
-                {
-                    u.m_Removed += line[cindex].m_Char;
                     line.erase(line.begin() + cindex);
+                }
+                else
+                {
+                    std::int32_t cend = cindex + 1;
+                    while (cindex > 0 && IsUTFSequence(line[cindex].m_Char))
+                    {
+                        --cindex;
+                    }
+
+                    u.m_RemovedStart = u.m_RemovedEnd = GetActualCursorCoordinates();
+                    --u.m_RemovedStart.m_Column;
+                    --m_State.m_CursorPosition.m_Column;
+
+                    while (cindex < line.size() && cend-- > cindex)
+                    {
+                        u.m_Removed += line[cindex].m_Char;
+                        line.erase(line.begin() + cindex);
+                    }
                 }
             }
 
@@ -2834,6 +2845,10 @@ namespace dlxemu
             EnsureCursorVisible();
             Colorize(m_State.m_CursorPosition.m_Line, 1);
         }
+
+        // Correct selection
+        m_State.m_SelectionStart = SanitizeCoordinates(m_State.m_SelectionStart);
+        m_State.m_SelectionEnd   = SanitizeCoordinates(m_State.m_SelectionEnd);
 
         u.m_After = m_State;
         AddUndo(u);
