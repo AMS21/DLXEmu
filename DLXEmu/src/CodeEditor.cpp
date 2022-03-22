@@ -1308,12 +1308,14 @@ namespace dlxemu
 
                     // Correct selection state
                     if (m_State.m_SelectionStart.m_Line == current_cursor_pos.m_Line &&
-                        m_State.m_SelectionStart.m_Column >= cindex)
+                        m_State.m_SelectionStart.m_Column >= cindex &&
+                        m_State.m_SelectionStart.m_Column > 0u)
                     {
                         m_State.m_SelectionStart.m_Column--;
                     }
                     if (m_State.m_SelectionEnd.m_Line == current_cursor_pos.m_Line &&
-                        m_State.m_SelectionEnd.m_Column >= cindex)
+                        m_State.m_SelectionEnd.m_Column >= cindex &&
+                        m_State.m_SelectionEnd.m_Column > 0u)
                     {
                         m_State.m_SelectionEnd.m_Column--;
                     }
