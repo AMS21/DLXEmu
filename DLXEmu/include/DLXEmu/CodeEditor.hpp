@@ -196,6 +196,7 @@ namespace dlxemu
         [[nodiscard]] std::uint_fast8_t GetTabSize() const noexcept;
 
         void EnterCharacter(ImWchar character, bool shift = false) noexcept;
+        void Backspace() noexcept;
 
         void InsertText(const std::string& value) noexcept;
         void InsertText(const char* value) noexcept;
@@ -322,7 +323,7 @@ namespace dlxemu
 
         void EnterCharacterImpl(ImWchar character, bool shift) noexcept;
 
-        void Backspace() noexcept;
+        void BackspaceImpl() noexcept;
         void DeleteSelection() noexcept;
 
         [[nodiscard]] ImU32 GetGlyphColor(const Glyph& glyph) const noexcept;

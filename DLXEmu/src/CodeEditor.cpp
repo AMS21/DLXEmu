@@ -696,6 +696,14 @@ namespace dlxemu
         }
     }
 
+    void CodeEditor::Backspace() noexcept
+    {
+        if (!IsReadOnly())
+        {
+            BackspaceImpl();
+        }
+    }
+
     void CodeEditor::InsertText(const std::string& value) noexcept
     {
         InsertText(value.c_str());
@@ -2746,7 +2754,7 @@ namespace dlxemu
         EnsureCursorVisible();
     }
 
-    void CodeEditor::Backspace() noexcept
+    void CodeEditor::BackspaceImpl() noexcept
     {
         PHI_DBG_ASSERT(!m_ReadOnly);
         PHI_DBG_ASSERT(!m_Lines.empty());
@@ -2937,7 +2945,7 @@ namespace dlxemu
             else if (!IsReadOnly() && !ctrl && !shift && !alt &&
                      ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Backspace)))
             {
-                Backspace();
+                BackspaceImpl();
             }
             else if (!ctrl && !shift && !alt &&
                      ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Insert)))
