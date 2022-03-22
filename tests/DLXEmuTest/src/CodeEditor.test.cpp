@@ -979,6 +979,34 @@ TEST_CASE("CodeEditor")
         EndImgui();
     }
 
+    SECTION("Colorizer")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        // Default
+        CHECK(editor.IsColorizerEnabled());
+
+        editor.SetColorizerEnable(false);
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsColorizerEnabled());
+
+        editor.SetColorizerEnable(true);
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsColorizerEnabled());
+
+        editor.ToggleColorizerEnabled();
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.IsColorizerEnabled());
+
+        editor.ToggleColorizerEnabled();
+        editor.VerifyInternalState();
+
+        CHECK(editor.IsColorizerEnabled());
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
@@ -1249,24 +1277,6 @@ TEST_CASE("CodeEditor")
         CHECK_FALSE(editor.IsShowingWhitespaces());
 
         EndImgui();
-    }
-
-    SECTION("Colorizer")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        // Default
-        CHECK(editor.IsColorizerEnabled());
-
-        editor.SetColorizerEnable(false);
-        editor.VerifyInternalState();
-
-        CHECK_FALSE(editor.IsColorizerEnabled());
-
-        editor.SetColorizerEnable(true);
-        editor.VerifyInternalState();
-
-        CHECK(editor.IsColorizerEnabled());
     }
 
     SECTION("TabSize")
