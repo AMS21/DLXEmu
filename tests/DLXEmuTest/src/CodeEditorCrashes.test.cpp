@@ -530,3 +530,24 @@ TEST_CASE("crash-f4fed5451dd3168ac0820727ea67a17373c491f3")
     editor.EnterCharacter('\n', true);
     editor.VerifyInternalState();
 }
+
+TEST_CASE("crash-1201e7588fb65fb8bd0e21402378cd2eddcd46f0")
+{
+    // NOTE: Requires DLXEMU_VERIFY_UNDO_REDO
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.SetText("iii#ii#");
+    editor.VerifyInternalState();
+
+    editor.Delete();
+    editor.VerifyInternalState();
+
+    dlxemu::CodeEditor::Coordinates coord;
+    coord.m_Line   = -1140850622;
+    coord.m_Column = -1644167102;
+    editor.SetSelectionEnd(coord);
+    editor.VerifyInternalState();
+
+    editor.Delete();
+    editor.VerifyInternalState();
+}
