@@ -1144,6 +1144,225 @@ TEST_CASE("CodeEditor")
         CHECK(editor.GetTabSize() == 32);
     }
 
+    SECTION("EnterCharacter")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter('H');
+        editor.VerifyInternalState();
+
+        std::string              text  = editor.GetText();
+        std::vector<std::string> lines = editor.GetTextLines();
+        CHECK(text == "H");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "H");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.EnterCharacter('i');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "Hi");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "Hi");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.MoveHome();
+        editor.VerifyInternalState();
+        editor.EnterCharacter('-');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "-Hi");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "-Hi");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.SelectAll();
+        editor.VerifyInternalState();
+        editor.EnterCharacter('A');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "A");
+        CHECK(lines.size() == 1);
+        CHECK(lines.at(0) == "A");
+        CHECK(editor.GetTotalLines() == 1);
+
+        editor.EnterCharacter('\n');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "A\n");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "A");
+        CHECK(lines.at(1).empty());
+        CHECK(editor.GetTotalLines() == 2);
+
+        editor.SetOverwrite(true);
+        editor.VerifyInternalState();
+        editor.MoveUp(31000);
+        editor.VerifyInternalState();
+        editor.EnterCharacter('B');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "B\n");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "B");
+        CHECK(lines.at(1).empty());
+        CHECK(editor.GetTotalLines() == 2);
+
+        editor.EnterCharacter('C');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "BC\n");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "BC");
+        CHECK(lines.at(1).empty());
+        CHECK(editor.GetTotalLines() == 2);
+
+        editor.SetOverwrite(false);
+        editor.VerifyInternalState();
+        editor.SetReadOnly(true);
+        editor.VerifyInternalState();
+        editor.EnterCharacter('D');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "BC\n");
+        CHECK(lines.size() == 2);
+        CHECK(lines.at(0) == "BC");
+        CHECK(lines.at(1).empty());
+        CHECK(editor.GetTotalLines() == 2);
+
+        // Entering '\0' does nothing
+        editor.SetReadOnly(false);
+        editor.VerifyInternalState();
+        editor.EnterCharacter('\0');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK_FALSE(editor.IsReadOnly());
+        CHECK(text == "BC\n");
+        CHECK(lines.size() == 2u);
+        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(lines.at(0u) == "BC");
+        CHECK(lines.at(1u).empty());
+
+        // Auto indent on new line
+        editor.SetText("   ABC");
+        editor.VerifyInternalState();
+        editor.SetCursorPosition({0u, 999u});
+        editor.VerifyInternalState();
+        editor.EnterCharacter('\n');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "   ABC\n   ");
+        CHECK(lines.size() == 2u);
+        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(lines.at(0u) == "   ABC");
+        CHECK(lines.at(1u) == "   ");
+
+        editor.EnterCharacter('\n');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "   ABC\n   \n   ");
+        CHECK(lines.size() == 3u);
+        CHECK(editor.GetTotalLines() == 3u);
+        CHECK(lines.at(0u) == "   ABC");
+        CHECK(lines.at(1u) == "   ");
+        CHECK(lines.at(2u) == "   ");
+
+        // Tab Indent on selected text
+        editor.SetText("\tTabedLine");
+        editor.VerifyInternalState();
+        editor.SelectAll();
+        editor.VerifyInternalState();
+        editor.EnterCharacter('\t');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "\t\tTabedLine");
+        CHECK(lines.size() == 1u);
+        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(lines.at(0u) == "\t\tTabedLine");
+
+        // Shift tab removes tab
+        editor.EnterCharacter('\t', true);
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "\tTabedLine");
+        CHECK(lines.size() == 1u);
+        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(lines.at(0u) == "\tTabedLine");
+
+        editor.EnterCharacter('\t', true);
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "TabedLine");
+        CHECK(lines.size() == 1u);
+        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(lines.at(0u) == "TabedLine");
+
+        // Shift tab does nothing when theres no tab
+        editor.EnterCharacter('\t', true);
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "TabedLine");
+        CHECK(lines.size() == 1u);
+        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(lines.at(0u) == "TabedLine");
+
+        // Multiline tab indent
+        editor.SetText("Hi\n:)");
+        editor.VerifyInternalState();
+        editor.SelectAll();
+        editor.VerifyInternalState();
+        editor.EnterCharacter('\t');
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "\tHi\n\t:)");
+        CHECK(lines.size() == 2u);
+        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(lines.at(0u) == "\tHi");
+        CHECK(lines.at(1u) == "\t:)");
+
+        // Remove multiline tab indent
+        editor.EnterCharacter('\t', true);
+        editor.VerifyInternalState();
+
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text == "Hi\n:)");
+        CHECK(lines.size() == 2u);
+        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(lines.at(0u) == "Hi");
+        CHECK(lines.at(1u) == ":)");
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
@@ -1272,107 +1491,6 @@ TEST_CASE("CodeEditor")
         dlxemu::CodeEditor::Coordinates coord = editor.GetCursorPosition();
         editor.MoveEnd();
         CHECK(editor.GetCursorPosition() == coord);
-    }
-
-    SECTION("EnterCharacter")
-    {
-        dlxemu::CodeEditor editor{&emulator};
-
-        editor.EnterCharacter('H');
-        editor.VerifyInternalState();
-
-        std::string              text  = editor.GetText();
-        std::vector<std::string> lines = editor.GetTextLines();
-        CHECK(text == "H");
-        CHECK(lines.size() == 1);
-        CHECK(lines.at(0) == "H");
-        CHECK(editor.GetTotalLines() == 1);
-
-        editor.EnterCharacter('i');
-        editor.VerifyInternalState();
-
-        text  = editor.GetText();
-        lines = editor.GetTextLines();
-        CHECK(text == "Hi");
-        CHECK(lines.size() == 1);
-        CHECK(lines.at(0) == "Hi");
-        CHECK(editor.GetTotalLines() == 1);
-
-        editor.MoveHome();
-        editor.VerifyInternalState();
-        editor.EnterCharacter('-');
-        editor.VerifyInternalState();
-
-        text  = editor.GetText();
-        lines = editor.GetTextLines();
-        CHECK(text == "-Hi");
-        CHECK(lines.size() == 1);
-        CHECK(lines.at(0) == "-Hi");
-        CHECK(editor.GetTotalLines() == 1);
-
-        editor.SelectAll();
-        editor.VerifyInternalState();
-        editor.EnterCharacter('A');
-        editor.VerifyInternalState();
-
-        text  = editor.GetText();
-        lines = editor.GetTextLines();
-        CHECK(text == "A");
-        CHECK(lines.size() == 1);
-        CHECK(lines.at(0) == "A");
-        CHECK(editor.GetTotalLines() == 1);
-
-        editor.EnterCharacter('\n');
-        editor.VerifyInternalState();
-
-        text  = editor.GetText();
-        lines = editor.GetTextLines();
-        CHECK(text == "A\n");
-        CHECK(lines.size() == 2);
-        CHECK(lines.at(0) == "A");
-        CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
-
-        editor.SetOverwrite(true);
-        editor.VerifyInternalState();
-        editor.MoveUp(31000);
-        editor.VerifyInternalState();
-        editor.EnterCharacter('B');
-        editor.VerifyInternalState();
-
-        text  = editor.GetText();
-        lines = editor.GetTextLines();
-        CHECK(text == "B\n");
-        CHECK(lines.size() == 2);
-        CHECK(lines.at(0) == "B");
-        CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
-
-        editor.EnterCharacter('C');
-        editor.VerifyInternalState();
-
-        text  = editor.GetText();
-        lines = editor.GetTextLines();
-        CHECK(text == "BC\n");
-        CHECK(lines.size() == 2);
-        CHECK(lines.at(0) == "BC");
-        CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
-
-        editor.SetOverwrite(false);
-        editor.VerifyInternalState();
-        editor.SetReadOnly(true);
-        editor.VerifyInternalState();
-        editor.EnterCharacter('D');
-        editor.VerifyInternalState();
-
-        text  = editor.GetText();
-        lines = editor.GetTextLines();
-        CHECK(text == "BC\n");
-        CHECK(lines.size() == 2);
-        CHECK(lines.at(0) == "BC");
-        CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
     }
 
     SECTION("SetCursorPosition")
