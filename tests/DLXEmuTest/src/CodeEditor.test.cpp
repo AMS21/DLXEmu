@@ -573,6 +573,16 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(2) == "NewLines");
         CHECK(lines.at(3).empty());
         CHECK(editor.GetTotalLines() == 4);
+
+        // Empty text
+        editor.SetText("");
+        editor.VerifyInternalState();
+        text  = editor.GetText();
+        lines = editor.GetTextLines();
+        CHECK(text.empty());
+        CHECK(lines.size() == 1u);
+        CHECK(lines.at(0u).empty());
+        CHECK(editor.GetTotalLines() == 1u);
     }
 
     SECTION("ClearText")
