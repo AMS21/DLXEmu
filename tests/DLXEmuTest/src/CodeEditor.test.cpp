@@ -797,6 +797,16 @@ TEST_CASE("CodeEditor")
         CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
         CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 0u});
         CHECK(editor.GetSelectedText().empty());
+
+        // Select all
+        editor.SelectAll();
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 17});
+        CHECK(editor.GetText() == "WoW cool\ntext we have here");
+        CHECK(editor.GetSelectedText() == "WoW cool\ntext we have here");
     }
 
     SECTION("InsertText")
