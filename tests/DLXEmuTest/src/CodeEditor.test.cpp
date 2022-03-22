@@ -1420,6 +1420,80 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(1u) == ":)");
     }
 
+    SECTION("Backspace")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        // With nothing to delete its a noop
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        editor.InsertText(" \tA\nb\t \n");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == " \tA\nb\t \n");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{2u, 0u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == " \tA\nb\t ");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 5u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == " \tA\nb\t");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 4u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == " \tA\nb");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 1u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == " \tA\n");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 0u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == " \tA");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 5u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == " \t");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 4u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == " ");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 1u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText().empty());
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+        // Noop when read only
+        editor.InsertText("New text");
+        editor.VerifyInternalState();
+        editor.SetReadOnly(true);
+        editor.VerifyInternalState();
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "New text");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 8u});
+    }
+
     SECTION("InsertText")
     {
         dlxemu::CodeEditor editor{&emulator};
