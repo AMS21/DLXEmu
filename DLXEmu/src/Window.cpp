@@ -148,7 +148,7 @@ namespace dlxemu
 
     void Window::EndFrame() noexcept
     {
-        static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        constexpr const static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
         // Rendering
         ImGui::Render();
@@ -203,7 +203,7 @@ namespace dlxemu
         io.IniFilename = nullptr;
 
         // Load default config
-        constexpr char web_default_config[] =
+        constexpr const static char web_default_config[] =
                 R"([Window][DockSpaceViewport_11111111]
 Pos=0,19
 Size=1280,701
