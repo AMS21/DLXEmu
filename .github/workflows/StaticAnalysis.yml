@@ -57,7 +57,7 @@ jobs:
           mkdir build
           cd build
 
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_MATCHCOMPILER=ON
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_MATCHCOMPILER=ON -DCMAKE_CXX_FLAGS="-march=native -mtune=native -W" -DCMAKE_C_FLAGS="-march=native -mtune=native -W"
           cmake --build . -j2
 
           # Install CppCheck
@@ -211,7 +211,7 @@ jobs:
           mkdir build
           cd build
 
-          cmake .. -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.LLVM_VERSION }} -DCMAKE_BUILD_TYPE=Release
+          cmake .. -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.LLVM_VERSION }} -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-march=native -mtune=native -W" -DCMAKE_C_FLAGS="-march=native -mtune=native -W"
           cmake --build .
 
           # Install Include-what-you-use
