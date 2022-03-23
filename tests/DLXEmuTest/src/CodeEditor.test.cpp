@@ -1492,6 +1492,18 @@ TEST_CASE("CodeEditor")
 
         CHECK(editor.GetText() == "New text");
         CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 8u});
+
+        // No auto indent when inserting before whitespaces
+        editor.SetReadOnly(false);
+        editor.VerifyInternalState();
+        editor.SetText(" Text");
+        editor.SetCursorPosition({0u, 0u});
+        editor.VerifyInternalState();
+        editor.EnterCharacter('\n');
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "\n Text");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 0u});
     }
 
     SECTION("InsertText")
