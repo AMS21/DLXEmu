@@ -72,6 +72,9 @@ jobs:
           # Generate compile_commands.json
           cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
+          # Build glad target since it generates required files
+          cmake --build . --target glad
+
       - name: Run cppcheck
         run: |
           cppcheck --project=build/compile_commands.json --enable=all --inconclusive --inline-suppr --template='{file}:{line}:{column}: {severity}: {message} [{id}](CWE {cwe})' -DPHI_CONFIG_ALWAYS_INLINE_OVERWRITE=inline -DPHI_CONFIG_NEVER_INLINE_OVERWRITE="" --cppcheck-build-dir="build-cppcheck" -i external --suppress=missingInclude --suppress=unusedFunction --suppress=unmatchedSuppression -UDLXEMU_COVERAGE_BUILD 2> cppcheck.log
