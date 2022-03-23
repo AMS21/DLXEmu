@@ -2690,7 +2690,8 @@ namespace dlxemu
             Line& line     = m_Lines[coord.m_Line];
             Line& new_line = m_Lines[coord.m_Line + 1];
 
-            for (std::size_t it = 0u; it < line.size() && dlx::IsBlank(line[it].m_Char); ++it)
+            for (std::size_t it = 0u;
+                 it < line.size() && it < coord.m_Column && dlx::IsBlank(line[it].m_Char); ++it)
             {
                 new_line.push_back(line[it]);
                 u.m_Added += static_cast<char>(line[it].m_Char);
