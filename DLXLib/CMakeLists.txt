@@ -62,6 +62,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELWITHDBGINFO>:PH
 phi_enable_static_analyzers(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 
-if (${DLXEMU_COVERAGE_BUILD})
+if(${DLXEMU_COVERAGE_BUILD})
   target_compile_definitions(${PROJECT_NAME} PUBLIC "DLXEMU_COVERAGE_BUILD")
 endif()

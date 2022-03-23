@@ -33,17 +33,25 @@ target_link_libraries(Catch2 PUBLIC Threads::Threads)
 add_subdirectory(glad)
 
 # glfw
-if (NOT PHI_PLATFORM_EMSCRIPTEN)
-    add_subdirectory(glfw)
+if(NOT PHI_PLATFORM_EMSCRIPTEN)
+  add_subdirectory(glfw)
 endif()
 
 # ImGui
 add_library(
   "ImGui" STATIC
-  "imgui/imgui.cpp" "imgui/imgui_demo.cpp" "imgui/imgui_draw.cpp" "imgui/imgui_tables.cpp"
-  "imgui/imgui_widgets.cpp" "imgui/backends/imgui_impl_glfw.cpp" "imgui/backends/imgui_impl_opengl3.cpp")
+  "imgui/imgui.cpp"
+  "imgui/imgui_demo.cpp"
+  "imgui/imgui_draw.cpp"
+  "imgui/imgui_tables.cpp"
+  "imgui/imgui_widgets.cpp"
+  "imgui/backends/imgui_impl_glfw.cpp"
+  "imgui/backends/imgui_impl_opengl3.cpp")
 
-target_compile_definitions("ImGui" PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD" IMGUI_USER_CONFIG="${CMAKE_CURRENT_SOURCE_DIR}/../DLXEmu/include/DLXEmu/ImGuiConfig.hpp")
+target_compile_definitions(
+  "ImGui"
+  PUBLIC "IMGUI_IMPL_OPENGL_LOADER_GLAD"
+         IMGUI_USER_CONFIG="${CMAKE_CURRENT_SOURCE_DIR}/../DLXEmu/include/DLXEmu/ImGuiConfig.hpp")
 
 target_include_directories("ImGui" PUBLIC "imgui")
 
@@ -64,6 +72,6 @@ add_subdirectory(magic_enum)
 
 # spdlog
 set(SPDLOG_DISABLE_DEFAULT_LOGGER
-      ON
-      CACHE INTERNAL "")
+    ON
+    CACHE INTERNAL "")
 add_subdirectory(spdlog)
