@@ -10,7 +10,7 @@ jobs:
   cppcheck:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 13
+      LLVM_VERSION: 14
 
     steps:
       - name: Checkout
@@ -91,7 +91,7 @@ jobs:
   clang-tidy:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 13
+      LLVM_VERSION: 14
 
     steps:
       - name: Checkout
@@ -159,7 +159,7 @@ jobs:
   include-what-you-use:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 13
+      LLVM_VERSION: 14
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
 
     steps:

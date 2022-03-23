@@ -32,13 +32,13 @@ jobs:
           - { compiler: g++, compiler_version: "11", dynamic_test: "lsan" }
           - { compiler: g++, compiler_version: "11", dynamic_test: "tsan" }
           - { compiler: g++, compiler_version: "11", dynamic_test: "ubsan" }
-          # clang-13
-          - { compiler: clang++, compiler_version: "13" }
-          - { compiler: clang++, compiler_version: "13", dynamic_test: "asan" }
-          - { compiler: clang++, compiler_version: "13", dynamic_test: "lsan" }
-          #- { compiler: clang++, compiler_version: "13", dynamic_test: "msan" }
-          - { compiler: clang++, compiler_version: "13", dynamic_test: "tsan" }
-          - { compiler: clang++, compiler_version: "13", dynamic_test: "ubsan" }
+          # clang-14
+          - { compiler: clang++, compiler_version: "14" }
+          - { compiler: clang++, compiler_version: "14", dynamic_test: "asan" }
+          - { compiler: clang++, compiler_version: "14", dynamic_test: "lsan" }
+          #- { compiler: clang++, compiler_version: "14", dynamic_test: "msan" }
+          - { compiler: clang++, compiler_version: "14", dynamic_test: "tsan" }
+          - { compiler: clang++, compiler_version: "14", dynamic_test: "ubsan" }
 
     steps:
       - name: Checkout
@@ -213,7 +213,7 @@ jobs:
       matrix:
         cfg:
           - { compiler: g++, compiler_version: "11" }
-          - { compiler: clang++, compiler_version: "13" }
+          - { compiler: clang++, compiler_version: "14" }
 
     steps:
       - name: Checkout
