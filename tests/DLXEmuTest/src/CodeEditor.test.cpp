@@ -1794,6 +1794,43 @@ TEST_CASE("CodeEditor")
         CHECK(pos.m_Line == 2);
         CHECK(pos.m_Column == 41);
     }
+
+    SECTION("SetSelectionStart")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.SetText("My text");
+        editor.VerifyInternalState();
+        editor.SetSelectionStart({0u, 3u});
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 3u});
+
+        editor.SetSelectionStart({0u, 1u});
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 1u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 3u});
+
+        // Too big line
+        editor.SetSelectionStart({999u, 0u});
+        editor.VerifyInternalState();
+
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 3u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 7u});
+
+        // Too big column
+        editor.SetSelectionStart({0u, 999u});
+        editor.VerifyInternalState();
+
+        CHECK_FALSE(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 7u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 7u});
+    }
 }
 
 TEST_CASE("CodeEditor bad calls")
