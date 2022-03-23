@@ -1504,6 +1504,59 @@ TEST_CASE("CodeEditor")
 
         CHECK(editor.GetText() == "\n Text");
         CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 0u});
+
+        // Correctly handled tabs
+        editor.SetText("\t");
+        editor.VerifyInternalState();
+        editor.MoveEnd();
+        editor.VerifyInternalState();
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText().empty());
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+        editor.SetText("\tA");
+        editor.VerifyInternalState();
+        editor.MoveRight();
+        editor.VerifyInternalState();
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 4u});
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "A");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+        editor.SetText("a\tA");
+        editor.VerifyInternalState();
+        editor.SetCursorPosition({0u, 4u});
+        editor.VerifyInternalState();
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "aA");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 1u});
+
+        editor.SetText("ab\tA");
+        editor.VerifyInternalState();
+        editor.SetCursorPosition({0u, 4u});
+        editor.VerifyInternalState();
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "abA");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 2u});
+
+        editor.SetText("abc\tA");
+        editor.VerifyInternalState();
+        editor.SetCursorPosition({0u, 4u});
+        editor.VerifyInternalState();
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "abcA");
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 3u});
     }
 
     SECTION("InsertText")
