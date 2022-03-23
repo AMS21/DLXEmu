@@ -2703,6 +2703,12 @@ namespace dlxemu
             line.erase(line.begin() + cindex, line.begin() + line.size());
             SetCursorPosition(Coordinates(
                     coord.m_Line + 1, GetCharacterColumn(coord.m_Line + 1, (int)whitespace_size)));
+
+            // Fix selection
+            if (!HasSelection())
+            {
+                ClearSelection();
+            }
         }
         else
         {
