@@ -678,9 +678,28 @@ namespace dlxemu
         return m_ShowWhitespaces;
     }
 
-    void CodeEditor::SetTabSize(std::uint_fast8_t value) noexcept
+    void CodeEditor::SetTabSize(std::uint_fast8_t new_tab_size) noexcept
     {
-        m_TabSize = std::clamp(value, MinTabSize, MaxTabSize);
+        new_tab_size = phi::clamp(new_tab_size, MinTabSize, MaxTabSize);
+
+        if (new_tab_size != m_TabSize)
+        {
+            // Save old character indexes
+            std::int32_t cursor_char_index          = GetCharacterIndex(m_State.m_CursorPosition);
+            std::int32_t selection_start_char_index = GetCharacterIndex(m_State.m_SelectionStart);
+            std::int32_t selection_end_char_index   = GetCharacterIndex(m_State.m_SelectionEnd);
+
+            // Update tab size
+            m_TabSize = new_tab_size;
+
+            // Set new character indexes
+            m_State.m_CursorPosition.m_Column =
+                    GetCharacterColumn(m_State.m_CursorPosition.m_Line, cursor_char_index);
+            m_State.m_SelectionStart.m_Column =
+                    GetCharacterColumn(m_State.m_SelectionStart.m_Line, selection_start_char_index);
+            m_State.m_SelectionEnd.m_Column =
+                    GetCharacterColumn(m_State.m_SelectionEnd.m_Line, selection_end_char_index);
+        }
     }
 
     std::uint_fast8_t CodeEditor::GetTabSize() const noexcept

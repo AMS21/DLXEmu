@@ -192,7 +192,7 @@ namespace dlxemu
         void               ToggleShowWhitespaces() noexcept;
         [[nodiscard]] bool IsShowingWhitespaces() const noexcept;
 
-        void                            SetTabSize(std::uint_fast8_t value) noexcept;
+        void                            SetTabSize(std::uint_fast8_t new_tab_size) noexcept;
         [[nodiscard]] std::uint_fast8_t GetTabSize() const noexcept;
 
         void EnterCharacter(ImWchar character, bool shift = false) noexcept;
