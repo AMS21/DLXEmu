@@ -74,10 +74,10 @@ jobs:
 
       - name: Run cppcheck
         run: |
-          cppcheck --project=build/compile_commands.json --enable=all --inconclusive --inline-suppr --template='{file}:{line}:{column}: {severity}: {message} [{id}](CWE {cwe})' -DPHI_CONFIG_ALWAYS_INLINE_OVERWRITE=inline -DPHI_CONFIG_NEVER_INLINE_OVERWRITE="" --suppress=missingInclude --suppress=unusedFunction --suppress=unmatchedSuppression 2> cppcheck.log
+          cppcheck --project=build/compile_commands.json --enable=all --inconclusive --inline-suppr --template='{file}:{line}:{column}: {severity}: {message} [{id}](CWE {cwe})' -DPHI_CONFIG_ALWAYS_INLINE_OVERWRITE=inline -DPHI_CONFIG_NEVER_INLINE_OVERWRITE="" --cppcheck-build-dir="build-cppcheck" -i external --suppress=missingInclude --suppress=unusedFunction --suppress=unmatchedSuppression -UDLXEMU_COVERAGE_BUILD 2> cppcheck.log
 
           # Filter out external libraries and test code
-          cat cppcheck.log | grep -Ev "DLXEMu/external|DLXEmu/tests" > cppcheck_filtered.log || true
+          cat cppcheck.log | grep -Ev "external/|tests/" > cppcheck_filtered.log || true
 
       - name: Print results
         run: cat cppcheck_filtered.log
