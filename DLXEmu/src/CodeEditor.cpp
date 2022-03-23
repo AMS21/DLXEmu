@@ -2838,13 +2838,15 @@ namespace dlxemu
 
                 if (line[cindex].m_Char == '\t')
                 {
-                    const std::uint_fast8_t tab_size = GetTabSizeAt(pos.m_Column);
-                    u.m_RemovedStart                 = GetActualCursorCoordinates();
-                    u.m_RemovedStart.m_Column -= tab_size;
-                    u.m_RemovedEnd = GetActualCursorCoordinates();
-                    u.m_Removed    = '\t';
+                    u.m_RemovedStart.m_Line = GetActualCursorCoordinates().m_Line;
+                    u.m_RemovedEnd          = GetActualCursorCoordinates();
+                    u.m_Removed             = '\t';
 
                     line.erase(line.begin() + cindex);
+
+                    // Move cursor back
+                    m_State.m_CursorPosition.m_Column = GetCharacterColumn(pos.m_Line, cindex);
+                    u.m_RemovedStart.m_Column         = GetCharacterColumn(pos.m_Line, cindex);
                 }
                 else
                 {
