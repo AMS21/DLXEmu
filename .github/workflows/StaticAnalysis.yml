@@ -229,7 +229,7 @@ jobs:
           cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
           # Run include-what-you-use
-          iwyu_tool.py -p . -o clang -- -Xiwyu --cxx17ns | tee iwyu.log || true
+          iwyu_tool.py --output-format clang --jobs $(nproc) -p . ../DLXEmu ../DLXLib -- -Xiwyu --cxx17ns | tee iwyu.log || true
 
           # Filter out correct includes and generated code
           cat iwyu.log | grep -Ev "#includes/fwd-decls are correct" | tee iwyu_filtered.log || true
