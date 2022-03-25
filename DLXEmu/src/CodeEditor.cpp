@@ -32,6 +32,7 @@ SOFTWARE.
 #include <DLX/Token.hpp>
 #include <magic_enum.hpp>
 #include <phi/algorithm/clamp.hpp>
+#include <phi/algorithm/max.hpp>
 #include <phi/algorithm/string_length.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
@@ -488,7 +489,7 @@ namespace dlxemu
         }
 
         UndoRecord u;
-        u.m_Before = m_State;
+        u.StoreBeforeState(this);
 
         u.m_Removed            = GetText();
         u.m_RemovedStart       = Coordinates(0, 0);
@@ -499,7 +500,7 @@ namespace dlxemu
         m_Lines.emplace_back(Line{});
         ResetState();
 
-        u.m_After = m_State;
+        u.StoreAfterState(this);
         AddUndo(u);
     }
 
@@ -1227,7 +1228,7 @@ namespace dlxemu
                 Copy();
                 DeleteSelection();
 
-                u.m_After = m_State;
+                u.StoreAfterState(this);
                 AddUndo(u);
             }
         }
@@ -1248,7 +1249,7 @@ namespace dlxemu
         }
 
         UndoRecord u;
-        u.m_Before = m_State;
+        u.StoreBeforeState(this);
 
         if (HasSelection())
         {
@@ -1278,7 +1279,7 @@ namespace dlxemu
         }
 
         UndoRecord u;
-        u.m_Before = m_State;
+        u.StoreBeforeState(this);
 
         if (HasSelection())
         {
@@ -1354,7 +1355,7 @@ namespace dlxemu
             Colorize(pos.m_Line, 1);
         }
 
-        u.m_After = m_State;
+        u.StoreAfterState(this);
         AddUndo(u);
     }
 
@@ -1630,24 +1631,6 @@ namespace dlxemu
     }
 
     // UndoRecord
-    CodeEditor::UndoRecord::UndoRecord(
-            const std::string& added, const CodeEditor::Coordinates added_start,
-            const CodeEditor::Coordinates added_end, const std::string& removed,
-            const CodeEditor::Coordinates removed_start, const CodeEditor::Coordinates removed_end,
-            CodeEditor::EditorState& before, CodeEditor::EditorState& after) noexcept
-        : m_Added(added)
-        , m_AddedStart(added_start)
-        , m_AddedEnd(added_end)
-        , m_Removed(removed)
-        , m_RemovedStart(removed_start)
-        , m_RemovedEnd(removed_end)
-        , m_Before(before)
-        , m_After(after)
-    {
-        PHI_DBG_ASSERT(m_AddedStart <= m_AddedEnd);
-        PHI_DBG_ASSERT(m_RemovedStart <= m_RemovedEnd);
-    }
-
     void CodeEditor::UndoRecord::Undo(CodeEditor* editor) const noexcept
     {
         PHI_DBG_ASSERT(editor != nullptr);
@@ -1666,7 +1649,7 @@ namespace dlxemu
                              m_RemovedEnd.m_Line - m_RemovedStart.m_Line + 2);
         }
 
-        editor->m_State = m_Before;
+        ApplyBeforeState(editor);
         editor->EnsureCursorVisible();
     }
 
@@ -1688,8 +1671,68 @@ namespace dlxemu
             editor->Colorize(m_AddedStart.m_Line - 1, m_AddedEnd.m_Line - m_AddedStart.m_Line + 1);
         }
 
-        editor->m_State = m_After;
+        ApplyAfterState(editor);
         editor->EnsureCursorVisible();
+    }
+
+    void CodeEditor::UndoRecord::StoreBeforeState(CodeEditor* editor) noexcept
+    {
+        const Coordinates cursor_position = editor->GetCursorPosition();
+        const Coordinates selection_start = editor->GetSelectionStart();
+        const Coordinates selection_end   = editor->GetSelectionEnd();
+
+        m_Before.m_CursorPosition = {cursor_position.m_Line,
+                                     editor->GetCharacterIndex(cursor_position)};
+        m_Before.m_SelectionStart = {selection_start.m_Line,
+                                     editor->GetCharacterIndex(selection_start)};
+        m_Before.m_SelectionEnd = {selection_end.m_Line, editor->GetCharacterIndex(selection_end)};
+    }
+
+    void CodeEditor::UndoRecord::StoreAfterState(CodeEditor* editor) noexcept
+    {
+        const Coordinates cursor_position = editor->GetCursorPosition();
+        const Coordinates selection_start = editor->GetSelectionStart();
+        const Coordinates selection_end   = editor->GetSelectionEnd();
+
+        m_After.m_CursorPosition = {cursor_position.m_Line,
+                                    editor->GetCharacterIndex(cursor_position)};
+        m_After.m_SelectionStart = {selection_start.m_Line,
+                                    editor->GetCharacterIndex(selection_start)};
+        m_After.m_SelectionEnd   = {selection_end.m_Line, editor->GetCharacterIndex(selection_end)};
+    }
+
+    void CodeEditor::UndoRecord::ApplyBeforeState(CodeEditor* editor) const noexcept
+    {
+        Coordinates cursor_position = m_Before.m_CursorPosition;
+        cursor_position.m_Column =
+                editor->GetCharacterColumn(cursor_position.m_Line, cursor_position.m_Column);
+        Coordinates selection_start = m_Before.m_SelectionStart;
+        selection_start.m_Column =
+                editor->GetCharacterColumn(selection_start.m_Line, selection_start.m_Column);
+        Coordinates selection_end = m_Before.m_SelectionEnd;
+        selection_end.m_Column =
+                editor->GetCharacterColumn(selection_end.m_Line, selection_end.m_Column);
+
+        editor->m_State.m_CursorPosition = cursor_position;
+        editor->m_State.m_SelectionStart = selection_start;
+        editor->m_State.m_SelectionEnd   = selection_end;
+    }
+
+    void CodeEditor::UndoRecord::ApplyAfterState(CodeEditor* editor) const noexcept
+    {
+        Coordinates cursor_position = m_After.m_CursorPosition;
+        cursor_position.m_Column =
+                editor->GetCharacterColumn(cursor_position.m_Line, cursor_position.m_Column);
+        Coordinates selection_start = m_After.m_SelectionStart;
+        selection_start.m_Column =
+                editor->GetCharacterColumn(selection_start.m_Line, selection_start.m_Column);
+        Coordinates selection_end = m_After.m_SelectionEnd;
+        selection_end.m_Column =
+                editor->GetCharacterColumn(selection_end.m_Line, selection_end.m_Column);
+
+        editor->m_State.m_CursorPosition = cursor_position;
+        editor->m_State.m_SelectionStart = selection_start;
+        editor->m_State.m_SelectionEnd   = selection_end;
     }
 
     // CodeEditor - private
@@ -2090,7 +2133,8 @@ namespace dlxemu
         const std::string text_after  = GetText();
         const EditorState state_after = m_State;
         PHI_DBG_ASSERT(text_before == text_after);
-        PHI_DBG_ASSERT(state_before == state_after);
+        // TODO: We can compare states but not in this way
+        //PHI_DBG_ASSERT(state_before == state_after);
 #endif
     }
 
@@ -2583,7 +2627,7 @@ namespace dlxemu
 
         UndoRecord u;
 
-        u.m_Before = m_State;
+        u.StoreBeforeState(this);
 
         if (HasSelection())
         {
@@ -2677,7 +2721,7 @@ namespace dlxemu
                     m_State.m_SelectionStart = start;
                     m_State.m_SelectionEnd   = end;
 
-                    u.m_After = m_State;
+                    u.StoreAfterState(this);
                     AddUndo(u);
 
                     m_TextChanged = true;
@@ -2786,7 +2830,7 @@ namespace dlxemu
         PHI_DBG_ASSERT(!m_Lines.empty());
 
         UndoRecord u;
-        u.m_Before = m_State;
+        u.StoreBeforeState(this);
 
         if (HasSelection())
         {
@@ -2878,7 +2922,7 @@ namespace dlxemu
         m_State.m_SelectionStart = SanitizeCoordinates(m_State.m_SelectionStart);
         m_State.m_SelectionEnd   = SanitizeCoordinates(m_State.m_SelectionEnd);
 
-        u.m_After = m_State;
+        u.StoreAfterState(this);
         AddUndo(u);
     }
 

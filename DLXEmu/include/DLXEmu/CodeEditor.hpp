@@ -260,16 +260,14 @@ namespace dlxemu
         public:
             UndoRecord() = default;
 
-            UndoRecord(const std::string& added, const CodeEditor::Coordinates added_start,
-                       const CodeEditor::Coordinates added_end,
-
-                       const std::string& removed, const CodeEditor::Coordinates removed_start,
-                       const CodeEditor::Coordinates removed_end,
-
-                       CodeEditor::EditorState& before, CodeEditor::EditorState& after) noexcept;
-
             void Undo(CodeEditor* editor) const noexcept;
             void Redo(CodeEditor* editor) const noexcept;
+
+            void StoreBeforeState(CodeEditor* editor) noexcept;
+            void StoreAfterState(CodeEditor* editor) noexcept;
+
+            void ApplyBeforeState(CodeEditor* editor) const noexcept;
+            void ApplyAfterState(CodeEditor* editor) const noexcept;
 
             std::string m_Added;
             Coordinates m_AddedStart;
