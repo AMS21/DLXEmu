@@ -2149,15 +2149,24 @@ namespace dlxemu
 
         PHI_DBG_ASSERT(CanUndo());
 
-        const std::string text_before  = GetText();
-        const EditorState state_before = m_State;
+        const std::string text_before          = GetText();
+        EditorState       state_before         = m_State;
+        state_before.m_CursorPosition.m_Column = GetCharacterIndex(state_before.m_CursorPosition);
+        state_before.m_SelectionStart.m_Column = GetCharacterIndex(state_before.m_SelectionStart);
+        state_before.m_SelectionEnd.m_Column   = GetCharacterIndex(state_before.m_SelectionEnd);
 
         // Test the undo
         Undo();
         VerifyInternalState();
 
         const std::string text_after_undo  = GetText();
-        const EditorState state_after_undo = m_State;
+        EditorState       state_after_undo = m_State;
+        state_after_undo.m_CursorPosition.m_Column =
+                GetCharacterIndex(state_after_undo.m_CursorPosition);
+        state_after_undo.m_SelectionStart.m_Column =
+                GetCharacterIndex(state_after_undo.m_SelectionStart);
+        state_after_undo.m_SelectionEnd.m_Column =
+                GetCharacterIndex(state_after_undo.m_SelectionEnd);
 
         PHI_DBG_ASSERT(CanRedo());
 
@@ -2165,11 +2174,14 @@ namespace dlxemu
         Redo();
         VerifyInternalState();
 
-        const std::string text_after  = GetText();
-        const EditorState state_after = m_State;
+        const std::string text_after          = GetText();
+        EditorState       state_after         = m_State;
+        state_after.m_CursorPosition.m_Column = GetCharacterIndex(state_after.m_CursorPosition);
+        state_after.m_SelectionStart.m_Column = GetCharacterIndex(state_after.m_SelectionStart);
+        state_after.m_SelectionEnd.m_Column   = GetCharacterIndex(state_after.m_SelectionEnd);
+
         PHI_DBG_ASSERT(text_before == text_after);
-        // TODO: We can compare states but not in this way
-        //PHI_DBG_ASSERT(state_before == state_after);
+        PHI_DBG_ASSERT(state_before == state_after);
 #endif
     }
 
