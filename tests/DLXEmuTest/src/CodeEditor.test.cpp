@@ -1124,6 +1124,127 @@ TEST_CASE("CodeEditor")
         pos = editor.GetCursorPosition();
         CHECK(pos.m_Line == 0);
         CHECK(pos.m_Column == 0);
+
+        // Correctly sanitize invalid positions inside a tab
+        editor.SetText("\t");
+        editor.VerifyInternalState();
+        editor.SetCursorPosition({0u, 0u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+
+        editor.SetCursorPosition({0u, 1u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        editor.SetCursorPosition({0u, 2u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        editor.SetCursorPosition({0u, 3u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        editor.SetCursorPosition({0u, 4u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        // Clamped
+        editor.SetCursorPosition({0u, 5u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        // Test with 2 tabs
+        editor.SetText("\t\t");
+        editor.VerifyInternalState();
+
+        editor.SetCursorPosition({0u, 0u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+
+        editor.SetCursorPosition({0u, 1u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        editor.SetCursorPosition({0u, 2u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        editor.SetCursorPosition({0u, 3u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        editor.SetCursorPosition({0u, 4u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        editor.SetCursorPosition({0u, 5u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 8u);
+
+        editor.SetCursorPosition({0u, 6u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 8u);
+
+        editor.SetCursorPosition({0u, 7u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 8u);
+
+        editor.SetCursorPosition({0u, 8u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 8u);
+
+        // Clamped
+        editor.SetCursorPosition({0u, 9u});
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 8u);
     }
 
     SECTION("ShowWhitespaces")
