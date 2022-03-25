@@ -1897,10 +1897,45 @@ namespace dlxemu
 
             return {line, column};
         }
+        // For negative lines simply return 0, 0
+        if (line < 0)
+        {
+            return {0u, 0u};
+        }
 
         PHI_DBG_ASSERT(!m_Lines.empty());
-        column = phi::clamp(column, 0, GetLineMaxColumn(line));
-        line   = std::max(0, line);
+        PHI_DBG_ASSERT(line < m_Lines.size());
+        PHI_DBG_ASSERT(line >= 0);
+
+        // Sanitize column
+        const Line&  current_line = m_Lines[line];
+        std::int32_t new_column   = 0u;
+        for (std::int32_t char_index{0u}; char_index < current_line.size();)
+        {
+            if (new_column >= column)
+            {
+                break;
+            }
+
+            const char current_char = static_cast<char>(current_line[char_index].m_Char);
+            if (current_char == '\t')
+            {
+                new_column += GetTabSizeAt(new_column);
+            }
+            else
+            {
+                ++new_column;
+            }
+
+            char_index += UTF8CharLength(current_char);
+        }
+        PHI_DBG_ASSERT(new_column >= 0u);
+        PHI_DBG_ASSERT(new_column <= GetLineMaxColumn(line));
+
+        column = new_column;
+
+        // Sanitize line
+        line = phi::max(0, line);
 
         return {line, column};
     }
