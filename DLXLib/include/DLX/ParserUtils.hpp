@@ -6,6 +6,12 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/types.hpp>
+#include <phi/text/is_alpha.hpp>
+#include <phi/text/is_alpha_numeric.hpp>
+#include <phi/text/is_binary_digit.hpp>
+#include <phi/text/is_digit.hpp>
+#include <phi/text/is_hex_digit.hpp>
+#include <phi/text/is_octal_digit.hpp>
 #include <limits>
 #include <string_view>
 
@@ -18,67 +24,9 @@ namespace dlx
         return (c == ';') || (c == '/');
     }
 
-    constexpr phi::boolean IsDigit(const char c) noexcept
-    {
-        return (c >= '0' && c <= '9');
-    }
-
-    constexpr phi::boolean IsAlpha(const char c) noexcept
-    {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-    }
-
-    constexpr phi::boolean IsBlank(const char c) noexcept
-    {
-        switch (c)
-        {
-            case ' ':
-            case '\t':
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    constexpr phi::boolean IsSpace(const char c) noexcept
-    {
-        switch (c)
-        {
-            case ' ':
-            case '\t':
-            case '\n':
-            case '\v':
-            case '\f':
-            case '\r':
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    constexpr phi::boolean IsAlphaNumeric(const char c) noexcept
-    {
-        return IsDigit(c) || IsAlpha(c);
-    }
-
-    constexpr phi::boolean IsBinaryChar(const char c) noexcept
-    {
-        return (c == '0') || (c == '1');
-    }
-
-    constexpr phi::boolean IsOctalChar(const char c) noexcept
-    {
-        return (c >= '0') && (c <= '7');
-    }
-
-    constexpr phi::boolean IsHexadecimalChar(const char c) noexcept
-    {
-        return IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
-    }
-
     constexpr std::uint8_t HexCharValue(const char c) noexcept
     {
-        if (IsDigit(c))
+        if (phi::is_digit(c))
         {
             return c - '0';
         }
@@ -136,11 +84,11 @@ namespace dlx
 
         if (token.length() == 1u)
         {
-            return IsAlpha(first_char);
+            return phi::is_alpha(first_char);
         }
 
         phi::boolean just_under_scores = (first_char == '_');
-        if (!(IsAlpha(first_char) || (first_char == '_')))
+        if (!(phi::is_alpha(first_char) || (first_char == '_')))
         {
             return false;
         }
@@ -149,7 +97,7 @@ namespace dlx
         {
             const char c{token.at(index)};
 
-            if (IsAlpha(c) || IsDigit(c))
+            if (phi::is_alpha_numeric(c))
             {
                 just_under_scores = false;
             }
@@ -177,7 +125,7 @@ namespace dlx
 
         if (token.length() == 1)
         {
-            if (IsDigit(token.at(0)))
+            if (phi::is_digit(token.at(0)))
             {
                 return static_cast<std::int16_t>(token.at(0) - '0');
             }
@@ -285,7 +233,7 @@ namespace dlx
 
             if (parsing_binary)
             {
-                if (!IsBinaryChar(c))
+                if (!phi::is_binary_digit(c))
                 {
                     return {};
                 }
@@ -295,7 +243,7 @@ namespace dlx
             }
             else if (parsing_octal)
             {
-                if (!IsOctalChar(c))
+                if (!phi::is_octal_digit(c))
                 {
                     return {};
                 }
@@ -305,7 +253,7 @@ namespace dlx
             }
             else if (parsing_hexadecimal)
             {
-                if (!IsHexadecimalChar(c))
+                if (!phi::is_hex_digit(c))
                 {
                     return {};
                 }
@@ -315,7 +263,7 @@ namespace dlx
             }
             else
             {
-                if (!IsDigit(c))
+                if (!phi::is_digit(c))
                 {
                     return {};
                 }

@@ -4,6 +4,7 @@
 #include <DLX/ParserUtils.hpp>
 #include <DLX/RegisterNames.hpp>
 #include <magic_enum.hpp>
+#include <phi/text/is_alpha_numeric.hpp>
 #include <algorithm>
 #include <cstdint>
 #include <string>
@@ -39,7 +40,7 @@ namespace fuzz
 
         inline char SanitizeForIdentifier(std::uint8_t c)
         {
-            if (!dlx::IsAlphaNumeric(c))
+            if (!phi::is_alpha_numeric(c))
             {
                 return '_';
             }

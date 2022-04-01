@@ -37,9 +37,12 @@ SOFTWARE.
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/math/is_nan.hpp>
+#include <phi/text/is_alpha_numeric.hpp>
+#include <phi/text/is_blank.hpp>
+#include <phi/text/is_control.hpp>
+#include <phi/text/is_space.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <algorithm>
-#include <cctype>
 #include <chrono>
 #include <cmath>
 #include <limits>
@@ -446,7 +449,7 @@ namespace dlxemu
 
         for (char chr : text)
         {
-            if (chr == '\r' || (std::iscntrl(chr) && chr != '\n' && chr != '\t'))
+            if (chr == '\r' || (phi::is_control(chr) && chr != '\n' && chr != '\t'))
             {
                 // ignore the carriage return character and control characters
             }
@@ -2269,7 +2272,7 @@ namespace dlxemu
             return from;
         }
 
-        while (cindex > 0 && dlx::IsSpace(line[cindex].m_Char))
+        while (cindex > 0 && phi::is_space(line[cindex].m_Char))
         {
             --cindex;
         }
@@ -2280,7 +2283,7 @@ namespace dlxemu
             Glyph c = line[cindex];
             if ((c.m_Char & 0xC0) != 0x80) // not UTF code sequence 10xxxxxx
             {
-                if (c.m_Char <= 32 && dlx::IsSpace(c.m_Char))
+                if (c.m_Char <= 32 && phi::is_space(c.m_Char))
                 {
                     cindex++;
                     break;
@@ -2314,7 +2317,7 @@ namespace dlxemu
             return at;
         }
 
-        bool         prevspace = dlx::IsSpace(line[cindex].m_Char);
+        bool         prevspace = phi::is_space(line[cindex].m_Char);
         PaletteIndex cstart    = line[cindex].m_ColorIndex;
         while (cindex < (std::int32_t)line.size())
         {
@@ -2326,11 +2329,11 @@ namespace dlxemu
                 break;
             }
 
-            if (prevspace != dlx::IsSpace(c.m_Char))
+            if (prevspace != phi::is_space(c.m_Char))
             {
-                if (dlx::IsSpace(c.m_Char))
+                if (phi::is_space(c.m_Char))
                 {
-                    while (cindex < (std::int32_t)line.size() && dlx::IsSpace(line[cindex].m_Char))
+                    while (cindex < (std::int32_t)line.size() && phi::is_space(line[cindex].m_Char))
                     {
                         ++cindex;
                     }
@@ -2359,7 +2362,7 @@ namespace dlxemu
         if (cindex < (std::int32_t)m_Lines[at.m_Line].size())
         {
             const Line& line = m_Lines[at.m_Line];
-            is_word          = dlx::IsAlphaNumeric(line[cindex].m_Char);
+            is_word          = phi::is_alpha_numeric(line[cindex].m_Char);
             skip             = is_word;
         }
 
@@ -2375,7 +2378,7 @@ namespace dlxemu
             const Line& line = m_Lines[at.m_Line];
             if (cindex < (std::int32_t)line.size())
             {
-                is_word = dlx::IsAlphaNumeric(line[cindex].m_Char);
+                is_word = phi::is_alpha_numeric(line[cindex].m_Char);
 
                 if (is_word && !skip)
                 {
@@ -2543,7 +2546,7 @@ namespace dlxemu
             return line[cindex].m_ColorIndex != line[size_t(cindex - 1)].m_ColorIndex;
         }
 
-        return dlx::IsSpace(line[cindex].m_Char) != dlx::IsSpace(line[cindex - 1].m_Char);
+        return phi::is_space(line[cindex].m_Char) != phi::is_space(line[cindex - 1].m_Char);
     }
 
     void CodeEditor::RemoveLine(std::int32_t start, std::int32_t end) noexcept
@@ -2801,7 +2804,7 @@ namespace dlxemu
             Line& new_line = m_Lines[coord.m_Line + 1];
 
             for (std::size_t it = 0u;
-                 it < line.size() && it < coord.m_Column && dlx::IsBlank(line[it].m_Char); ++it)
+                 it < line.size() && it < coord.m_Column && phi::is_blank(line[it].m_Char); ++it)
             {
                 new_line.push_back(line[it]);
                 u.m_Added += static_cast<char>(line[it].m_Char);
