@@ -47,7 +47,7 @@ jobs:
           submodules: recursive
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.22.2
+        uses: lukka/get-cmake@v3.23.0
 
       - name: Install dependencies
         run: |
@@ -231,7 +231,7 @@ jobs:
           sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.22.2
+        uses: lukka/get-cmake@v3.23.0
 
       - name: Install
         run: |

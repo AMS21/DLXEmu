@@ -57,7 +57,7 @@ jobs:
           token: ${{ secrets.PAT }}
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.22.2
+        uses: lukka/get-cmake@v3.23.0
 
       - name: Install dependencies
         run: |
