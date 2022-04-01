@@ -267,16 +267,8 @@ TEST_CASE("crash-1e4a2c5c4b7bd8fe934c1eb3b5e0e98ed3474b72")
 
     dlxemu::CodeEditor editor{&emulator};
 
-    PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wconstant-conversion")
-    PHI_GCC_SUPPRESS_WARNING_PUSH()
-    PHI_GCC_SUPPRESS_WARNING("-Wmultichar")
-    PHI_GCC_SUPPRESS_WARNING("-Woverflow")
-
-    editor.EnterCharacter('\0xFF', true);
+    editor.EnterCharacter(0xFF, true);
     editor.VerifyInternalState();
-
-    PHI_GCC_SUPPRESS_WARNING_POP()
-    PHI_CLANG_SUPPRESS_WARNING_POP()
 
     editor.EnterCharacter('\n', true);
     editor.VerifyInternalState();
