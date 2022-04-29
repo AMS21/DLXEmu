@@ -1,7 +1,7 @@
 name: ContinousFuzzing
 on:
   schedule:
-    - cron: '0 0/6 * * *' # Every 6 hours
+    - cron: '0 0 * * *' # Everday at 0:00 UTC
   push:
     branches:
       - 'fuzz/**'
