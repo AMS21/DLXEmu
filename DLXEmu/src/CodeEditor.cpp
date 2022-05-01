@@ -143,10 +143,15 @@ static inline std::int32_t ImTextCharToUtf8(char* buf, const std::int32_t buf_si
     }
 }
 
+[[nodiscard]] static constexpr phi::boolean IsValidUTF8Sequence(
+        const std::uint32_t character) noexcept
+{
+    return !(character >= 0xdc00 && character < 0xe000);
+}
+
 namespace dlxemu
 {
     // Coordinates
-
     CodeEditor::Coordinates::Coordinates() noexcept
         : m_Line(0)
         , m_Column(0)
@@ -713,7 +718,7 @@ namespace dlxemu
 
     void CodeEditor::EnterCharacter(ImWchar character, bool shift) noexcept
     {
-        if (!IsReadOnly() && character != '\0')
+        if (!IsReadOnly() && character != '\0' && IsValidUTF8Sequence(character))
         {
             EnterCharacterImpl(character, shift);
         }
@@ -2649,9 +2654,9 @@ namespace dlxemu
     void CodeEditor::EnterCharacterImpl(ImWchar character, bool shift) noexcept
     {
         PHI_DBG_ASSERT(!m_ReadOnly);
+        PHI_DBG_ASSERT(IsValidUTF8Sequence(character));
 
         UndoRecord u;
-
         u.StoreBeforeState(this);
 
         if (HasSelection())
@@ -2800,42 +2805,38 @@ namespace dlxemu
         }
         else
         {
-            char         buf[7];
-            std::int32_t e = ImTextCharToUtf8(buf, 7, character);
-            if (e > 0)
+            char               buf[7];
+            const std::int32_t length = ImTextCharToUtf8(buf, 7, character);
+
+            // We require a valid ut8 sequence
+            PHI_DBG_ASSERT(length > 0);
+
+            buf[length]    = '\0';
+            Line&   line   = m_Lines[coord.m_Line];
+            int32_t cindex = GetCharacterIndex(coord);
+
+            if (m_Overwrite && cindex < (int)line.size())
             {
-                buf[e]         = '\0';
-                Line&   line   = m_Lines[coord.m_Line];
-                int32_t cindex = GetCharacterIndex(coord);
+                std::int32_t d = UTF8CharLength(line[cindex].m_Char);
 
-                if (m_Overwrite && cindex < (int)line.size())
+                u.m_RemovedStart = m_State.m_CursorPosition;
+                u.m_RemovedEnd =
+                        Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + d));
+
+                while (d-- > 0 && cindex < (int)line.size())
                 {
-                    std::int32_t d = UTF8CharLength(line[cindex].m_Char);
-
-                    u.m_RemovedStart = m_State.m_CursorPosition;
-                    u.m_RemovedEnd =
-                            Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + d));
-
-                    while (d-- > 0 && cindex < (int)line.size())
-                    {
-                        u.m_Removed += line[cindex].m_Char;
-                        line.erase(line.begin() + cindex);
-                    }
+                    u.m_Removed += line[cindex].m_Char;
+                    line.erase(line.begin() + cindex);
                 }
-
-                for (char* p = buf; *p != '\0'; p++, ++cindex)
-                {
-                    line.insert(line.begin() + cindex, Glyph(*p, PaletteIndex::Default));
-                }
-                u.m_Added = buf;
-
-                SetCursorPosition(
-                        Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex)));
             }
-            else
+
+            for (char* p = buf; *p != '\0'; p++, ++cindex)
             {
-                return;
+                line.insert(line.begin() + cindex, Glyph(*p, PaletteIndex::Default));
             }
+            u.m_Added = buf;
+
+            SetCursorPosition(Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex)));
         }
 
         m_TextChanged = true;
