@@ -2033,31 +2033,6 @@ namespace dlxemu
             first_line.erase(first_line.begin() + start_index, first_line.end());
             last_line.erase(last_line.begin(), last_line.begin() + end_index);
 
-            // Fix selection
-            if (m_State.m_SelectionStart.m_Line == start.m_Line &&
-                m_State.m_SelectionStart.m_Column > start.m_Column)
-            {
-                m_State.m_SelectionStart.m_Column -=
-                        (m_State.m_SelectionStart.m_Column - start.m_Column);
-            }
-            else if (m_State.m_SelectionStart.m_Line > start.m_Line)
-            {
-                m_State.m_SelectionStart.m_Line -= (m_State.m_SelectionStart.m_Line - start.m_Line);
-                m_State.m_SelectionStart.m_Column = 0;
-            }
-
-            if (m_State.m_SelectionEnd.m_Line == start.m_Line &&
-                m_State.m_SelectionEnd.m_Column > start.m_Column)
-            {
-                m_State.m_SelectionEnd.m_Column -=
-                        (m_State.m_SelectionEnd.m_Column - start.m_Column);
-            }
-            else if (m_State.m_SelectionEnd.m_Line > start.m_Line)
-            {
-                m_State.m_SelectionEnd.m_Line -= (m_State.m_SelectionEnd.m_Line - start.m_Line);
-                m_State.m_SelectionEnd.m_Column = GetLineMaxColumn(m_State.m_SelectionEnd.m_Line);
-            }
-
             if (start.m_Line < end.m_Line)
             {
                 first_line.insert(first_line.end(), last_line.begin(), last_line.end());

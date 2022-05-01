@@ -1678,6 +1678,29 @@ TEST_CASE("CodeEditor")
 
         CHECK(editor.GetText() == "abcA");
         CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 3u});
+
+        // Remove all
+        editor.SetText("A\nB\nC\n");
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "A\nB\nC\n");
+        CHECK_FALSE(editor.HasSelection());
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+        editor.SelectAll();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText() == "A\nB\nC\n");
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{3u, 0u});
+        CHECK(editor.GetSelectedText() == "A\nB\nC\n");
+
+        editor.Backspace();
+        editor.VerifyInternalState();
+
+        CHECK(editor.GetText().empty());
+        CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
     }
 
     SECTION("InsertText")
