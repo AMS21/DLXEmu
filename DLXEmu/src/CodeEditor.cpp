@@ -2866,7 +2866,7 @@ namespace dlxemu
         m_TextChanged = true;
 
         u.m_AddedEnd = GetActualCursorCoordinates();
-        u.m_After    = m_State;
+        u.StoreAfterState(this);
 
         AddUndo(u);
 
