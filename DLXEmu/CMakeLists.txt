@@ -27,15 +27,12 @@ add_library("DLXEmuLib" STATIC ${DLXEMULIB_SOURCES} ${DLXEMULIB_HEADERS})
 
 target_include_directories("DLXEmuLib" PUBLIC "include")
 
-target_link_libraries("DLXEmuLib" PUBLIC DLXLib Phi::ProjectOptions ImGui ImGuiFilebrowser)
-
-phi_enable_static_analyzers("DLXEmuLib")
+target_link_libraries("DLXEmuLib" PUBLIC DLXLib ImGui ImGuiFilebrowser)
 
 # DLXEmu
 add_executable("DLXEmu" "src/main.cpp")
 
-target_link_libraries("DLXEmu" PRIVATE DLXEmuLib Phi::ProjectOptions)
-phi_enable_static_analyzers("DLXEmu")
+target_link_libraries("DLXEmu" PRIVATE DLXEmuLib)
 
 # Configure BuildInfo.hpp
 set(CMAKE_AUTO_GENENERATED_WARNING

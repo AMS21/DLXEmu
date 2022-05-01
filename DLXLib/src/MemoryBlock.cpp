@@ -9,18 +9,18 @@ namespace dlx
     MemoryBlock::MemoryBlock(phi::usize start_address, phi::usize starting_size) noexcept
         : m_StartingAddress(start_address)
     {
-        m_Values.resize(starting_size.get());
+        m_Values.resize(starting_size.unsafe());
     }
 
     phi::optional<phi::i8> MemoryBlock::LoadByte(phi::usize address) const noexcept
     {
         if (!IsAddressValid(address, 1u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
         return m_Values[index].signed_value;
     }
 
@@ -28,11 +28,11 @@ namespace dlx
     {
         if (!IsAddressValid(address, 1u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
         return m_Values[index].unsigned_value;
     }
 
@@ -40,16 +40,16 @@ namespace dlx
     {
         if (!IsAddressValid(address, 2u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 2u))
         {
-            DLX_ERROR("Address {} is misaligned", address.get());
+            DLX_ERROR("Address {} is misaligned", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
         return *reinterpret_cast<const std::int16_t*>(&m_Values[index].signed_value);
     }
 
@@ -57,16 +57,16 @@ namespace dlx
     {
         if (!IsAddressValid(address, 2u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 2u))
         {
-            DLX_ERROR("Address {} is misaligned", address.get());
+            DLX_ERROR("Address {} is misaligned", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
         return *reinterpret_cast<const std::uint16_t*>(&m_Values[index].unsigned_value);
     }
 
@@ -74,16 +74,16 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 4u))
         {
-            DLX_ERROR("Address {} is misaligned", address.get());
+            DLX_ERROR("Address {} is misaligned", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
         return *reinterpret_cast<const std::int32_t*>(&m_Values[index].signed_value);
     }
 
@@ -91,16 +91,16 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
         if (!IsAddressAlignedCorrectly(address, 4u))
         {
-            DLX_ERROR("Address {} is misaligned", address.get());
+            DLX_ERROR("Address {} is misaligned", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
         return *reinterpret_cast<const std::uint32_t*>(&m_Values[index].unsigned_value);
     }
 
@@ -108,11 +108,11 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
         return *reinterpret_cast<const float*>(&m_Values[index].signed_value);
     }
 
@@ -120,11 +120,11 @@ namespace dlx
     {
         if (!IsAddressValid(address, 8u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
         return *reinterpret_cast<const double*>(&m_Values[(index)].signed_value);
     }
 
@@ -132,11 +132,11 @@ namespace dlx
     {
         if (!IsAddressValid(address, 1u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return false;
         }
 
-        m_Values[(address - m_StartingAddress).get()].signed_value = value.get();
+        m_Values[(address - m_StartingAddress).unsafe()].signed_value = value.unsafe();
         return true;
     }
 
@@ -144,11 +144,11 @@ namespace dlx
     {
         if (!IsAddressValid(address, 1u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return false;
         }
 
-        m_Values[(address - m_StartingAddress).get()].unsigned_value = value.get();
+        m_Values[(address - m_StartingAddress).unsafe()].unsigned_value = value.unsafe();
         return true;
     }
 
@@ -156,12 +156,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 2u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
-        *reinterpret_cast<std::int16_t*>(&m_Values[index].signed_value) = value.get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
+        *reinterpret_cast<std::int16_t*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
     }
@@ -170,12 +170,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 2u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
-        *reinterpret_cast<std::uint16_t*>(&m_Values[index].unsigned_value) = value.get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
+        *reinterpret_cast<std::uint16_t*>(&m_Values[index].unsigned_value) = value.unsafe();
 
         return true;
     }
@@ -184,12 +184,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
-        *reinterpret_cast<std::int32_t*>(&m_Values[index].signed_value) = value.get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
+        *reinterpret_cast<std::int32_t*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
     }
@@ -198,12 +198,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
-        *reinterpret_cast<std::uint32_t*>(&m_Values[index].unsigned_value) = value.get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
+        *reinterpret_cast<std::uint32_t*>(&m_Values[index].unsigned_value) = value.unsafe();
 
         return true;
     }
@@ -212,12 +212,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 4u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
-        *reinterpret_cast<float*>(&m_Values[index].signed_value) = value.get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
+        *reinterpret_cast<float*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
     }
@@ -226,12 +226,12 @@ namespace dlx
     {
         if (!IsAddressValid(address, 8u))
         {
-            DLX_ERROR("Address {} is out of bounds", address.get());
+            DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).get();
-        *reinterpret_cast<double*>(&m_Values[index].signed_value) = value.get();
+        std::size_t index = (address - m_StartingAddress).unsafe();
+        *reinterpret_cast<double*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
     }

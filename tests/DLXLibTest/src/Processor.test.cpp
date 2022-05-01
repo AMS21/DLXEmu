@@ -25,9 +25,9 @@ TEST_CASE("ADD")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 6);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 6);
 }
 
 TEST_CASE("ADDI")
@@ -42,8 +42,8 @@ TEST_CASE("ADDI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 32);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
 }
 
 TEST_CASE("ADDU")
@@ -59,9 +59,9 @@ TEST_CASE("ADDU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 19u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 21u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 19u);
 }
 
 TEST_CASE("ADDUI")
@@ -76,8 +76,8 @@ TEST_CASE("ADDUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 21u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
 }
 
 TEST_CASE("ADDF")
@@ -93,9 +93,9 @@ TEST_CASE("ADDF")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f + 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F3).get() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f + 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F3).unsafe() == 2.0f);
 }
 
 TEST_CASE("ADDD")
@@ -111,9 +111,9 @@ TEST_CASE("ADDD")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 1.0 + 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).unsafe() == 1.0 + 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 2.0);
 }
 
 TEST_CASE("SUB")
@@ -129,9 +129,9 @@ TEST_CASE("SUB")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 20);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 50);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 30);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 20);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 50);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 30);
 }
 
 TEST_CASE("SUBI")
@@ -146,8 +146,8 @@ TEST_CASE("SUBI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 25);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 50);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 25);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 50);
 }
 
 TEST_CASE("SUBU")
@@ -163,7 +163,7 @@ TEST_CASE("SUBU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 20u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 20u);
 }
 
 TEST_CASE("SUBUI")
@@ -178,8 +178,8 @@ TEST_CASE("SUBUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 25u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 50u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 25u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 50u);
 }
 
 TEST_CASE("SUBF")
@@ -195,9 +195,9 @@ TEST_CASE("SUBF")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f - 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F3).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 2.0f - 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F3).unsafe() == 1.0f);
 }
 
 TEST_CASE("SUBD")
@@ -213,9 +213,9 @@ TEST_CASE("SUBD")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 2.0 - 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).unsafe() == 2.0 - 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 }
 
 TEST_CASE("MULT")
@@ -231,9 +231,9 @@ TEST_CASE("MULT")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 6);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 6);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 }
 
 TEST_CASE("MULTI")
@@ -248,8 +248,8 @@ TEST_CASE("MULTI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 6);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 6);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
 }
 
 TEST_CASE("MULTU")
@@ -265,9 +265,9 @@ TEST_CASE("MULTU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 6u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 6u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 }
 
 TEST_CASE("MULTUI")
@@ -282,8 +282,8 @@ TEST_CASE("MULTUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 6u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 6u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
 }
 
 TEST_CASE("MULTF")
@@ -299,9 +299,9 @@ TEST_CASE("MULTF")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 3.0f * 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 3.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F3).get() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 3.0f * 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 3.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F3).unsafe() == 2.0f);
 }
 
 TEST_CASE("MULTD")
@@ -317,9 +317,9 @@ TEST_CASE("MULTD")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 3.0 * 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 3.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).unsafe() == 3.0 * 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 3.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 2.0);
 }
 
 TEST_CASE("DIV")
@@ -335,9 +335,9 @@ TEST_CASE("DIV")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 6);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 6);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 2);
 
     // Divide by zero
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, 0);
@@ -359,8 +359,8 @@ TEST_CASE("DIVI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 6);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 6);
 
     // Divide by zero
     res = dlx::Parser::Parse("DIVI R1 R2 #0");
@@ -389,9 +389,9 @@ TEST_CASE("DIVU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 6u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 6u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 2u);
 
     // Divide by zero
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R3, 0u);
@@ -413,8 +413,8 @@ TEST_CASE("DIVUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 6u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 6u);
 
     // Divide by zero
 
@@ -440,9 +440,9 @@ TEST_CASE("DIVF")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 12.0f / 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 12.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F3).get() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 12.0f / 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 12.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F3).unsafe() == 2.0f);
 }
 
 TEST_CASE("DIVD")
@@ -458,9 +458,9 @@ TEST_CASE("DIVD")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 12.0 / 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 12.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).unsafe() == 12.0 / 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 12.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 2.0);
 }
 
 TEST_CASE("SLL")
@@ -476,9 +476,9 @@ TEST_CASE("SLL")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 16);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 16);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -486,9 +486,9 @@ TEST_CASE("SLL")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 0);
 }
 
 TEST_CASE("SLLI")
@@ -503,8 +503,8 @@ TEST_CASE("SLLI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 32);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
 
     res = dlx::Parser::Parse("SLLI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
@@ -516,8 +516,8 @@ TEST_CASE("SLLI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
 }
 
 TEST_CASE("SRL")
@@ -533,9 +533,9 @@ TEST_CASE("SRL")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 4);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -1);
@@ -543,9 +543,9 @@ TEST_CASE("SRL")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 2147483647);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 2147483647);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -1);
@@ -553,9 +553,9 @@ TEST_CASE("SRL")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 0);
 }
 
 TEST_CASE("SRLI")
@@ -570,16 +570,16 @@ TEST_CASE("SRLI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, -1);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1073741823);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1073741823);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -1);
 
     res = dlx::Parser::Parse("SRLI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
@@ -591,8 +591,8 @@ TEST_CASE("SRLI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
 }
 
 TEST_CASE("SLA")
@@ -608,9 +608,9 @@ TEST_CASE("SLA")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 16);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 16);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -618,9 +618,9 @@ TEST_CASE("SLA")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 0);
 }
 
 TEST_CASE("SLAI")
@@ -635,8 +635,8 @@ TEST_CASE("SLAI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 32);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
 
     res = dlx::Parser::Parse("SLAI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
@@ -648,8 +648,8 @@ TEST_CASE("SLAI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
 }
 
 TEST_CASE("SRA")
@@ -667,9 +667,9 @@ TEST_CASE("SRA")
     proc.ExecuteCurrentProgram();
 
     // 0b11000000'00000000'00000000'00000000
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -1073741824);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -2147483647);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == -1073741824);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -2147483647);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2,
@@ -679,9 +679,9 @@ TEST_CASE("SRA")
     proc.ExecuteCurrentProgram();
 
     // 0b00100000'00000000'00000000'00000000
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 536870912);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1073741825);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 536870912);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1073741825);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 8);
@@ -689,9 +689,9 @@ TEST_CASE("SRA")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 0);
 }
 
 TEST_CASE("SRAI")
@@ -708,8 +708,8 @@ TEST_CASE("SRAI")
     proc.ExecuteCurrentProgram();
 
     // 0b11000000'00000000'00000000'00000000
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -1073741824);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -2147483647);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == -1073741824);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -2147483647);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2,
@@ -718,8 +718,8 @@ TEST_CASE("SRAI")
     proc.ExecuteCurrentProgram();
 
     // 0b00100000'00000000'00000000'00000000
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 536870912);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1073741825);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 536870912);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1073741825);
 
     res = dlx::Parser::Parse("SRAI R1 R2 #0");
     REQUIRE(res.m_ParseErrors.empty());
@@ -732,8 +732,8 @@ TEST_CASE("SRAI")
     proc.ExecuteCurrentProgram();
 
     // 0b11000000'00000000'00000000'00000000
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 8);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 8);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 8);
 }
 
 TEST_CASE("AND")
@@ -749,9 +749,9 @@ TEST_CASE("AND")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 }
 
 TEST_CASE("ANDI")
@@ -766,8 +766,8 @@ TEST_CASE("ANDI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
 }
 
 TEST_CASE("OR")
@@ -783,9 +783,9 @@ TEST_CASE("OR")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 }
 
 TEST_CASE("ORI")
@@ -800,8 +800,8 @@ TEST_CASE("ORI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 9);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 9);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
 }
 
 TEST_CASE("XOR")
@@ -817,9 +817,9 @@ TEST_CASE("XOR")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 6);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 7);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 6);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 7);
 }
 
 TEST_CASE("XORI")
@@ -834,8 +834,8 @@ TEST_CASE("XORI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 6);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 6);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
 }
 
 TEST_CASE("SLT")
@@ -851,9 +851,9 @@ TEST_CASE("SLT")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 5);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 5);
@@ -861,9 +861,9 @@ TEST_CASE("SLT")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 }
 
 TEST_CASE("SLTI")
@@ -878,16 +878,16 @@ TEST_CASE("SLTI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 4);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 4);
 }
 
 TEST_CASE("SLTU")
@@ -903,9 +903,9 @@ TEST_CASE("SLTU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 5u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
@@ -913,9 +913,9 @@ TEST_CASE("SLTU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 5u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 5u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 }
 
 TEST_CASE("SLTUI")
@@ -930,16 +930,16 @@ TEST_CASE("SLTUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 4u);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 4u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 4u);
 }
 
 TEST_CASE("LTF")
@@ -956,8 +956,8 @@ TEST_CASE("LTF")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 2.0f);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 2.0f);
@@ -966,8 +966,8 @@ TEST_CASE("LTF")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 }
 
 TEST_CASE("LTD")
@@ -984,8 +984,8 @@ TEST_CASE("LTD")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 2.0);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0);
@@ -994,8 +994,8 @@ TEST_CASE("LTD")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 }
 
 TEST_CASE("SGT")
@@ -1011,9 +1011,9 @@ TEST_CASE("SGT")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 2);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -1021,9 +1021,9 @@ TEST_CASE("SGT")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 }
 
 TEST_CASE("SGTI")
@@ -1038,16 +1038,16 @@ TEST_CASE("SGTI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 4);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
 }
 
 TEST_CASE("SGTU")
@@ -1063,9 +1063,9 @@ TEST_CASE("SGTU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 2u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
@@ -1073,9 +1073,9 @@ TEST_CASE("SGTU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 }
 
 TEST_CASE("SGTUI")
@@ -1090,16 +1090,16 @@ TEST_CASE("SGTUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 4u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 4u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
 }
 
 TEST_CASE("GTF")
@@ -1116,8 +1116,8 @@ TEST_CASE("GTF")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
@@ -1126,8 +1126,8 @@ TEST_CASE("GTF")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 2.0f);
 }
 TEST_CASE("GTD")
 {
@@ -1143,8 +1143,8 @@ TEST_CASE("GTD")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
@@ -1153,8 +1153,8 @@ TEST_CASE("GTD")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 2.0);
 }
 TEST_CASE("SLE")
 {
@@ -1169,9 +1169,9 @@ TEST_CASE("SLE")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1179,9 +1179,9 @@ TEST_CASE("SLE")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 5);
@@ -1189,9 +1189,9 @@ TEST_CASE("SLE")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 }
 
 TEST_CASE("SLEI")
@@ -1207,24 +1207,24 @@ TEST_CASE("SLEI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 4);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
 }
 
 TEST_CASE("SLEU")
@@ -1240,9 +1240,9 @@ TEST_CASE("SLEU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
@@ -1250,9 +1250,9 @@ TEST_CASE("SLEU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 5u);
@@ -1260,9 +1260,9 @@ TEST_CASE("SLEU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 5u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 5u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 }
 
 TEST_CASE("SLEUI")
@@ -1277,24 +1277,24 @@ TEST_CASE("SLEUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 4u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 4u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
 }
 
 TEST_CASE("LEF")
@@ -1311,8 +1311,8 @@ TEST_CASE("LEF")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 2.0f);
 
     proc.SetFPSRValue(false);
     proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
@@ -1321,8 +1321,8 @@ TEST_CASE("LEF")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 2.0f);
@@ -1331,8 +1331,8 @@ TEST_CASE("LEF")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 }
 
 TEST_CASE("LED")
@@ -1349,8 +1349,8 @@ TEST_CASE("LED")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 2.0);
 
     proc.SetFPSRValue(false);
     proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
@@ -1359,8 +1359,8 @@ TEST_CASE("LED")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 2.0);
@@ -1369,8 +1369,8 @@ TEST_CASE("LED")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 }
 
 TEST_CASE("SGE")
@@ -1386,9 +1386,9 @@ TEST_CASE("SGE")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 2);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1396,9 +1396,9 @@ TEST_CASE("SGE")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1406,9 +1406,9 @@ TEST_CASE("SGE")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 5);
 }
 
 TEST_CASE("SGEI")
@@ -1423,24 +1423,24 @@ TEST_CASE("SGEI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 4);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
 }
 
 TEST_CASE("SGEU")
@@ -1456,9 +1456,9 @@ TEST_CASE("SGEU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 2u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
@@ -1466,9 +1466,9 @@ TEST_CASE("SGEU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
@@ -1476,9 +1476,9 @@ TEST_CASE("SGEU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 5u);
 }
 
 TEST_CASE("SGEUI")
@@ -1493,24 +1493,24 @@ TEST_CASE("SGEUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 4u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 4u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
 }
 
 TEST_CASE("GEF")
@@ -1527,8 +1527,8 @@ TEST_CASE("GEF")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 
     proc.SetFPSRValue(false);
     proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
@@ -1537,8 +1537,8 @@ TEST_CASE("GEF")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
@@ -1547,8 +1547,8 @@ TEST_CASE("GEF")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 2.0f);
 }
 
 TEST_CASE("GED")
@@ -1565,8 +1565,8 @@ TEST_CASE("GED")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 
     proc.SetFPSRValue(false);
     proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
@@ -1575,8 +1575,8 @@ TEST_CASE("GED")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
@@ -1585,8 +1585,8 @@ TEST_CASE("GED")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 2.0);
 }
 
 TEST_CASE("SEQ")
@@ -1602,9 +1602,9 @@ TEST_CASE("SEQ")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
@@ -1612,9 +1612,9 @@ TEST_CASE("SEQ")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 }
 
 TEST_CASE("SEQI")
@@ -1629,16 +1629,16 @@ TEST_CASE("SEQI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 2);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
 }
 
 TEST_CASE("SEQU")
@@ -1654,9 +1654,9 @@ TEST_CASE("SEQU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
@@ -1664,9 +1664,9 @@ TEST_CASE("SEQU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 }
 
 TEST_CASE("SEQUI")
@@ -1681,16 +1681,16 @@ TEST_CASE("SEQUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 2u);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
 }
 
 TEST_CASE("EQF")
@@ -1707,8 +1707,8 @@ TEST_CASE("EQF")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 
     proc.SetFPSRValue(false);
     proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
@@ -1717,8 +1717,8 @@ TEST_CASE("EQF")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 2.0f);
 }
 
 TEST_CASE("EQD")
@@ -1735,8 +1735,8 @@ TEST_CASE("EQD")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
@@ -1745,8 +1745,8 @@ TEST_CASE("EQD")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 2.0);
 }
 
 TEST_CASE("SNE")
@@ -1762,9 +1762,9 @@ TEST_CASE("SNE")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
@@ -1772,9 +1772,9 @@ TEST_CASE("SNE")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
 }
 
 TEST_CASE("SNEI")
@@ -1790,16 +1790,16 @@ TEST_CASE("SNEI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 2);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 3);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 3);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 3);
 }
 
 TEST_CASE("SNEU")
@@ -1815,9 +1815,9 @@ TEST_CASE("SNEU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
@@ -1825,9 +1825,9 @@ TEST_CASE("SNEU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3u);
 }
 
 TEST_CASE("SNEUI")
@@ -1843,16 +1843,16 @@ TEST_CASE("SNEUI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 1u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 2u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 2u);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R2, 3u);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 3u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 3u);
 }
 
 TEST_CASE("NEF")
@@ -1869,8 +1869,8 @@ TEST_CASE("NEF")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 2.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 2.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetFloatValue(dlx::FloatRegisterID::F1, 1.0f);
@@ -1879,8 +1879,8 @@ TEST_CASE("NEF")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 }
 
 TEST_CASE("NED")
@@ -1897,8 +1897,8 @@ TEST_CASE("NED")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 2.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 2.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 
     proc.SetFPSRValue(true);
     proc.FloatRegisterSetDoubleValue(dlx::FloatRegisterID::F2, 1.0);
@@ -1907,8 +1907,8 @@ TEST_CASE("NED")
     proc.ExecuteCurrentProgram();
 
     CHECK_FALSE(proc.GetFPSRValue());
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F4).unsafe() == 1.0);
 }
 
 TEST_CASE("BEQZ")
@@ -1930,14 +1930,14 @@ TEST_CASE("BEQZ")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 5);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 0);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 0);
 }
 
 TEST_CASE("BNEZ")
@@ -1959,14 +1959,14 @@ TEST_CASE("BNEZ")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R2, 0);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 0);
 }
 
 TEST_CASE("BFPT")
@@ -1988,14 +1988,14 @@ TEST_CASE("BFPT")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
     proc.SetFPSRValue(false);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
 }
 
 TEST_CASE("BFPF")
@@ -2017,14 +2017,14 @@ TEST_CASE("BFPF")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 0);
     proc.SetFPSRValue(true);
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
 }
 
 TEST_CASE("J")
@@ -2045,7 +2045,7 @@ TEST_CASE("J")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
 }
 
 TEST_CASE("JR")
@@ -2067,8 +2067,8 @@ TEST_CASE("JR")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
 }
 
 TEST_CASE("JAL")
@@ -2090,8 +2090,8 @@ TEST_CASE("JAL")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R31).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R31).unsafe() == 1);
 }
 
 TEST_CASE("JALR")
@@ -2113,9 +2113,9 @@ TEST_CASE("JALR")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R31).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R31).unsafe() == 1);
 }
 
 TEST_CASE("LHI")
@@ -2129,7 +2129,7 @@ TEST_CASE("LHI")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == (1 << 16));
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == (1 << 16));
 }
 
 TEST_CASE("LB")
@@ -2146,7 +2146,7 @@ TEST_CASE("LB")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 
     res = dlx::Parser::Parse("LB R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2160,7 +2160,7 @@ TEST_CASE("LB")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 }
 
 TEST_CASE("LBU")
@@ -2177,7 +2177,7 @@ TEST_CASE("LBU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 21u);
 
     res = dlx::Parser::Parse("LBU R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2191,7 +2191,7 @@ TEST_CASE("LBU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 }
 
 TEST_CASE("LH")
@@ -2208,7 +2208,7 @@ TEST_CASE("LH")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 
     res = dlx::Parser::Parse("LH R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2222,7 +2222,7 @@ TEST_CASE("LH")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 }
 
 TEST_CASE("LHU")
@@ -2239,7 +2239,7 @@ TEST_CASE("LHU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 21u);
 
     res = dlx::Parser::Parse("LHU R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2253,7 +2253,7 @@ TEST_CASE("LHU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 }
 
 TEST_CASE("LW")
@@ -2270,7 +2270,7 @@ TEST_CASE("LW")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 
     res = dlx::Parser::Parse("LW R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2284,7 +2284,7 @@ TEST_CASE("LW")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 }
 
 TEST_CASE("LWU")
@@ -2301,7 +2301,7 @@ TEST_CASE("LWU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 21u);
 
     res = dlx::Parser::Parse("LWU R1 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2315,7 +2315,7 @@ TEST_CASE("LWU")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 21);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 21);
 }
 
 TEST_CASE("LF")
@@ -2332,7 +2332,7 @@ TEST_CASE("LF")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() == 1.0f);
 
     res = dlx::Parser::Parse("LF F0 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2346,7 +2346,7 @@ TEST_CASE("LF")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() == 1.0f);
 }
 
 TEST_CASE("LD")
@@ -2363,7 +2363,7 @@ TEST_CASE("LD")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).unsafe() == 1.0);
 
     res = dlx::Parser::Parse("LD F0 1000(R0)");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2377,7 +2377,7 @@ TEST_CASE("LD")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).unsafe() == 1.0);
 }
 
 TEST_CASE("SB")
@@ -2394,7 +2394,7 @@ TEST_CASE("SB")
 
     auto val = proc.GetMemory().LoadByte(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21);
+    CHECK(val->unsafe() == 21);
 
     res = dlx::Parser::Parse("SB 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2408,7 +2408,7 @@ TEST_CASE("SB")
 
     val = proc.GetMemory().LoadByte(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21);
+    CHECK(val->unsafe() == 21);
 }
 
 TEST_CASE("SBU")
@@ -2425,7 +2425,7 @@ TEST_CASE("SBU")
 
     auto val = proc.GetMemory().LoadUnsignedByte(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21u);
+    CHECK(val->unsafe() == 21u);
 
     res = dlx::Parser::Parse("SBU 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2439,7 +2439,7 @@ TEST_CASE("SBU")
 
     val = proc.GetMemory().LoadUnsignedByte(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21u);
+    CHECK(val->unsafe() == 21u);
 }
 
 TEST_CASE("SH")
@@ -2456,7 +2456,7 @@ TEST_CASE("SH")
 
     auto val = proc.GetMemory().LoadHalfWord(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21);
+    CHECK(val->unsafe() == 21);
 
     res = dlx::Parser::Parse("SH 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2470,7 +2470,7 @@ TEST_CASE("SH")
 
     val = proc.GetMemory().LoadHalfWord(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21);
+    CHECK(val->unsafe() == 21);
 }
 
 TEST_CASE("SHU")
@@ -2487,7 +2487,7 @@ TEST_CASE("SHU")
 
     auto val = proc.GetMemory().LoadUnsignedHalfWord(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21u);
+    CHECK(val->unsafe() == 21u);
 
     res = dlx::Parser::Parse("SHU 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2501,7 +2501,7 @@ TEST_CASE("SHU")
 
     val = proc.GetMemory().LoadUnsignedHalfWord(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21u);
+    CHECK(val->unsafe() == 21u);
 }
 
 TEST_CASE("SW")
@@ -2518,7 +2518,7 @@ TEST_CASE("SW")
 
     auto val = proc.GetMemory().LoadWord(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21);
+    CHECK(val->unsafe() == 21);
 
     res = dlx::Parser::Parse("SW 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2532,7 +2532,7 @@ TEST_CASE("SW")
 
     val = proc.GetMemory().LoadWord(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21);
+    CHECK(val->unsafe() == 21);
 }
 
 TEST_CASE("SWU")
@@ -2549,7 +2549,7 @@ TEST_CASE("SWU")
 
     auto val = proc.GetMemory().LoadUnsignedWord(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21u);
+    CHECK(val->unsafe() == 21u);
 
     res = dlx::Parser::Parse("SWU 1000(R0) R1");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2563,7 +2563,7 @@ TEST_CASE("SWU")
 
     val = proc.GetMemory().LoadUnsignedWord(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 21u);
+    CHECK(val->unsafe() == 21u);
 }
 
 TEST_CASE("SF")
@@ -2580,7 +2580,7 @@ TEST_CASE("SF")
 
     auto val = proc.GetMemory().LoadFloat(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 1.0f);
+    CHECK(val->unsafe() == 1.0f);
 
     res = dlx::Parser::Parse("SF 1000(R0) F0");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2594,7 +2594,7 @@ TEST_CASE("SF")
 
     val = proc.GetMemory().LoadFloat(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 1.0f);
+    CHECK(val->unsafe() == 1.0f);
 }
 
 TEST_CASE("SD")
@@ -2611,7 +2611,7 @@ TEST_CASE("SD")
 
     auto val = proc.GetMemory().LoadDouble(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 1.0);
+    CHECK(val->unsafe() == 1.0);
 
     res = dlx::Parser::Parse("SD 1000(R0) F0");
     REQUIRE(res.m_ParseErrors.empty());
@@ -2625,7 +2625,7 @@ TEST_CASE("SD")
 
     val = proc.GetMemory().LoadDouble(1000u);
     REQUIRE(val.has_value());
-    CHECK(val->get() == 1.0);
+    CHECK(val->unsafe() == 1.0);
 }
 
 TEST_CASE("MOVF")
@@ -2640,8 +2640,8 @@ TEST_CASE("MOVF")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F1).unsafe() == 1.0f);
 }
 
 TEST_CASE("MOVD")
@@ -2656,8 +2656,8 @@ TEST_CASE("MOVD")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 1.0);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
 }
 
 TEST_CASE("MOVFP2I")
@@ -2672,8 +2672,8 @@ TEST_CASE("MOVFP2I")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() != -1);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() == 1.0f);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() != -1);
 }
 
 TEST_CASE("MOVI2FP")
@@ -2688,8 +2688,8 @@ TEST_CASE("MOVI2FP")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != -1.0f);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() != -1.0f);
 }
 
 TEST_CASE("CVTF2D")
@@ -2704,8 +2704,8 @@ TEST_CASE("CVTF2D")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).get() == 1.0);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F0).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 }
 
 TEST_CASE("CVTF2I")
@@ -2720,8 +2720,8 @@ TEST_CASE("CVTF2I")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != -1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() != -1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 }
 
 TEST_CASE("CVTD2F")
@@ -2736,8 +2736,8 @@ TEST_CASE("CVTD2F")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() == 1.0f);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() == 1.0f);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
 }
 
 TEST_CASE("CVTD2I")
@@ -2752,8 +2752,8 @@ TEST_CASE("CVTD2I")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != -1.0f);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() != -1.0f);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
 }
 
 TEST_CASE("CVTI2F")
@@ -2768,8 +2768,8 @@ TEST_CASE("CVTI2F")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != -1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() != -1.0f);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
 }
 
 TEST_CASE("CVTI2D")
@@ -2784,8 +2784,8 @@ TEST_CASE("CVTI2D")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).get() != 1.0f);
-    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).get() == 1.0);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() != 1.0f);
+    CHECK(proc.FloatRegisterGetDoubleValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
 }
 
 TEST_CASE("TRAP")
@@ -2838,9 +2838,9 @@ TEST_CASE("Signed addition overflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 0);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -2849,9 +2849,9 @@ TEST_CASE("Signed addition overflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -2860,9 +2860,9 @@ TEST_CASE("Signed addition overflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min + 4);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_min + 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 5);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
 }
 
@@ -2879,9 +2879,9 @@ TEST_CASE("Signed addition underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 0);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -2890,9 +2890,9 @@ TEST_CASE("Signed addition underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == -1);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -2901,9 +2901,9 @@ TEST_CASE("Signed addition underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max - 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_max - 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == -2);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
 }
 
@@ -2920,9 +2920,9 @@ TEST_CASE("Unsigned addition overflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 0u);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
@@ -2931,9 +2931,9 @@ TEST_CASE("Unsigned addition overflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 4u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 4u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 5u);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
 }
 
@@ -2950,9 +2950,9 @@ TEST_CASE("Signed subtraction overflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 0);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -2961,9 +2961,9 @@ TEST_CASE("Signed subtraction overflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min + 4);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_min + 4);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == -5);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
 }
 
@@ -2980,9 +2980,9 @@ TEST_CASE("Signed subtraction underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 0);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -2991,9 +2991,9 @@ TEST_CASE("Signed subtraction underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3002,9 +3002,9 @@ TEST_CASE("Signed subtraction underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max - 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_max - 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 2);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
 }
 
@@ -3021,9 +3021,9 @@ TEST_CASE("Unsigned subtraction underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 0u);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
@@ -3032,9 +3032,9 @@ TEST_CASE("Unsigned subtraction underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 1u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 1u);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
 
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 999999u);
@@ -3043,9 +3043,9 @@ TEST_CASE("Unsigned subtraction underflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == unsigned_max - 4u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == 0u);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 5u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == unsigned_max - 4u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == 0u);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 5u);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
 }
 
@@ -3062,9 +3062,9 @@ TEST_CASE("Signed multiplication overflow")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 1);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::None);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3073,9 +3073,9 @@ TEST_CASE("Signed multiplication overflow")
 
     proc.ExecuteCurrentProgram();
 
-    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -2);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 2);
+    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == -2);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 2);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3084,9 +3084,9 @@ TEST_CASE("Signed multiplication overflow")
 
     proc.ExecuteCurrentProgram();
 
-    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == signed_max);
+    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == signed_max);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
 }
 
@@ -3103,9 +3103,9 @@ TEST_CASE("Signed multiplication underflow")
 
     proc.ExecuteCurrentProgram();
 
-    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 3);
+    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3114,9 +3114,9 @@ TEST_CASE("Signed multiplication underflow")
 
     proc.ExecuteCurrentProgram();
 
-    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == signed_min);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == signed_max);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == signed_min);
+    //CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == signed_min);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == signed_max);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == signed_min);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Underflow);
 }
 
@@ -3133,9 +3133,9 @@ TEST_CASE("Unsigned multiplication overflow")
 
     proc.ExecuteCurrentProgram();
 
-    //CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).get() == unsigned_max);
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).get() == 3);
+    //CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R2).unsafe() == unsigned_max);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R3).unsafe() == 3);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::Overflow);
 }
 
@@ -3241,9 +3241,9 @@ TEST_CASE("Shift left bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 32);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3252,9 +3252,9 @@ TEST_CASE("Shift left bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 999999);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == -1);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
     // Arithmetic
@@ -3269,9 +3269,9 @@ TEST_CASE("Shift left bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 32);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3280,9 +3280,9 @@ TEST_CASE("Shift left bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 999999);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == -1);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 }
 
@@ -3300,9 +3300,9 @@ TEST_CASE("Shift right bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 32);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3311,9 +3311,9 @@ TEST_CASE("Shift right bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 999999);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == -1);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
     // Arithmetic
@@ -3328,9 +3328,9 @@ TEST_CASE("Shift right bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == -1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 32);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3339,9 +3339,9 @@ TEST_CASE("Shift right bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 999999);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == -5);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == -1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 999999);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == -5);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == -1);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 999999);
@@ -3350,9 +3350,9 @@ TEST_CASE("Shift right bad shift")
 
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).get() == 0);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).get() == 1);
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).get() == 32);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R1).unsafe() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R2).unsafe() == 1);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R3).unsafe() == 32);
     CHECK(proc.GetLastRaisedException() == dlx::Exception::BadShift);
 }
 
@@ -4467,7 +4467,7 @@ TEST_CASE("R0 is read only")
     proc.LoadProgram(res);
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R0).get() == 0);
+    CHECK(proc.IntRegisterGetSignedValue(dlx::IntRegisterID::R0).unsafe() == 0);
 
     // Unsigned
     res = dlx::Parser::Parse("ADDUI R0 R0 #4");
@@ -4476,7 +4476,7 @@ TEST_CASE("R0 is read only")
     proc.LoadProgram(res);
     proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R0).get() == 0);
+    CHECK(proc.IntRegisterGetUnsignedValue(dlx::IntRegisterID::R0).unsafe() == 0);
 }
 
 TEST_CASE("Empty source code")
@@ -4546,7 +4546,7 @@ TEST_CASE("Processor::ClearRegisters")
     for (int i{0}; i < 31; ++i)
     {
         CHECK(bool(proc.IntRegisterGetSignedValue(static_cast<dlx::IntRegisterID>(i)) == 0));
-        CHECK(bool(proc.FloatRegisterGetFloatValue(static_cast<dlx::FloatRegisterID>(i)).get() ==
+        CHECK(bool(proc.FloatRegisterGetFloatValue(static_cast<dlx::FloatRegisterID>(i)).unsafe() ==
                    0.0f));
     }
 
@@ -4572,7 +4572,7 @@ TEST_CASE("Processor::ClearMemory")
     // Test all values
     for (phi::usize i{0u}; i < mem.GetSize(); ++i)
     {
-        CHECK(mem.LoadByte(start_adr + i)->get() == 0);
+        CHECK(mem.LoadByte(start_adr + i)->unsafe() == 0);
     }
 }
 

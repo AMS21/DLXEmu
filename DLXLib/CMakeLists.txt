@@ -55,11 +55,9 @@ add_library(${PROJECT_NAME} STATIC ${DLXLIB_SOURCES} ${DLXLIB_HEADERS})
 target_include_directories(${PROJECT_NAME} PUBLIC "include")
 target_link_libraries(
   ${PROJECT_NAME}
-  PUBLIC Phi::Core magic_enum::magic_enum spdlog::spdlog
-  PRIVATE Phi::ProjectOptions)
+  PUBLIC Phi::Core magic_enum::magic_enum spdlog::spdlog)
 target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELWITHDBGINFO>:PHI_DEBUG>")
 # We don't want a default logger
-phi_enable_static_analyzers(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 
 if(${DLXEMU_COVERAGE_BUILD})

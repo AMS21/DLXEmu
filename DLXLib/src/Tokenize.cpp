@@ -15,7 +15,7 @@ namespace dlx
             if (number)
             {
                 return {Token::Type::ImmediateInteger, token, line_number, column,
-                        static_cast<std::uint32_t>(number.value().get())};
+                        static_cast<std::uint32_t>(number.value().unsafe())};
             }
 
             return {Token::Type::ImmediateInteger, token, line_number, column};
@@ -29,7 +29,7 @@ namespace dlx
         if (phi::optional<phi::i16> number = ParseNumber(token); number.has_value())
         {
             return {Token::Type::IntegerLiteral, token, line_number, column,
-                    static_cast<std::uint32_t>(number->get())};
+                    static_cast<std::uint32_t>(number->unsafe())};
         }
 
         if (IsFPSR(token))
@@ -72,14 +72,14 @@ namespace dlx
 
         for (phi::usize i{0u}; i < source.length(); ++i)
         {
-            const char c{source.at(i.get())};
+            const char c{source.at(i.unsafe())};
 
             if (c == '\n')
             {
                 if (current_token.empty())
                 {
                     // Skip empty lines
-                    tokens.emplace_back(Token::Type::NewLine, source.substr(i.get(), 1u),
+                    tokens.emplace_back(Token::Type::NewLine, source.substr(i.unsafe(), 1u),
                                         current_line_number, current_column);
 
                     parsing_comment = false;
@@ -90,10 +90,10 @@ namespace dlx
 
                 // Otherwise a new line separates tokens
                 tokens.emplace_back(
-                        ParseToken(source.substr(token_begin.get(), current_token.length()),
+                        ParseToken(source.substr(token_begin.unsafe(), current_token.length()),
                                    current_line_number, current_column - current_token.length()));
 
-                tokens.emplace_back(Token::Type::NewLine, source.substr(i.get(), 1),
+                tokens.emplace_back(Token::Type::NewLine, source.substr(i.unsafe(), 1),
                                     current_line_number, current_column);
 
                 current_token   = std::string_view{};
@@ -111,7 +111,7 @@ namespace dlx
                 else if (!parsing_comment)
                 {
                     tokens.emplace_back(ParseToken(
-                            source.substr(token_begin.get(), current_token.length()),
+                            source.substr(token_begin.unsafe(), current_token.length()),
                             current_line_number, current_column - current_token.length()));
                     token_begin   = i;
                     current_token = std::string_view{};
@@ -119,13 +119,13 @@ namespace dlx
 
                 parsing_comment = true;
                 current_token   = std::string_view(
-                          source.substr(token_begin.get(), current_token.length() + 1));
+                          source.substr(token_begin.unsafe(), current_token.length() + 1));
             }
             else if (parsing_comment)
             {
                 // simply append the character
                 current_token = std::string_view(
-                        source.substr(token_begin.get(), current_token.length() + 1));
+                        source.substr(token_begin.unsafe(), current_token.length() + 1));
             }
             else
             {
@@ -144,7 +144,7 @@ namespace dlx
 
                         // Otherwise a whitespace separates tokens
                         tokens.emplace_back(ParseToken(
-                                source.substr(token_begin.get(), current_token.length()),
+                                source.substr(token_begin.unsafe(), current_token.length()),
                                 current_line_number, current_column - current_token.length()));
                         current_token = std::string_view{};
                         break;
@@ -152,10 +152,10 @@ namespace dlx
                         // Need to parse label names together with their colon
                         if (!current_token.empty())
                         {
-                            current_token = std::string_view(
-                                    source.substr(token_begin.get(), current_token.length() + 1));
+                            current_token = std::string_view(source.substr(
+                                    token_begin.unsafe(), current_token.length() + 1));
                             tokens.emplace_back(ParseToken(
-                                    source.substr(token_begin.get(), current_token.length()),
+                                    source.substr(token_begin.unsafe(), current_token.length()),
                                     current_line_number,
                                     current_column + 1u - current_token.length()));
 
@@ -167,7 +167,7 @@ namespace dlx
                             token_begin = i;
 
                             tokens.emplace_back(Token::Type::Colon,
-                                                source.substr(token_begin.get(), 1),
+                                                source.substr(token_begin.unsafe(), 1),
                                                 current_line_number, current_column);
                         }
                         break;
@@ -177,7 +177,7 @@ namespace dlx
                         if (!current_token.empty())
                         {
                             tokens.emplace_back(ParseToken(
-                                    source.substr(token_begin.get(), current_token.length()),
+                                    source.substr(token_begin.unsafe(), current_token.length()),
                                     current_line_number, current_column - current_token.length()));
 
                             current_token = std::string_view{};
@@ -204,7 +204,7 @@ namespace dlx
 
                         token_begin = i;
 
-                        tokens.emplace_back(type, source.substr(token_begin.get(), 1),
+                        tokens.emplace_back(type, source.substr(token_begin.unsafe(), 1),
                                             current_line_number, current_column);
                         break;
 
@@ -216,7 +216,7 @@ namespace dlx
 
                         // simply append the character
                         current_token = std::string_view(
-                                source.substr(token_begin.get(), current_token.length() + 1));
+                                source.substr(token_begin.unsafe(), current_token.length() + 1));
                 }
             }
 
@@ -226,9 +226,9 @@ namespace dlx
         // Checked the entire string. Parse whats left if anything
         if (!current_token.empty())
         {
-            tokens.emplace_back(ParseToken(source.substr(token_begin.get(), current_token.length()),
-                                           current_line_number,
-                                           current_column - current_token.length()));
+            tokens.emplace_back(
+                    ParseToken(source.substr(token_begin.unsafe(), current_token.length()),
+                               current_line_number, current_column - current_token.length()));
         }
 
         // Finialize token stream

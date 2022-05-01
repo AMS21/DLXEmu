@@ -66,32 +66,28 @@ project(
   LANGUAGES CXX
   VERSION ${DLXEMU_VERSION_MAJOR}.${DLXEMU_VERSION_MINOR}.${DLXEMU_VERSION_PATCH})
 
-# Dependencies
-add_subdirectory(external)
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external/Phi/scripts/cmake)
-
-include(StandardProjectSettings)
-include(Environment)
-
-# Set output directories
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
 # Build js files when using emscripten
 if(PHI_PLATFORM_EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
-  target_link_options(
-    phi_project_options
-    INTERFACE
-    -sUSE_GLFW=3
+  add_link_options(    -sUSE_GLFW=3
     -sFETCH=1
     -sFULL_ES2=1
     -sFULL_ES3=1
     -sASSERTIONS=1
     -sDISABLE_EXCEPTION_CATCHING=1)
 endif()
+
+# Dependencies
+add_subdirectory(external)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external/Phi/scripts/cmake)
+
+include(Environment)
+
+# Set output directories
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Targets DLXLib
 add_subdirectory(DLXLib)
@@ -105,3 +101,9 @@ if(${DLXEMU_BUILD_TESTS})
 
   add_subdirectory(tests)
 endif()
+
+# Configure
+
+include(ProjectOptions)
+
+phi_configure_project(DEBUG_FLAGS OPTIMIZATION_FLAGS WARNINGS WARNINGS_AS_ERRORS PEDANTIC FPM_PRECISE NO_EXCEPTIONS STANDARD "latest" EXTERNAL "external")

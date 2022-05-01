@@ -1,5 +1,8 @@
 find_package(Threads)
 
+include(CompilerOptimizations)
+include(Sanitizers)
+
 # Allow short runs during automated testing to see if something new breaks
 set(FUZZ_RUNTIME
     10
@@ -7,7 +10,7 @@ set(FUZZ_RUNTIME
 
 # Dictionary
 add_executable(generate_dictionary_app "src/GenerateDictionary.cpp")
-target_link_libraries(generate_dictionary_app PRIVATE Phi::ProjectOptions DLXLib Threads::Threads)
+target_link_libraries(generate_dictionary_app PRIVATE DLXLib Threads::Threads)
 
 add_custom_target(
   generate_dictionary
@@ -18,7 +21,7 @@ add_dependencies(generate_dictionary generate_dictionary_app)
 
 # Convert structured text
 add_executable(convert_structured_text "src/ConvertStructuredText.cpp")
-target_link_libraries(convert_structured_text PRIVATE Phi::ProjectOptions DLXLib Threads::Threads)
+target_link_libraries(convert_structured_text PRIVATE DLXLib Threads::Threads)
 target_include_directories(convert_structured_text PRIVATE "include")
 
 # Fuzzers
@@ -26,7 +29,7 @@ function(define_fuzzer)
   cmake_parse_arguments(df "ASCII" "NAME" "SOURCE;LIBRARIES;DEPENDENCY;RUN_ARGS" ${ARGN})
 
   add_executable(${df_NAME} ${df_SOURCE})
-  target_link_libraries(${df_NAME} PRIVATE Phi::ProjectOptions Threads::Threads -fsanitize=fuzzer
+  target_link_libraries(${df_NAME} PRIVATE Threads::Threads -fsanitize=fuzzer
                                            ${df_LIBRARIES})
   target_compile_options(${df_NAME} PRIVATE -fsanitize=fuzzer)
   target_include_directories(${df_NAME} PRIVATE "include")
@@ -35,6 +38,9 @@ function(define_fuzzer)
   endif()
   # Don't inline functions defined as always inline
   target_compile_definitions(${df_NAME} PRIVATE PHI_CONFIG_ALWAYS_INLINE_OVERWRITE=PHI_NEVER_INLINE)
+
+  phi_target_enable_optimizations(TARGET ${df_NAME} PSO "native")
+  #phi_target_enable_sanitizer(TARGET ${df_NAME} SANITIZERS "address;undefined")
 
   # Tests
   add_test(NAME ${df_NAME}_run COMMAND ${df_NAME} -max_total_time=${FUZZ_RUNTIME} ${df_RUN_ARGS})

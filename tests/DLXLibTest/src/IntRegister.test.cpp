@@ -6,13 +6,13 @@ TEST_CASE("IntRegister")
 {
     dlx::IntRegister reg;
 
-    CHECK(reg.GetSignedValue().get() == 0);
-    CHECK(reg.GetUnsignedValue().get() == 0);
+    CHECK(reg.GetSignedValue().unsafe() == 0);
+    CHECK(reg.GetUnsignedValue().unsafe() == 0);
     CHECK_FALSE(reg.IsReadOnly());
 
     reg.SetSignedValue(32);
-    CHECK(reg.GetSignedValue().get() == 32);
-    CHECK(reg.GetUnsignedValue().get() == 32);
+    CHECK(reg.GetSignedValue().unsafe() == 32);
+    CHECK(reg.GetUnsignedValue().unsafe() == 32);
     CHECK_FALSE(reg.IsReadOnly());
 
     reg.SetReadOnly(true);

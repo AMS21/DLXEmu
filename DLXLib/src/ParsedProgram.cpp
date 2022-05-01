@@ -64,8 +64,8 @@ namespace dlx
         {
             for (phi::usize i{0u}; i < m_Instructions.size(); ++i)
             {
-                const Instruction& instr = m_Instructions.at(i.get());
-                text.append(fmt::format("#{:03d}:  {:s}\n", i.get(), instr.DebugInfo()));
+                const Instruction& instr = m_Instructions.at(i.unsafe());
+                text.append(fmt::format("#{:03d}:  {:s}\n", i.unsafe(), instr.DebugInfo()));
             }
         }
 

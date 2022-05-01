@@ -171,10 +171,10 @@ namespace dlx
                     return {};
                 }
 
-                //DLX_INFO("Parsed Immediate Integer with value {}", parsed_value.value().get());
+                //DLX_INFO("Parsed Immediate Integer with value {}", parsed_value.value().unsafe());
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-                return ConstructInstructionArgumentImmediateValue(parsed_value.value().get());
+                return ConstructInstructionArgumentImmediateValue(parsed_value.value().unsafe());
 #endif
             }
 
@@ -235,8 +235,8 @@ namespace dlx
                     if (IsReservedIdentifier(label_name))
                     {
                         program.AddParseError(ConstructReservedIdentiferParseError(
-                                current_token.GetLineNumber().get(),
-                                current_token.GetColumn().get(), label_name));
+                                current_token.GetLineNumber().unsafe(),
+                                current_token.GetColumn().unsafe(), label_name));
                         break;
                     }
 
@@ -310,7 +310,7 @@ namespace dlx
 
                     phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
                     //DLX_INFO("Instruction requires {} arguments",
-                    //             number_of_argument_required.get());
+                    //             number_of_argument_required.unsafe());
 
                     // Create instruction
                     Instruction  instruction(info);
@@ -323,8 +323,8 @@ namespace dlx
                         if (!tokens.has_more())
                         {
                             program.AddParseError(ConstructTooFewArgumentsParseError(
-                                    current_token, number_of_argument_required.get(),
-                                    argument_num.get()));
+                                    current_token, number_of_argument_required.unsafe(),
+                                    argument_num.unsafe()));
                             break;
                         }
 
@@ -347,7 +347,8 @@ namespace dlx
                         {
                             phi::u8 missing_arguments = number_of_argument_required - argument_num;
                             program.AddParseError(ConstructTooFewArgumentsParseError(
-                                    token, number_of_argument_required.get(), argument_num.get()));
+                                    token, number_of_argument_required.unsafe(),
+                                    argument_num.unsafe()));
                             break;
                         }
 
@@ -367,7 +368,7 @@ namespace dlx
                         argument_num++;
                         consumed_comma = false;
 
-                        //DLX_INFO("Successfully parsed argument {}", argument_num.get());
+                        //DLX_INFO("Successfully parsed argument {}", argument_num.unsafe());
                     }
 
                     //DLX_INFO("Successfully parsed instruction '{}'",

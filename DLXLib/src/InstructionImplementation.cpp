@@ -53,7 +53,7 @@ namespace dlx
             return;
         }
 
-        processor.SetNextProgramCounter(address.get());
+        processor.SetNextProgramCounter(address.unsafe());
     }
 
     static phi::optional<phi::i32> CalculateDisplacementAddress(
@@ -123,7 +123,7 @@ namespace dlx
         PHI_DBG_ASSERT(value >= min);
         PHI_DBG_ASSERT(value <= max);
 
-        processor.IntRegisterSetSignedValue(dest_reg, static_cast<std::int32_t>(value.get()));
+        processor.IntRegisterSetSignedValue(dest_reg, static_cast<std::int32_t>(value.unsafe()));
     }
 
     static void SafeWriteInteger(Processor& processor, IntRegisterID dest_reg,
@@ -142,7 +142,7 @@ namespace dlx
 
         PHI_DBG_ASSERT(value <= max);
 
-        processor.IntRegisterSetUnsignedValue(dest_reg, static_cast<std::uint32_t>(value.get()));
+        processor.IntRegisterSetUnsignedValue(dest_reg, static_cast<std::uint32_t>(value.unsafe()));
     }
 
     static void Addition(Processor& processor, IntRegisterID dest_reg, phi::i32 lhs,
@@ -259,9 +259,9 @@ namespace dlx
             return;
         }
 
-        phi::i32 new_value = base.get() >> shift.get();
+        phi::i32 new_value = base.unsafe() >> shift.unsafe();
 
-        new_value = clear_top_n_bits(new_value.get(), shift.get());
+        new_value = clear_top_n_bits(new_value.unsafe(), shift.unsafe());
 
         processor.IntRegisterSetSignedValue(dest_reg, new_value);
     }
@@ -295,7 +295,7 @@ namespace dlx
             return;
         }
 
-        phi::i32 new_value = base.get() >> shift.get();
+        phi::i32 new_value = base.unsafe() >> shift.unsafe();
 
         processor.IntRegisterSetSignedValue(dest_reg, new_value);
     }
@@ -320,7 +320,7 @@ namespace dlx
             return;
         }
 
-        phi::i32 new_value = base.get() << shift.get();
+        phi::i32 new_value = base.unsafe() << shift.unsafe();
 
         processor.IntRegisterSetSignedValue(dest_reg, new_value);
     }
@@ -627,7 +627,7 @@ namespace dlx
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            if (rhs_value.get() == 0.0f)
+            if (rhs_value.unsafe() == 0.0f)
             {
                 processor.Raise(Exception::DivideByZero);
                 return;
@@ -648,7 +648,7 @@ namespace dlx
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            if (rhs_value.get() == 0.0)
+            if (rhs_value.unsafe() == 0.0)
             {
                 processor.Raise(Exception::DivideByZero);
                 return;
@@ -772,7 +772,7 @@ namespace dlx
 
             phi::i32 lhs_value = processor.IntRegisterGetSignedValue(lhs_reg.register_id);
             phi::i32 rhs_value = processor.IntRegisterGetSignedValue(rhs_reg.register_id);
-            phi::i32 new_value = lhs_value.get() & rhs_value.get();
+            phi::i32 new_value = lhs_value.unsafe() & rhs_value.unsafe();
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
@@ -785,7 +785,7 @@ namespace dlx
             const auto& imm_value = arg3.AsImmediateValue();
 
             phi::i32 src_value = processor.IntRegisterGetSignedValue(src_reg.register_id);
-            phi::i32 new_value = src_value.get() & imm_value.signed_value.get();
+            phi::i32 new_value = src_value.unsafe() & imm_value.signed_value.unsafe();
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
@@ -799,7 +799,7 @@ namespace dlx
 
             phi::i32 lhs_value = processor.IntRegisterGetSignedValue(lhs_reg.register_id);
             phi::i32 rhs_value = processor.IntRegisterGetSignedValue(rhs_reg.register_id);
-            phi::i32 new_value = lhs_value.get() | rhs_value.get();
+            phi::i32 new_value = lhs_value.unsafe() | rhs_value.unsafe();
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
@@ -812,7 +812,7 @@ namespace dlx
             const auto& imm_value = arg3.AsImmediateValue();
 
             phi::i32 src_value = processor.IntRegisterGetSignedValue(src_reg.register_id);
-            phi::i32 new_value = src_value.get() | imm_value.signed_value.get();
+            phi::i32 new_value = src_value.unsafe() | imm_value.signed_value.unsafe();
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
@@ -826,7 +826,7 @@ namespace dlx
 
             phi::i32 lhs_value = processor.IntRegisterGetSignedValue(lhs_reg.register_id);
             phi::i32 rhs_value = processor.IntRegisterGetSignedValue(rhs_reg.register_id);
-            phi::i32 new_value = lhs_value.get() ^ rhs_value.get();
+            phi::i32 new_value = lhs_value.unsafe() ^ rhs_value.unsafe();
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
@@ -839,7 +839,7 @@ namespace dlx
             const auto& imm_value = arg3.AsImmediateValue();
 
             phi::i32 src_value = processor.IntRegisterGetSignedValue(src_reg.register_id);
-            phi::i32 new_value = src_value.get() ^ imm_value.signed_value.get();
+            phi::i32 new_value = src_value.unsafe() ^ imm_value.signed_value.unsafe();
 
             processor.IntRegisterSetSignedValue(dest_reg.register_id, new_value);
         }
@@ -1255,7 +1255,7 @@ namespace dlx
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            const phi::boolean new_value = (lhs_value.get() == rhs_value.get());
+            const phi::boolean new_value = (lhs_value.unsafe() == rhs_value.unsafe());
 
             processor.SetFPSRValue(new_value);
         }
@@ -1269,7 +1269,7 @@ namespace dlx
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            const phi::boolean new_value = (lhs_value.get() == rhs_value.get());
+            const phi::boolean new_value = (lhs_value.unsafe() == rhs_value.unsafe());
 
             processor.SetFPSRValue(new_value);
         }
@@ -1341,7 +1341,7 @@ namespace dlx
             const phi::f32 lhs_value = processor.FloatRegisterGetFloatValue(lhs_reg);
             const phi::f32 rhs_value = processor.FloatRegisterGetFloatValue(rhs_reg);
 
-            const phi::boolean new_value = (lhs_value.get() != rhs_value.get());
+            const phi::boolean new_value = (lhs_value.unsafe() != rhs_value.unsafe());
 
             processor.SetFPSRValue(new_value);
         }
@@ -1355,7 +1355,7 @@ namespace dlx
             const phi::f64 lhs_value = processor.FloatRegisterGetDoubleValue(lhs_reg);
             const phi::f64 rhs_value = processor.FloatRegisterGetDoubleValue(rhs_reg);
 
-            const phi::boolean new_value = (lhs_value.get() != rhs_value.get());
+            const phi::boolean new_value = (lhs_value.unsafe() != rhs_value.unsafe());
 
             processor.SetFPSRValue(new_value);
         }
@@ -1456,7 +1456,7 @@ namespace dlx
                  const InstructionArgument& arg2, const InstructionArgument& arg3) noexcept
         {
             const IntRegisterID dest_reg  = arg1.AsRegisterInt().register_id;
-            std::int32_t        imm_value = arg2.AsImmediateValue().signed_value.get();
+            std::int32_t        imm_value = arg2.AsImmediateValue().signed_value.unsafe();
 
             imm_value = (imm_value << 16) & 0xFFFF0000;
 
@@ -1479,12 +1479,12 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.GetMemory().LoadByte(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadByte(static_cast<std::size_t>(address.unsafe()));
 
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to load byte at address {}", address.get());
+                DLX_ERROR("Failed to load byte at address {}", address.unsafe());
                 return;
             }
 
@@ -1508,13 +1508,13 @@ namespace dlx
 
             phi::i32 address = optional_address.value();
 
-            auto optional_value =
-                    processor.GetMemory().LoadUnsignedByte(static_cast<std::size_t>(address.get()));
+            auto optional_value = processor.GetMemory().LoadUnsignedByte(
+                    static_cast<std::size_t>(address.unsafe()));
 
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to load unsigned byte at address {}", address.get());
+                DLX_ERROR("Failed to load unsigned byte at address {}", address.unsafe());
                 return;
             }
 
@@ -1539,12 +1539,12 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.GetMemory().LoadHalfWord(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadHalfWord(static_cast<std::size_t>(address.unsafe()));
 
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to load half byte at address {}", address.get());
+                DLX_ERROR("Failed to load half byte at address {}", address.unsafe());
                 return;
             }
 
@@ -1569,12 +1569,12 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value = processor.GetMemory().LoadUnsignedHalfWord(
-                    static_cast<std::size_t>(address.get()));
+                    static_cast<std::size_t>(address.unsafe()));
 
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to load unsigned half byte at address {}", address.get());
+                DLX_ERROR("Failed to load unsigned half byte at address {}", address.unsafe());
                 return;
             }
 
@@ -1599,12 +1599,12 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.GetMemory().LoadWord(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadWord(static_cast<std::size_t>(address.unsafe()));
 
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to load word at address {}", address.get());
+                DLX_ERROR("Failed to load word at address {}", address.unsafe());
                 return;
             }
 
@@ -1626,13 +1626,13 @@ namespace dlx
 
             phi::i32 address = optional_address.value();
 
-            auto optional_value =
-                    processor.GetMemory().LoadUnsignedWord(static_cast<std::size_t>(address.get()));
+            auto optional_value = processor.GetMemory().LoadUnsignedWord(
+                    static_cast<std::size_t>(address.unsafe()));
 
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to load unsigned word at address {}", address.get());
+                DLX_ERROR("Failed to load unsigned word at address {}", address.unsafe());
                 return;
             }
 
@@ -1655,12 +1655,12 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.GetMemory().LoadFloat(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadFloat(static_cast<std::size_t>(address.unsafe()));
 
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to load float at address {}", address.get());
+                DLX_ERROR("Failed to load float at address {}", address.unsafe());
                 return;
             }
 
@@ -1683,12 +1683,12 @@ namespace dlx
             phi::i32 address = optional_address.value();
 
             auto optional_value =
-                    processor.GetMemory().LoadDouble(static_cast<std::size_t>(address.get()));
+                    processor.GetMemory().LoadDouble(static_cast<std::size_t>(address.unsafe()));
 
             if (!optional_value.has_value())
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to load double at address {}", address.get());
+                DLX_ERROR("Failed to load double at address {}", address.unsafe());
                 return;
             }
 
@@ -1712,13 +1712,14 @@ namespace dlx
 
             phi::i32 value = processor.IntRegisterGetSignedValue(src_reg.register_id);
 
-            phi::boolean success = processor.GetMemory().StoreByte(
-                    static_cast<std::size_t>(address.get()), static_cast<std::int8_t>(value.get()));
+            phi::boolean success =
+                    processor.GetMemory().StoreByte(static_cast<std::size_t>(address.unsafe()),
+                                                    static_cast<std::int8_t>(value.unsafe()));
 
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to store byte at address {}", address.get());
+                DLX_ERROR("Failed to store byte at address {}", address.unsafe());
             }
         }
 
@@ -1739,14 +1740,14 @@ namespace dlx
 
             phi::u32 value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
 
-            phi::boolean success =
-                    processor.GetMemory().StoreUnsignedByte(static_cast<std::size_t>(address.get()),
-                                                            static_cast<std::uint8_t>(value.get()));
+            phi::boolean success = processor.GetMemory().StoreUnsignedByte(
+                    static_cast<std::size_t>(address.unsafe()),
+                    static_cast<std::uint8_t>(value.unsafe()));
 
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to store unsigned byte at address {}", address.get());
+                DLX_ERROR("Failed to store unsigned byte at address {}", address.unsafe());
             }
         }
 
@@ -1768,13 +1769,13 @@ namespace dlx
             phi::i32 value = processor.IntRegisterGetSignedValue(src_reg.register_id);
 
             phi::boolean success =
-                    processor.GetMemory().StoreHalfWord(static_cast<std::size_t>(address.get()),
-                                                        static_cast<std::int16_t>(value.get()));
+                    processor.GetMemory().StoreHalfWord(static_cast<std::size_t>(address.unsafe()),
+                                                        static_cast<std::int16_t>(value.unsafe()));
 
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to store half word at address {}", address.get());
+                DLX_ERROR("Failed to store half word at address {}", address.unsafe());
             }
         }
 
@@ -1796,13 +1797,13 @@ namespace dlx
             phi::u32 value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
 
             phi::boolean success = processor.GetMemory().StoreUnsignedHalfWord(
-                    static_cast<std::size_t>(address.get()),
-                    static_cast<std::uint16_t>(value.get()));
+                    static_cast<std::size_t>(address.unsafe()),
+                    static_cast<std::uint16_t>(value.unsafe()));
 
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to store unsigned half word at address {}", address.get());
+                DLX_ERROR("Failed to store unsigned half word at address {}", address.unsafe());
             }
         }
 
@@ -1823,13 +1824,13 @@ namespace dlx
 
             phi::i32 value = processor.IntRegisterGetSignedValue(src_reg.register_id);
 
-            phi::boolean success =
-                    processor.GetMemory().StoreWord(static_cast<std::size_t>(address.get()), value);
+            phi::boolean success = processor.GetMemory().StoreWord(
+                    static_cast<std::size_t>(address.unsafe()), value);
 
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to store word at address {}", address.get());
+                DLX_ERROR("Failed to store word at address {}", address.unsafe());
             }
         }
 
@@ -1851,12 +1852,12 @@ namespace dlx
             phi::u32 value = processor.IntRegisterGetUnsignedValue(src_reg.register_id);
 
             phi::boolean success = processor.GetMemory().StoreUnsignedWord(
-                    static_cast<std::size_t>(address.get()), value);
+                    static_cast<std::size_t>(address.unsafe()), value);
 
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to store unsigned word at address {}", address.get());
+                DLX_ERROR("Failed to store unsigned word at address {}", address.unsafe());
             }
         }
 
@@ -1878,12 +1879,12 @@ namespace dlx
             phi::f32 value = processor.FloatRegisterGetFloatValue(src_reg.register_id);
 
             phi::boolean success = processor.GetMemory().StoreFloat(
-                    static_cast<std::size_t>(address.get()), value);
+                    static_cast<std::size_t>(address.unsafe()), value);
 
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to store float at address {}", address.get());
+                DLX_ERROR("Failed to store float at address {}", address.unsafe());
             }
         }
 
@@ -1905,12 +1906,12 @@ namespace dlx
             phi::f64 value = processor.FloatRegisterGetDoubleValue(src_reg.register_id);
 
             phi::boolean success = processor.GetMemory().StoreDouble(
-                    static_cast<std::size_t>(address.get()), value);
+                    static_cast<std::size_t>(address.unsafe()), value);
 
             if (!success)
             {
                 processor.Raise(Exception::AddressOutOfBounds);
-                DLX_ERROR("Failed to store float at address {}", address.get());
+                DLX_ERROR("Failed to store float at address {}", address.unsafe());
             }
         }
 
@@ -1942,7 +1943,7 @@ namespace dlx
             const IntRegisterID   dest_reg   = arg1.AsRegisterInt().register_id;
             const FloatRegisterID source_reg = arg2.AsRegisterFloat().register_id;
 
-            const float source_value = processor.FloatRegisterGetFloatValue(source_reg).get();
+            const float source_value = processor.FloatRegisterGetFloatValue(source_reg).unsafe();
 
             const std::int32_t moved_value = *reinterpret_cast<const std::int32_t*>(&source_value);
 
@@ -1955,7 +1956,8 @@ namespace dlx
             const FloatRegisterID dest_reg   = arg1.AsRegisterFloat().register_id;
             const IntRegisterID   source_reg = arg2.AsRegisterInt().register_id;
 
-            const std::int32_t source_value = processor.IntRegisterGetSignedValue(source_reg).get();
+            const std::int32_t source_value =
+                    processor.IntRegisterGetSignedValue(source_reg).unsafe();
 
             const float moved_value = *reinterpret_cast<const float*>(&source_value);
 
@@ -1979,7 +1981,7 @@ namespace dlx
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
-            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).get();
+            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).unsafe();
             const std::int32_t converted_value_int = static_cast<std::int32_t>(src_value);
             const float        converted_value_float =
                     *reinterpret_cast<const float*>(&converted_value_int);
@@ -1993,7 +1995,7 @@ namespace dlx
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
-            const double src_value       = processor.FloatRegisterGetDoubleValue(src_reg).get();
+            const double src_value       = processor.FloatRegisterGetDoubleValue(src_reg).unsafe();
             const float  converted_value = static_cast<float>(src_value);
 
             processor.FloatRegisterSetFloatValue(dest_reg, converted_value);
@@ -2005,7 +2007,7 @@ namespace dlx
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
-            const double       src_value = processor.FloatRegisterGetDoubleValue(src_reg).get();
+            const double       src_value = processor.FloatRegisterGetDoubleValue(src_reg).unsafe();
             const std::int32_t converted_value_int = static_cast<std::int32_t>(src_value);
             const float        converted_value_float =
                     *reinterpret_cast<const float*>(&converted_value_int);
@@ -2019,7 +2021,7 @@ namespace dlx
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
-            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).get();
+            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).unsafe();
             const std::int32_t converted_value_int =
                     *reinterpret_cast<const std::int32_t*>(&src_value);
             const float converted_value_float = static_cast<float>(converted_value_int);
@@ -2033,7 +2035,7 @@ namespace dlx
             const FloatRegisterID dest_reg = arg1.AsRegisterFloat().register_id;
             const FloatRegisterID src_reg  = arg2.AsRegisterFloat().register_id;
 
-            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).get();
+            const float        src_value = processor.FloatRegisterGetFloatValue(src_reg).unsafe();
             const std::int32_t converted_value_int =
                     *reinterpret_cast<const std::int32_t*>(&src_value);
             const double converted_value_double = static_cast<double>(converted_value_int);

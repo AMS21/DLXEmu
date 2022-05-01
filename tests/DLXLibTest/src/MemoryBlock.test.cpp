@@ -7,13 +7,13 @@ TEST_CASE("MemoryBlock")
 {
     dlx::MemoryBlock mem{1000u, 20u};
 
-    CHECK((mem.GetStartingAddress() == 1000u).get());
-    CHECK((mem.GetSize() == 20u).get());
+    CHECK((mem.GetStartingAddress() == 1000u).unsafe());
+    CHECK((mem.GetSize() == 20u).unsafe());
 
     mem.SetStartingAddress(100u);
 
-    CHECK((mem.GetStartingAddress() == 100u).get());
-    CHECK((mem.GetSize() == 20u).get());
+    CHECK((mem.GetStartingAddress() == 100u).unsafe());
+    CHECK((mem.GetSize() == 20u).unsafe());
 }
 
 TEST_CASE("GetRawMemory")

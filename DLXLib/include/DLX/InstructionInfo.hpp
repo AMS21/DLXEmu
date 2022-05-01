@@ -96,7 +96,7 @@ namespace dlx
         {
             PHI_DBG_ASSERT(index < 3u);
 
-            switch (index.get())
+            switch (index.unsafe())
             {
                 case 0:
                     return m_Arg1Type;

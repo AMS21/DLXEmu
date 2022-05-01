@@ -32,7 +32,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${DLXLIB_TEST_SOURCES} ${DLX
 
 add_executable("DLXLibUnittest" ${DLXLIB_TEST_SOURCES} ${DLXLIB_TEST_HEADERS})
 
-target_link_libraries("DLXLibUnittest" PRIVATE DLXLib Catch2::Catch2WithMain Phi::ProjectOptions)
+target_link_libraries("DLXLibUnittest" PRIVATE DLXLib Catch2::Catch2WithMain)
 
 target_include_directories("DLXLibUnittest" PRIVATE "include")
 

@@ -3603,9 +3603,9 @@ namespace dlxemu
                 break;
         }
 
-        Line& line = m_Lines[(token.GetLineNumber() - 1u).get()];
+        Line& line = m_Lines[(token.GetLineNumber() - 1u).unsafe()];
 
-        for (std::size_t index{static_cast<std::size_t>((token.GetColumn() - 1u).get())};
+        for (std::size_t index{static_cast<std::size_t>((token.GetColumn() - 1u).unsafe())};
              index < token.GetColumn() + token.GetLength() - 1u; ++index)
         {
             PHI_DBG_ASSERT(index < line.size());

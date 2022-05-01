@@ -26,7 +26,7 @@ namespace dlx
 
             case ArgumentType::AddressDisplacement: {
                 AddressDisplacement adr = AsAddressDisplacement();
-                return fmt::format("{:d}({:s})", adr.displacement.get(),
+                return fmt::format("{:d}({:s})", adr.displacement.unsafe(),
                                    magic_enum::enum_name(adr.register_id));
             }
 
@@ -37,7 +37,7 @@ namespace dlx
                 return fmt::format("{:s}", magic_enum::enum_name(AsRegisterInt().register_id));
 
             case ArgumentType::ImmediateInteger:
-                return fmt::format("#{:d}", AsImmediateValue().signed_value.get());
+                return fmt::format("#{:d}", AsImmediateValue().signed_value.unsafe());
 
             case ArgumentType::Label:
                 return fmt::format("{:s}", AsLabel().label_name);

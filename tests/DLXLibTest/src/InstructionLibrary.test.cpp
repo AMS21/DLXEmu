@@ -27,7 +27,7 @@ TEST_CASE("InstructionLibrary")
         const dlx::InstructionInfo& info = dlx::LookUpIntructionInfo(opcode);
         CHECK(info.GetOpCode() == opcode);
         CHECK(info.GetExecutor() != nullptr);
-        CHECK((info.GetNumberOfRequiredArguments() >= 0).get());
+        CHECK((info.GetNumberOfRequiredArguments() >= 0).unsafe());
         CHECK(info.GetArgumentType(0_u8) != dlx::ArgumentType::Unknown);
         CHECK(info.GetArgumentType(1_u8) != dlx::ArgumentType::Unknown);
         CHECK(info.GetArgumentType(2_u8) != dlx::ArgumentType::Unknown);

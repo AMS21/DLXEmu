@@ -6,8 +6,8 @@ TEST_CASE("FloatRegister")
 {
     dlx::FloatRegister r;
 
-    CHECK(r.GetValue().get() == 0.0f);
+    CHECK(r.GetValue().unsafe() == 0.0f);
 
     r.SetValue(21.5f);
-    CHECK(r.GetValue().get() == 21.5f);
+    CHECK(r.GetValue().unsafe() == 21.5f);
 }

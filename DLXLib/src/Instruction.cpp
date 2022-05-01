@@ -15,7 +15,7 @@ namespace dlx
     {
         PHI_DBG_ASSERT(argument_number < 3u);
 
-        switch (argument_number.get())
+        switch (argument_number.unsafe())
         {
             case 0u:
                 m_Arg1 = argument;
@@ -35,7 +35,7 @@ namespace dlx
 
     std::string Instruction::DebugInfo() const noexcept
     {
-        switch (m_Info.GetNumberOfRequiredArguments().get())
+        switch (m_Info.GetNumberOfRequiredArguments().unsafe())
         {
             case 0:
                 return fmt::format("{}", magic_enum::enum_name(m_Info.GetOpCode()));

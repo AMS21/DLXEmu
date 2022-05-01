@@ -182,8 +182,9 @@ namespace dlx
                                                          ArgumentType expected_type,
                                                          ArgumentType actual_type) noexcept
     {
-        return ConstructUnexpectedArgumentTypeParseError(
-                token.GetLineNumber().get(), token.GetColumn().get(), expected_type, actual_type);
+        return ConstructUnexpectedArgumentTypeParseError(token.GetLineNumber().unsafe(),
+                                                         token.GetColumn().unsafe(), expected_type,
+                                                         actual_type);
     }
 
     ParseError ConstructInvalidNumberParseError(std::uint32_t line_number, std::uint32_t column,
@@ -201,8 +202,8 @@ namespace dlx
 
     ParseError ConstructInvalidNumberParseError(const Token& token) noexcept
     {
-        return ConstructInvalidNumberParseError(token.GetLineNumber().get(),
-                                                token.GetColumn().get(), token.GetText());
+        return ConstructInvalidNumberParseError(token.GetLineNumber().unsafe(),
+                                                token.GetColumn().unsafe(), token.GetText());
     }
 
     ParseError ConstructTooFewArgumentsAddressDisplacementParseError(std::uint32_t line_number,
@@ -219,8 +220,8 @@ namespace dlx
 
     ParseError ConstructTooFewArgumentsAddressDisplacementParseError(const Token& token) noexcept
     {
-        return ConstructTooFewArgumentsAddressDisplacementParseError(token.GetLineNumber().get(),
-                                                                     token.GetColumn().get());
+        return ConstructTooFewArgumentsAddressDisplacementParseError(token.GetLineNumber().unsafe(),
+                                                                     token.GetColumn().unsafe());
     }
 
     ParseError ConstructUnexpectedTokenParseError(std::uint32_t line_number, std::uint32_t column,
@@ -241,8 +242,8 @@ namespace dlx
     ParseError ConstructUnexpectedTokenParseError(const Token& token,
                                                   Token::Type  expected_type) noexcept
     {
-        return ConstructUnexpectedTokenParseError(token.GetLineNumber().get(),
-                                                  token.GetColumn().get(), expected_type,
+        return ConstructUnexpectedTokenParseError(token.GetLineNumber().unsafe(),
+                                                  token.GetColumn().unsafe(), expected_type,
                                                   token.GetType());
     }
 
@@ -261,8 +262,8 @@ namespace dlx
 
     ParseError ConstructReservedIdentiferParseError(const Token& token) noexcept
     {
-        return ConstructReservedIdentiferParseError(token.GetLineNumber().get(),
-                                                    token.GetColumn().get(), token.GetText());
+        return ConstructReservedIdentiferParseError(token.GetLineNumber().unsafe(),
+                                                    token.GetColumn().unsafe(), token.GetText());
     }
 
     ParseError ConstructInvalidLabelIdentifierParseError(std::uint32_t    line_number,
@@ -281,8 +282,8 @@ namespace dlx
 
     ParseError ConstructInvalidLabelIdentifierParseError(const Token& token) noexcept
     {
-        return ConstructInvalidLabelIdentifierParseError(token.GetLineNumber().get(),
-                                                         token.GetColumn().get(), token.GetText());
+        return ConstructInvalidLabelIdentifierParseError(
+                token.GetLineNumber().unsafe(), token.GetColumn().unsafe(), token.GetText());
     }
 
     ParseError ConstructLabelAlreadyDefinedParseError(std::uint32_t    line_number,
@@ -307,8 +308,8 @@ namespace dlx
                                                       const Token& first_definition) noexcept
     {
         return ConstructLabelAlreadyDefinedParseError(
-                token.GetLineNumber().get(), token.GetColumn().get(), token.GetText(),
-                first_definition.GetLineNumber().get(), first_definition.GetColumn().get());
+                token.GetLineNumber().unsafe(), token.GetColumn().unsafe(), token.GetText(),
+                first_definition.GetLineNumber().unsafe(), first_definition.GetColumn().unsafe());
     }
 
     ParseError ConstructOneInstructionPerLineParseError(std::uint32_t line_number,
@@ -325,8 +326,8 @@ namespace dlx
 
     ParseError ConstructOneInstructionPerLineParseError(const Token& token) noexcept
     {
-        return ConstructOneInstructionPerLineParseError(token.GetLineNumber().get(),
-                                                        token.GetColumn().get());
+        return ConstructOneInstructionPerLineParseError(token.GetLineNumber().unsafe(),
+                                                        token.GetColumn().unsafe());
     }
 
     ParseError ConstructTooFewArgumentsParseError(std::uint32_t line_number, std::uint32_t column,
@@ -347,8 +348,8 @@ namespace dlx
     ParseError ConstructTooFewArgumentsParseError(const Token& token, std::uint8_t required,
                                                   std::uint8_t provided) noexcept
     {
-        return ConstructTooFewArgumentsParseError(token.GetLineNumber().get(),
-                                                  token.GetColumn().get(), required, provided);
+        return ConstructTooFewArgumentsParseError(token.GetLineNumber().unsafe(),
+                                                  token.GetColumn().unsafe(), required, provided);
     }
 
     ParseError ConstructEmptyLabelParseError(std::uint32_t line_number, std::uint32_t column,
@@ -367,7 +368,7 @@ namespace dlx
     ParseError ConstructEmptyLabelParseError(const Token& token) noexcept
     {
         return ConstructEmptyLabelParseError(
-                token.GetLineNumber().get(), token.GetColumn().get(),
+                token.GetLineNumber().unsafe(), token.GetColumn().unsafe(),
                 (token.GetText().back() == ':') ?
                         token.GetText().substr(0, token.GetText().size() - 1) :
                         token.GetText());
@@ -387,7 +388,7 @@ namespace dlx
 
     ParseError ConstructTooManyCommaParseError(const Token& token) noexcept
     {
-        return ConstructTooManyCommaParseError(token.GetLineNumber().get(),
-                                               token.GetColumn().get());
+        return ConstructTooManyCommaParseError(token.GetLineNumber().unsafe(),
+                                               token.GetColumn().unsafe());
     }
 } // namespace dlx

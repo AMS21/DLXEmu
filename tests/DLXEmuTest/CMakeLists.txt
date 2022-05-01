@@ -12,7 +12,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${DLXEMU_TEST_SOURCES} ${DLX
 
 add_executable("DLXEmuUnittest" ${DLXEMU_TEST_SOURCES} ${DLXEMU_TEST_HEADERS})
 
-target_link_libraries("DLXEmuUnittest" PRIVATE DLXEmuLib Catch2::Catch2WithMain Phi::ProjectOptions)
+target_link_libraries("DLXEmuUnittest" PRIVATE DLXEmuLib Catch2::Catch2WithMain)
 
 target_include_directories("DLXEmuUnittest" PRIVATE "include")
 

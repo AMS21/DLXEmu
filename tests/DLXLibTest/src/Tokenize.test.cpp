@@ -24,9 +24,9 @@ void TokenMatches(const dlx::Token& token, const std::string_view expected_text,
 
     CHECK(token.GetText() == expected_text);
     CHECK(token.GetType() == expected_type);
-    CHECK((token.GetLength() == expected_text.length()).get());
-    CHECK((token.GetLineNumber() == expected_line_number).get());
-    CHECK((token.GetColumn() == expected_column).get());
+    CHECK((token.GetLength() == expected_text.length()).unsafe());
+    CHECK((token.GetLineNumber() == expected_line_number).unsafe());
+    CHECK((token.GetColumn() == expected_column).unsafe());
 }
 
 TEST_CASE("Tokenize - Ignoring whitespaces")
@@ -34,23 +34,23 @@ TEST_CASE("Tokenize - Ignoring whitespaces")
     dlx::TokenStream res;
 
     res = dlx::Tokenize("");
-    CHECK((res.size() == 0u).get());
+    CHECK((res.size() == 0u).unsafe());
     CHECK(res.reached_end());
 
     res = dlx::Tokenize(" ");
-    CHECK((res.size() == 0u).get());
+    CHECK((res.size() == 0u).unsafe());
     CHECK(res.reached_end());
 
     res = dlx::Tokenize("\t");
-    CHECK((res.size() == 0u).get());
+    CHECK((res.size() == 0u).unsafe());
     CHECK(res.reached_end());
 
     res = dlx::Tokenize("\v");
-    CHECK((res.size() == 0u).get());
+    CHECK((res.size() == 0u).unsafe());
     CHECK(res.reached_end());
 
     res = dlx::Tokenize("    ");
-    CHECK((res.size() == 0u).get());
+    CHECK((res.size() == 0u).unsafe());
     CHECK(res.reached_end());
 
     res = dlx::Tokenize("\t  \v\tADD\t  \v");

@@ -242,8 +242,8 @@ namespace dlx
         const FloatRegister& second_reg =
                 GetFloatRegister(static_cast<FloatRegisterID>(static_cast<std::size_t>(id) + 1));
 
-        const float first_value  = first_reg.GetValue().get();
-        const float second_value = second_reg.GetValue().get();
+        const float first_value  = first_reg.GetValue().unsafe();
+        const float second_value = second_reg.GetValue().unsafe();
 
         const std::uint32_t first_value_bits =
                 *reinterpret_cast<const std::uint32_t*>(&first_value);
@@ -286,7 +286,7 @@ namespace dlx
         const constexpr std::uint64_t first_32_bits  = 0b11111111'11111111'11111111'11111111;
         const constexpr std::uint64_t second_32_bits = first_32_bits << 32u;
 
-        double              value_raw  = value.get();
+        double              value_raw  = value.unsafe();
         const std::uint64_t value_bits = *reinterpret_cast<std::uint64_t*>(&value_raw);
 
         const std::uint32_t first_bits  = value_bits & first_32_bits;
@@ -389,7 +389,7 @@ namespace dlx
 
         // Get current instruction pointed to by the program counter
         const auto& current_instruction =
-                m_CurrentProgram->m_Instructions.at(m_ProgramCounter.get());
+                m_CurrentProgram->m_Instructions.at(m_ProgramCounter.unsafe());
 
         // Execute current instruction
         ExecuteInstruction(current_instruction);
@@ -573,21 +573,21 @@ namespace dlx
 
         for (phi::usize i{0u}; i < m_IntRegisters.size(); ++i)
         {
-            const IntRegister reg = m_IntRegisters.at(i.get());
-            text.append(
-                    fmt::format("R{0}: sdec: {1:d}, udec: {2:d}, hex: 0x{2:08X}, bin: {2:#032b}\n",
-                                i.get(), reg.GetSignedValue().get(), reg.GetUnsignedValue().get()));
+            const IntRegister reg = m_IntRegisters.at(i.unsafe());
+            text.append(fmt::format(
+                    "R{0}: sdec: {1:d}, udec: {2:d}, hex: 0x{2:08X}, bin: {2:#032b}\n", i.unsafe(),
+                    reg.GetSignedValue().unsafe(), reg.GetUnsignedValue().unsafe()));
         }
 
         text.append("\nFloat registers:\n");
 
         for (phi::usize i{0u}; i < m_FloatRegisters.size(); ++i)
         {
-            const FloatRegister reg        = m_FloatRegisters.at(i.get());
-            float               value      = reg.GetValue().get();
+            const FloatRegister reg        = m_FloatRegisters.at(i.unsafe());
+            float               value      = reg.GetValue().unsafe();
             std::uint32_t       value_uint = *reinterpret_cast<std::uint32_t*>(&value);
-            text.append(fmt::format("F{0}: flt: {1:f}, hex: 0x{2:08X}, bin: {2:#032b}\n", i.get(),
-                                    reg.GetValue().get(), value_uint));
+            text.append(fmt::format("F{0}: flt: {1:f}, hex: 0x{2:08X}, bin: {2:#032b}\n",
+                                    i.unsafe(), reg.GetValue().unsafe(), value_uint));
         }
 
         text.append("\nStatus registers:\n");
@@ -611,15 +611,15 @@ namespace dlx
         std::string text;
 
         text.append(fmt::format("H: {:s}\n", m_Halted ? "True" : "False"));
-        text.append(fmt::format("PC: {:d}, NPC: {:d}\n", m_ProgramCounter.get(),
-                                m_NextProgramCounter.get()));
+        text.append(fmt::format("PC: {:d}, NPC: {:d}\n", m_ProgramCounter.unsafe(),
+                                m_NextProgramCounter.unsafe()));
 
         if (m_CurrentProgram)
         {
             if (m_CurrentProgram->m_ParseErrors.empty() &&
-                m_ProgramCounter.get() < m_CurrentProgram->m_Instructions.size())
+                m_ProgramCounter.unsafe() < m_CurrentProgram->m_Instructions.size())
             {
-                Instruction instr = m_CurrentProgram->m_Instructions.at(m_ProgramCounter.get());
+                Instruction instr = m_CurrentProgram->m_Instructions.at(m_ProgramCounter.unsafe());
                 text.append(fmt::format("INSTR:\n{}\n", instr.DebugInfo()));
             }
             else

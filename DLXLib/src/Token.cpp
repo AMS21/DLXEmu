@@ -78,8 +78,8 @@ namespace dlx
 
     std::string Token::DebugInfo() const noexcept
     {
-        std::string pos_info = "(" + std::to_string(GetLineNumber().get()) + ":" +
-                               std::to_string(GetColumn().get()) + ")";
+        std::string pos_info = "(" + std::to_string(GetLineNumber().unsafe()) + ":" +
+                               std::to_string(GetColumn().unsafe()) + ")";
 
         switch (m_Type)
         {

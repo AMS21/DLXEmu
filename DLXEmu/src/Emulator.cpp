@@ -38,7 +38,7 @@ namespace dlxemu
 
         for (phi::i32 arg_num{1}; arg_num < argc; ++arg_num)
         {
-            std::string arg_value = argv[arg_num.get()];
+            std::string arg_value = argv[arg_num.unsafe()];
             std::transform(arg_value.begin(), arg_value.end(), arg_value.begin(), ::tolower);
 
             PHI_DBG_ASSERT(!arg_value.empty());
