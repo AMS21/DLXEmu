@@ -46,7 +46,7 @@ namespace dlxemu
     class CodeEditor
     {
     public:
-        enum class PaletteIndex
+        enum class PaletteIndex : std::int8_t
         {
             Default,
             OpCode,
@@ -65,7 +65,7 @@ namespace dlxemu
             Max
         };
 
-        enum class SelectionMode
+        enum class SelectionMode : std::int8_t
         {
             Normal,
             Word,
