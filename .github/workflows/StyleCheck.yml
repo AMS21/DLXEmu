@@ -98,7 +98,7 @@ jobs:
           git_commit_gpgsign: true
 
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4.14.0
+        uses: stefanzweifel/git-auto-commit-action@v4.14.1
         continue-on-error: true  # Ignore errors
         with:
           commit_message: Applied automatic formatting and fixes
