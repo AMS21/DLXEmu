@@ -627,3 +627,51 @@ TEST_CASE("crash-d71c35285a21907cbb3b49215fa07b1c47054b32")
     editor.EnterCharacter(0xFF00, true);
     editor.VerifyInternalState();
 }
+
+TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    CHECK(editor.GetText() == "\n");
+    CHECK(editor.GetTotalLines() == 2u);
+    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 0u});
+    CHECK_FALSE(editor.HasSelection());
+    CHECK(editor.CanUndo());
+
+    editor.MoveUp(538976288, true);
+    editor.VerifyInternalState();
+
+    CHECK(editor.GetText() == "\n");
+    CHECK(editor.GetTotalLines() == 2u);
+    CHECK(editor.HasSelection());
+    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 0u});
+    CHECK(editor.GetSelectedText() == "\n");
+    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+    // NOTE: Should be NOP since its not a valid char
+    editor.EnterCharacter(0xDF20, true);
+    editor.VerifyInternalState();
+
+    CHECK(editor.GetText() == "\n");
+    CHECK(editor.GetTotalLines() == 2u);
+    CHECK(editor.HasSelection());
+    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 0u});
+    CHECK(editor.GetSelectedText() == "\n");
+    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+
+    editor.Undo();
+    editor.VerifyInternalState();
+
+    CHECK(editor.GetText().empty());
+    CHECK(editor.GetTotalLines() == 1u);
+    CHECK_FALSE(editor.HasSelection());
+    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    CHECK(editor.GetSelectedText().empty());
+    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+}
