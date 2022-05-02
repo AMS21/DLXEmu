@@ -858,23 +858,19 @@ namespace dlxemu
         std::int32_t line        = m_State.m_CursorPosition.m_Line;
         std::int32_t cindex      = GetCharacterIndex(m_State.m_CursorPosition);
 
-        amount = std::min(amount, static_cast<std::uint32_t>(m_Lines[line].size()));
-
         while (amount-- > 0)
         {
             if (cindex == 0)
             {
-                if (line > 0)
+                if (line == 0)
                 {
-                    --line;
-                    if ((std::int32_t)m_Lines.size() > line)
-                    {
-                        cindex = (std::int32_t)m_Lines[line].size();
-                    }
-                    else
-                    {
-                        cindex = 0;
-                    }
+                    // We're already on the last line so we can't move further left
+                    amount = 0;
+                }
+                else
+                {
+                    line -= 1;
+                    cindex = static_cast<std::int32_t>(m_Lines[line].size());
                 }
             }
             else
