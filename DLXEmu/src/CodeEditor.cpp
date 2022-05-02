@@ -60,36 +60,41 @@ SOFTWARE.
 
 // Free Helper functions
 
-[[nodiscard]] static constexpr bool IsUTFSequence(const char c) noexcept
+[[nodiscard]] static constexpr bool IsUTFSequence(const char character) noexcept
 {
-    return (c & 0xC0) == 0x80;
+    return (character & 0xC0) == 0x80;
+}
+
+[[nodiscard]] static constexpr bool IsUTFSequence(const unsigned char character) noexcept
+{
+    return (character & 0xC0) == 0x80;
 }
 
 // https://en.wikipedia.org/wiki/UTF-8
 // We assume that the char is a standalone character (<128) or a leading byte of an UTF-8 code sequence (non-10xxxxxx code)
-[[nodiscard]] static constexpr std::int32_t UTF8CharLength(const char c) noexcept
+[[nodiscard]] static constexpr std::int32_t UTF8CharLength(const char characater) noexcept
 {
-    if ((c & 0xFE) == 0xFC)
+    if ((characater & 0xFE) == 0xFC)
     {
         return 6;
     }
 
-    if ((c & 0xFC) == 0xF8)
+    if ((characater & 0xFC) == 0xF8)
     {
         return 5;
     }
 
-    if ((c & 0xF8) == 0xF0)
+    if ((characater & 0xF8) == 0xF0)
     {
         return 4;
     }
 
-    if ((c & 0xF0) == 0xE0)
+    if ((characater & 0xF0) == 0xE0)
     {
         return 3;
     }
 
-    if ((c & 0xE0) == 0xC0)
+    if ((characater & 0xE0) == 0xC0)
     {
         return 2;
     }
@@ -98,46 +103,46 @@ SOFTWARE.
 }
 
 // "Borrowed" from ImGui source
-static inline std::int32_t ImTextCharToUtf8(char* buf, const std::int32_t buf_size,
-                                            const std::uint32_t c) noexcept
+static inline std::int32_t ImTextCharToUtf8(char* buffer, const std::int32_t buffer_size,
+                                            const std::uint32_t character) noexcept
 {
-    if (c < 0x80)
+    if (character < 0x80)
     {
-        buf[0] = (char)c;
+        buffer[0] = static_cast<char>(character);
         return 1;
     }
-    if (c < 0x800)
+    if (character < 0x800)
     {
-        PHI_DBG_ASSERT(buf_size >= 2);
+        PHI_DBG_ASSERT(buffer_size >= 2);
 
-        buf[0] = (char)(0xc0 + (c >> 6));
-        buf[1] = (char)(0x80 + (c & 0x3f));
+        buffer[0] = static_cast<char>(0xc0 + (character >> 6));
+        buffer[1] = static_cast<char>(0x80 + (character & 0x3f));
 
         return 2;
     }
-    if (c >= 0xdc00 && c < 0xe000)
+    if (character >= 0xdc00 && character < 0xe000)
     {
         return 0;
     }
 
-    if (c >= 0xd800 && c < 0xdc00)
+    if (character >= 0xd800 && character < 0xdc00)
     {
-        PHI_DBG_ASSERT(buf_size >= 4);
+        PHI_DBG_ASSERT(buffer_size >= 4);
 
-        buf[0] = (char)(0xf0 + (c >> 18));
-        buf[1] = (char)(0x80 + ((c >> 12) & 0x3f));
-        buf[2] = (char)(0x80 + ((c >> 6) & 0x3f));
-        buf[3] = (char)(0x80 + ((c)&0x3f));
+        buffer[0] = static_cast<char>(0xf0 + (character >> 18));
+        buffer[1] = static_cast<char>(0x80 + ((character >> 12) & 0x3f));
+        buffer[2] = static_cast<char>(0x80 + ((character >> 6) & 0x3f));
+        buffer[3] = static_cast<char>(0x80 + ((character)&0x3f));
 
         return 4;
     }
     //else if (c < 0x10000)
     {
-        PHI_DBG_ASSERT(buf_size >= 3);
+        PHI_DBG_ASSERT(buffer_size >= 3);
 
-        buf[0] = (char)(0xe0 + (c >> 12));
-        buf[1] = (char)(0x80 + ((c >> 6) & 0x3f));
-        buf[2] = (char)(0x80 + ((c)&0x3f));
+        buffer[0] = static_cast<char>(0xe0 + (character >> 12));
+        buffer[1] = static_cast<char>(0x80 + ((character >> 6) & 0x3f));
+        buffer[2] = static_cast<char>(0x80 + ((character)&0x3f));
 
         return 3;
     }
