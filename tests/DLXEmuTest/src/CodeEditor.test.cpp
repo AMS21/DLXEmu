@@ -1992,6 +1992,170 @@ TEST_CASE("CodeEditor")
         CHECK(pos.m_Column == 41);
     }
 
+    SECTION("MoveLeft")
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        dlxemu::CodeEditor::Coordinates pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+
+        editor.MoveLeft();
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+
+        editor.SetText("One line");
+        editor.VerifyInternalState();
+        editor.MoveEnd();
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 8u);
+
+        editor.MoveLeft();
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 7u);
+
+        editor.MoveLeft(4);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 3u);
+
+        editor.MoveLeft(25u, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "One");
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 3u});
+
+        // MoveLeft on the first line with selection but without shift clear the selection
+        editor.MoveLeft(3, false);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+        CHECK_FALSE(editor.HasSelection());
+
+        // Word mode
+        editor.MoveEnd();
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 8u);
+
+        editor.MoveLeft(1u, false, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 4u);
+
+        editor.MoveLeft(1u, true, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "One ");
+        CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+        CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 4u});
+
+        // Move left on first line without shift clears selection
+        editor.MoveLeft(1u, false, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+        CHECK_FALSE(editor.HasSelection());
+
+        // Multiple lines
+        editor.SetText("1\nTwo\n\n");
+        editor.VerifyInternalState();
+        editor.MoveBottom();
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 3u);
+        CHECK(pos.m_Column == 0u);
+
+        editor.MoveLeft();
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 2u);
+        CHECK(pos.m_Column == 0u);
+
+        editor.MoveLeft(1u, false, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 1u);
+        CHECK(pos.m_Column == 3u);
+
+        editor.MoveLeft(1u, true, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 1u);
+        CHECK(pos.m_Column == 0u);
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "Two");
+
+        editor.MoveLeft(1u, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 1u);
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "\nTwo");
+
+        editor.MoveLeft(1u, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "1\nTwo");
+
+        // Should basically be a nop
+        editor.MoveLeft(1u, true);
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+        CHECK(editor.HasSelection());
+        CHECK(editor.GetSelectedText() == "1\nTwo");
+
+        // Absurdly large number
+        editor.MoveLeft(std::numeric_limits<std::uint32_t>::max());
+        editor.VerifyInternalState();
+
+        pos = editor.GetCursorPosition();
+        CHECK(pos.m_Line == 0u);
+        CHECK(pos.m_Column == 0u);
+        CHECK_FALSE(editor.HasSelection());
+    }
+
     SECTION("SetSelectionStart")
     {
         dlxemu::CodeEditor editor{&emulator};
