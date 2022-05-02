@@ -924,8 +924,7 @@ namespace dlxemu
             m_InteractiveStart = m_InteractiveEnd = m_State.m_CursorPosition;
         }
 
-        SetSelection(m_InteractiveStart, m_InteractiveEnd,
-                     select && word_mode ? SelectionMode::Word : SelectionMode::Normal);
+        SetSelection(m_InteractiveStart, m_InteractiveEnd);
 
         EnsureCursorVisible();
     }
