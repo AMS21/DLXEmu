@@ -300,7 +300,7 @@ template <typename T>
 
     for (const auto& val : markers)
     {
-        ret += fmt::format("{:s}: {:s}\n", print_int(val.first), print_string(val.second));
+        ret += fmt::format("{:s}: {:s}\n", print_int(val.first.unsafe()), print_string(val.second));
     }
 
     return ret;
@@ -311,9 +311,9 @@ template <typename T>
 {
     std::string lines;
 
-    for (const std::uint32_t line_number : breakpoints)
+    for (const phi::u32 line_number : breakpoints)
     {
-        lines += fmt::format("{:s}, ", print_int(line_number));
+        lines += fmt::format("{:s}, ", print_int(line_number.unsafe()));
     }
 
     std::string ret = fmt::format("Breakpoints(size: {:d}: {:s})", breakpoints.size(),
@@ -566,8 +566,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
                 auto coords = coords_opt.value();
 
-                FUZZ_LOG("SetCursorPosition(Coordinates({:s}, {:s}))", print_int(coords.m_Line),
-                         print_int(coords.m_Column));
+                FUZZ_LOG("SetCursorPosition(Coordinates({:s}, {:s}))", print_int(coords.m_Line.unsafe()),
+                         print_int(coords.m_Column.unsafe()));
 
                 editor.SetCursorPosition(coords);
                 break;

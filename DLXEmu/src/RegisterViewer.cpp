@@ -26,9 +26,9 @@ namespace dlxemu
                     for (std::uint32_t index{1}; index < 32; ++index)
                     {
                         ImGui::InputInt(fmt::format("R{}", index).c_str(),
-                                        reinterpret_cast<std::int32_t*>(&proc.GetIntRegister(
+                                        reinterpret_cast<phi::int32_t*>(&proc.GetIntRegister(
                                                 static_cast<dlx::IntRegisterID>(
-                                                        index + static_cast<std::int32_t>(
+                                                        index + static_cast<phi::int32_t>(
                                                                         dlx::IntRegisterID::R0)))));
                     }
 
@@ -44,7 +44,7 @@ namespace dlxemu
                                 fmt::format("F{}", index).c_str(),
                                 reinterpret_cast<float*>(
                                         &proc.GetFloatRegister(static_cast<dlx::FloatRegisterID>(
-                                                index + static_cast<std::int32_t>(
+                                                index + static_cast<phi::int32_t>(
                                                                 dlx::FloatRegisterID::F0)))));
                     }
 

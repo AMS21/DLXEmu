@@ -267,9 +267,9 @@ namespace dlxemu
 
             // SetTabSize
             case 12: {
-                std::int32_t tab_size = int32_t_distrib(engine);
+                std::int16_t tab_size = int16_t_distrib(engine);
 
-                editor.SetTabSize(tab_size);
+                editor.SetTabSize(static_cast<std::uint8_t>(tab_size));
                 break;
             }
 

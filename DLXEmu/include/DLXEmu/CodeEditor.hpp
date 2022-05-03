@@ -29,9 +29,10 @@ SOFTWARE.
 #include <DLX/OpCode.hpp>
 #include <DLX/Token.hpp>
 #include <imgui.h>
+#include <phi/container/array.hpp>
 #include <phi/core/boolean.hpp>
+#include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
-#include <array>
 #include <cstdint>
 #include <map>
 #include <string>
@@ -46,7 +47,7 @@ namespace dlxemu
     class CodeEditor
     {
     public:
-        enum class PaletteIndex : std::int8_t
+        enum class PaletteIndex : phi::int8_t
         {
             Default,
             OpCode,
@@ -65,7 +66,7 @@ namespace dlxemu
             Max
         };
 
-        enum class SelectionMode : std::int8_t
+        enum class SelectionMode : phi::int8_t
         {
             Normal,
             Word,
@@ -75,7 +76,7 @@ namespace dlxemu
         class Breakpoint
         {
         public:
-            std::int32_t m_Line{-1};
+            phi::int32_t m_Line{-1};
             bool         m_Enabled{false};
             std::string  m_Condition;
         };
@@ -92,7 +93,7 @@ namespace dlxemu
         public:
             Coordinates() noexcept;
 
-            Coordinates(std::int32_t line, std::int32_t column) noexcept;
+            Coordinates(phi::i32 line, phi::i32 column) noexcept;
 
             [[nodiscard]] static Coordinates Invalid() noexcept;
 
@@ -108,8 +109,8 @@ namespace dlxemu
 
             bool operator>=(const Coordinates& o) const noexcept;
 
-            std::int32_t m_Line;
-            std::int32_t m_Column;
+            phi::i32 m_Line;
+            phi::i32 m_Column;
 
         private:
             struct dont_use
@@ -118,9 +119,9 @@ namespace dlxemu
             Coordinates(dont_use, dont_use) noexcept;
         };
 
-        using ErrorMarkers = std::map<std::uint32_t, std::string>;
-        using Breakpoints  = std::unordered_set<std::uint32_t>;
-        using Palette      = std::array<ImU32, static_cast<phi::size_t>(PaletteIndex::Max)>;
+        using ErrorMarkers = std::map<phi::u32, std::string>;
+        using Breakpoints  = std::unordered_set<phi::u32>;
+        using Palette      = phi::array<ImU32, static_cast<phi::size_t>(PaletteIndex::Max)>;
         using Char         = uint8_t;
 
         class Glyph
@@ -143,15 +144,15 @@ namespace dlxemu
         void                         SetPalette(const Palette& value) noexcept;
 
         void SetErrorMarkers(const ErrorMarkers& markers) noexcept;
-        void AddErrorMarker(const std::uint32_t line_number, const std::string& message) noexcept;
+        void AddErrorMarker(const phi::u32 line_number, const std::string& message) noexcept;
         void ClearErrorMarkers() noexcept;
         [[nodiscard]] ErrorMarkers&       GetErrorMarkers() noexcept;
         [[nodiscard]] const ErrorMarkers& GetErrorMarkers() const noexcept;
 
         void                             SetBreakpoints(const Breakpoints& markers) noexcept;
-        phi::boolean                     AddBreakpoint(const std::uint32_t line_number) noexcept;
-        phi::boolean                     RemoveBreakpoint(const std::uint32_t line_number) noexcept;
-        phi::boolean                     ToggleBreakpoint(const std::uint32_t line_number) noexcept;
+        phi::boolean                     AddBreakpoint(const phi::u32 line_number) noexcept;
+        phi::boolean                     RemoveBreakpoint(const phi::u32 line_number) noexcept;
+        phi::boolean                     ToggleBreakpoint(const phi::u32 line_number) noexcept;
         void                             ClearBreakPoints() noexcept;
         [[nodiscard]] Breakpoints&       GetBreakpoints() noexcept;
         [[nodiscard]] const Breakpoints& GetBreakpoints() const noexcept;
@@ -192,8 +193,8 @@ namespace dlxemu
         void               ToggleShowWhitespaces() noexcept;
         [[nodiscard]] bool IsShowingWhitespaces() const noexcept;
 
-        void                            SetTabSize(std::uint_fast8_t new_tab_size) noexcept;
-        [[nodiscard]] std::uint_fast8_t GetTabSize() const noexcept;
+        void                       SetTabSize(phi::u8_fast new_tab_size) noexcept;
+        [[nodiscard]] phi::u8_fast GetTabSize() const noexcept;
 
         void EnterCharacter(ImWchar character, bool shift = false) noexcept;
         void Backspace() noexcept;
@@ -201,12 +202,10 @@ namespace dlxemu
         void InsertText(const std::string& value) noexcept;
         void InsertText(const char* value) noexcept;
 
-        void MoveUp(std::uint32_t amount = 1, bool select = false) noexcept;
-        void MoveDown(std::uint32_t amount = 1, bool select = false) noexcept;
-        void MoveLeft(std::uint32_t amount = 1, bool select = false,
-                      bool word_mode = false) noexcept;
-        void MoveRight(std::uint32_t amount = 1, bool select = false,
-                       bool word_mode = false) noexcept;
+        void MoveUp(phi::u32 amount = 1u, bool select = false) noexcept;
+        void MoveDown(phi::u32 amount = 1u, bool select = false) noexcept;
+        void MoveLeft(phi::u32 amount = 1u, bool select = false, bool word_mode = false) noexcept;
+        void MoveRight(phi::u32 amount = 1u, bool select = false, bool word_mode = false) noexcept;
         void MoveTop(bool select = false) noexcept;
         void MoveBottom(bool select = false) noexcept;
         void MoveHome(bool select = false) noexcept;
@@ -229,10 +228,10 @@ namespace dlxemu
         void Delete() noexcept;
 
         [[nodiscard]] bool CanUndo() const noexcept;
-        void               Undo(std::uint32_t steps = 1) noexcept;
+        void               Undo(phi::u32 steps = 1u) noexcept;
 
         [[nodiscard]] bool CanRedo() const noexcept;
-        void               Redo(std::uint32_t steps = 1) noexcept;
+        void               Redo(phi::u32 steps = 1u) noexcept;
 
         [[nodiscard]] std::string GetEditorDump() const noexcept;
 
@@ -283,19 +282,19 @@ namespace dlxemu
 
         using UndoBuffer = std::vector<UndoRecord>;
 
-        void                Colorize(std::int32_t from_line = 0, std::int32_t count = -1) noexcept;
-        [[nodiscard]] float TextDistanceToLineStart(const Coordinates& from) const noexcept;
-        void                EnsureCursorVisible() noexcept;
-        [[nodiscard]] std::int32_t GetPageSize() const noexcept;
-        [[nodiscard]] std::string  GetText(const Coordinates& start,
-                                           const Coordinates& end) const noexcept;
-        [[nodiscard]] Coordinates  GetActualCursorCoordinates() const noexcept;
-        [[nodiscard]] Coordinates  SanitizeCoordinates(const Coordinates& value) const noexcept;
-        void                       Advance(Coordinates& coordinates) const noexcept;
+        void                      Colorize(phi::i32 from_line = 0, phi::i32 count = -1) noexcept;
+        [[nodiscard]] float       TextDistanceToLineStart(const Coordinates& from) const noexcept;
+        void                      EnsureCursorVisible() noexcept;
+        [[nodiscard]] phi::i32    GetPageSize() const noexcept;
+        [[nodiscard]] std::string GetText(const Coordinates& start,
+                                          const Coordinates& end) const noexcept;
+        [[nodiscard]] Coordinates GetActualCursorCoordinates() const noexcept;
+        [[nodiscard]] Coordinates SanitizeCoordinates(const Coordinates& value) const noexcept;
+        void                      Advance(Coordinates& coordinates) const noexcept;
 
         void DeleteRange(const Coordinates& start, const Coordinates& end) noexcept;
 
-        std::int32_t InsertTextAt(Coordinates& where, const char* value) noexcept;
+        phi::i32 InsertTextAt(Coordinates& where, const char* value) noexcept;
 
         void AddUndo(UndoRecord& value) noexcept;
 
@@ -307,17 +306,17 @@ namespace dlxemu
         [[nodiscard]] std::string GetWordUnderCursor() const noexcept;
         [[nodiscard]] std::string GetWordAt(const Coordinates& coords) const noexcept;
 
-        [[nodiscard]] std::int32_t GetCharacterIndex(const Coordinates& coordinates) const noexcept;
-        [[nodiscard]] std::int32_t GetCharacterColumn(std::int32_t line_number,
-                                                      std::int32_t index) const noexcept;
-        [[nodiscard]] std::int32_t GetLineCharacterCount(std::int32_t line) const noexcept;
-        [[nodiscard]] std::int32_t GetLineMaxColumn(std::int32_t line) const noexcept;
+        [[nodiscard]] phi::i32 GetCharacterIndex(const Coordinates& coordinates) const noexcept;
+        [[nodiscard]] phi::i32 GetCharacterColumn(phi::i32 line_number,
+                                                  phi::i32 index) const noexcept;
+        [[nodiscard]] phi::i32 GetLineCharacterCount(phi::i32 line) const noexcept;
+        [[nodiscard]] phi::i32 GetLineMaxColumn(phi::i32 line) const noexcept;
 
         [[nodiscard]] bool IsOnWordBoundary(const Coordinates& at) const noexcept;
 
-        void  RemoveLine(std::int32_t start, std::int32_t end) noexcept;
-        void  RemoveLine(std::int32_t index) noexcept;
-        Line& InsertLine(std::int32_t index) noexcept;
+        void  RemoveLine(phi::i32 start, phi::i32 end) noexcept;
+        void  RemoveLine(phi::i32 index) noexcept;
+        Line& InsertLine(phi::i32 index) noexcept;
 
         void EnterCharacterImpl(ImWchar character, bool shift) noexcept;
 
@@ -334,7 +333,7 @@ namespace dlxemu
         void ColorizeToken(const dlx::Token& token) noexcept;
         void ColorizeInternal() noexcept;
 
-        [[nodiscard]] std::uint_fast8_t GetTabSizeAt(std::int32_t column) const noexcept;
+        [[nodiscard]] std::uint_fast8_t GetTabSizeAt(phi::i32 column) const noexcept;
 
         void ResetState() noexcept;
 
@@ -343,21 +342,21 @@ namespace dlxemu
         UndoBuffer  m_UndoBuffer;
         phi::usize  m_UndoIndex;
 
-        std::uint_fast8_t m_TabSize;
-        bool              m_Overwrite : 1;
-        bool              m_ReadOnly : 1;
-        bool              m_WithinRender : 1;
-        bool              m_ScrollToCursor : 1;
-        bool              m_ScrollToTop : 1;
-        bool              m_TextChanged : 1;
-        bool              m_ColorizerEnabled : 1;
-        bool              m_CursorPositionChanged : 1;
-        float             m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
-        std::int32_t      m_LeftMargin;
-        std::int32_t      m_ColorRangeMin;
-        std::int32_t      m_ColorRangeMax;
-        SelectionMode     m_SelectionMode;
-        bool              m_ShowWhitespaces : 1;
+        phi::u8_fast  m_TabSize;
+        bool          m_Overwrite : 1;
+        bool          m_ReadOnly : 1;
+        bool          m_WithinRender : 1;
+        bool          m_ScrollToCursor : 1;
+        bool          m_ScrollToTop : 1;
+        bool          m_TextChanged : 1;
+        bool          m_ColorizerEnabled : 1;
+        bool          m_CursorPositionChanged : 1;
+        float         m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
+        phi::i32      m_LeftMargin;
+        phi::i32      m_ColorRangeMin;
+        phi::i32      m_ColorRangeMax;
+        SelectionMode m_SelectionMode;
+        bool          m_ShowWhitespaces : 1;
 
         Palette m_PaletteBase;
         Palette m_Palette;
@@ -377,7 +376,7 @@ namespace dlxemu
         std::string m_FullText;
 
         // Constants
-        static const constexpr std::uint_fast8_t MinTabSize{1u};
-        static const constexpr std::uint_fast8_t MaxTabSize{32u};
+        static const constexpr phi::u8_fast MinTabSize{static_cast<phi::uint_fast8_t>(1u)};
+        static const constexpr phi::u8_fast MaxTabSize{static_cast<phi::uint_fast8_t>(32u)};
     };
 } // namespace dlxemu

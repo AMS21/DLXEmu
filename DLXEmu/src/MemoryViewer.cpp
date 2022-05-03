@@ -25,7 +25,7 @@ namespace dlxemu
             for (std::size_t index{0}; index < values.size(); index += 4)
             {
                 ImGui::InputInt(std::to_string((start_adr + index).unsafe()).c_str(),
-                                reinterpret_cast<std::int32_t*>(&values[index]));
+                                reinterpret_cast<phi::int32_t*>(&values[index]));
             }
         }
 

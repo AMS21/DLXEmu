@@ -4,6 +4,8 @@
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
 
+using namespace phi::literals;
+
 static dlxemu::Emulator emulator;
 
 TEST_CASE("crash-6ededd1eef55e21130e51a28a22b1275a0929cfd")
@@ -20,7 +22,7 @@ TEST_CASE("crash-6ededd1eef55e21130e51a28a22b1275a0929cfd")
     editor.Delete();
     editor.VerifyInternalState();
 
-    editor.Undo(24);
+    editor.Undo(24u);
     editor.VerifyInternalState();
 
     editor.Delete();
@@ -193,7 +195,7 @@ TEST_CASE("crash-aeb78eb087c7e15d3bc53666d21575ec7b73bd02")
     editor.Paste();
     editor.VerifyInternalState();
 
-    editor.Undo(638844961);
+    editor.Undo(638844961u);
     editor.VerifyInternalState();
 
     ImGui::DestroyContext(ctx);
@@ -294,16 +296,16 @@ TEST_CASE("Crash-b969d74f5fc10237a879950cd37541614ee459e4")
     editor.Render({0.0, 0.0}, true);
     editor.VerifyInternalState();
 
-    editor.AddErrorMarker(0, "");
+    editor.AddErrorMarker(0u, "");
     editor.VerifyInternalState();
 
-    editor.AddErrorMarker(0, "");
+    editor.AddErrorMarker(0u, "");
     editor.VerifyInternalState();
 
-    editor.MoveRight(0, true, true);
+    editor.MoveRight(0u, true, true);
     editor.VerifyInternalState();
 
-    editor.AddErrorMarker(0, "");
+    editor.AddErrorMarker(0u, "");
     editor.VerifyInternalState();
 
     EndImgui();
@@ -323,13 +325,13 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.Render({0.0, 0.0}, true);
         editor.VerifyInternalState();
 
-        editor.AddErrorMarker(538976288, "       ");
+        editor.AddErrorMarker(538976288u, "       ");
         editor.VerifyInternalState();
 
-        editor.AddErrorMarker(538976288, "      ");
+        editor.AddErrorMarker(538976288u, "      ");
         editor.VerifyInternalState();
 
-        editor.MoveRight(0, true, true);
+        editor.MoveRight(0u, true, true);
         editor.VerifyInternalState();
 
         EndImgui();
@@ -347,13 +349,13 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.Render({0.0, 0.0}, true);
         editor.VerifyInternalState();
 
-        editor.AddErrorMarker(538976288, "       ");
+        editor.AddErrorMarker(538976288u, "       ");
         editor.VerifyInternalState();
 
-        editor.AddErrorMarker(538976288, "      ");
+        editor.AddErrorMarker(538976288u, "      ");
         editor.VerifyInternalState();
 
-        editor.MoveLeft(0, true, true);
+        editor.MoveLeft(0u, true, true);
         editor.VerifyInternalState();
 
         EndImgui();
@@ -371,13 +373,13 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.Render({0.0, 0.0}, true);
         editor.VerifyInternalState();
 
-        editor.AddErrorMarker(538976288, "       ");
+        editor.AddErrorMarker(538976288u, "       ");
         editor.VerifyInternalState();
 
-        editor.AddErrorMarker(538976288, "      ");
+        editor.AddErrorMarker(538976288u, "      ");
         editor.VerifyInternalState();
 
-        editor.MoveUp(0, true);
+        editor.MoveUp(0u, true);
         editor.VerifyInternalState();
 
         EndImgui();
@@ -395,13 +397,13 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.Render({0.0, 0.0}, true);
         editor.VerifyInternalState();
 
-        editor.AddErrorMarker(538976288, "       ");
+        editor.AddErrorMarker(538976288u, "       ");
         editor.VerifyInternalState();
 
-        editor.AddErrorMarker(538976288, "      ");
+        editor.AddErrorMarker(538976288u, "      ");
         editor.VerifyInternalState();
 
-        editor.MoveDown(0, true);
+        editor.MoveDown(0u, true);
         editor.VerifyInternalState();
 
         EndImgui();
@@ -440,7 +442,7 @@ TEST_CASE("crash-f84b5dc1d1204536f7f1c21183d53d46e01dbd55")
 {
     dlxemu::CodeEditor editor{&emulator};
 
-    editor.MoveUp(4160756736, true);
+    editor.MoveUp(4160756736u, true);
     editor.VerifyInternalState();
 
     (void)editor.GetCurrentLineText();
@@ -579,7 +581,7 @@ TEST_CASE("crash-c8a3f2fd13c8b579fd54ef3ae4099e9d4514c47c")
     editor.InsertText("zjzU\t\t\t");
     editor.VerifyInternalState();
 
-    editor.SetTabSize(0);
+    editor.SetTabSize(0_u8);
     editor.VerifyInternalState();
 }
 
@@ -590,7 +592,7 @@ TEST_CASE("crash-fb8cf6fc795f270cba6e88dcf700212057424304")
     editor.SetText("\t\t\t");
     editor.VerifyInternalState();
 
-    editor.SetCursorPosition({0u, 10u});
+    editor.SetCursorPosition({0, 10});
     editor.VerifyInternalState();
 
     editor.Delete();
@@ -610,7 +612,7 @@ TEST_CASE("crash-b814e3e7a67909918a8d94359459ae5f8f3a778e")
     editor.Delete();
     editor.VerifyInternalState();
 
-    editor.SetTabSize(0u);
+    editor.SetTabSize(0_u8);
     editor.VerifyInternalState();
 
     editor.Undo();
@@ -637,20 +639,20 @@ TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
 
     CHECK(editor.GetText() == "\n");
     CHECK(bool(editor.GetTotalLines() == 2u));
-    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 0u});
+    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1, 0});
     CHECK_FALSE(editor.HasSelection());
     CHECK(editor.CanUndo());
 
-    editor.MoveUp(538976288, true);
+    editor.MoveUp(538976288u, true);
     editor.VerifyInternalState();
 
     CHECK(editor.GetText() == "\n");
     CHECK(bool(editor.GetTotalLines() == 2u));
     CHECK(editor.HasSelection());
-    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
-    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 0u});
+    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0, 0});
+    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1, 0});
     CHECK(editor.GetSelectedText() == "\n");
-    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0, 0});
 
     // NOTE: Should be NOP since its not a valid char
     editor.EnterCharacter(0xDF20, true);
@@ -659,10 +661,10 @@ TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
     CHECK(editor.GetText() == "\n");
     CHECK(bool(editor.GetTotalLines() == 2u));
     CHECK(editor.HasSelection());
-    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
-    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 0u});
+    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0, 0});
+    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1, 0});
     CHECK(editor.GetSelectedText() == "\n");
-    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0, 0});
 
     editor.Undo();
     editor.VerifyInternalState();
@@ -670,10 +672,10 @@ TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
     CHECK(editor.GetText().empty());
     CHECK(bool(editor.GetTotalLines() == 1u));
     CHECK_FALSE(editor.HasSelection());
-    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
-    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0, 0});
+    CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0, 0});
     CHECK(editor.GetSelectedText().empty());
-    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
+    CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0, 0});
 }
 
 TEST_CASE("crash-a984a771c4227705ec8b87dedf02531b2b87a0ef")
@@ -681,5 +683,13 @@ TEST_CASE("crash-a984a771c4227705ec8b87dedf02531b2b87a0ef")
     dlxemu::CodeEditor editor{&emulator};
 
     editor.EnterCharacter(0xD800, true);
+    editor.VerifyInternalState();
+}
+
+TEST_CASE("crash-b3eb38a122a8b517777553ac35921fd8878c964e")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.MoveLeft(1024u, true, true);
     editor.VerifyInternalState();
 }
