@@ -34,6 +34,7 @@ SOFTWARE.
 #include <phi/algorithm/clamp.hpp>
 #include <phi/algorithm/max.hpp>
 #include <phi/algorithm/string_length.hpp>
+#include <phi/algorithm/swap.hpp>
 #include <phi/container/array.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
@@ -1114,7 +1115,7 @@ namespace dlxemu
         m_State.m_SelectionStart = SanitizeCoordinates(position);
         if (m_State.m_SelectionStart > m_State.m_SelectionEnd)
         {
-            std::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
+            phi::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
         }
     }
 
@@ -1123,7 +1124,7 @@ namespace dlxemu
         m_State.m_SelectionEnd = SanitizeCoordinates(position);
         if (m_State.m_SelectionStart > m_State.m_SelectionEnd)
         {
-            std::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
+            phi::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
         }
     }
 
@@ -1137,7 +1138,7 @@ namespace dlxemu
         m_State.m_SelectionEnd   = SanitizeCoordinates(end);
         if (m_State.m_SelectionStart > m_State.m_SelectionEnd)
         {
-            std::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
+            phi::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
         }
 
         switch (mode)
@@ -2585,7 +2586,7 @@ namespace dlxemu
         }
         if (m_State.m_SelectionStart > m_State.m_SelectionEnd)
         {
-            std::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
+            phi::swap(m_State.m_SelectionStart, m_State.m_SelectionEnd);
         }
 
         m_TextChanged = true;
