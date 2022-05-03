@@ -1228,7 +1228,7 @@ namespace dlxemu
             if (HasSelection())
             {
                 UndoRecord u;
-                u.m_Before       = m_State;
+                u.StoreBeforeState(this);
                 u.m_Removed      = GetSelectedText();
                 u.m_RemovedStart = m_State.m_SelectionStart;
                 u.m_RemovedEnd   = m_State.m_SelectionEnd;
