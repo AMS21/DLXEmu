@@ -251,7 +251,7 @@ namespace dlxemu
 
     CodeEditor::CodeEditor(Emulator* emulator) noexcept
         : m_LineSpacing(1.0f)
-        , m_UndoIndex(0)
+        , m_UndoIndex(0u)
         , m_TabSize(4)
         , m_Overwrite(false)
         , m_ReadOnly(false)
@@ -387,7 +387,8 @@ namespace dlxemu
 
         ImGui::PushStyleColor(
                 ImGuiCol_ChildBg,
-                ImGui::ColorConvertU32ToFloat4(m_Palette[(std::int32_t)PaletteIndex::Background]));
+                ImGui::ColorConvertU32ToFloat4(
+                        m_Palette[static_cast<phi::size_t>(PaletteIndex::Background)]));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
         static constexpr const float min_size = 0.0f;
@@ -487,7 +488,7 @@ namespace dlxemu
         m_ScrollToTop = true;
 
         m_UndoBuffer.clear();
-        m_UndoIndex = 0;
+        m_UndoIndex = 0u;
 
         Colorize();
     }
@@ -541,12 +542,12 @@ namespace dlxemu
         {
             m_Lines.resize(lines.size());
 
-            std::size_t line_number{0u};
-            for (std::size_t index = 0u; index < lines.size(); ++index, ++line_number)
+            phi::usize line_number{0u};
+            for (phi::usize index = 0u; index < lines.size(); ++index, ++line_number)
             {
-                const std::string& line = lines[index];
+                const std::string& line = lines[index.unsafe()];
 
-                m_Lines[line_number].reserve(line.size());
+                m_Lines[line_number.unsafe()].reserve(line.size());
                 for (char character : line)
                 {
                     if (character == '\n')
@@ -555,11 +556,12 @@ namespace dlxemu
                         m_Lines.emplace_back(Line{});
 
                         // Increase line number
-                        line_number += 1;
+                        line_number += 1u;
                     }
                     else
                     {
-                        m_Lines[line_number].emplace_back(Glyph(character, PaletteIndex::Default));
+                        m_Lines[line_number.unsafe()].emplace_back(
+                                Glyph(character, PaletteIndex::Default));
                     }
                 }
             }
@@ -569,7 +571,7 @@ namespace dlxemu
         m_ScrollToTop = true;
 
         m_UndoBuffer.clear();
-        m_UndoIndex = 0;
+        m_UndoIndex = 0u;
 
         Colorize();
     }
@@ -610,7 +612,7 @@ namespace dlxemu
                        Coordinates(m_State.m_CursorPosition.m_Line, line_length));
     }
 
-    std::size_t CodeEditor::GetTotalLines() const noexcept
+    phi::usize CodeEditor::GetTotalLines() const noexcept
     {
         return m_Lines.size();
     }
@@ -1155,8 +1157,8 @@ namespace dlxemu
             }
             case CodeEditor::SelectionMode::Line: {
                 const std::int32_t line_no = m_State.m_SelectionEnd.m_Line;
-                const std::size_t  line_size =
-                        (std::size_t)line_no < m_Lines.size() ? m_Lines[line_no].size() : 0;
+                const phi::usize   line_size =
+                        (phi::size_t)line_no < m_Lines.size() ? m_Lines[line_no].size() : 0;
                 m_State.m_SelectionStart = Coordinates(m_State.m_SelectionStart.m_Line, 0);
                 m_State.m_SelectionEnd   = Coordinates(line_no, GetLineMaxColumn(line_no));
                 break;
@@ -1378,14 +1380,15 @@ namespace dlxemu
 
     bool CodeEditor::CanUndo() const noexcept
     {
-        return !m_ReadOnly && m_UndoIndex > 0;
+        return !m_ReadOnly && m_UndoIndex != 0u;
     }
 
     void CodeEditor::Undo(std::uint32_t steps) noexcept
     {
         while (CanUndo() && steps-- > 0)
         {
-            m_UndoBuffer[--m_UndoIndex].Undo(this);
+            m_UndoIndex -= 1u;
+            m_UndoBuffer[m_UndoIndex.unsafe()].Undo(this);
         }
     }
 
@@ -1398,7 +1401,8 @@ namespace dlxemu
     {
         while (CanRedo() && steps-- > 0)
         {
-            m_UndoBuffer[m_UndoIndex++].Redo(this);
+            m_UndoBuffer[m_UndoIndex.unsafe()].Redo(this);
+            m_UndoIndex += 1u;
         }
     }
 
@@ -1440,16 +1444,16 @@ namespace dlxemu
 
         str += "\n";
         str += "Text:\n";
-        str += fmt::format("Total lines: {:d}\n", GetTotalLines());
+        str += fmt::format("Total lines: {:d}\n", GetTotalLines().unsafe());
         if (lines_text != full_text)
         {
             str += "[WARNING]: Lines and text don't match!";
             str += fmt::format("full_text:\n\"{:s}\"\n", full_text);
 
             str += "Lines:\n";
-            for (std::size_t i{0}; i < lines.size(); ++i)
+            for (phi::usize i{0u}; i < lines.size(); ++i)
             {
-                str += fmt::format("{:02d}: \"{:s}\"\n", i, lines.at(i));
+                str += fmt::format("{:02d}: \"{:s}\"\n", i.unsafe(), lines.at(i.unsafe()));
             }
         }
         else
@@ -1493,17 +1497,17 @@ namespace dlxemu
         str += "Undo/Redo:\n";
         str += fmt::format("Can undo: {:s}\n", CanUndo() ? "true" : "false");
         str += fmt::format("Can redo: {:s}\n", CanRedo() ? "true" : "false");
-        str += fmt::format("Undo index: {:d}\n", m_UndoIndex);
+        str += fmt::format("Undo index: {:d}\n", m_UndoIndex.unsafe());
 
         str += "UndoBuffer:\n";
         if (m_UndoBuffer.empty())
         {
             str += "Empty\n";
         }
-        for (std::size_t i{0}; i < m_UndoBuffer.size(); ++i)
+        for (phi::usize i{0u}; i < m_UndoBuffer.size(); ++i)
         {
-            const UndoRecord& record = m_UndoBuffer.at(i);
-            str += fmt::format("#{:02d} UndoRecord:\n", i);
+            const UndoRecord& record = m_UndoBuffer.at(i.unsafe());
+            str += fmt::format("#{:02d} UndoRecord:\n", i.unsafe());
 
             if (!record.m_Added.empty())
             {
@@ -1859,16 +1863,16 @@ namespace dlxemu
         std::int32_t lend   = end.m_Line;
         std::int32_t istart = GetCharacterIndex(start);
         std::int32_t iend   = GetCharacterIndex(end);
-        std::size_t  s      = 0;
+        phi::usize   s      = 0u;
 
         PHI_DBG_ASSERT(lstart < m_Lines.size());
 
-        for (std::size_t i = lstart; i < lend; ++i)
+        for (std::int32_t i = lstart; i < lend; ++i)
         {
             s += m_Lines[i].size();
         }
 
-        result.reserve(s + s / 8);
+        result.reserve((s + s / 8u).unsafe());
 
         while (istart < iend || lstart < lend)
         {
@@ -2134,7 +2138,7 @@ namespace dlxemu
         PHI_DBG_ASSERT(value.m_RemovedStart <= value.m_RemovedEnd);
 #endif
 
-        m_UndoBuffer.resize(m_UndoIndex + 1u);
+        m_UndoBuffer.resize((m_UndoIndex + 1u).unsafe());
         m_UndoBuffer.back() = value;
         ++m_UndoIndex;
 
@@ -2796,19 +2800,20 @@ namespace dlxemu
             Line& line     = m_Lines[coord.m_Line];
             Line& new_line = m_Lines[coord.m_Line + 1];
 
-            for (std::size_t it = 0u;
+            for (std::int32_t it = 0;
                  it < line.size() && it < coord.m_Column && phi::is_blank(line[it].m_Char); ++it)
             {
                 new_line.push_back(line[it]);
                 u.m_Added += static_cast<char>(line[it].m_Char);
             }
 
-            const std::size_t whitespace_size = new_line.size();
-            std::int32_t      cindex          = GetCharacterIndex(coord);
+            const phi::usize whitespace_size = new_line.size();
+            std::int32_t     cindex          = GetCharacterIndex(coord);
             new_line.insert(new_line.end(), line.begin() + cindex, line.end());
             line.erase(line.begin() + cindex, line.begin() + line.size());
-            SetCursorPosition(Coordinates(
-                    coord.m_Line + 1, GetCharacterColumn(coord.m_Line + 1, (int)whitespace_size)));
+            SetCursorPosition(
+                    Coordinates(coord.m_Line + 1,
+                                GetCharacterColumn(coord.m_Line + 1, whitespace_size.unsafe())));
 
             // Fix selection
             if (!HasSelection())
@@ -2983,11 +2988,11 @@ namespace dlxemu
     {
         if (!m_ColorizerEnabled)
         {
-            return m_Palette[static_cast<std::size_t>(PaletteIndex::Default)];
+            return m_Palette[static_cast<phi::size_t>(PaletteIndex::Default)];
         }
 
-        PHI_DBG_ASSERT(static_cast<std::size_t>(glyph.m_ColorIndex) < m_Palette.size());
-        return m_Palette[static_cast<std::size_t>(glyph.m_ColorIndex)];
+        PHI_DBG_ASSERT(static_cast<phi::size_t>(glyph.m_ColorIndex) < m_Palette.size());
+        return m_Palette[static_cast<phi::size_t>(glyph.m_ColorIndex)];
     }
 
     void CodeEditor::HandleKeyboardInputs() noexcept
@@ -3237,7 +3242,7 @@ namespace dlxemu
         m_CharAdvance = ImVec2(font_size, ImGui::GetTextLineHeightWithSpacing() * m_LineSpacing);
 
         /* Update palette with the current alpha from style */
-        for (std::int32_t i = 0; i < (std::int32_t)PaletteIndex::Max; ++i)
+        for (phi::usize i = 0u; i < (phi::size_t)PaletteIndex::Max; ++i)
         {
             ImVec4 color = ImGui::ColorConvertU32ToFloat4(m_PaletteBase[i]);
             color.w *= ImGui::GetStyle().Alpha;
@@ -3329,7 +3334,7 @@ namespace dlxemu
                             line_start_screen_pos.y + m_CharAdvance.y);
 
                 draw_list->AddRectFilled(vstart, vend,
-                                         m_Palette[(std::int32_t)PaletteIndex::Selection]);
+                                         m_Palette[(phi::size_t)PaletteIndex::Selection]);
             }
 
             // Draw breakpoints
@@ -3340,7 +3345,7 @@ namespace dlxemu
                 ImVec2 end = ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
                                     line_start_screen_pos.y + m_CharAdvance.y);
                 draw_list->AddRectFilled(start, end,
-                                         m_Palette[(std::int32_t)PaletteIndex::Breakpoint]);
+                                         m_Palette[(phi::size_t)PaletteIndex::Breakpoint]);
             }
 
             // Draw error markers
@@ -3350,7 +3355,7 @@ namespace dlxemu
                 ImVec2 end = ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
                                     line_start_screen_pos.y + m_CharAdvance.y);
                 draw_list->AddRectFilled(start, end,
-                                         m_Palette[(std::int32_t)PaletteIndex::ErrorMarker]);
+                                         m_Palette[(phi::size_t)PaletteIndex::ErrorMarker]);
 
                 if (GImGui->HoveredWindow == ImGui::GetCurrentWindow() &&
                     ImGui::IsMouseHoveringRect(line_start_screen_pos, end))
@@ -3376,7 +3381,7 @@ namespace dlxemu
                                           .x;
             draw_list->AddText(ImVec2(line_start_screen_pos.x + m_TextStart - line_no_width,
                                       line_start_screen_pos.y),
-                               m_Palette[(std::int32_t)PaletteIndex::LineNumber], buf);
+                               m_Palette[(phi::size_t)PaletteIndex::LineNumber], buf);
 
             if (m_State.m_CursorPosition.m_Line == line_no)
             {
@@ -3389,12 +3394,11 @@ namespace dlxemu
                             ImVec2(start.x + content_size.x + scroll_x, start.y + m_CharAdvance.y);
                     draw_list->AddRectFilled(
                             start, end,
-                            m_Palette[(std::int32_t)(
+                            m_Palette[(phi::size_t)(
                                     focused ? PaletteIndex::CurrentLineFill :
                                               PaletteIndex::CurrentLineFillInactive)]);
                     draw_list->AddRect(start, end,
-                                       m_Palette[(std::int32_t)PaletteIndex::CurrentLineEdge],
-                                       1.0f);
+                                       m_Palette[(phi::size_t)PaletteIndex::CurrentLineEdge], 1.0f);
                 }
 
                 // Render the cursor
@@ -3436,7 +3440,7 @@ namespace dlxemu
                         ImVec2 cend(text_screen_pos.x + cx + width,
                                     line_start_screen_pos.y + m_CharAdvance.y);
                         draw_list->AddRectFilled(cstart, cend,
-                                                 m_Palette[(std::int32_t)PaletteIndex::Cursor]);
+                                                 m_Palette[(phi::size_t)PaletteIndex::Cursor]);
                         if (elapsed > 800)
                         {
                             m_StartTime = time_end;
@@ -3446,8 +3450,8 @@ namespace dlxemu
             }
 
             // Render colorized text
-            ImU32 prev_color =
-                    line.empty() ? m_Palette[(int)PaletteIndex::Default] : GetGlyphColor(line[0]);
+            ImU32  prev_color = line.empty() ? m_Palette[(phi::size_t)PaletteIndex::Default] :
+                                               GetGlyphColor(line[0]);
             ImVec2 buffer_offset;
 
             for (std::int32_t i = 0; i < line.size();)
@@ -3594,11 +3598,11 @@ namespace dlxemu
 
         Line& line = m_Lines[(token.GetLineNumber() - 1u).unsafe()];
 
-        for (std::size_t index{static_cast<std::size_t>((token.GetColumn() - 1u).unsafe())};
+        for (phi::usize index{token.GetColumn() - 1u};
              index < token.GetColumn() + token.GetLength() - 1u; ++index)
         {
             PHI_DBG_ASSERT(index < line.size());
-            line[index].m_ColorIndex = palette_index;
+            line[index.unsafe()].m_ColorIndex = palette_index;
         }
     }
 

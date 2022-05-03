@@ -120,7 +120,7 @@ namespace dlxemu
 
         using ErrorMarkers = std::map<std::uint32_t, std::string>;
         using Breakpoints  = std::unordered_set<std::uint32_t>;
-        using Palette      = std::array<ImU32, static_cast<std::size_t>(PaletteIndex::Max)>;
+        using Palette      = std::array<ImU32, static_cast<phi::size_t>(PaletteIndex::Max)>;
         using Char         = uint8_t;
 
         class Glyph
@@ -168,7 +168,7 @@ namespace dlxemu
         [[nodiscard]] std::string GetSelectedText() const noexcept;
         [[nodiscard]] std::string GetCurrentLineText() const noexcept;
 
-        [[nodiscard]] std::size_t GetTotalLines() const noexcept;
+        [[nodiscard]] phi::usize GetTotalLines() const noexcept;
 
         void               SetOverwrite(bool overwrite) noexcept;
         void               ToggleOverwrite() noexcept;
@@ -341,7 +341,7 @@ namespace dlxemu
         float       m_LineSpacing;
         EditorState m_State;
         UndoBuffer  m_UndoBuffer;
-        std::size_t m_UndoIndex;
+        phi::usize  m_UndoIndex;
 
         std::uint_fast8_t m_TabSize;
         bool              m_Overwrite : 1;

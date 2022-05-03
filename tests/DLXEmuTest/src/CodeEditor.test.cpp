@@ -515,7 +515,7 @@ TEST_CASE("CodeEditor")
         CHECK(text.empty());
         CHECK(lines.size() == 1);
         CHECK(lines.at(0).empty());
-        CHECK(editor.GetTotalLines() == 1);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         constexpr const char* t1{"A simple line"};
         editor.SetText(t1);
@@ -525,7 +525,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == t1);
         CHECK(lines.size() == 1);
         CHECK(lines.at(0) == t1);
-        CHECK(editor.GetTotalLines() == 1);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         constexpr const char* t2{"\n"};
         editor.SetText(t2);
@@ -536,7 +536,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 2);
         CHECK(lines.at(0).empty());
         CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
+        CHECK(bool(editor.GetTotalLines() == 2u));
 
         constexpr const char* t3{"\n\n"};
         editor.SetText(t3);
@@ -548,7 +548,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0).empty());
         CHECK(lines.at(1).empty());
         CHECK(lines.at(2).empty());
-        CHECK(editor.GetTotalLines() == 3);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         constexpr const char* t4{"Multiple\nLines"};
         editor.SetText(t4);
@@ -559,7 +559,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 2);
         CHECK(lines.at(0) == "Multiple");
         CHECK(lines.at(1) == "Lines");
-        CHECK(editor.GetTotalLines() == 2);
+        CHECK(bool(editor.GetTotalLines() == 2u));
 
         constexpr const char* t5{"Line\nWith\nNewLines\n"};
         editor.SetText(t5);
@@ -572,7 +572,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(1) == "With");
         CHECK(lines.at(2) == "NewLines");
         CHECK(lines.at(3).empty());
-        CHECK(editor.GetTotalLines() == 4);
+        CHECK(bool(editor.GetTotalLines() == 4u));
 
         // Empty text
         editor.SetText("");
@@ -583,7 +583,7 @@ TEST_CASE("CodeEditor")
         CHECK(text.empty());
         CHECK(lines.size() == 1u);
         CHECK(lines.at(0u).empty());
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         // SetText doesn't ignore tabs
         editor.SetText("\t");
@@ -593,7 +593,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "\t");
         CHECK(lines.size() == 1u);
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
         CHECK(lines.at(0u) == "\t");
     }
 
@@ -701,7 +701,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == "Hi");
         CHECK(lines.size() == 1u);
         CHECK(lines.at(0u) == "Hi");
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         // Two lines
         new_lines.clear();
@@ -718,7 +718,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 2u);
         CHECK(lines.at(0u) == "Hello");
         CHECK(lines.at(1u) == "World");
-        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(bool(editor.GetTotalLines() == 2u));
 
         new_lines.clear();
         new_lines.reserve(0);
@@ -731,7 +731,7 @@ TEST_CASE("CodeEditor")
         CHECK(text.empty());
         CHECK(lines.size() == 1);
         CHECK(lines.at(0).empty());
-        CHECK(editor.GetTotalLines() == 1);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         // Test with embeded null characters
         new_lines.clear();
@@ -749,7 +749,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0u) == "A single line with newline at the end");
         CHECK(lines.at(1u).empty());
         CHECK(lines.at(2u) == "Normal everyday line");
-        CHECK(editor.GetTotalLines() == 3u);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         // New line in the middle
         new_lines.clear();
@@ -767,7 +767,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(1u) == "SetTextLines supports");
         CHECK(lines.at(2u) == "Embedded new lines");
         CHECK(lines.at(3u) == "Awesome");
-        CHECK(editor.GetTotalLines() == 4u);
+        CHECK(bool(editor.GetTotalLines() == 4u));
     }
 
     SECTION("GetSelectedText")
@@ -863,28 +863,28 @@ TEST_CASE("CodeEditor")
         dlxemu::CodeEditor editor{&emulator};
 
         // Default
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         editor.SetText("One line");
         editor.VerifyInternalState();
 
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         editor.SetText("Two\nLines");
         editor.VerifyInternalState();
 
-        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(bool(editor.GetTotalLines() == 2u));
 
         editor.SetText("Three\nLines\nNow");
         editor.VerifyInternalState();
 
-        CHECK(editor.GetTotalLines() == 3u);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         // Empty lines
         editor.SetText("\n\n\n\n\n\n\n\n\n");
         editor.VerifyInternalState();
 
-        CHECK(editor.GetTotalLines() == 10u);
+        CHECK(bool(editor.GetTotalLines() == 10u));
     }
 
     SECTION("Overwrite")
@@ -1334,7 +1334,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == "H");
         CHECK(lines.size() == 1);
         CHECK(lines.at(0) == "H");
-        CHECK(editor.GetTotalLines() == 1);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         editor.EnterCharacter('i');
         editor.VerifyInternalState();
@@ -1344,7 +1344,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == "Hi");
         CHECK(lines.size() == 1);
         CHECK(lines.at(0) == "Hi");
-        CHECK(editor.GetTotalLines() == 1);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         editor.MoveHome();
         editor.VerifyInternalState();
@@ -1356,7 +1356,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == "-Hi");
         CHECK(lines.size() == 1);
         CHECK(lines.at(0) == "-Hi");
-        CHECK(editor.GetTotalLines() == 1);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         editor.SelectAll();
         editor.VerifyInternalState();
@@ -1368,7 +1368,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == "A");
         CHECK(lines.size() == 1);
         CHECK(lines.at(0) == "A");
-        CHECK(editor.GetTotalLines() == 1);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         editor.EnterCharacter('\n');
         editor.VerifyInternalState();
@@ -1379,7 +1379,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 2);
         CHECK(lines.at(0) == "A");
         CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
+        CHECK(bool(editor.GetTotalLines() == 2u));
 
         editor.SetOverwrite(true);
         editor.VerifyInternalState();
@@ -1394,7 +1394,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 2);
         CHECK(lines.at(0) == "B");
         CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
+        CHECK(bool(editor.GetTotalLines() == 2u));
 
         editor.EnterCharacter('C');
         editor.VerifyInternalState();
@@ -1405,7 +1405,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 2);
         CHECK(lines.at(0) == "BC");
         CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
+        CHECK(bool(editor.GetTotalLines() == 2u));
 
         editor.SetOverwrite(false);
         editor.VerifyInternalState();
@@ -1420,7 +1420,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.size() == 2);
         CHECK(lines.at(0) == "BC");
         CHECK(lines.at(1).empty());
-        CHECK(editor.GetTotalLines() == 2);
+        CHECK(bool(editor.GetTotalLines() == 2u));
 
         // Entering '\0' does nothing
         editor.SetReadOnly(false);
@@ -1433,7 +1433,7 @@ TEST_CASE("CodeEditor")
         CHECK_FALSE(editor.IsReadOnly());
         CHECK(text == "BC\n");
         CHECK(lines.size() == 2u);
-        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(bool(editor.GetTotalLines() == 2u));
         CHECK(lines.at(0u) == "BC");
         CHECK(lines.at(1u).empty());
 
@@ -1449,7 +1449,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "   ABC\n   ");
         CHECK(lines.size() == 2u);
-        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(bool(editor.GetTotalLines() == 2u));
         CHECK(lines.at(0u) == "   ABC");
         CHECK(lines.at(1u) == "   ");
 
@@ -1460,7 +1460,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "   ABC\n   \n   ");
         CHECK(lines.size() == 3u);
-        CHECK(editor.GetTotalLines() == 3u);
+        CHECK(bool(editor.GetTotalLines() == 3u));
         CHECK(lines.at(0u) == "   ABC");
         CHECK(lines.at(1u) == "   ");
         CHECK(lines.at(2u) == "   ");
@@ -1477,7 +1477,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "\t\tTabedLine");
         CHECK(lines.size() == 1u);
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
         CHECK(lines.at(0u) == "\t\tTabedLine");
 
         // Shift tab removes tab
@@ -1488,7 +1488,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "\tTabedLine");
         CHECK(lines.size() == 1u);
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
         CHECK(lines.at(0u) == "\tTabedLine");
 
         editor.EnterCharacter('\t', true);
@@ -1498,7 +1498,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "TabedLine");
         CHECK(lines.size() == 1u);
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
         CHECK(lines.at(0u) == "TabedLine");
 
         // Shift tab does nothing when theres no tab
@@ -1509,7 +1509,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "TabedLine");
         CHECK(lines.size() == 1u);
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
         CHECK(lines.at(0u) == "TabedLine");
 
         // Multiline tab indent
@@ -1524,7 +1524,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "\tHi\n\t:)");
         CHECK(lines.size() == 2u);
-        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(bool(editor.GetTotalLines() == 2u));
         CHECK(lines.at(0u) == "\tHi");
         CHECK(lines.at(1u) == "\t:)");
 
@@ -1536,7 +1536,7 @@ TEST_CASE("CodeEditor")
         lines = editor.GetTextLines();
         CHECK(text == "Hi\n:)");
         CHECK(lines.size() == 2u);
-        CHECK(editor.GetTotalLines() == 2u);
+        CHECK(bool(editor.GetTotalLines() == 2u));
         CHECK(lines.at(0u) == "Hi");
         CHECK(lines.at(1u) == ":)");
     }
@@ -1715,7 +1715,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == "Hello World!");
         CHECK(lines.size() == 1);
         CHECK(lines.at(0) == "Hello World!");
-        CHECK(editor.GetTotalLines() == 1);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         editor.InsertText("\nTest string\n");
         editor.VerifyInternalState();
@@ -1727,7 +1727,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "Hello World!");
         CHECK(lines.at(1) == "Test string");
         CHECK(lines.at(2).empty());
-        CHECK(editor.GetTotalLines() == 3);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0, 0));
         editor.VerifyInternalState();
@@ -1741,7 +1741,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "I say hi and Hello World!");
         CHECK(lines.at(1) == "Test string");
         CHECK(lines.at(2).empty());
-        CHECK(editor.GetTotalLines() == 3);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         editor.SelectAll();
         editor.VerifyInternalState();
@@ -1757,7 +1757,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "I say hi and Hello World!");
         CHECK(lines.at(1) == "Test awesome string");
         CHECK(lines.at(2).empty());
-        CHECK(editor.GetTotalLines() == 3);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         // Insert nullptr
         editor.InsertText(nullptr);
@@ -1770,7 +1770,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "I say hi and Hello World!");
         CHECK(lines.at(1) == "Test awesome string");
         CHECK(lines.at(2).empty());
-        CHECK(editor.GetTotalLines() == 3);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         // Insert empty string
         editor.InsertText("");
@@ -1783,7 +1783,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "I say hi and Hello World!");
         CHECK(lines.at(1) == "Test awesome string");
         CHECK(lines.at(2).empty());
-        CHECK(editor.GetTotalLines() == 3);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         // Insert while in read-only mode
         editor.SetReadOnly(true);
@@ -1798,7 +1798,7 @@ TEST_CASE("CodeEditor")
         CHECK(lines.at(0) == "I say hi and Hello World!");
         CHECK(lines.at(1) == "Test awesome string");
         CHECK(lines.at(2).empty());
-        CHECK(editor.GetTotalLines() == 3);
+        CHECK(bool(editor.GetTotalLines() == 3u));
 
         // Not skipping characters
         editor.SetReadOnly(false);
@@ -1813,7 +1813,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == "\r\r\r");
         CHECK(lines.size() == 1u);
         CHECK(lines.at(0u) == "\r\r\r");
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
 
         // Insert text with tab character
         editor.ClearText();
@@ -1826,7 +1826,7 @@ TEST_CASE("CodeEditor")
         CHECK(text == "\x7F\t\a");
         CHECK(lines.size() == 1u);
         CHECK(lines.at(0u) == "\x7F\t\a");
-        CHECK(editor.GetTotalLines() == 1u);
+        CHECK(bool(editor.GetTotalLines() == 1u));
         // Make sure were at the end
         dlxemu::CodeEditor::Coordinates coord = editor.GetCursorPosition();
         editor.MoveEnd();

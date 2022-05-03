@@ -226,7 +226,7 @@ TEST_CASE("crash-28853252177dc5b6be74f8247bde0d2a2b4f87b5")
     editor.VerifyInternalState();
 
     CHECK(editor.GetText().size() == 7);
-    CHECK(editor.GetTotalLines() == 1);
+    CHECK(bool(editor.GetTotalLines() == 1u));
 
     editor.Render({0.0f, 0.0f}, true);
     editor.VerifyInternalState();
@@ -636,7 +636,7 @@ TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
     editor.VerifyInternalState();
 
     CHECK(editor.GetText() == "\n");
-    CHECK(editor.GetTotalLines() == 2u);
+    CHECK(bool(editor.GetTotalLines() == 2u));
     CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{1u, 0u});
     CHECK_FALSE(editor.HasSelection());
     CHECK(editor.CanUndo());
@@ -645,7 +645,7 @@ TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
     editor.VerifyInternalState();
 
     CHECK(editor.GetText() == "\n");
-    CHECK(editor.GetTotalLines() == 2u);
+    CHECK(bool(editor.GetTotalLines() == 2u));
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
     CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 0u});
@@ -657,7 +657,7 @@ TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
     editor.VerifyInternalState();
 
     CHECK(editor.GetText() == "\n");
-    CHECK(editor.GetTotalLines() == 2u);
+    CHECK(bool(editor.GetTotalLines() == 2u));
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
     CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{1u, 0u});
@@ -668,7 +668,7 @@ TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
     editor.VerifyInternalState();
 
     CHECK(editor.GetText().empty());
-    CHECK(editor.GetTotalLines() == 1u);
+    CHECK(bool(editor.GetTotalLines() == 1u));
     CHECK_FALSE(editor.HasSelection());
     CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
     CHECK(editor.GetSelectionEnd() == dlxemu::CodeEditor::Coordinates{0u, 0u});
