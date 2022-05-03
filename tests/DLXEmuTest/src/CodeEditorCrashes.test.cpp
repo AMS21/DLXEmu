@@ -675,3 +675,11 @@ TEST_CASE("crash-f8d09e403b9ec44efacf944db275e4a4470855b3")
     CHECK(editor.GetSelectedText().empty());
     CHECK(editor.GetCursorPosition() == dlxemu::CodeEditor::Coordinates{0u, 0u});
 }
+
+TEST_CASE("crash-a984a771c4227705ec8b87dedf02531b2b87a0ef")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter(0xD800, true);
+    editor.VerifyInternalState();
+}
