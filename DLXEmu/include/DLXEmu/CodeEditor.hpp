@@ -334,6 +334,7 @@ namespace dlxemu
         void ColorizeInternal() noexcept;
 
         [[nodiscard]] phi::u8_fast GetTabSizeAt(phi::i32 column) const noexcept;
+        [[nodiscard]] ImU32        GetPaletteForIndex(PaletteIndex index) const noexcept;
 
         void ResetState() noexcept;
 

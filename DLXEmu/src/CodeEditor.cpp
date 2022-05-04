@@ -39,6 +39,7 @@ SOFTWARE.
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/conversion.hpp>
+#include <phi/core/size_t.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
 #include <phi/math/is_nan.hpp>
@@ -385,10 +386,8 @@ namespace dlxemu
         m_WithinRender          = true;
         m_CursorPositionChanged = false;
 
-        ImGui::PushStyleColor(
-                ImGuiCol_ChildBg,
-                ImGui::ColorConvertU32ToFloat4(
-                        m_Palette[static_cast<phi::size_t>(PaletteIndex::Background)]));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(GetPaletteForIndex(
+                                                        PaletteIndex::Background)));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
         static constexpr const float min_size = 0.0f;
@@ -3025,11 +3024,10 @@ namespace dlxemu
     {
         if (!m_ColorizerEnabled)
         {
-            return m_Palette[static_cast<phi::size_t>(PaletteIndex::Default)];
+            return GetPaletteForIndex(PaletteIndex::Default);
         }
 
-        PHI_DBG_ASSERT(static_cast<phi::size_t>(glyph.m_ColorIndex) < m_Palette.size());
-        return m_Palette[static_cast<phi::size_t>(glyph.m_ColorIndex)];
+        return GetPaletteForIndex(glyph.m_ColorIndex);
     }
 
     void CodeEditor::HandleKeyboardInputs() noexcept
@@ -3370,8 +3368,7 @@ namespace dlxemu
                 ImVec2 vend(line_start_screen_pos.x + m_TextStart + ssend,
                             line_start_screen_pos.y + m_CharAdvance.y);
 
-                draw_list->AddRectFilled(vstart, vend,
-                                         m_Palette[(phi::size_t)PaletteIndex::Selection]);
+                draw_list->AddRectFilled(vstart, vend, GetPaletteForIndex(PaletteIndex::Selection));
             }
 
             // Draw breakpoints
@@ -3381,8 +3378,7 @@ namespace dlxemu
             {
                 ImVec2 end = ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
                                     line_start_screen_pos.y + m_CharAdvance.y);
-                draw_list->AddRectFilled(start, end,
-                                         m_Palette[(phi::size_t)PaletteIndex::Breakpoint]);
+                draw_list->AddRectFilled(start, end, GetPaletteForIndex(PaletteIndex::Breakpoint));
             }
 
             // Draw error markers
@@ -3391,8 +3387,7 @@ namespace dlxemu
             {
                 ImVec2 end = ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
                                     line_start_screen_pos.y + m_CharAdvance.y);
-                draw_list->AddRectFilled(start, end,
-                                         m_Palette[(phi::size_t)PaletteIndex::ErrorMarker]);
+                draw_list->AddRectFilled(start, end, GetPaletteForIndex(PaletteIndex::ErrorMarker));
 
                 if (GImGui->HoveredWindow == ImGui::GetCurrentWindow() &&
                     ImGui::IsMouseHoveringRect(line_start_screen_pos, end))
@@ -3418,7 +3413,7 @@ namespace dlxemu
                                           .x;
             draw_list->AddText(ImVec2(line_start_screen_pos.x + m_TextStart - line_no_width,
                                       line_start_screen_pos.y),
-                               m_Palette[(phi::size_t)PaletteIndex::LineNumber], buf);
+                               GetPaletteForIndex(PaletteIndex::LineNumber), buf);
 
             if (m_State.m_CursorPosition.m_Line == line_no)
             {
@@ -3431,11 +3426,10 @@ namespace dlxemu
                             ImVec2(start.x + content_size.x + scroll_x, start.y + m_CharAdvance.y);
                     draw_list->AddRectFilled(
                             start, end,
-                            m_Palette[(phi::size_t)(
-                                    focused ? PaletteIndex::CurrentLineFill :
-                                              PaletteIndex::CurrentLineFillInactive)]);
+                            GetPaletteForIndex(focused ? PaletteIndex::CurrentLineFill :
+                                                         PaletteIndex::CurrentLineFillInactive));
                     draw_list->AddRect(start, end,
-                                       m_Palette[(phi::size_t)PaletteIndex::CurrentLineEdge], 1.0f);
+                                       GetPaletteForIndex(PaletteIndex::CurrentLineEdge), 1.0f);
                 }
 
                 // Render the cursor
@@ -3478,7 +3472,7 @@ namespace dlxemu
                         ImVec2 cend(text_screen_pos.x + cx + width,
                                     line_start_screen_pos.y + m_CharAdvance.y);
                         draw_list->AddRectFilled(cstart, cend,
-                                                 m_Palette[(phi::size_t)PaletteIndex::Cursor]);
+                                                 GetPaletteForIndex(PaletteIndex::Cursor));
                         if (elapsed > 800)
                         {
                             m_StartTime = time_end;
@@ -3488,7 +3482,7 @@ namespace dlxemu
             }
 
             // Render colorized text
-            ImU32  prev_color = line.empty() ? m_Palette[(phi::size_t)PaletteIndex::Default] :
+            ImU32  prev_color = line.empty() ? GetPaletteForIndex(PaletteIndex::Default) :
                                                GetGlyphColor(line[0]);
             ImVec2 buffer_offset;
 
@@ -3667,5 +3661,15 @@ namespace dlxemu
     {
         return static_cast<phi::uint_fast8_t>(m_TabSize.unsafe() -
                                               (column.unsafe() % m_TabSize.unsafe()));
+    }
+
+    ImU32 CodeEditor::GetPaletteForIndex(PaletteIndex index) const noexcept
+    {
+        phi::size_t int_value = static_cast<phi::size_t>(index);
+
+        PHI_DBG_ASSERT(index != PaletteIndex::Max);
+        PHI_DBG_ASSERT(int_value < m_Palette.size());
+
+        return m_Palette[int_value];
     }
 } // namespace dlxemu
