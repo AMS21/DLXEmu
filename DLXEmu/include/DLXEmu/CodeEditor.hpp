@@ -333,7 +333,7 @@ namespace dlxemu
         void ColorizeToken(const dlx::Token& token) noexcept;
         void ColorizeInternal() noexcept;
 
-        [[nodiscard]] std::uint_fast8_t GetTabSizeAt(phi::i32 column) const noexcept;
+        [[nodiscard]] phi::u8_fast GetTabSizeAt(phi::i32 column) const noexcept;
 
         void ResetState() noexcept;
 

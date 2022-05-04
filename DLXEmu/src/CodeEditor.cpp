@@ -3663,8 +3663,9 @@ namespace dlxemu
         m_State.m_SelectionEnd   = Coordinates(0, 0);
     }
 
-    std::uint_fast8_t CodeEditor::GetTabSizeAt(phi::i32 column) const noexcept
+    phi::u8_fast CodeEditor::GetTabSizeAt(phi::i32 column) const noexcept
     {
-        return m_TabSize.unsafe() - (column.unsafe() % m_TabSize.unsafe());
+        return static_cast<phi::uint_fast8_t>(m_TabSize.unsafe() -
+                                              (column.unsafe() % m_TabSize.unsafe()));
     }
 } // namespace dlxemu
