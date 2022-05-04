@@ -11,9 +11,14 @@
 #include <phi/compiler_support/compiler.hpp>
 #include <phi/compiler_support/platform.hpp>
 #include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
+#include <phi/core/types.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/fmt.h>
+#include <unistd.h>
 #include <string_view>
+
+static constexpr const phi::size_t MaxExecutionPerFrame{500'000u};
 
 namespace dlxemu
 {
@@ -91,6 +96,11 @@ namespace dlxemu
     void Emulator::MainLoop() noexcept
     {
         m_Window.BeginFrame();
+
+        m_DisableEditing = m_CurrentExecutionMode != ExecutionMode::None;
+
+        // Run updates
+        Update();
 
         // Add docking space
         const auto* viewport = ImGui::GetWindowViewport();
@@ -227,7 +237,8 @@ namespace dlxemu
                     m_CodeEditor.Copy();
                 }
 
-                const bool can_paste = phi::string_length(ImGui::GetClipboardText()) != 0u;
+                const bool can_paste =
+                        phi::string_length(ImGui::GetClipboardText()) != 0u && !m_DisableEditing;
 
                 if (ImGui::MenuItem("Paste", "CTRL+V", false, can_paste))
                 {
@@ -311,13 +322,16 @@ namespace dlxemu
     {
         if (ImGui::Begin("Control Panel", &m_ShowControlPanel))
         {
-            if (ImGui::Button("R"))
+            if (m_DisableEditing)
             {
-                // Run
+                ImGui::BeginDisabled();
+            }
+
+            if (ImGui::Button("Run"))
+            {
                 if (m_DLXProgram.m_ParseErrors.empty())
                 {
-                    m_Processor.ExecuteCurrentProgram();
-                    DLX_INFO("Executed current program");
+                    SetExecutionMode(ExecutionMode::Run);
                 }
                 else
                 {
@@ -327,9 +341,22 @@ namespace dlxemu
             }
 
             ImGui::SameLine();
-            if (ImGui::Button("S"))
+            if (ImGui::Button("Play"))
             {
-                // Step
+                if (m_DLXProgram.m_ParseErrors.empty())
+                {
+                    SetExecutionMode(ExecutionMode::StepThrough);
+                }
+                else
+                {
+                    DLX_INFO("Can't execute program since it contains {} parse errors",
+                             m_DLXProgram.m_ParseErrors.size());
+                }
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Step"))
+            {
                 if (m_Processor.GetCurrentStepCount() == 0u)
                 {
                     DLX_INFO("Loaded program");
@@ -341,12 +368,27 @@ namespace dlxemu
                 DLX_INFO("Executed step");
             }
 
-            ImGui::SameLine();
-            if (ImGui::Button("D"))
+            if (m_DisableEditing)
             {
-                // Discard? / Reset
+                ImGui::EndDisabled();
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Reset"))
+            {
+                SetExecutionMode(ExecutionMode::None);
                 m_Processor.LoadProgram(m_DLXProgram);
             }
+
+            // Execution details
+            ImGui::SameLine();
+            ImGui::Text("Halted: %s,", m_Processor.IsHalted() ? "Yes" : "No");
+
+            ImGui::SameLine();
+            ImGui::Text("PC: %u,", m_Processor.GetProgramCounter().unsafe());
+
+            ImGui::SameLine();
+            ImGui::Text("SC: %lu", m_Processor.GetCurrentStepCount().unsafe());
         }
 
         ImGui::End();
@@ -468,5 +510,56 @@ namespace dlxemu
         }
 
         ImGui::End();
+    }
+
+    void Emulator::Update() noexcept
+    {
+        switch (m_CurrentExecutionMode)
+        {
+            case ExecutionMode::None: {
+                return;
+            }
+            case ExecutionMode::StepThrough: {
+                const double current_time = ImGui::GetTime();
+                if (m_LastExecTime + m_StepThroughDelayMS <= current_time)
+                {
+                    m_Processor.ExecuteStep();
+                    m_LastExecTime = current_time;
+                }
+                break;
+            }
+            case ExecutionMode::Run: {
+                for (phi::usize i{0u}; i < MaxExecutionPerFrame; ++i)
+                {
+                    m_Processor.ExecuteStep();
+                }
+                break;
+            }
+
+            default:
+                PHI_ASSERT_NOT_REACHED();
+                break;
+        }
+
+        if (m_Processor.IsHalted())
+        {
+            DLX_INFO("Processor halted");
+            m_CurrentExecutionMode = ExecutionMode::None;
+        }
+    }
+
+    void Emulator::SetExecutionMode(ExecutionMode mode) noexcept
+    {
+        m_CurrentExecutionMode = mode;
+
+        if (mode != ExecutionMode::None)
+        {
+            m_LastExecTime = ImGui::GetTime();
+            m_CodeEditor.SetReadOnly(true);
+        }
+        else
+        {
+            m_CodeEditor.SetReadOnly(false);
+        }
     }
 } // namespace dlxemu

@@ -11,6 +11,8 @@
 #include <DLX/Processor.hpp>
 #include <DLX/Token.hpp>
 #include <phi/core/boolean.hpp>
+#include <phi/core/sized_types.hpp>
+#include <phi/core/types.hpp>
 #include <vector>
 
 namespace dlxemu
@@ -27,6 +29,13 @@ namespace dlxemu
         {
             No,
             Yes,
+        };
+
+        enum class ExecutionMode : phi::int8_t
+        {
+            None,
+            StepThrough,
+            Run,
         };
 
         Emulator() noexcept;
@@ -57,6 +66,10 @@ namespace dlxemu
 
         void RenderOptionsMenu() noexcept;
 
+        void Update() noexcept;
+
+        void SetExecutionMode(ExecutionMode mode) noexcept;
+
     private:
         dlx::Processor     m_Processor;
         dlx::ParsedProgram m_DLXProgram;
@@ -68,6 +81,11 @@ namespace dlxemu
 #if defined(PHI_DEBUG)
         DebugView m_DebugView;
 #endif
+
+        ExecutionMode m_CurrentExecutionMode{ExecutionMode::None};
+        double        m_LastExecTime{0.0};
+        double        m_StepThroughDelayMS{0.5f};
+        phi::boolean  m_DisableEditing{false};
 
         // Menu
 #if defined(PHI_DEBUG)

@@ -17,12 +17,16 @@ namespace dlxemu
         if (ImGui::Begin("Register Viewer", &m_Emulator->m_ShowRegisterViewer))
         {
             dlx::Processor& proc = m_Emulator->GetProcessor();
-
             if (ImGui::BeginTabBar("RegisterTabs"))
             {
                 // Integer Registers
                 if (ImGui::BeginTabItem("Integer"))
                 {
+                    if (m_Emulator->m_DisableEditing)
+                    {
+                        ImGui::BeginDisabled();
+                    }
+
                     for (std::uint32_t index{1}; index < 32; ++index)
                     {
                         ImGui::InputInt(fmt::format("R{}", index).c_str(),
@@ -32,12 +36,22 @@ namespace dlxemu
                                                                         dlx::IntRegisterID::R0)))));
                     }
 
+                    if (m_Emulator->m_DisableEditing)
+                    {
+                        ImGui::EndDisabled();
+                    }
+
                     ImGui::EndTabItem();
                 }
 
                 // Float Registers
                 if (ImGui::BeginTabItem("Float"))
                 {
+                    if (m_Emulator->m_DisableEditing)
+                    {
+                        ImGui::BeginDisabled();
+                    }
+
                     for (std::uint32_t index{0}; index < 32; ++index)
                     {
                         ImGui::InputFloat(
@@ -49,6 +63,11 @@ namespace dlxemu
                     }
 
                     ImGui::Checkbox("FPSR", reinterpret_cast<bool*>(&proc.GetFPSR()));
+
+                    if (m_Emulator->m_DisableEditing)
+                    {
+                        ImGui::EndDisabled();
+                    }
 
                     ImGui::EndTabItem();
                 }
