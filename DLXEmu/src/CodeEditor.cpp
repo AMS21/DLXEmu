@@ -2885,7 +2885,7 @@ namespace dlxemu
             {
                 line.insert(line.begin() + cindex.unsafe(), Glyph(*pointer, PaletteIndex::Default));
             }
-            u.m_Added = buffer;
+            u.m_Added = buffer.begin();
 
             SetCursorPosition(Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex)));
         }
@@ -3632,7 +3632,7 @@ namespace dlxemu
 
         Line& line = m_Lines[(token.GetLineNumber() - 1u).unsafe()];
 
-        for (phi::usize index{token.GetColumn() - 1u};
+        for (phi::u64 index{token.GetColumn() - 1u};
              index < token.GetColumn() + token.GetLength() - 1u; ++index)
         {
             PHI_DBG_ASSERT(index < line.size());
