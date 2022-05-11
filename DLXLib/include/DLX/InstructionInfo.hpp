@@ -2,15 +2,16 @@
 
 #include "DLX/OpCode.hpp"
 #include <phi/core/assert.hpp>
+#include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
-#include <type_traits>
+#include <phi/type_traits/underlying_type.hpp>
 
 namespace dlx
 {
     class Processor;
     class InstructionArgument;
 
-    enum class ArgumentType
+    enum class ArgumentType : phi::uint8_t
     {
         Unknown          = 0,  // Should not be used just to check for errors
         None             = 1,  // Meaning this argument is expected to be not present
@@ -23,7 +24,7 @@ namespace dlx
 
     constexpr ArgumentType operator&(ArgumentType lhs, ArgumentType rhs) noexcept
     {
-        using underlying_t = std::underlying_type_t<ArgumentType>;
+        using underlying_t = phi::underlying_type_t<ArgumentType>;
 
         return static_cast<ArgumentType>(static_cast<underlying_t>(lhs) &
                                          static_cast<underlying_t>(rhs));
@@ -31,7 +32,7 @@ namespace dlx
 
     constexpr ArgumentType operator|(ArgumentType lhs, ArgumentType rhs) noexcept
     {
-        using underlying_t = std::underlying_type_t<ArgumentType>;
+        using underlying_t = phi::underlying_type_t<ArgumentType>;
 
         return static_cast<ArgumentType>(static_cast<underlying_t>(lhs) |
                                          static_cast<underlying_t>(rhs));
@@ -45,7 +46,7 @@ namespace dlx
         return static_cast<underlying_t>(type & test) != 0;
     }
 
-    enum class RegisterAccessType
+    enum class RegisterAccessType : phi::uint8_t
     {
         None,
         Signed,
