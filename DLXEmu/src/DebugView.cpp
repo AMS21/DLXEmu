@@ -508,8 +508,8 @@ namespace dlxemu
                 ImWchar character = imwchar_distrib(engine);
                 bool    shift     = bool_distrib(engine);
 
-                DLX_DEBUG("EnterCharacter({}, {:s})", static_cast<char>(character),
-                          shift ? "True" : "False");
+                DLX_DEBUG("EnterCharacter({} (\0x{:02X}) {:s})", static_cast<char>(character),
+                          static_cast<std::uint32_t>(character), shift ? "True" : "False");
                 editor.EnterCharacter(character, shift);
                 break;
             }
