@@ -95,17 +95,17 @@ namespace dlxemu
 
             [[nodiscard]] static Coordinates Invalid() noexcept;
 
-            bool operator==(const Coordinates& o) const noexcept;
+            bool operator==(const Coordinates& other) const noexcept;
 
-            bool operator!=(const Coordinates& o) const noexcept;
+            bool operator!=(const Coordinates& other) const noexcept;
 
-            bool operator<(const Coordinates& o) const noexcept;
+            bool operator<(const Coordinates& other) const noexcept;
 
-            bool operator>(const Coordinates& o) const noexcept;
+            bool operator>(const Coordinates& other) const noexcept;
 
-            bool operator<=(const Coordinates& o) const noexcept;
+            bool operator<=(const Coordinates& other) const noexcept;
 
-            bool operator>=(const Coordinates& o) const noexcept;
+            bool operator>=(const Coordinates& other) const noexcept;
 
             phi::i32 m_Line;
             phi::i32 m_Column;
