@@ -591,7 +591,7 @@ namespace dlxemu
 
             for (size_t i = 0; i < line.size(); ++i)
             {
-                text[i] = line[i].m_Char;
+                text[i] = static_cast<char>(line[i].m_Char);
             }
 
             result.emplace_back(phi::move(text));
@@ -1092,7 +1092,7 @@ namespace dlxemu
 
             for (const Glyph& glyph : line)
             {
-                str.push_back(glyph.m_Char);
+                str.push_back(static_cast<char>(glyph.m_Char));
             }
 
             ImGui::SetClipboardText(str.c_str());
@@ -1673,7 +1673,7 @@ namespace dlxemu
                 for (; index < 6 && length-- > 0 && it < static_cast<phi::int32_t>(line.size());
                      ++index, ++it)
                 {
-                    temp_c_string[index.unsafe()] = line[it].m_Char;
+                    temp_c_string[index.unsafe()] = static_cast<char>(line[it].m_Char);
                 }
 
                 temp_c_string[index.unsafe()] = '\0';
@@ -1760,7 +1760,7 @@ namespace dlxemu
             const Line& line = m_Lines[lstart.unsafe()];
             if (istart < static_cast<phi::int32_t>(line.size()))
             {
-                result += line[istart.unsafe()].m_Char;
+                result += static_cast<char>(line[istart.unsafe()].m_Char);
                 istart++;
             }
             else
@@ -2116,7 +2116,7 @@ namespace dlxemu
                     phi::i32 index  = 0;
                     while (index < 6 && length-- > 0)
                     {
-                        buf[index.unsafe()] = line[column_index.unsafe()].m_Char;
+                        buf[index.unsafe()] = static_cast<char>(line[column_index.unsafe()].m_Char);
                         index += 1;
                         column_index += 1;
                     }
@@ -2153,7 +2153,7 @@ namespace dlxemu
             return from;
         }
 
-        while (cindex > 0 && phi::is_space(line[cindex.unsafe()].m_Char))
+        while (cindex > 0 && phi::is_space(static_cast<char>(line[cindex.unsafe()].m_Char)))
         {
             --cindex;
         }
@@ -2164,7 +2164,7 @@ namespace dlxemu
             Glyph glyph = line[cindex.unsafe()];
             if ((glyph.m_Char & 0xC0) != 0x80) // not UTF code sequence 10xxxxxx
             {
-                if (glyph.m_Char <= 32 && phi::is_space(glyph.m_Char))
+                if (glyph.m_Char <= 32 && phi::is_space(static_cast<char>(glyph.m_Char)))
                 {
                     cindex += 1;
                     break;
@@ -2198,7 +2198,7 @@ namespace dlxemu
             return at;
         }
 
-        bool         prevspace = phi::is_space(line[cindex.unsafe()].m_Char);
+        bool         prevspace = phi::is_space(static_cast<char>(line[cindex.unsafe()].m_Char));
         PaletteIndex cstart    = line[cindex.unsafe()].m_ColorIndex;
         while (cindex < static_cast<phi::int32_t>(line.size()))
         {
@@ -2210,12 +2210,12 @@ namespace dlxemu
                 break;
             }
 
-            if (prevspace != phi::is_space(glyph.m_Char))
+            if (prevspace != phi::is_space(static_cast<char>(glyph.m_Char)))
             {
-                if (phi::is_space(glyph.m_Char))
+                if (phi::is_space(static_cast<char>(glyph.m_Char)))
                 {
                     while (cindex < (phi::int32_t)line.size() &&
-                           phi::is_space(line[cindex.unsafe()].m_Char))
+                           phi::is_space(static_cast<char>(line[cindex.unsafe()].m_Char)))
                     {
                         cindex += 1;
                     }
@@ -2244,8 +2244,8 @@ namespace dlxemu
         if (cindex < (phi::int32_t)m_Lines[at.m_Line.unsafe()].size())
         {
             const Line& line = m_Lines[at.m_Line.unsafe()];
-            is_word          = phi::is_alpha_numeric(line[cindex.unsafe()].m_Char);
-            skip             = is_word;
+            is_word = phi::is_alpha_numeric(static_cast<char>(line[cindex.unsafe()].m_Char));
+            skip    = is_word;
         }
 
         while (!is_word || skip)
@@ -2260,7 +2260,7 @@ namespace dlxemu
             const Line& line = m_Lines[at.m_Line.unsafe()];
             if (cindex < (phi::int32_t)line.size())
             {
-                is_word = phi::is_alpha_numeric(line[cindex.unsafe()].m_Char);
+                is_word = phi::is_alpha_numeric(static_cast<char>(line[cindex.unsafe()].m_Char));
 
                 if (is_word && !skip)
                 {
@@ -2304,7 +2304,8 @@ namespace dlxemu
 
         for (phi::i32 it = istart; it < iend; ++it)
         {
-            result.push_back(m_Lines[coords.m_Line.unsafe()][it.unsafe()].m_Char);
+            result.push_back(
+                    static_cast<char>(m_Lines[coords.m_Line.unsafe()][it.unsafe()].m_Char));
         }
 
         return result;
@@ -2348,7 +2349,7 @@ namespace dlxemu
 
         while (i < index && i < static_cast<phi::int32_t>(line.size()))
         {
-            char character = line[i.unsafe()].m_Char;
+            char character = static_cast<char>(line[i.unsafe()].m_Char);
             i += UTF8CharLength(character);
             if (character == '\t')
             {
@@ -2394,7 +2395,7 @@ namespace dlxemu
 
         for (phi::i32 i = 0; i < static_cast<phi::int32_t>(line.size());)
         {
-            char character = line[i.unsafe()].m_Char;
+            char character = static_cast<char>(line[i.unsafe()].m_Char);
             if (character == '\t')
             {
                 col = (col.unsafe() / m_TabSize.unsafe()) * m_TabSize.unsafe() + m_TabSize.unsafe();
@@ -2430,8 +2431,8 @@ namespace dlxemu
                    line[phi::size_t(cindex.unsafe() - 1)].m_ColorIndex;
         }
 
-        return phi::is_space(line[cindex.unsafe()].m_Char) !=
-               phi::is_space(line[cindex.unsafe() - 1].m_Char);
+        return phi::is_space(static_cast<char>(line[cindex.unsafe()].m_Char)) !=
+               phi::is_space(static_cast<char>(line[cindex.unsafe() - 1].m_Char));
     }
 
     void CodeEditor::RemoveLine(phi::i32 start, phi::i32 end) noexcept
@@ -2853,7 +2854,7 @@ namespace dlxemu
 
                     while (cindex < static_cast<phi::int32_t>(line.size()) && cend-- > cindex)
                     {
-                        undo.m_Removed += line[cindex.unsafe()].m_Char;
+                        undo.m_Removed += static_cast<char>(line[cindex.unsafe()].m_Char);
                         line.erase(line.begin() + cindex.unsafe());
                     }
                 }
@@ -3415,7 +3416,7 @@ namespace dlxemu
                     phi::i32 length = UTF8CharLength(glyph.m_Char);
                     while (length-- > 0)
                     {
-                        m_LineBuffer.push_back(line[i.unsafe()].m_Char);
+                        m_LineBuffer.push_back(static_cast<char>(line[i.unsafe()].m_Char));
                         i += 1;
                     }
                 }
