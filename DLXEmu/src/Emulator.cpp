@@ -2,8 +2,8 @@
 
 #include <glad/glad.h>
 
-#include "DLX/Logger.hpp"
 #include "DLXEmu/generated/BuildInfo.hpp"
+#include <DLX/Logger.hpp>
 #include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -15,7 +15,6 @@
 #include <phi/core/types.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/fmt.h>
-#include <unistd.h>
 #include <string_view>
 
 static constexpr const phi::size_t MaxExecutionPerFrame{500'000u};
