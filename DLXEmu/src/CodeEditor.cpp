@@ -793,30 +793,7 @@ namespace dlxemu
             m_State.m_CursorPosition.m_Column = 0;
         }
 
-        if (select)
-        {
-            if (old_pos == m_InteractiveStart)
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-            }
-            else if (old_pos == m_InteractiveEnd)
-            {
-                m_InteractiveEnd = m_State.m_CursorPosition;
-            }
-            else
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-                m_InteractiveEnd   = old_pos;
-            }
-        }
-        else
-        {
-            m_InteractiveStart = m_InteractiveEnd = m_State.m_CursorPosition;
-        }
-
-        SetSelection(m_InteractiveStart, m_InteractiveEnd);
-
-        EnsureCursorVisible();
+        FixSelectionAfterMove(select, old_pos);
     }
 
     void CodeEditor::MoveDown(phi::u32 amount, bool select) noexcept
@@ -840,29 +817,7 @@ namespace dlxemu
             m_State.m_CursorPosition.m_Column = GetLineMaxColumn(m_State.m_CursorPosition.m_Line);
         }
 
-        if (select)
-        {
-            if (old_pos == m_InteractiveEnd)
-            {
-                m_InteractiveEnd = m_State.m_CursorPosition;
-            }
-            else if (old_pos == m_InteractiveStart)
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-            }
-            else
-            {
-                m_InteractiveStart = old_pos;
-                m_InteractiveEnd   = m_State.m_CursorPosition;
-            }
-        }
-        else
-        {
-            m_InteractiveStart = m_InteractiveEnd = m_State.m_CursorPosition;
-        }
-
-        SetSelection(m_InteractiveStart, m_InteractiveEnd);
-        EnsureCursorVisible();
+        FixSelectionAfterMove(select, old_pos);
     }
 
     void CodeEditor::MoveLeft(phi::u32 amount, bool select, bool word_mode) noexcept
@@ -918,32 +873,9 @@ namespace dlxemu
         }
 
         m_State.m_CursorPosition = Coordinates(line, GetCharacterColumn(line, cindex));
-
         PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
-        if (select)
-        {
-            if (old_pos == m_InteractiveStart)
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-            }
-            else if (old_pos == m_InteractiveEnd)
-            {
-                m_InteractiveEnd = m_State.m_CursorPosition;
-            }
-            else
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-                m_InteractiveEnd   = old_pos;
-            }
-        }
-        else
-        {
-            m_InteractiveStart = m_InteractiveEnd = m_State.m_CursorPosition;
-        }
 
-        SetSelection(m_InteractiveStart, m_InteractiveEnd);
-
-        EnsureCursorVisible();
+        FixSelectionAfterMove(select, old_pos);
     }
 
     void CodeEditor::MoveRight(phi::u32 amount, bool select, bool word_mode) noexcept
@@ -989,31 +921,7 @@ namespace dlxemu
             }
         }
 
-        if (select)
-        {
-            if (old_pos == m_InteractiveEnd)
-            {
-                m_InteractiveEnd = SanitizeCoordinates(m_State.m_CursorPosition);
-            }
-            else if (old_pos == m_InteractiveStart)
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-            }
-            else
-            {
-                m_InteractiveStart = old_pos;
-                m_InteractiveEnd   = m_State.m_CursorPosition;
-            }
-        }
-        else
-        {
-            m_InteractiveStart = m_InteractiveEnd = m_State.m_CursorPosition;
-        }
-
-        SetSelection(m_InteractiveStart, m_InteractiveEnd,
-                     select && word_mode ? SelectionMode::Word : SelectionMode::Normal);
-
-        EnsureCursorVisible();
+        FixSelectionAfterMove(select, old_pos);
     }
 
     void CodeEditor::MoveTop(bool select) noexcept
@@ -1062,30 +970,7 @@ namespace dlxemu
         const Coordinates old_pos = m_State.m_CursorPosition;
         SetCursorPosition(Coordinates(m_State.m_CursorPosition.m_Line, 0));
 
-        if (select)
-        {
-            if (old_pos == m_InteractiveStart)
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-            }
-            else if (old_pos == m_InteractiveEnd)
-            {
-                m_InteractiveEnd = m_State.m_CursorPosition;
-            }
-            else
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-                m_InteractiveEnd   = old_pos;
-            }
-        }
-        else
-        {
-            m_InteractiveStart = m_InteractiveEnd = m_State.m_CursorPosition;
-        }
-
-        SetSelection(m_InteractiveStart, m_InteractiveEnd);
-
-        EnsureCursorVisible();
+        FixSelectionAfterMove(select, old_pos);
     }
 
     void CodeEditor::MoveEnd(bool select) noexcept
@@ -1094,29 +979,7 @@ namespace dlxemu
         SetCursorPosition(
                 Coordinates(m_State.m_CursorPosition.m_Line, GetLineMaxColumn(old_pos.m_Line)));
 
-        if (select)
-        {
-            if (old_pos == m_InteractiveEnd)
-            {
-                m_InteractiveEnd = m_State.m_CursorPosition;
-            }
-            else if (old_pos == m_InteractiveStart)
-            {
-                m_InteractiveStart = m_State.m_CursorPosition;
-            }
-            else
-            {
-                m_InteractiveStart = old_pos;
-                m_InteractiveEnd   = m_State.m_CursorPosition;
-            }
-        }
-        else
-        {
-            m_InteractiveStart = m_InteractiveEnd = m_State.m_CursorPosition;
-        }
-
-        SetSelection(m_InteractiveStart, m_InteractiveEnd);
-        EnsureCursorVisible();
+        FixSelectionAfterMove(select, old_pos);
     }
 
     void CodeEditor::SetSelectionStart(const Coordinates& position) noexcept
@@ -3655,6 +3518,33 @@ namespace dlxemu
         m_State.m_CursorPosition = Coordinates(0, 0);
         m_State.m_SelectionStart = Coordinates(0, 0);
         m_State.m_SelectionEnd   = Coordinates(0, 0);
+    }
+
+    void CodeEditor::FixSelectionAfterMove(phi::boolean select, Coordinates old_pos) noexcept
+    {
+        if (select)
+        {
+            if (old_pos == m_InteractiveStart)
+            {
+                m_InteractiveStart = m_State.m_CursorPosition;
+            }
+            else if (old_pos == m_InteractiveEnd)
+            {
+                m_InteractiveEnd = m_State.m_CursorPosition;
+            }
+            else
+            {
+                m_InteractiveStart = m_State.m_CursorPosition;
+                m_InteractiveEnd   = old_pos;
+            }
+        }
+        else
+        {
+            m_InteractiveStart = m_InteractiveEnd = m_State.m_CursorPosition;
+        }
+
+        SetSelection(m_InteractiveStart, m_InteractiveEnd);
+        EnsureCursorVisible();
     }
 
     phi::u8_fast CodeEditor::GetTabSizeAt(phi::i32 column) const noexcept

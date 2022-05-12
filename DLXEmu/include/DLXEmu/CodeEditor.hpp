@@ -335,6 +335,7 @@ namespace dlxemu
         [[nodiscard]] ImU32        GetPaletteForIndex(PaletteIndex index) const noexcept;
 
         void ResetState() noexcept;
+        void FixSelectionAfterMove(phi::boolean select, Coordinates old_pos) noexcept;
 
         float       m_LineSpacing;
         EditorState m_State;
