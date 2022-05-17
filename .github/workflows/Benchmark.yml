@@ -72,6 +72,7 @@ jobs:
         run: ctest . -C Release
 
       - name: Disabling CPU Frequency Scaling
+        continue-on-error: true
         run: |
           # Reference https://github.com/google/benchmark/blob/main/docs/user_guide.md#disabling-cpu-frequency-scaling
           sudo cpupower frequency-set --governor performance
