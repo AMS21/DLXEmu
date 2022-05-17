@@ -51,6 +51,11 @@ jobs:
       - name: Install compiler
         run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -m
+          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
+
       - name: Configure build directory
         run: |
           mkdir build -p
