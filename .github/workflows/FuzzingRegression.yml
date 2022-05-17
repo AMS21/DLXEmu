@@ -2,9 +2,25 @@ name: Fuzzing
 
 on:
   push:
+    paths:
+      # Workflow file itself
+      - '.github/workflows/FuzzingRegression.yml'
+      # C++ files
+      - '**.cpp'
+      - '**.hpp'
+      # CMake files
+      - '**.cmake'
+      - '**.txt'
+    tags:
     branches-ignore:
-      - 'fuzz/**'
+      - 'dependabot/**'
   pull_request:
+    branches:
+      - main
+      - develop
+  release:
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   regression:
