@@ -1,0 +1,85 @@
+name: Benchmark
+
+on:
+  push:
+    paths:
+      # Workflow file itself
+      - '.github/workflows/Benchmark.yml'
+      # C++ files
+      - '**.cpp'
+      - '**.hpp'
+      # CMake files
+      - '**.cmake'
+      - '**.txt'
+    tags:
+    branches-ignore:
+      - 'dependabot/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: 'ubuntu-20.04'
+
+    strategy:
+      fail-fast: false
+
+    matrix:
+      compiler:
+        - "clang-14"
+        - "gcc-11"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ matrix.os }}-${{ matrix.compiler }}
+
+      - name: Setup Environment
+        run: external/Phi/scripts/ci/SetupEnvironment.sh
+
+      - name: Install compiler
+        run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja
+
+      - name: Configure build directory
+        run: |
+          mkdir build -p
+          cd build
+
+          cmake -DCMAKE_BUILD_TYPE:STRING="Release" -DDLXEMU_BUILD_BENCHMARKS:BOOL=ON ..
+
+      - name: Build
+        working-directory: ./build
+        run: cmake --build . --config Release
+
+      - name: Run tests
+        working-directory: ./build
+        run: ctest . -C Release
+
+      - name: Disabling CPU Frequency Scaling
+        run: |
+          # Reference https://github.com/google/benchmark/blob/main/docs/user_guide.md#disabling-cpu-frequency-scaling
+          sudo cpupower frequency-set --governor performance
+
+          # Verify it worked
+          cpupower frequency-info -o proc
+
+      - name: Run benchmark
+        working-directory: ./build
+        run: ./bin/DLXLibBenchmark --benchmark_repetitions=20 --benchmark_enable_random_interleaving=true --benchmark_out=base_benchmark.json --benchmark_out_format=json --benchmark_display_aggregates_only=true
+
+      - name: Upload result
+        uses: actions/upload-artifact@v3
+        with:
+          name: base_benchmark.json
+          path: build/base_benchmark.json
