@@ -56,9 +56,7 @@ end:
     HALT
 )dlx";
 
-    std::int64_t count         = state.range(0);
-    std::int64_t string_length = phi::string_length(program_source).unsafe();
-    ;
+    std::int64_t count = state.range(0);
 
     // Parse it
     auto prog = dlx::Parser::Parse(program_source);
