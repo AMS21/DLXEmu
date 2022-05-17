@@ -121,6 +121,8 @@ namespace dlx
 
         [[nodiscard]] phi::usize GetCurrentStepCount() const noexcept;
 
+        void SetMaxNumberOfSteps(phi::usize new_max) noexcept;
+
         // Dumping
 
         [[nodiscard]] std::string GetRegisterDump() const noexcept;
