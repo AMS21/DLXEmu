@@ -8,6 +8,7 @@ option(DLXEMU_BUILD_TESTS "" ON)
 option(DLXEMU_FUZZ_BUILD "" OFF)
 option(DLXEMU_RUN_FUZZ_TESTS "" ON)
 option(DLXEMU_COVERAGE_BUILD "" OFF)
+option(DLXEMU_BUILD_BENCHMARKS "" OFF)
 
 # Set version
 set(DLXEMU_VERSION_MAJOR 0)
@@ -100,6 +101,10 @@ if(${DLXEMU_BUILD_TESTS})
   include(Testing)
 
   add_subdirectory(tests)
+endif()
+
+if (${DLXEMU_BUILD_BENCHMARKS})
+  add_subdirectory(bench)
 endif()
 
 # Configure

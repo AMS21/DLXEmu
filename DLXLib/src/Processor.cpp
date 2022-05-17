@@ -567,6 +567,11 @@ namespace dlx
         return m_CurrentStepCount;
     }
 
+    void Processor::SetMaxNumberOfSteps(phi::usize new_max) noexcept
+    {
+        m_MaxNumberOfSteps = new_max;
+    }
+
     std::string Processor::GetRegisterDump() const noexcept
     {
         std::string text{"Int registers:\n"};
