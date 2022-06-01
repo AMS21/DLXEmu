@@ -60,7 +60,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install
-        run: scripts/ci/InstallTools.sh cmake-format
+        run: external/Phi/scripts/ci/InstallTools.sh cmake-format
 
       - name: Run cmake-format
         run: cmake-format -c ".cmake-format.yaml" -i $(find -path "./external" -prune -o -iregex "./.*\.cmake" -or -iregex "./.*\CMakeLists\.txt") external/CMakeLists.txt

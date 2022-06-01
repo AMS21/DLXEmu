@@ -71,15 +71,13 @@ jobs:
 
       - name: Install gcovr
         if: ${{ matrix.dynamic_test == 'coverage' }}
-        run: scripts/ci/InstallTools.sh gcovr
+        run: external/Phi/scripts/ci/InstallTools.sh gcovr
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.23.0
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
+        run: scripts/ci/InstallDependencies.sh
 
       - name: Configure build directory
         run: |

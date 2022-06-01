@@ -60,25 +60,13 @@ jobs:
         uses: lukka/get-cmake@v3.23.0
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
+        run: scripts/ci/InstallDependencies.sh
 
-      - name: Install
-        run: |
-          # Add clang repo
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ env.LLVM_VERSION }} main"
+      - name: Setup Environment
+        run: external/Phi/scripts/ci/SetupEnvironment.sh
 
-          # Update repo list
-          sudo apt-get update -m
-
-          # Install clang++
-          sudo apt-get install "clang-${{ env.LLVM_VERSION }}" g++-multilib -y
-
-          # export compiler
-          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+      - name: Install compiler
+        run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} ninja
 
       - name: Configure build directory
         run: |

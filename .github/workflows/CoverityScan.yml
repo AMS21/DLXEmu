@@ -33,9 +33,7 @@ jobs:
         uses: lukka/get-cmake@v3.23.0
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
+        run: scripts/ci/InstallDependencies.sh
 
       - name: Download Coverity Build Tool
         run: |

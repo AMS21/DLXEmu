@@ -47,9 +47,7 @@ jobs:
           reviewdog_version: latest
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
+        run: scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.23.0
@@ -116,9 +114,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
+        run: scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.23.0
