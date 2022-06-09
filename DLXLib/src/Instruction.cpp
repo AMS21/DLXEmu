@@ -7,8 +7,9 @@
 
 namespace dlx
 {
-    Instruction::Instruction(const InstructionInfo& info) noexcept
+    Instruction::Instruction(const InstructionInfo& info, const phi::u64 source_line) noexcept
         : m_Info(info)
+        , m_SourceLine{source_line}
     {}
 
     void Instruction::SetArgument(phi::u8 argument_number, InstructionArgument argument) noexcept
@@ -70,6 +71,11 @@ namespace dlx
     const InstructionInfo& Instruction::GetInfo() const noexcept
     {
         return m_Info;
+    }
+
+    const phi::u64 Instruction::GetSourceLine() const noexcept
+    {
+        return m_SourceLine;
     }
 
     const InstructionArgument& Instruction::GetArg1() const noexcept
