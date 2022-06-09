@@ -375,6 +375,22 @@ namespace dlxemu
 
             ImGui::SameLine();
             ImGui::Text("SC: %lu", m_Processor.GetCurrentStepCount().unsafe());
+
+            ImGui::SameLine();
+            if (m_DLXProgram.IsValid() && !m_Processor.IsHalted() &&
+                m_CurrentExecutionMode != ExecutionMode::None)
+            {
+                PHI_DBG_ASSERT(m_Processor.GetProgramCounter() <
+                               m_DLXProgram.m_Instructions.size());
+
+                const auto& current_instruction =
+                        m_DLXProgram.m_Instructions.at(m_Processor.GetProgramCounter().unsafe());
+                ImGui::Text("LN: %lu", current_instruction.GetSourceLine().unsafe());
+            }
+            else
+            {
+                ImGui::Text("LN: N/A");
+            }
         }
 
         ImGui::End();
