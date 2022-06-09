@@ -329,29 +329,13 @@ namespace dlxemu
 
             if (ImGui::Button("Run"))
             {
-                if (m_DLXProgram.m_ParseErrors.empty())
-                {
-                    SetExecutionMode(ExecutionMode::Run);
-                }
-                else
-                {
-                    DLX_INFO("Can't execute program since it contains {} parse errors",
-                             m_DLXProgram.m_ParseErrors.size());
-                }
+                SetExecutionMode(ExecutionMode::Run);
             }
 
             ImGui::SameLine();
             if (ImGui::Button("Play"))
             {
-                if (m_DLXProgram.m_ParseErrors.empty())
-                {
-                    SetExecutionMode(ExecutionMode::StepThrough);
-                }
-                else
-                {
-                    DLX_INFO("Can't execute program since it contains {} parse errors",
-                             m_DLXProgram.m_ParseErrors.size());
-                }
+                SetExecutionMode(ExecutionMode::StepThrough);
             }
 
             ImGui::SameLine();
