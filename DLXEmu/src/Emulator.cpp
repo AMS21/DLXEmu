@@ -322,7 +322,7 @@ namespace dlxemu
     {
         if (ImGui::Begin("Control Panel", &m_ShowControlPanel))
         {
-            if (m_DisableEditing)
+            if (!m_DLXProgram.IsValid())
             {
                 ImGui::BeginDisabled();
             }
@@ -370,7 +370,7 @@ namespace dlxemu
                 DLX_INFO("Executed step");
             }
 
-            if (m_DisableEditing)
+            if (!m_DLXProgram.IsValid())
             {
                 ImGui::EndDisabled();
             }
