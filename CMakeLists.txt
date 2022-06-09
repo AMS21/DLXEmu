@@ -84,6 +84,11 @@ if(PHI_PLATFORM_EMSCRIPTEN)
     -sDISABLE_EXCEPTION_CATCHING=1)
 endif()
 
+# Ensure submodules were cloned corretly
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/Phi/CMakeLists.txt")
+    message(FATAL_ERROR "The required submodules were not correnctly cloned. You can recover by manually calling `git submodule update --init --recursive`")
+endif()
+
 # Dependencies
 add_subdirectory(external)
 
