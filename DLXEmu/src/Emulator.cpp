@@ -96,7 +96,8 @@ namespace dlxemu
     {
         m_Window.BeginFrame();
 
-        m_DisableEditing = m_CurrentExecutionMode != ExecutionMode::None;
+        m_DisableEditing = m_CurrentExecutionMode != ExecutionMode::None &&
+                           m_CurrentExecutionMode != ExecutionMode::SingleStep;
 
         // Run updates
         Update();
@@ -362,6 +363,8 @@ namespace dlxemu
                     m_Processor.LoadProgram(m_DLXProgram);
                 }
 
+                SetExecutionMode(ExecutionMode::SingleStep);
+
                 m_Processor.ExecuteStep();
 
                 DLX_INFO("Executed step");
@@ -515,7 +518,8 @@ namespace dlxemu
     {
         switch (m_CurrentExecutionMode)
         {
-            case ExecutionMode::None: {
+            case ExecutionMode::None:
+            case ExecutionMode::SingleStep: {
                 return;
             }
             case ExecutionMode::StepThrough: {
