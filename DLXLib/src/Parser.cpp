@@ -313,7 +313,7 @@ namespace dlx
                     //             number_of_argument_required.unsafe());
 
                     // Create instruction
-                    Instruction  instruction(info);
+                    Instruction  instruction(info, current_token.GetLineNumber());
                     phi::boolean consumed_comma{false};
 
                     // Parse arguments

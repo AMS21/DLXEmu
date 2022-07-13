@@ -2,9 +2,25 @@ name: Fuzzing
 
 on:
   push:
+    paths:
+      # Workflow file itself
+      - '.github/workflows/FuzzingRegression.yml'
+      # C++ files
+      - '**.cpp'
+      - '**.hpp'
+      # CMake files
+      - '**.cmake'
+      - '**.txt'
+    tags:
     branches-ignore:
-      - 'fuzz/**'
+      - 'dependabot/**'
   pull_request:
+    branches:
+      - main
+      - develop
+  release:
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   regression:
@@ -33,9 +49,7 @@ jobs:
           path: DLXEmu-Corpus
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
+        run: scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.23.0

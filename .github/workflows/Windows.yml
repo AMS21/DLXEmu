@@ -2,13 +2,36 @@ name: Windows
 
 on:
   push:
+    paths:
+      # Workflow file itself
+      - '.github/workflows/Windows.yml'
+      # C++ files
+      - '**.cpp'
+      - '**.hpp'
+      # CMake files
+      - '**.cmake'
+      - '**.txt'
+      # Script files
+      - '**.sh'
+    tags:
     branches-ignore:
-      - 'fuzz/**'
+      - 'dependabot/**'
   pull_request:
+    branches:
+      - main
+      - develop
+  release:
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   Build:
-    runs-on: windows-latest
+    runs-on: windows-2022
+
+    # Default windows to use bash
+    defaults:
+      run:
+        shell: bash
 
     env:
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
@@ -23,12 +46,18 @@ jobs:
 
     strategy:
       fail-fast: false
+
       matrix:
         cfg:
           - { compiler: cl }
           #- { compiler: g++ }
           - { compiler: clang++ }
           #- { compiler: clang++, sanitizer: "ubsan" }
+
+        build_type:
+          - "Debug"
+          - "RelWithDebInfo"
+          - "Release"
 
     steps:
       - name: Checkout
@@ -70,135 +99,12 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" ..
+          cmake -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_CXX_FLAGS:STRING="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" ..
 
-      - name: Configure Sanitizers
-        shell: bash
-        run: |
-          cd build
+      - name: Build
+        working-directory: ./build
+        run: cmake --build . --config ${{ matrix.build_type }}
 
-          # Address Sanitizer
-          if [ "${{ matrix.cfg.sanitizer }}" = "asan" ]; then
-            cmake .. -DENABLE_SANITIZER_ADDRESS=ON            -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Leak Sanitizer
-          elif [ "${{ matrix.cfg.sanitizer }}" = "lsan" ]; then
-            cmake .. -DENABLE_SANITIZER_LEAK=ON               -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Memory Sanitizer
-          elif [ "${{ matrix.cfg.sanitizer }}" = "msan" ]; then
-            cmake .. -DENABLE_SANITIZER_MEMORY=ON             -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fsanitize-memory-track-origins=2 -fsanitize-memory-use-after-dtor -fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Thread Sanitizer
-          elif [ "${{ matrix.cfg.sanitizer }}" = "tsan" ]; then
-            cmake .. -DENABLE_SANITIZER_THREAD=ON             -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Undefined Behavior Sanitizer
-          elif [ "${{ matrix.cfg.sanitizer }}" = "ubsan" ]; then
-            cmake .. -DENABLE_SANITIZER_UNDEFINED_BEHAVIOR=ON -DPHI_STANDARD_RUNTIME="Static" -DCMAKE_CXX_FLAGS="-fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # No Sanitizer
-          else
-            echo Running without sanitizer
-          fi
-
-      - name: Build Debug
-        if: matrix.cfg.sanitizer == 0
-        shell: bash
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Debug
-          cmake --build . --config "Debug" --clean-first
-          ctest . -C Debug
-
-      - name: Build RelWithDebInfo
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-          cmake --build . --config "RelWithDebInfo" --clean-first
-          ctest . -C RelWithDebInfo
-
-      - name: Build Release
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release
-          cmake --build . --config "Release" --clean-first
-          ctest . -C Release
-
-  Warnings:
-    name: "Warnings ${{ matrix.cfg.compiler }}"
-    runs-on: windows-latest
-
-    env:
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
-      CMAKE_GENERATOR: 'Ninja'
-
-    strategy:
-      fail-fast: false
-      matrix:
-        cfg:
-          - { compiler: cl, error_format: "%f(%l,%c): warning %m" }
-          #- { compiler: g++, error_format: "%f:%l:%c: warning: %m" }
-          - { compiler: clang++, error_format: "%f:%l:%c: warning: %m" }
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
-      - uses: reviewdog/action-setup@v1.0.3
-        with:
-          reviewdog_version: latest
-
-      - name: Install cmake
-        uses: lukka/get-cmake@v3.23.0
-
-      - name: Install
-        shell: powershell
-        run: |
-          # Install scoop
-          iwr -useb get.scoop.sh -outfile 'install.ps1'
-          .\install.ps1 -RunAsAdmin
-
-          # Install required compilers
-          if ("${{ matrix.cfg.compiler }}".StartsWith("clang")) {
-            # Clang
-            scoop install llvm --global
-            echo "CXX=${{ matrix.cfg.compiler }}" >> $GITHUB_ENV
-            echo "C:\ProgramData\scoop\apps\llvm\current\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          }
-          elseif ("${{ matrix.cfg.compiler }}" -eq "g++") {
-            # GCC
-            scoop install gcc --global
-            echo "CXX=${{ matrix.cfg.compiler }}" >> $GITHUB_ENV
-            echo "C:\ProgramData\scoop\apps\gcc\current\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          }
-
-          scoop install ninja --global
-
-      - name: Setup msvc dev
-        if: matrix.cfg.compiler == 'cl'
-        uses: ilammy/msvc-dev-cmd@v1.10.0
-
-      - name: Generate warnings
-        shell: bash
-        run: |
-          # Build
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-          cmake --build . --config "RelWithDebInfo" --clean-first 2> build.log
-
-          # Filter out warnings for external dependencies
-          cat build.log | grep -Ev "DLXEmu/external" > build_filtered.log || true
-
-          # Print logs
-          cat build_filtered.log
-
-      - name: ReviewDog check
-        shell: bash
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cat build/build_filtered.log | reviewdog -efm="${{ matrix.cfg.error_format }}" -diff="git diff" -reporter=github-check -name "Windows ${{ matrix.cfg.compiler }} warnings" -level warning
+      - name: Run tests
+        working-directory: ./build
+        run: ctest . -C ${{ matrix.build_type }}

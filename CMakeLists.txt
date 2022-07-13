@@ -7,8 +7,14 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 option(DLXEMU_BUILD_TESTS "" ON)
 option(DLXEMU_FUZZ_BUILD "" OFF)
 option(DLXEMU_RUN_FUZZ_TESTS "" ON)
-option(DLXEMU_COVERAGE_BUILD "" OFF)
 option(DLXEMU_BUILD_BENCHMARKS "" OFF)
+
+# Build modes
+option(DLXEMU_ENABLE_ASAN OFF)
+option(DLXEMU_ENABLE_LSAN OFF)
+option(DLXEMU_ENABLE_TSAN OFF)
+option(DLXEMU_ENABLE_UBSAN OFF)
+option(DLXEMU_COVERAGE_BUILD "" OFF)
 
 # Set version
 set(DLXEMU_VERSION_MAJOR 0)
@@ -76,6 +82,11 @@ if(PHI_PLATFORM_EMSCRIPTEN)
     -sFULL_ES3=1
     -sASSERTIONS=1
     -sDISABLE_EXCEPTION_CATCHING=1)
+endif()
+
+# Ensure submodules were cloned corretly
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/Phi/CMakeLists.txt")
+    message(FATAL_ERROR "The required submodules were not correnctly cloned. You can recover by manually calling `git submodule update --init --recursive`")
 endif()
 
 # Dependencies

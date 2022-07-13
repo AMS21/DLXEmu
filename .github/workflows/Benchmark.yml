@@ -52,9 +52,7 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
+        run: scripts/ci/InstallDependencies.sh
 
       - name: Configure build directory
         run: |

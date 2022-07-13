@@ -10,7 +10,7 @@ namespace dlx
     class Instruction
     {
     public:
-        explicit Instruction(const InstructionInfo& info) noexcept;
+        explicit Instruction(const InstructionInfo& info, const phi::u64 source_line) noexcept;
 
         void SetArgument(phi::u8 argument_number, InstructionArgument argument) noexcept;
 
@@ -20,6 +20,8 @@ namespace dlx
 
         [[nodiscard]] const InstructionInfo& GetInfo() const noexcept;
 
+        [[nodiscard]] const phi::u64 GetSourceLine() const noexcept;
+
         [[nodiscard]] const InstructionArgument& GetArg1() const noexcept;
 
         [[nodiscard]] const InstructionArgument& GetArg2() const noexcept;
@@ -28,6 +30,8 @@ namespace dlx
 
     private:
         const InstructionInfo& m_Info;
+
+        phi::u64 m_SourceLine;
 
         InstructionArgument m_Arg1;
         InstructionArgument m_Arg2;

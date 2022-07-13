@@ -2,43 +2,55 @@ name: Linux
 
 on:
   push:
+    paths:
+      # Workflow file itself
+      - '.github/workflows/Linux.yml'
+      # C++ files
+      - '**.cpp'
+      - '**.hpp'
+      # CMake files
+      - '**.cmake'
+      - '**.txt'
+      # Script files
+      - '**.sh'
+    tags:
     branches-ignore:
-      - 'fuzz/**'
+      - 'dependabot/**'
   pull_request:
+    branches:
+      - main
+      - develop
+  release:
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   Build:
     runs-on: ubuntu-20.04
 
     env:
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
-      CTEST_PARALLEL_LEVEL: "2"
-      CTEST_OUTPUT_ON_FAILURE: "ON"
       FUZZING_TIME: "120" # 2 Minutes
-      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability -fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions -DPHI_DEBUG -DDLXEMU_VERIFY_UNDO_REDO"
-      # Sanitizers
-      ASAN_OPTIONS: "quarantine_size_mb=1024:redzone=256:strict_string_checks=1:detect_odr_violation=2:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:detect_invalid_pointer_pairs=3:detect_leaks=1:print_stats=1:use_odr_indicator=1:strict_memcmp=1:print_scariness=1:handle_abort=1:symbolize=1:handle_segv=1:handle_sigill=1:allocator_release_to_os_interval_ms=500:handle_sigfpe=1:handle_sigbus=1:alloc_dealloc_mismatch=1:check_malloc_usable_size=1"
-      LSAN_OPTIONS: "report_objects=1:use_unaligned=1"
-      TSAN_OPTIONS: "halt_on_error=1:history_size=3:force_seq_cst_atomics=1"
-      UBSAN_OPTIONS: "print_stacktrace=1:report_error_type=1:halt_on_error=1"
+      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability -fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions -DPHI_DEBUG -DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN"
 
     strategy:
       fail-fast: false
+
       matrix:
-        cfg:
-          # gcc-11
-          - { compiler: g++, compiler_version: "11" }
-          - { compiler: g++, compiler_version: "11", dynamic_test: "asan" }
-          - { compiler: g++, compiler_version: "11", dynamic_test: "lsan" }
-          - { compiler: g++, compiler_version: "11", dynamic_test: "tsan" }
-          - { compiler: g++, compiler_version: "11", dynamic_test: "ubsan" }
-          # clang-14
-          - { compiler: clang++, compiler_version: "14" }
-          - { compiler: clang++, compiler_version: "14", dynamic_test: "asan" }
-          - { compiler: clang++, compiler_version: "14", dynamic_test: "lsan" }
-          #- { compiler: clang++, compiler_version: "14", dynamic_test: "msan" }
-          - { compiler: clang++, compiler_version: "14", dynamic_test: "tsan" }
-          - { compiler: clang++, compiler_version: "14", dynamic_test: "ubsan" }
+        compiler:
+          - "gcc-11"
+          - "clang-14"
+
+        build_type:
+          - "Debug"
+          - "RelWithDebInfo"
+          - "Release"
+
+        dynamic_test:
+          - "none"
+          - "asan"
+          - "lsan"
+          - "tsan"
+          - "ubsan"
 
     steps:
       - name: Checkout
@@ -46,110 +58,47 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ matrix.os }}-${{ matrix.compiler }}
+
+      - name: Setup Environment
+        run: external/Phi/scripts/ci/SetupEnvironment.sh
+
+      - name: Install compiler
+        run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja
+
+      - name: Install gcovr
+        if: ${{ matrix.dynamic_test == 'coverage' }}
+        run: external/Phi/scripts/ci/InstallTools.sh gcovr
+
       - name: Install cmake
         uses: lukka/get-cmake@v3.23.0
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
-
-      - name: Install
-        run: |
-          # Adding repositories
-          # Add clang repo
-          if [ "${{ matrix.cfg.compiler }}" = "clang++" ]; then
-            wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-            sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ matrix.cfg.compiler_version }} main"
-          fi
-
-          # Update repo list
-          sudo apt-get update -m
-
-          # Install clang++
-          if [ "${{ matrix.cfg.compiler }}" = "clang++" ]; then
-            sudo apt-get install "clang-${{ matrix.cfg.compiler_version }}" g++-multilib -y
-          fi
-
-          # Install g++
-          if [ "${{ matrix.cfg.compiler }}" = "g++" ]; then
-            sudo apt-get install "g++-${{ matrix.cfg.compiler_version }}" "g++-${{ matrix.cfg.compiler_version }}-multilib" -y
-          fi
-
-          # Install valgrind
-          if [ "${{ matrix.cfg.dynamic_test }}" = "valgrind" ]; then
-            sudo apt-get install valgrind
-          fi
-
-          # export compiler
-          echo "CXX=${{ matrix.cfg.compiler }}-${{ matrix.cfg.compiler_version }}" >> $GITHUB_ENV
+        run: scripts/ci/InstallDependencies.sh
 
       - name: Configure build directory
         run: |
-          mkdir build
+          mkdir build -p
           cd build
-          cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" ..
 
-      - name: Configure dynamic analysis
+          cmake -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_CXX_FLAGS:STRING="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" -DDLXEMU_ENABLE_ASAN:BOOL=${{ matrix.dynamic_test == 'asan' }} -DDLXEMU_ENABLE_LSAN:BOOL=${{ matrix.dynamic_test == 'lsan' }} -DDLXEMU_ENABLE_TSAN:BOOL=${{ matrix.dynamic_test == 'tsan' }} -DDLXEMU_ENABLE_UBSAN:BOOL=${{ matrix.dynamic_test == 'ubsan' }} ..
+
+      - name: Build
+        working-directory: ./build
+        run: cmake --build . --config ${{ matrix.build_type }}
+
+      - name: Run tests
+        working-directory: ./build
+        run: ctest . -C ${{ matrix.build_type }}
+
+      - name: Run fuzzers
+        if: matrix.compiler == 'clang*' && matrix.dynamic_test != 'tsan'
+        working-directory: ./build
         run: |
-          cd build
-
-          # Address Sanitizer
-          if [ "${{ matrix.cfg.dynamic_test }}" = "asan" ]; then
-            cmake .. -DENABLE_SANITIZER_ADDRESS=ON            -DCMAKE_CXX_FLAGS="-fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Leak Sanitizer
-          elif [ "${{ matrix.cfg.dynamic_test }}" = "lsan" ]; then
-            cmake .. -DENABLE_SANITIZER_LEAK=ON               -DCMAKE_CXX_FLAGS="-fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Memory Sanitizer
-          elif [ "${{ matrix.cfg.dynamic_test }}" = "msan" ]; then
-            cmake .. -DENABLE_SANITIZER_MEMORY=ON             -DCMAKE_CXX_FLAGS="-fsanitize-memory-track-origins=2 -fsanitize-memory-use-after-dtor -fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Thread Sanitizer
-          elif [ "${{ matrix.cfg.dynamic_test }}" = "tsan" ]; then
-            cmake .. -DENABLE_SANITIZER_THREAD=ON             -DCMAKE_CXX_FLAGS="-fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Undefined Behavior Sanitizer
-          elif [ "${{ matrix.cfg.dynamic_test }}" = "ubsan" ]; then
-            cmake .. -DENABLE_SANITIZER_UNDEFINED_BEHAVIOR=ON -DCMAKE_CXX_FLAGS="-fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions"
-
-          # Valgrind
-          elif [ "${{ matrix.cfg.dynamic_test }}" = "valgrind" ]; then
-            # Disable failure tests for valgrind
-            cmake ..
-
-          # No additional dynamic analysis
-          else
-            echo Running without extra dynamic analysis
-          fi
-
-      - name: Build Debug
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Debug
-          cmake --build . --clean-first
-          ctest . -C Debug
-
-      - name: Build RelWithDebInfo
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-          cmake --build . --clean-first
-          ctest . -C RelWithDebInfo
-
-      - name: Build Release
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release
-          cmake --build . --clean-first
-          ctest . -C Release
-
-      - name: Run fuzzers Debug
-        if: matrix.cfg.compiler == 'clang++' && matrix.cfg.dynamic_test != 'tsan'
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="$FUZZING_BUILD_FLAGS"
+          cmake .. -DCMAKE_CXX_FLAGS="$FUZZING_BUILD_FLAGS"
           cmake --build . --clean-first
           ctest . -C Debug
 
@@ -159,118 +108,7 @@ jobs:
 
           for fuzzer in $fuzzers
           do
-            printf "*****\Running $fuzzer\n*****\n"
+            printf "**********\nRunning $fuzzer\n**********\n"
 
-            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME -close_fd_mask=1 | tee $fuzzer-Debug.log
+            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME -close_fd_mask=1 | tee $fuzzer.log
           done
-
-      - name: Run fuzzers RelWithDebInfo
-        if: matrix.cfg.compiler == 'clang++' && matrix.cfg.dynamic_test != 'tsan'
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="$FUZZING_BUILD_FLAGS"
-          cmake --build . --clean-first
-          ctest . -C RelWithDebInfo
-
-          fuzzers=$(find $BINARY_DIR -type f -iname "fuzz_*")
-          echo "Found fuzzers:"
-          echo "$fuzzers"
-
-          for fuzzer in $fuzzers
-          do
-            printf "*****\Running $fuzzer\n*****\n"
-
-            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME -close_fd_mask=1 | tee $fuzzer-RelWithDebInfo.log
-          done
-
-      - name: Run fuzzers Release
-        if: matrix.cfg.compiler == 'clang++' && matrix.cfg.dynamic_test != 'tsan'
-        run: |
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="$FUZZING_BUILD_FLAGS"
-          cmake --build . --clean-first
-          ctest . -C Release
-
-          fuzzers=$(find $BINARY_DIR -type f -iname "fuzz_*")
-          echo "Found fuzzers:"
-          echo "$fuzzers"
-
-          for fuzzer in $fuzzers
-          do
-            printf "*****\Running $fuzzer\n*****\n"
-
-            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME -close_fd_mask=1 | tee $fuzzer-Release.log
-          done
-
-  Warnings:
-    runs-on: ubuntu-20.04
-
-    env:
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
-
-    strategy:
-      fail-fast: false
-      matrix:
-        cfg:
-          - { compiler: g++, compiler_version: "11" }
-          - { compiler: clang++, compiler_version: "14" }
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
-      - uses: reviewdog/action-setup@v1.0.3
-        with:
-          reviewdog_version: latest
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
-
-      - name: Install cmake
-        uses: lukka/get-cmake@v3.23.0
-
-      - name: Install
-        run: |
-          # Adding repositories
-          # Add clang repo
-          if [ "${{ matrix.cfg.compiler }}" = "clang++" ]; then
-            wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-            sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ matrix.cfg.compiler_version }} main"
-          fi
-
-          # Update repo list
-          sudo apt-get update -m
-
-          # Install clang++
-          if [ "${{ matrix.cfg.compiler }}" = "clang++" ]; then
-            sudo apt-get install "clang-${{ matrix.cfg.compiler_version }}" g++-multilib -y
-          fi
-
-          # Install g++
-          if [ "${{ matrix.cfg.compiler }}" = "g++" ]; then
-            sudo apt-get install "g++-${{ matrix.cfg.compiler_version }}" "g++-${{ matrix.cfg.compiler_version }}-multilib" -y
-          fi
-
-          # export compiler
-          echo "CXX=${{ matrix.cfg.compiler }}-${{ matrix.cfg.compiler_version }}" >> $GITHUB_ENV
-
-      - name: Generate warnings
-        run: |
-          # Build
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Debug
-          cmake --build . --clean-first 2> build.log
-
-          # Filter out warnings for external dependencies
-          cat build.log | grep -Ev "DLXEmu/external" > build_filtered.log || true
-
-      - name: ReviewDog check
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cat build/build_filtered.log | reviewdog -efm="%f:%l:%c: warning: %m" -diff="git diff" -reporter=github-check -name "Linux ${{ matrix.cfg.compiler }}-${{ matrix.cfg.compiler_version }} warnings" -level warning

@@ -96,7 +96,8 @@ namespace dlxemu
     {
         m_Window.BeginFrame();
 
-        m_DisableEditing = m_CurrentExecutionMode != ExecutionMode::None;
+        m_DisableEditing = m_CurrentExecutionMode != ExecutionMode::None &&
+                           m_CurrentExecutionMode != ExecutionMode::SingleStep;
 
         // Run updates
         Update();
@@ -321,36 +322,20 @@ namespace dlxemu
     {
         if (ImGui::Begin("Control Panel", &m_ShowControlPanel))
         {
-            if (m_DisableEditing)
+            if (!m_DLXProgram.IsValid())
             {
                 ImGui::BeginDisabled();
             }
 
             if (ImGui::Button("Run"))
             {
-                if (m_DLXProgram.m_ParseErrors.empty())
-                {
-                    SetExecutionMode(ExecutionMode::Run);
-                }
-                else
-                {
-                    DLX_INFO("Can't execute program since it contains {} parse errors",
-                             m_DLXProgram.m_ParseErrors.size());
-                }
+                SetExecutionMode(ExecutionMode::Run);
             }
 
             ImGui::SameLine();
             if (ImGui::Button("Play"))
             {
-                if (m_DLXProgram.m_ParseErrors.empty())
-                {
-                    SetExecutionMode(ExecutionMode::StepThrough);
-                }
-                else
-                {
-                    DLX_INFO("Can't execute program since it contains {} parse errors",
-                             m_DLXProgram.m_ParseErrors.size());
-                }
+                SetExecutionMode(ExecutionMode::StepThrough);
             }
 
             ImGui::SameLine();
@@ -362,12 +347,14 @@ namespace dlxemu
                     m_Processor.LoadProgram(m_DLXProgram);
                 }
 
+                SetExecutionMode(ExecutionMode::SingleStep);
+
                 m_Processor.ExecuteStep();
 
                 DLX_INFO("Executed step");
             }
 
-            if (m_DisableEditing)
+            if (!m_DLXProgram.IsValid())
             {
                 ImGui::EndDisabled();
             }
@@ -388,6 +375,22 @@ namespace dlxemu
 
             ImGui::SameLine();
             ImGui::Text("SC: %lu", m_Processor.GetCurrentStepCount().unsafe());
+
+            ImGui::SameLine();
+            if (m_DLXProgram.IsValid() && !m_Processor.IsHalted() &&
+                m_CurrentExecutionMode != ExecutionMode::None)
+            {
+                PHI_DBG_ASSERT(m_Processor.GetProgramCounter() <
+                               m_DLXProgram.m_Instructions.size());
+
+                const auto& current_instruction =
+                        m_DLXProgram.m_Instructions.at(m_Processor.GetProgramCounter().unsafe());
+                ImGui::Text("LN: %lu", current_instruction.GetSourceLine().unsafe());
+            }
+            else
+            {
+                ImGui::Text("LN: N/A");
+            }
         }
 
         ImGui::End();
@@ -515,7 +518,8 @@ namespace dlxemu
     {
         switch (m_CurrentExecutionMode)
         {
-            case ExecutionMode::None: {
+            case ExecutionMode::None:
+            case ExecutionMode::SingleStep: {
                 return;
             }
             case ExecutionMode::StepThrough: {

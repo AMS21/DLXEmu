@@ -35,6 +35,7 @@ namespace dlxemu
         {
             None,
             StepThrough,
+            SingleStep,
             Run,
         };
 

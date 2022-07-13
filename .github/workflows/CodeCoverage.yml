@@ -2,9 +2,27 @@ name: CodeCoverage
 
 on:
   push:
+    paths:
+      # Workflow file itself
+      - '.github/workflows/CodeCoverage.yml'
+      # C++ files
+      - '**.cpp'
+      - '**.hpp'
+      # CMake files
+      - '**.cmake'
+      - '**.txt'
+      # Script files
+      - '**.sh'
+    tags:
     branches-ignore:
-      - 'fuzz/**'
+      - 'dependabot/**'
   pull_request:
+    branches:
+      - main
+      - develop
+  release:
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   linux:
@@ -17,6 +35,14 @@ jobs:
       CTEST_OUTPUT_ON_FAILURE: "ON"
       FUZZ_TIME: 300 # 5 Minutes
 
+    strategy:
+      fail-fast: false
+
+      matrix:
+        compiler:
+          - "gcc-11"
+          - "clang-14"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -26,39 +52,34 @@ jobs:
       - name: Install cmake
         uses: lukka/get-cmake@v3.23.0
 
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ matrix.os }}-${{ matrix.compiler }}
+
       - name: Install dependencies
+        run: scripts/ci/InstallDependencies.sh
+
+      - name: Setup Environment
+        run: external/Phi/scripts/ci/SetupEnvironment.sh
+
+      - name: Install compiler
+        run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja gcovr
+
+      - name: Configure build directory
         run: |
-          sudo apt-get update -m
-          sudo apt-get install xorg-dev libglu1-mesa-dev libxrandr-dev
-
-      - name: Install tools
-        run: |
-          # Add clang repo
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ env.LLVM_VERSION }} main"
-
-          # Update repo list
-          sudo apt-get update -m
-
-          # Install clang/LLVM
-          sudo apt-get install "clang-${{ env.LLVM_VERSION }}" "llvm-${{ env.LLVM_VERSION }}" g++-multilib -y
-
-          # export compiler
-          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-
-      - name: Build coverage data
-        run: |
-          # Create build directory
-          mkdir build
+          mkdir build -p
           cd build
 
-          # Build it
           cmake -DCMAKE_BUILD_TYPE=Debug -DPHI_COVERAGE_BUILD=ON -DDLXEMU_COVERAGE_BUILD=On -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN -DPHI_DEBUG" ..
-          cmake --build . --clean-first
 
-          # Generate coverage data
-          ctest . -C Debug
+      - name: Build
+        working-directory: ./build
+        run: cmake --build . --config ${{ matrix.build_type }}
+
+      - name: Run tests
+        working-directory: ./build
+        run: ctest . -C ${{ matrix.build_type }}
 
       - name: Checkout Corpus
         uses: actions/checkout@v3
@@ -79,21 +100,12 @@ jobs:
           find bin -type f -iname "fuzz_*" -exec bash -c 'echo Running ${0}; ${0} TempCorpus $all_input_corpus -max_total_time=$FUZZ_TIME -close_fd_mask=1' {} \;
 
       - name: Process coverage data
-        run: |
-          cd build
-
-          files=$(find DLXLib tests/DLXLibTest -iname "*.hpp" -or -iname "*.cpp" -printf "%p ")
-
-          llvm-profdata-${{ env.LLVM_VERSION }} merge -sparse $(find . -iname "*.profraw" -type f) -o coverage.profdata
-          find bin -type f -exec bash -c 'llvm-cov-${{ env.LLVM_VERSION }} show ${0} $files -instr-profile=coverage.profdata -show-expansions -show-regions -show-line-counts -use-color=false >> coverage.info' {} \;
-
-          # List coverage data
-          find bin -type f -exec bash -c 'echo ${0}; llvm-cov-${{ env.LLVM_VERSION }} report ${0} $files -instr-profile=coverage.profdata' {} \;
-          cat coverage.info
+        working-directory: ./build
+        run: gcovr -j $PROC_COUNT --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '$GCOV_EXECUTABLE'
 
       - name: Upload coverage data
         uses: codecov/codecov-action@v3.1.0
         with:
-          file: ./build/coverage.info
-          name: ${{ runner.os }}-clang++-${{ env.LLVM_VERSION }}
-          fail_ci_if_error: true
+          file: ./build/coverage.xml
+          flags: ${{ runner.os }},${{ matrix.compiler }}
+          name: ${{ runner.os }}-${{ matrix.compiler }}
