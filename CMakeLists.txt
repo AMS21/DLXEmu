@@ -76,17 +76,16 @@ project(
 # Build js files when using emscripten
 if(PHI_PLATFORM_EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
-  add_link_options(    -sUSE_GLFW=3
-    -sFETCH=1
-    -sFULL_ES2=1
-    -sFULL_ES3=1
-    -sASSERTIONS=1
-    -sDISABLE_EXCEPTION_CATCHING=1)
+  add_link_options(-sUSE_GLFW=3 -sFETCH=1 -sFULL_ES2=1 -sFULL_ES3=1 -sASSERTIONS=1
+                   -sDISABLE_EXCEPTION_CATCHING=1)
 endif()
 
 # Ensure submodules were cloned corretly
 if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/Phi/CMakeLists.txt")
-    message(FATAL_ERROR "The required submodules were not correnctly cloned. You can recover by manually calling `git submodule update --init --recursive`")
+  message(
+    FATAL_ERROR
+      "The required submodules were not correnctly cloned. You can recover by manually calling `git submodule update --init --recursive`"
+  )
 endif()
 
 # Dependencies
@@ -114,7 +113,7 @@ if(${DLXEMU_BUILD_TESTS})
   add_subdirectory(tests)
 endif()
 
-if (${DLXEMU_BUILD_BENCHMARKS})
+if(${DLXEMU_BUILD_BENCHMARKS})
   add_subdirectory(bench)
 endif()
 
@@ -122,4 +121,14 @@ endif()
 
 include(ProjectOptions)
 
-phi_configure_project(DEBUG_FLAGS OPTIMIZATION_FLAGS WARNINGS WARNINGS_AS_ERRORS PEDANTIC FPM_PRECISE NO_EXCEPTIONS STANDARD "latest" EXTERNAL "external")
+phi_configure_project(
+  DEBUG_FLAGS
+  OPTIMIZATION_FLAGS
+  WARNINGS
+  PEDANTIC
+  FPM_PRECISE
+  NO_EXCEPTIONS
+  STANDARD
+  "latest"
+  EXTERNAL
+  "external")

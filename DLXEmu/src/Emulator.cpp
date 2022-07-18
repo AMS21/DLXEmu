@@ -45,7 +45,7 @@ namespace dlxemu
             std::string arg_value = argv[arg_num.unsafe()];
             std::transform(arg_value.begin(), arg_value.end(), arg_value.begin(), ::tolower);
 
-            PHI_DBG_ASSERT(!arg_value.empty());
+            PHI_ASSERT(!arg_value.empty());
 
             if (arg_value.front() == '-')
             {
@@ -380,8 +380,7 @@ namespace dlxemu
             if (m_DLXProgram.IsValid() && !m_Processor.IsHalted() &&
                 m_CurrentExecutionMode != ExecutionMode::None)
             {
-                PHI_DBG_ASSERT(m_Processor.GetProgramCounter() <
-                               m_DLXProgram.m_Instructions.size());
+                PHI_ASSERT(m_Processor.GetProgramCounter() < m_DLXProgram.m_Instructions.size());
 
                 const auto& current_instruction =
                         m_DLXProgram.m_Instructions.at(m_Processor.GetProgramCounter().unsafe());
@@ -481,7 +480,7 @@ namespace dlxemu
                                 ImGui::StyleColorsClassic();
                                 break;
                             default:
-                                PHI_DBG_ASSERT_NOT_REACHED();
+                                PHI_ASSERT_NOT_REACHED();
                         }
                     }
 
@@ -500,7 +499,7 @@ namespace dlxemu
                                 m_CodeEditor.SetPalette(dlxemu::CodeEditor::GetRetroBluePalette());
                                 break;
                             default:
-                                PHI_DBG_ASSERT_NOT_REACHED();
+                                PHI_ASSERT_NOT_REACHED();
                         }
                     }
 

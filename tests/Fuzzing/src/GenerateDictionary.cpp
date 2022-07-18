@@ -11,19 +11,20 @@ int main(int argc, char* argv[])
     // Create log file
     std::shared_ptr<spdlog::logger> file_log;
 
-    try
-    {
-        file_log = spdlog::basic_logger_st("file_logger", "Dictionary.txt", true);
+    //try
+    //{
+    file_log = spdlog::basic_logger_st("file_logger", "Dictionary.txt", true);
 
-        file_log->set_level(spdlog::level::trace);
-        file_log->flush_on(spdlog::level::err);
-        file_log->set_pattern("%v");
-    }
+    file_log->set_level(spdlog::level::trace);
+    file_log->flush_on(spdlog::level::err);
+    file_log->set_pattern("%v");
+    /*}
     catch (const spdlog::spdlog_ex& ex)
     {
         std::cerr << "Log initialization failed: " << ex.what() << std::endl;
         return -1;
     }
+    */
 
     // Write all opcodes
     for (const auto& opcode : magic_enum::enum_names<dlx::OpCode>())

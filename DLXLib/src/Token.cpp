@@ -68,10 +68,10 @@ namespace dlx
 
     std::uint32_t Token::GetHint() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::RegisterInt || m_Type == Type::RegisterFloat ||
-                       m_Type == Type::IntegerLiteral || m_Type == Type::OpCode ||
-                       m_Type == Type::ImmediateInteger);
-        PHI_DBG_ASSERT(m_HasHint);
+        PHI_ASSERT(m_Type == Type::RegisterInt || m_Type == Type::RegisterFloat ||
+                   m_Type == Type::IntegerLiteral || m_Type == Type::OpCode ||
+                   m_Type == Type::ImmediateInteger);
+        PHI_ASSERT(m_HasHint);
 
         return m_Hint;
     }
@@ -127,7 +127,7 @@ namespace dlx
                 return "Token[Unknown]" + pos_info;
 
             default:
-                PHI_DBG_ASSERT_NOT_REACHED();
+                PHI_ASSERT_NOT_REACHED();
                 return "Token[NotFound]" + pos_info;
 #endif
         }

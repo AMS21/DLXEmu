@@ -48,7 +48,7 @@ namespace dlx
                 }
 
                 // Get address displacement
-                PHI_DBG_ASSERT(token.HasHint());
+                PHI_ASSERT(token.HasHint());
 
                 std::int16_t value = static_cast<std::int16_t>(token.GetHint());
 
@@ -267,7 +267,7 @@ namespace dlx
                                     return false;
                                 });
 
-                        PHI_DBG_ASSERT(first_label_definition);
+                        PHI_ASSERT(first_label_definition);
 
                         program.AddParseError(ConstructLabelAlreadyDefinedParseError(
                                 current_token, *first_label_definition));
@@ -295,7 +295,7 @@ namespace dlx
                     label_count = 0u;
 
                     // Handle normal instructions
-                    PHI_DBG_ASSERT(current_token.HasHint());
+                    PHI_ASSERT(current_token.HasHint());
                     OpCode opcode = static_cast<OpCode>(current_token.GetHint());
 
                     //DLX_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
@@ -303,10 +303,10 @@ namespace dlx
                     const InstructionInfo& info = LookUpIntructionInfo(opcode);
 
                     // Make sure we got no problems here
-                    PHI_DBG_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
-                    PHI_DBG_ASSERT(info.GetArgumentType(1_u8) != ArgumentType::Unknown);
-                    PHI_DBG_ASSERT(info.GetArgumentType(2_u8) != ArgumentType::Unknown);
-                    PHI_DBG_ASSERT(info.GetExecutor());
+                    PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);
+                    PHI_ASSERT(info.GetArgumentType(1_u8) != ArgumentType::Unknown);
+                    PHI_ASSERT(info.GetArgumentType(2_u8) != ArgumentType::Unknown);
+                    PHI_ASSERT(info.GetExecutor());
 
                     phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
                     //DLX_INFO("Instruction requires {} arguments",
@@ -396,7 +396,7 @@ namespace dlx
         {
             for (auto it = tokens.rbegin(); label_count > 0u; ++it)
             {
-                PHI_DBG_ASSERT(it != tokens.rend(), "Iterator should never reach the end");
+                PHI_ASSERT(it != tokens.rend(), "Iterator should never reach the end");
 
                 const Token& token = *it;
                 if (token.GetType() == Token::Type::LabelIdentifier)

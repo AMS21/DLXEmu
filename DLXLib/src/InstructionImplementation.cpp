@@ -15,7 +15,7 @@ namespace dlx
 {
     static std::int32_t clear_top_n_bits(std::int32_t value, std::int32_t n) noexcept
     {
-        PHI_DBG_ASSERT(n > 0 && n < 32, "Would invoke undefined behaviour");
+        PHI_ASSERT(n > 0 && n < 32, "Would invoke undefined behaviour");
 
         return value & ~(-1 << (32 - n));
     }
@@ -24,8 +24,8 @@ namespace dlx
     {
         // Lookup the label
         const phi::observer_ptr<ParsedProgram> program = processor.GetCurrentProgramm();
-        PHI_DBG_ASSERT(program != nullptr);
-        PHI_DBG_ASSERT(!label_name.empty(), "Can't jump to empty label");
+        PHI_ASSERT(program != nullptr);
+        PHI_ASSERT(!label_name.empty(), "Can't jump to empty label");
 
         if (program->m_JumpData.find(label_name) == program->m_JumpData.end())
         {
@@ -35,7 +35,7 @@ namespace dlx
         }
 
         const std::uint32_t jump_point = program->m_JumpData.at(label_name);
-        PHI_DBG_ASSERT(jump_point < program->m_Instructions.size(), "Jump point out of bounds");
+        PHI_ASSERT(jump_point < program->m_Instructions.size(), "Jump point out of bounds");
 
         // Set program counter
         processor.SetNextProgramCounter(jump_point);
@@ -95,7 +95,7 @@ namespace dlx
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_DBG_ASSERT_NOT_REACHED();
+        PHI_ASSERT_NOT_REACHED();
 #endif
     }
 
@@ -120,8 +120,8 @@ namespace dlx
             value = min + (value % (max + 1));
         }
 
-        PHI_DBG_ASSERT(value >= min);
-        PHI_DBG_ASSERT(value <= max);
+        PHI_ASSERT(value >= min);
+        PHI_ASSERT(value <= max);
 
         processor.IntRegisterSetSignedValue(dest_reg, static_cast<std::int32_t>(value.unsafe()));
     }
@@ -140,7 +140,7 @@ namespace dlx
             value %= max + 1u;
         }
 
-        PHI_DBG_ASSERT(value <= max);
+        PHI_ASSERT(value <= max);
 
         processor.IntRegisterSetUnsignedValue(dest_reg, static_cast<std::uint32_t>(value.unsafe()));
     }

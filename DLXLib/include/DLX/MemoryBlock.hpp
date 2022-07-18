@@ -18,8 +18,8 @@ namespace dlx
 
             union
             {
-                std::int8_t  signed_value;
-                std::uint8_t unsigned_value;
+                phi::int8_t  signed_value;
+                phi::uint8_t unsigned_value;
             };
         };
 

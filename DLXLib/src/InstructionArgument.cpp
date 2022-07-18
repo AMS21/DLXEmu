@@ -44,27 +44,27 @@ namespace dlx
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                PHI_DBG_ASSERT_NOT_REACHED();
+                PHI_ASSERT_NOT_REACHED();
                 break;
 #endif
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_DBG_ASSERT_NOT_REACHED();
+        PHI_ASSERT_NOT_REACHED();
         return "Unknown";
 #endif
     }
 
     const InstructionArgument::RegisterInt& InstructionArgument::AsRegisterInt() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == ArgumentType::IntRegister);
+        PHI_ASSERT(m_Type == ArgumentType::IntRegister);
 
         return register_int;
     }
 
     const InstructionArgument::RegisterFloat& InstructionArgument::AsRegisterFloat() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == ArgumentType::FloatRegister);
+        PHI_ASSERT(m_Type == ArgumentType::FloatRegister);
 
         return register_float;
     }
@@ -72,7 +72,7 @@ namespace dlx
     const InstructionArgument::ImmediateValue& InstructionArgument::AsImmediateValue()
             const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == ArgumentType::ImmediateInteger);
+        PHI_ASSERT(m_Type == ArgumentType::ImmediateInteger);
 
         return immediate_value;
     }
@@ -80,14 +80,14 @@ namespace dlx
     const InstructionArgument::AddressDisplacement& InstructionArgument::AsAddressDisplacement()
             const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == ArgumentType::AddressDisplacement);
+        PHI_ASSERT(m_Type == ArgumentType::AddressDisplacement);
 
         return address_displacement;
     }
 
     const InstructionArgument::Label& InstructionArgument::AsLabel() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == ArgumentType::Label);
+        PHI_ASSERT(m_Type == ArgumentType::Label);
 
         return label;
     }
@@ -124,13 +124,13 @@ namespace dlx
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                PHI_DBG_ASSERT_NOT_REACHED();
+                PHI_ASSERT_NOT_REACHED();
                 break;
 #endif
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_DBG_ASSERT_NOT_REACHED();
+        PHI_ASSERT_NOT_REACHED();
         return false;
 #endif
     }

@@ -14,7 +14,7 @@ namespace dlx
 
     void Instruction::SetArgument(phi::u8 argument_number, InstructionArgument argument) noexcept
     {
-        PHI_DBG_ASSERT(argument_number < 3u);
+        PHI_ASSERT(argument_number < 3u);
 
         switch (argument_number.unsafe())
         {
@@ -29,7 +29,7 @@ namespace dlx
                 break;
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                PHI_DBG_ASSERT_NOT_REACHED();
+                PHI_ASSERT_NOT_REACHED();
 #endif
         }
     }
@@ -52,13 +52,13 @@ namespace dlx
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                PHI_DBG_ASSERT_NOT_REACHED();
+                PHI_ASSERT_NOT_REACHED();
                 break;
 #endif
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_DBG_ASSERT_NOT_REACHED();
+        PHI_ASSERT_NOT_REACHED();
         return "Unknown";
 #endif
     }

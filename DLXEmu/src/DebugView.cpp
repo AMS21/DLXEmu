@@ -539,7 +539,7 @@ namespace dlxemu
             }
 
             default:
-                PHI_DBG_ASSERT_NOT_REACHED();
+                PHI_ASSERT_NOT_REACHED();
                 break;
         }
     }

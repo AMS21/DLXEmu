@@ -98,28 +98,28 @@ namespace dlx
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                PHI_DBG_ASSERT_NOT_REACHED();
+                PHI_ASSERT_NOT_REACHED();
 #endif
         }
     }
 
     const ParseError::UnexpectedArgumentType& ParseError::GetUnexpectedArgumentType() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::UnexpectedArgumentType);
+        PHI_ASSERT(m_Type == Type::UnexpectedArgumentType);
 
         return unexpected_argument_type;
     }
 
     const ParseError::InvalidNumber& ParseError::GetInvalidNumber() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::InvalidNumber);
+        PHI_ASSERT(m_Type == Type::InvalidNumber);
 
         return invalid_number;
     }
 
     const ParseError::UnexpectedToken& ParseError::GetUnexpectedToken() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::UnexpectedToken);
+        PHI_ASSERT(m_Type == Type::UnexpectedToken);
 
         return unexpected_token;
     }
@@ -127,35 +127,35 @@ namespace dlx
     const ParseError::ReserverdIdentifier& ParseError::ParseError::GetReserverIdentifier()
             const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::ReserverdIdentifier);
+        PHI_ASSERT(m_Type == Type::ReserverdIdentifier);
 
         return reserverd_identifier;
     }
 
     const ParseError::InvalidLabelIdentifier& ParseError::GetInvalidLabelIdentifier() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::InvalidLabelIdentifier);
+        PHI_ASSERT(m_Type == Type::InvalidLabelIdentifier);
 
         return invalid_label_identifier;
     }
 
     const ParseError::LabelAlreadyDefined& ParseError::GetLabelAlreadyDefined() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::LabelAlreadyDefined);
+        PHI_ASSERT(m_Type == Type::LabelAlreadyDefined);
 
         return label_already_defined;
     }
 
     const ParseError::TooFewArguments& ParseError::GetTooFewArguments() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::TooFewArgument);
+        PHI_ASSERT(m_Type == Type::TooFewArgument);
 
         return too_few_arguments;
     }
 
     const ParseError::EmptyLabel& ParseError::GetEmptyLabel() const noexcept
     {
-        PHI_DBG_ASSERT(m_Type == Type::EmptyLabel);
+        PHI_ASSERT(m_Type == Type::EmptyLabel);
 
         return empty_label;
     }

@@ -177,8 +177,8 @@ namespace dlxemu
         : m_Line(line)
         , m_Column(column)
     {
-        PHI_DBG_ASSERT(line >= 0);
-        PHI_DBG_ASSERT(column >= 0);
+        PHI_ASSERT(line >= 0);
+        PHI_ASSERT(column >= 0);
     }
 
     CodeEditor::Coordinates CodeEditor::Coordinates::Invalid() noexcept
@@ -381,7 +381,7 @@ namespace dlxemu
     void CodeEditor::Render(const ImVec2& size, bool border) noexcept
     {
         // Verify that ImGui is correctly initialzied
-        PHI_DBG_ASSERT(GImGui, "ImGui was not initialized!");
+        PHI_ASSERT(GImGui, "ImGui was not initialized!");
 
         m_WithinRender          = true;
         m_CursorPositionChanged = false;
@@ -499,7 +499,7 @@ namespace dlxemu
 
     void CodeEditor::ClearText() noexcept
     {
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_Lines.empty());
 
         if (IsReadOnly())
         {
@@ -803,7 +803,7 @@ namespace dlxemu
             return;
         }
 
-        PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
+        PHI_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
         const Coordinates old_pos = m_State.m_CursorPosition;
         m_State.m_CursorPosition.m_Line =
@@ -822,7 +822,7 @@ namespace dlxemu
 
     void CodeEditor::MoveLeft(phi::u32 amount, bool select, bool word_mode) noexcept
     {
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_Lines.empty());
 
         if (amount == 0u)
         {
@@ -873,7 +873,7 @@ namespace dlxemu
         }
 
         m_State.m_CursorPosition = Coordinates(line, GetCharacterColumn(line, cindex));
-        PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
+        PHI_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
         FixSelectionAfterMove(select, old_pos);
     }
@@ -1036,7 +1036,7 @@ namespace dlxemu
             }
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
-                PHI_DBG_ASSERT_NOT_REACHED();
+                PHI_ASSERT_NOT_REACHED();
 #endif
         }
 
@@ -1085,7 +1085,7 @@ namespace dlxemu
         }
         else
         {
-            PHI_DBG_ASSERT(!m_Lines.empty());
+            PHI_ASSERT(!m_Lines.empty());
 
             std::string str;
             const Line& line = m_Lines[GetActualCursorCoordinates().m_Line.unsafe()];
@@ -1132,7 +1132,7 @@ namespace dlxemu
         }
 
         const char* clip_text = ImGui::GetClipboardText();
-        PHI_DBG_ASSERT(clip_text);
+        PHI_ASSERT(clip_text);
         if (phi::string_length(clip_text) == 0u)
         {
             return;
@@ -1161,7 +1161,7 @@ namespace dlxemu
 
     void CodeEditor::Delete() noexcept
     {
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_Lines.empty());
 
         if (m_ReadOnly)
         {
@@ -1199,7 +1199,7 @@ namespace dlxemu
                 Line& next_line = m_Lines[pos.m_Line.unsafe() + 1];
                 line.insert(line.end(), next_line.begin(), next_line.end());
 
-                PHI_DBG_ASSERT(pos.m_Line.unsafe() <= m_Lines.size());
+                PHI_ASSERT(pos.m_Line.unsafe() <= m_Lines.size());
                 RemoveLine(pos.m_Line + 1);
             }
             else
@@ -1211,7 +1211,7 @@ namespace dlxemu
                 }
 
                 phi::i32 cindex = GetCharacterIndex(pos);
-                PHI_DBG_ASSERT(cindex.unsafe() < line.size());
+                PHI_ASSERT(cindex.unsafe() < line.size());
 
                 Coordinates current_cursor_pos = GetActualCursorCoordinates();
                 undo.m_RemovedStart            = current_cursor_pos;
@@ -1430,25 +1430,25 @@ namespace dlxemu
     void CodeEditor::VerifyInternalState() const noexcept
     {
         // Lines should never be empty
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_Lines.empty());
 
         // Verify Selection is still in a valid state
-        PHI_DBG_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
-        PHI_DBG_ASSERT(m_State.m_SelectionStart.m_Line.unsafe() < m_Lines.size());
-        PHI_DBG_ASSERT(m_State.m_SelectionStart.m_Column >= 0);
-        PHI_DBG_ASSERT(m_State.m_SelectionEnd.m_Line.unsafe() < m_Lines.size());
-        PHI_DBG_ASSERT(m_State.m_SelectionEnd.m_Column >= 0);
+        PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
+        PHI_ASSERT(m_State.m_SelectionStart.m_Line.unsafe() < m_Lines.size());
+        PHI_ASSERT(m_State.m_SelectionStart.m_Column >= 0);
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Line.unsafe() < m_Lines.size());
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Column >= 0);
 
         // Verify cursor position
-        PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Line >= 0);
-        PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Line.unsafe() < m_Lines.size());
-        PHI_DBG_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
+        PHI_ASSERT(m_State.m_CursorPosition.m_Line >= 0);
+        PHI_ASSERT(m_State.m_CursorPosition.m_Line.unsafe() < m_Lines.size());
+        PHI_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
         // This should also always be true. But its implementation is way to slow when fuzzing
 #if defined(DLXEMU_VERIFY_COLUMN)
-        PHI_DBG_ASSERT(m_State.m_SelectionStart.m_Column <=
+        PHI_ASSERT(m_State.m_SelectionStart.m_Column <=
                        GetLineMaxColumn(m_State.m_SelectionStart.m_Line));
-        PHI_DBG_ASSERT(m_State.m_SelectionEnd.m_Column <=
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Column <=
                        GetLineMaxColumn(m_State.m_SelectionEnd.m_Line));
 #endif
     }
@@ -1532,7 +1532,7 @@ namespace dlxemu
     // UndoRecord
     void CodeEditor::UndoRecord::Undo(CodeEditor* editor) const noexcept
     {
-        PHI_DBG_ASSERT(editor != nullptr);
+        PHI_ASSERT(editor != nullptr);
 
         if (!m_Added.empty())
         {
@@ -1554,7 +1554,7 @@ namespace dlxemu
 
     void CodeEditor::UndoRecord::Redo(CodeEditor* editor) const noexcept
     {
-        PHI_DBG_ASSERT(editor != nullptr);
+        PHI_ASSERT(editor != nullptr);
 
         if (!m_Removed.empty())
         {
@@ -1744,7 +1744,7 @@ namespace dlxemu
         phi::i32   iend   = GetCharacterIndex(end);
         phi::usize s      = 0u;
 
-        PHI_DBG_ASSERT(lstart.unsafe() < m_Lines.size());
+        PHI_ASSERT(lstart.unsafe() < m_Lines.size());
 
         for (phi::i32 i = lstart; i < lend; ++i)
         {
@@ -1755,7 +1755,7 @@ namespace dlxemu
 
         while (istart < iend || lstart < lend)
         {
-            PHI_DBG_ASSERT(lstart < static_cast<phi::int32_t>(m_Lines.size()));
+            PHI_ASSERT(lstart < static_cast<phi::int32_t>(m_Lines.size()));
 
             const Line& line = m_Lines[lstart.unsafe()];
             if (istart < static_cast<phi::int32_t>(line.size()))
@@ -1790,7 +1790,7 @@ namespace dlxemu
 
         if (line >= static_cast<phi::int32_t>(m_Lines.size()))
         {
-            PHI_DBG_ASSERT(!m_Lines.empty());
+            PHI_ASSERT(!m_Lines.empty());
 
             line   = static_cast<phi::int32_t>(m_Lines.size() - 1u);
             column = GetLineMaxColumn(line);
@@ -1803,9 +1803,9 @@ namespace dlxemu
             return {0, 0};
         }
 
-        PHI_DBG_ASSERT(!m_Lines.empty());
-        PHI_DBG_ASSERT(line.unsafe() < m_Lines.size());
-        PHI_DBG_ASSERT(line >= 0);
+        PHI_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(line.unsafe() < m_Lines.size());
+        PHI_ASSERT(line >= 0);
 
         // Sanitize column
         const Line& current_line = m_Lines[line.unsafe()];
@@ -1829,8 +1829,8 @@ namespace dlxemu
 
             char_index += UTF8CharLength(current_char);
         }
-        PHI_DBG_ASSERT(new_column >= 0);
-        PHI_DBG_ASSERT(new_column <= GetLineMaxColumn(line));
+        PHI_ASSERT(new_column >= 0);
+        PHI_ASSERT(new_column <= GetLineMaxColumn(line));
 
         column = new_column;
 
@@ -1865,10 +1865,10 @@ namespace dlxemu
 
     void CodeEditor::DeleteRange(const Coordinates& start, const Coordinates& end) noexcept
     {
-        PHI_DBG_ASSERT(end > start);
-        PHI_DBG_ASSERT(!m_ReadOnly);
-        PHI_DBG_ASSERT(start.m_Line < static_cast<phi::int32_t>(m_Lines.size()));
-        PHI_DBG_ASSERT(end.m_Line < static_cast<phi::int32_t>(m_Lines.size()));
+        PHI_ASSERT(end > start);
+        PHI_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(start.m_Line < static_cast<phi::int32_t>(m_Lines.size()));
+        PHI_ASSERT(end.m_Line < static_cast<phi::int32_t>(m_Lines.size()));
 
         phi::i32 start_index = GetCharacterIndex(start);
         phi::i32 end_index   = GetCharacterIndex(end);
@@ -1948,13 +1948,13 @@ namespace dlxemu
 
     phi::i32 CodeEditor::InsertTextAt(Coordinates& /* inout */ where, const char* value) noexcept
     {
-        PHI_DBG_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(!m_ReadOnly);
 
         phi::i32 cindex      = GetCharacterIndex(where);
         phi::i32 total_lines = 0;
         while (*value != '\0')
         {
-            PHI_DBG_ASSERT(!m_Lines.empty());
+            PHI_ASSERT(!m_Lines.empty());
 
             if (*value == '\n')
             {
@@ -2008,15 +2008,15 @@ namespace dlxemu
 
     void CodeEditor::AddUndo(UndoRecord& value) noexcept
     {
-        PHI_DBG_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(!m_ReadOnly);
 
 #if defined(DLXEMU_VERIFY_UNDO_REDO)
         VerifyInternalState();
         // Reject empty undos
-        PHI_DBG_ASSERT(!(value.m_Added.empty() && value.m_Removed.empty()));
+        PHI_ASSERT(!(value.m_Added.empty() && value.m_Removed.empty()));
         // Start and end are valid
-        PHI_DBG_ASSERT(value.m_AddedStart <= value.m_AddedEnd);
-        PHI_DBG_ASSERT(value.m_RemovedStart <= value.m_RemovedEnd);
+        PHI_ASSERT(value.m_AddedStart <= value.m_AddedEnd);
+        PHI_ASSERT(value.m_RemovedStart <= value.m_RemovedEnd);
 #endif
 
         m_UndoBuffer.resize((m_UndoIndex + 1u).unsafe());
@@ -2026,7 +2026,7 @@ namespace dlxemu
 #if defined(DLXEMU_VERIFY_UNDO_REDO)
         VerifyInternalState();
 
-        PHI_DBG_ASSERT(CanUndo());
+        PHI_ASSERT(CanUndo());
 
         const std::string text_before          = GetText();
         EditorState       state_before         = m_State;
@@ -2047,7 +2047,7 @@ namespace dlxemu
         state_after_undo.m_SelectionEnd.m_Column =
                 GetCharacterIndex(state_after_undo.m_SelectionEnd);
 
-        PHI_DBG_ASSERT(CanRedo());
+        PHI_ASSERT(CanRedo());
 
         // Test the redo
         Redo();
@@ -2059,8 +2059,8 @@ namespace dlxemu
         state_after.m_SelectionStart.m_Column = GetCharacterIndex(state_after.m_SelectionStart);
         state_after.m_SelectionEnd.m_Column   = GetCharacterIndex(state_after.m_SelectionEnd);
 
-        PHI_DBG_ASSERT(text_before == text_after);
-        PHI_DBG_ASSERT(state_before == state_after);
+        PHI_ASSERT(text_before == text_after);
+        PHI_ASSERT(state_before == state_after);
 #endif
     }
 
@@ -2341,7 +2341,7 @@ namespace dlxemu
 
     phi::i32 CodeEditor::GetCharacterColumn(phi::i32 line_number, phi::i32 index) const noexcept
     {
-        PHI_DBG_ASSERT(line_number < static_cast<phi::int32_t>(m_Lines.size()));
+        PHI_ASSERT(line_number < static_cast<phi::int32_t>(m_Lines.size()));
 
         const Line& line   = m_Lines[line_number.unsafe()];
         phi::i32    column = 0;
@@ -2437,9 +2437,9 @@ namespace dlxemu
 
     void CodeEditor::RemoveLine(phi::i32 start, phi::i32 end) noexcept
     {
-        PHI_DBG_ASSERT(!m_ReadOnly);
-        PHI_DBG_ASSERT(end >= start);
-        PHI_DBG_ASSERT(m_Lines.size() > (phi::size_t)((end - start).unsafe()));
+        PHI_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(end >= start);
+        PHI_ASSERT(m_Lines.size() > (phi::size_t)((end - start).unsafe()));
 
         // Remove error markers
         ErrorMarkers etmp;
@@ -2472,7 +2472,7 @@ namespace dlxemu
         m_Breakpoints = phi::move(btmp);
 
         m_Lines.erase(m_Lines.begin() + start.unsafe(), m_Lines.begin() + end.unsafe());
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_Lines.empty());
 
         // Fix selection state
         if (m_State.m_SelectionStart.m_Line >= start)
@@ -2493,8 +2493,8 @@ namespace dlxemu
 
     void CodeEditor::RemoveLine(phi::i32 index) noexcept
     {
-        PHI_DBG_ASSERT(!m_ReadOnly);
-        PHI_DBG_ASSERT(m_Lines.size() > 1);
+        PHI_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(m_Lines.size() > 1);
 
         // Clear error markers on that line
         ErrorMarkers etmp;
@@ -2537,14 +2537,14 @@ namespace dlxemu
         }
 
         m_Lines.erase(m_Lines.begin() + index.unsafe());
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_Lines.empty());
 
         m_TextChanged = true;
     }
 
     CodeEditor::Line& CodeEditor::InsertLine(phi::i32 index) noexcept
     {
-        PHI_DBG_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(!m_ReadOnly);
 
         Line& result = *m_Lines.insert(m_Lines.begin() + index.unsafe(), Line());
 
@@ -2571,8 +2571,8 @@ namespace dlxemu
 
     void CodeEditor::EnterCharacterImpl(ImWchar character, bool shift) noexcept
     {
-        PHI_DBG_ASSERT(!m_ReadOnly);
-        PHI_DBG_ASSERT(IsValidUTF8Sequence(character));
+        PHI_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(IsValidUTF8Sequence(character));
 
         UndoRecord undo;
         undo.StoreBeforeState(this);
@@ -2588,7 +2588,7 @@ namespace dlxemu
                 Coordinates end          = m_State.m_SelectionEnd;
                 Coordinates original_end = end;
 
-                PHI_DBG_ASSERT(start < end);
+                PHI_ASSERT(start < end);
                 start.m_Column = 0;
                 //          end.mColumn = end.mLine < mLines.size() ? mLines[end.mLine].size() : 0;
                 if (end.m_Column == 0 && end.m_Line > 0)
@@ -2597,7 +2597,7 @@ namespace dlxemu
                 }
                 if (end.m_Line >= (phi::int32_t)m_Lines.size())
                 {
-                    PHI_DBG_ASSERT(!m_Lines.empty());
+                    PHI_ASSERT(!m_Lines.empty());
                     end.m_Line = (phi::int32_t)m_Lines.size() - 1;
                 }
                 end.m_Column = GetLineMaxColumn(end.m_Line);
@@ -2691,7 +2691,7 @@ namespace dlxemu
         Coordinates coord = GetActualCursorCoordinates();
         undo.m_AddedStart = coord;
 
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_Lines.empty());
 
         if (character == '\n')
         {
@@ -2729,7 +2729,7 @@ namespace dlxemu
             const phi::u8_fast   length = ImTextCharToUtf8(buffer, character);
 
             // We require a valid ut8 sequence
-            PHI_DBG_ASSERT(length > 0u);
+            PHI_ASSERT(length > 0u);
 
             Line&    line   = m_Lines[coord.m_Line.unsafe()];
             phi::i32 cindex = GetCharacterIndex(coord);
@@ -2771,8 +2771,8 @@ namespace dlxemu
 
     void CodeEditor::BackspaceImpl() noexcept
     {
-        PHI_DBG_ASSERT(!m_ReadOnly);
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_ReadOnly);
+        PHI_ASSERT(!m_Lines.empty());
 
         UndoRecord undo;
         undo.StoreBeforeState(this);
@@ -3153,7 +3153,7 @@ namespace dlxemu
             m_Palette[i] = ImGui::ColorConvertFloat4ToU32(color);
         }
 
-        PHI_DBG_ASSERT(m_LineBuffer.empty());
+        PHI_ASSERT(m_LineBuffer.empty());
 
         ImVec2      content_size = ImGui::GetWindowContentRegionMax();
         ImDrawList* draw_list    = ImGui::GetWindowDrawList();
@@ -3185,7 +3185,7 @@ namespace dlxemu
                         .x +
                 m_LeftMargin.unsafe();
 
-        PHI_DBG_ASSERT(!m_Lines.empty());
+        PHI_ASSERT(!m_Lines.empty());
         float space_size =
                 ImGui::GetFont()
                         ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr)
@@ -3210,7 +3210,7 @@ namespace dlxemu
             float sstart = -1.0f;
             float ssend  = -1.0f;
 
-            PHI_DBG_ASSERT(m_State.m_SelectionStart <= m_State.m_SelectionEnd);
+            PHI_ASSERT(m_State.m_SelectionStart <= m_State.m_SelectionEnd);
             if (m_State.m_SelectionStart <= line_end_coord)
             {
                 sstart = m_State.m_SelectionStart > line_start_coord ?
@@ -3504,7 +3504,7 @@ namespace dlxemu
         for (phi::u64 index{token.GetColumn() - 1u};
              index < token.GetColumn() + token.GetLength() - 1u; ++index)
         {
-            PHI_DBG_ASSERT(index < line.size());
+            PHI_ASSERT(index < line.size());
             line[index.unsafe()].m_ColorIndex = palette_index;
         }
     }
@@ -3563,8 +3563,8 @@ namespace dlxemu
     {
         phi::size_t int_value = static_cast<phi::size_t>(index);
 
-        PHI_DBG_ASSERT(index != PaletteIndex::Max);
-        PHI_DBG_ASSERT(int_value < m_Palette.size());
+        PHI_ASSERT(index != PaletteIndex::Max);
+        PHI_ASSERT(int_value < m_Palette.size());
 
         return m_Palette[int_value];
     }

@@ -23,7 +23,7 @@
 #    define FUZZ_LOG(...)                                                                          \
         fmt::print(stderr, __VA_ARGS__);                                                           \
         std::putc('\n', stderr);                                                                   \
-        std::fflush(stderr);
+        std::fflush(stderr)
 #else
 #    define FUZZ_LOG(...) PHI_EMPTY_MACRO()
 #endif
@@ -51,7 +51,7 @@ template <typename T>
         return {};
     }
 
-    PHI_DBG_ASSERT(index % sizeof(void*) == 0);
+    PHI_ASSERT(index % sizeof(void*) == 0);
 
     T value = *reinterpret_cast<const T*>(data + index);
     index += aligned_size<T>();
@@ -67,7 +67,7 @@ template <typename T>
         return {};
     }
 
-    PHI_DBG_ASSERT(index % sizeof(void*) == 0);
+    PHI_ASSERT(index % sizeof(void*) == 0);
 
     bool value = static_cast<bool>((data + index));
     index += aligned_size<bool>();
@@ -566,8 +566,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
                 auto coords = coords_opt.value();
 
-                FUZZ_LOG("SetCursorPosition(Coordinates({:s}, {:s}))", print_int(coords.m_Line.unsafe()),
-                         print_int(coords.m_Column.unsafe()));
+                FUZZ_LOG("SetCursorPosition(Coordinates({:s}, {:s}))",
+                         print_int(coords.m_Line.unsafe()), print_int(coords.m_Column.unsafe()));
 
                 editor.SetCursorPosition(coords);
                 break;

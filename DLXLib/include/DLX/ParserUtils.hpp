@@ -42,7 +42,7 @@ namespace dlx
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_DBG_ASSERT_NOT_REACHED();
+        PHI_ASSERT_NOT_REACHED();
 #endif
     }
 

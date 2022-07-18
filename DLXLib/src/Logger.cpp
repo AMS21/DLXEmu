@@ -15,24 +15,25 @@ namespace dlx
 
     bool InitializeDefaultLogger() noexcept
     {
-        PHI_DBG_ASSERT(!is_initialized, "Logger is already initialized");
+        PHI_ASSERT(!is_initialized, "Logger is already initialized");
 
-        try
-        {
-            std::shared_ptr<spdlog::logger> console = spdlog::stdout_color_mt("");
-            spdlog::set_default_logger(console);
-            spdlog::set_pattern(DefaultFormattingString);
+        // try
+        // {
+        std::shared_ptr<spdlog::logger> console = spdlog::stdout_color_mt("");
+        spdlog::set_default_logger(console);
+        spdlog::set_pattern(DefaultFormattingString);
 
-            // In debug mode always flush
+        // In debug mode always flush
 #if defined(PHI_DEBUG)
-            spdlog::flush_on(spdlog::level::trace);
+        spdlog::flush_on(spdlog::level::trace);
 #else
-            spdlog::flush_on(spdlog::level::warn);
+        spdlog::flush_on(spdlog::level::warn);
 #endif
 
-            is_initialized = true;
+        is_initialized = true;
 
-            return true;
+        return true;
+        /*
         }
         catch (const spdlog::spdlog_ex& ex)
         {
@@ -40,6 +41,7 @@ namespace dlx
             std::cerr << "spdlog message: " << ex.what() << '\n';
             return false;
         }
+        */
     }
 
     spdlog::logger* GetLogger() noexcept
