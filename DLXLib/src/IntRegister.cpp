@@ -1,5 +1,9 @@
 #include "DLX/IntRegister.hpp"
 
+#include <phi/compiler_support/warning.hpp>
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
+
 namespace dlx
 {
     IntRegister::IntRegister() noexcept
@@ -17,17 +21,17 @@ namespace dlx
         m_ValueUnsigned = val;
     }
 
-    phi::i32 IntRegister::GetSignedValue() const noexcept
+    PHI_ATTRIBUTE_CONST phi::i32 IntRegister::GetSignedValue() const noexcept
     {
         return m_ValueSigned;
     }
 
-    phi::u32 IntRegister::GetUnsignedValue() const noexcept
+    PHI_ATTRIBUTE_CONST phi::u32 IntRegister::GetUnsignedValue() const noexcept
     {
         return m_ValueUnsigned;
     }
 
-    phi::boolean IntRegister::IsReadOnly() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean IntRegister::IsReadOnly() const noexcept
     {
         return m_IsReadOnly;
     }

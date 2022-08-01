@@ -40,7 +40,7 @@ namespace fuzz
 
         inline char SanitizeForIdentifier(std::uint8_t c)
         {
-            if (!phi::is_alpha_numeric(c))
+            if (!phi::is_alpha_numeric(static_cast<char>(c)))
             {
                 return '_';
             }

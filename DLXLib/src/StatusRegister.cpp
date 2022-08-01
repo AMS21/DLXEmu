@@ -1,5 +1,10 @@
 #include "DLX/StatusRegister.hpp"
 
+#include <phi/compiler_support/extended_attributes.hpp>
+#include <phi/compiler_support/warning.hpp>
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
+
 namespace dlx
 {
     void StatusRegister::SetStatus(phi::boolean value) noexcept
@@ -7,7 +12,7 @@ namespace dlx
         m_Value = value;
     }
 
-    phi::boolean StatusRegister::Get() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean StatusRegister::Get() const noexcept
     {
         return m_Value;
     }

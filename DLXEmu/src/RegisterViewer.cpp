@@ -4,7 +4,13 @@
 #include <DLX/InstructionInfo.hpp>
 #include <DLX/RegisterNames.hpp>
 #include <imgui.h>
+#include <phi/compiler_support/warning.hpp>
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
 #include <spdlog/fmt/fmt.h>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
 
 namespace dlxemu
 {

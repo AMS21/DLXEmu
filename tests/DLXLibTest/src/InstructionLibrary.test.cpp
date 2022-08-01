@@ -19,7 +19,7 @@ TEST_CASE("InstructionLibrary")
                          }));
 
     // Test all instruction infos
-    for (int i{0}; i < static_cast<std::size_t>(dlx::OpCode::NUMBER_OF_ELEMENTS); ++i)
+    for (phi::size_t i{0}; i < static_cast<std::size_t>(dlx::OpCode::NUMBER_OF_ELEMENTS); ++i)
     {
         const dlx::OpCode opcode = static_cast<dlx::OpCode>(i);
         CHECK(table.at(i).GetOpCode() == opcode);

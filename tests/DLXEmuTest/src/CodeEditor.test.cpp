@@ -443,6 +443,7 @@ TEST_CASE("CodeEditor")
         // TODO: Maybe this is an area where we could improve our test suite
         dlxemu::CodeEditor editor{&emulator};
 
+        // Default
         BeginImGui();
         editor.Render();
         editor.VerifyInternalState();
@@ -472,10 +473,22 @@ TEST_CASE("CodeEditor")
         editor.VerifyInternalState();
         EndImgui();
 
+        // With negative size and border
+        BeginImGui();
+        editor.Render(ImVec2{-100.0f, -100.0f}, true);
+        editor.VerifyInternalState();
+        EndImgui();
+
         // With float max
         BeginImGui();
         static constexpr const float max_float = std::numeric_limits<float>::max();
         editor.Render(ImVec2{max_float, max_float});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With float max and border
+        BeginImGui();
+        editor.Render(ImVec2{max_float, max_float}, true);
         editor.VerifyInternalState();
         EndImgui();
 
@@ -486,10 +499,22 @@ TEST_CASE("CodeEditor")
         editor.VerifyInternalState();
         EndImgui();
 
+        // With float min and border
+        BeginImGui();
+        editor.Render(ImVec2{min_float, min_float}, true);
+        editor.VerifyInternalState();
+        EndImgui();
+
         // With quiet NaN
         BeginImGui();
         static constexpr const float float_quiet_nan = std::numeric_limits<float>::quiet_NaN();
         editor.Render(ImVec2{float_quiet_nan, float_quiet_nan});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With quiet NaN and border
+        BeginImGui();
+        editor.Render(ImVec2{float_quiet_nan, float_quiet_nan}, true);
         editor.VerifyInternalState();
         EndImgui();
 
@@ -501,10 +526,22 @@ TEST_CASE("CodeEditor")
         editor.VerifyInternalState();
         EndImgui();
 
+        // With signaling NaN and border
+        BeginImGui();
+        editor.Render(ImVec2{float_signaling_nan, float_signaling_nan}, true);
+        editor.VerifyInternalState();
+        EndImgui();
+
         // With Infinity
         BeginImGui();
         static constexpr const float float_inf = std::numeric_limits<float>::infinity();
         editor.Render(ImVec2{float_inf, float_inf});
+        editor.VerifyInternalState();
+        EndImgui();
+
+        // With Infinity and border
+        BeginImGui();
+        editor.Render(ImVec2{float_inf, float_inf}, true);
         editor.VerifyInternalState();
         EndImgui();
     }

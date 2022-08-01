@@ -5,8 +5,11 @@
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/OpCode.hpp"
 #include <magic_enum.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <algorithm>
 #include <array>
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
@@ -438,14 +441,14 @@ namespace dlx
         return table;
     }
 
-    [[nodiscard]] InstructionTableT GenerateInstructionTable() noexcept
+    PHI_ATTRIBUTE_CONST InstructionTableT GenerateInstructionTable() noexcept
     {
         return InitializeIntructionTable();
     }
 
-    constexpr static InstructionTableT instruction_table = InitializeIntructionTable();
+    constexpr const static InstructionTableT instruction_table = InitializeIntructionTable();
 
-    const InstructionInfo& LookUpIntructionInfo(OpCode instruction) noexcept
+    PHI_ATTRIBUTE_CONST const InstructionInfo& LookUpIntructionInfo(OpCode instruction) noexcept
     {
         return instruction_table.at(static_cast<std::size_t>(instruction));
     }

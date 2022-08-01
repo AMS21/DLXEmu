@@ -35,6 +35,8 @@ SOFTWARE.
 #include <phi/algorithm/max.hpp>
 #include <phi/algorithm/string_length.hpp>
 #include <phi/algorithm/swap.hpp>
+#include <phi/compiler_support/extended_attributes.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/container/array.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
@@ -47,19 +49,27 @@ SOFTWARE.
 #include <phi/text/is_blank.hpp>
 #include <phi/text/is_control.hpp>
 #include <phi/text/is_space.hpp>
-#include <spdlog/fmt/bundled/core.h>
 #include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <limits>
-#include <regex>
 #include <string>
-#include <string_view>
 #include <vector>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h> // for imGui::GetCurrentWindow()
 #include <imgui_internal.h>
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
+#include <spdlog/fmt/bundled/core.h>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
+
+PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
+// TODO: Fix all the warnigns from gcc
+PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
+PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
 
 //#define DLXEMU_VERIFY_UNDO_REDO
 //#define DLXEMU_VERIFY_COLUMN
@@ -149,8 +159,10 @@ static inline phi::u8_fast ImTextCharToUtf8(phi::array<char, 5u>& buffer,
 
         return 4_u8;
     }
-    //else if (c < 0x10000)
+    //else if (character < 0x10000)
     {
+        PHI_ASSERT(character.unsafe() < 0x10000);
+
         buffer[0u] = static_cast<char>(0xe0 + (character.unsafe() >> 12));
         buffer[1u] = static_cast<char>(0x80 + ((character.unsafe() >> 6) & 0x3f));
         buffer[2u] = static_cast<char>(0x80 + (character.unsafe() & 0x3f));
@@ -187,17 +199,20 @@ namespace dlxemu
         return invalid;
     }
 
-    bool CodeEditor::Coordinates::operator==(const Coordinates& other) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::Coordinates::operator==(
+            const Coordinates& other) const noexcept
     {
         return (m_Line == other.m_Line) && (m_Column == other.m_Column);
     }
 
-    bool CodeEditor::Coordinates::operator!=(const Coordinates& other) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::Coordinates::operator!=(
+            const Coordinates& other) const noexcept
     {
         return (m_Line != other.m_Line) || (m_Column != other.m_Column);
     }
 
-    bool CodeEditor::Coordinates::operator<(const Coordinates& other) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::Coordinates::operator<(
+            const Coordinates& other) const noexcept
     {
         if (m_Line != other.m_Line)
         {
@@ -207,7 +222,8 @@ namespace dlxemu
         return m_Column < other.m_Column;
     }
 
-    bool CodeEditor::Coordinates::operator>(const Coordinates& other) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::Coordinates::operator>(
+            const Coordinates& other) const noexcept
     {
         if (m_Line != other.m_Line)
         {
@@ -217,7 +233,8 @@ namespace dlxemu
         return m_Column > other.m_Column;
     }
 
-    bool CodeEditor::Coordinates::operator<=(const Coordinates& other) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::Coordinates::operator<=(
+            const Coordinates& other) const noexcept
     {
         if (m_Line != other.m_Line)
         {
@@ -227,7 +244,8 @@ namespace dlxemu
         return m_Column <= other.m_Column;
     }
 
-    bool CodeEditor::Coordinates::operator>=(const Coordinates& other) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::Coordinates::operator>=(
+            const Coordinates& other) const noexcept
     {
         if (m_Line != other.m_Line)
         {
@@ -262,19 +280,19 @@ namespace dlxemu
         , m_ScrollToTop(false)
         , m_TextChanged(false)
         , m_ColorizerEnabled(true)
+        , m_CursorPositionChanged(false)
         , m_TextStart(20.0f)
         , m_LeftMargin(10)
-        , m_CursorPositionChanged(false)
         , m_ColorRangeMin(0)
         , m_ColorRangeMax(0)
         , m_SelectionMode(SelectionMode::Normal)
-        , m_LastClick(-1.0f)
         , m_ShowWhitespaces(false)
+        , m_PaletteBase(GetDarkPalette())
+        , m_Palette()
         , m_StartTime(std::chrono::duration_cast<std::chrono::milliseconds>(
                               std::chrono::system_clock::now().time_since_epoch())
                               .count())
-        , m_PaletteBase(GetDarkPalette())
-        , m_Palette()
+        , m_LastClick(-1.0f)
         , m_Emulator(emulator)
     {
         Colorize();
@@ -286,7 +304,7 @@ namespace dlxemu
         VerifyInternalState();
     }
 
-    const CodeEditor::Palette& CodeEditor::GetPalette() const noexcept
+    PHI_ATTRIBUTE_CONST const CodeEditor::Palette& CodeEditor::GetPalette() const noexcept
     {
         return m_PaletteBase;
     }
@@ -318,12 +336,12 @@ namespace dlxemu
         m_ErrorMarkers.clear();
     }
 
-    CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() noexcept
+    PHI_ATTRIBUTE_CONST CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() noexcept
     {
         return m_ErrorMarkers;
     }
 
-    const CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() const noexcept
+    PHI_ATTRIBUTE_CONST const CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() const noexcept
     {
         return m_ErrorMarkers;
     }
@@ -368,12 +386,12 @@ namespace dlxemu
         m_Breakpoints.clear();
     }
 
-    CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() noexcept
+    PHI_ATTRIBUTE_CONST CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() noexcept
     {
         return m_Breakpoints;
     }
 
-    const CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() const noexcept
+    PHI_ATTRIBUTE_CONST const CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() const noexcept
     {
         return m_Breakpoints;
     }
@@ -439,7 +457,8 @@ namespace dlxemu
                 // Add error markers
                 for (const dlx::ParseError& err : m_Emulator->m_DLXProgram.m_ParseErrors)
                 {
-                    AddErrorMarker(err.GetLineNumber(), err.ConstructMessage());
+                    AddErrorMarker(static_cast<phi::uint32_t>(err.GetLineNumber()),
+                                   err.ConstructMessage());
                 }
 
                 m_TextChanged = false;
@@ -479,7 +498,8 @@ namespace dlxemu
             }
             else
             {
-                m_Lines.back().emplace_back(Glyph(character, PaletteIndex::Default));
+                m_Lines.back().emplace_back(
+                        Glyph(static_cast<Char>(character), PaletteIndex::Default));
             }
         }
 
@@ -519,7 +539,7 @@ namespace dlxemu
         undo.m_RemovedStart = Coordinates(0, 0);
         phi::usize max_line = m_Lines.size() - 1u;
         undo.m_RemovedEnd =
-                Coordinates(static_cast<std::int32_t>(max_line.unsafe()),
+                Coordinates(static_cast<phi::int32_t>(max_line.unsafe()),
                             GetLineMaxColumn(static_cast<phi::int32_t>(max_line.unsafe())));
 
         m_Lines.clear();
@@ -613,7 +633,7 @@ namespace dlxemu
                        Coordinates(m_State.m_CursorPosition.m_Line, line_length));
     }
 
-    phi::usize CodeEditor::GetTotalLines() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize CodeEditor::GetTotalLines() const noexcept
     {
         return m_Lines.size();
     }
@@ -628,7 +648,7 @@ namespace dlxemu
         m_Overwrite = !m_Overwrite;
     }
 
-    bool CodeEditor::IsOverwrite() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::IsOverwrite() const noexcept
     {
         return m_Overwrite;
     }
@@ -643,17 +663,17 @@ namespace dlxemu
         m_ReadOnly = !m_ReadOnly;
     }
 
-    bool CodeEditor::IsReadOnly() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::IsReadOnly() const noexcept
     {
         return m_ReadOnly;
     }
 
-    bool CodeEditor::IsTextChanged() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::IsTextChanged() const noexcept
     {
         return m_TextChanged;
     }
 
-    bool CodeEditor::IsCursorPositionChanged() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::IsCursorPositionChanged() const noexcept
     {
         return m_CursorPositionChanged;
     }
@@ -668,12 +688,12 @@ namespace dlxemu
         m_ColorizerEnabled = !m_ColorizerEnabled;
     }
 
-    bool CodeEditor::IsColorizerEnabled() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::IsColorizerEnabled() const noexcept
     {
         return m_ColorizerEnabled;
     }
 
-    CodeEditor::Coordinates CodeEditor::GetCursorPosition() const noexcept
+    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::GetCursorPosition() const noexcept
     {
         return GetActualCursorCoordinates();
     }
@@ -701,7 +721,7 @@ namespace dlxemu
         m_ShowWhitespaces = !m_ShowWhitespaces;
     }
 
-    bool CodeEditor::IsShowingWhitespaces() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::IsShowingWhitespaces() const noexcept
     {
         return m_ShowWhitespaces;
     }
@@ -730,7 +750,7 @@ namespace dlxemu
         }
     }
 
-    phi::u8_fast CodeEditor::GetTabSize() const noexcept
+    PHI_ATTRIBUTE_PURE phi::u8_fast CodeEditor::GetTabSize() const noexcept
     {
         return m_TabSize;
     }
@@ -764,7 +784,7 @@ namespace dlxemu
         }
 
         Coordinates pos         = GetActualCursorCoordinates();
-        Coordinates start       = std::min(pos, m_State.m_SelectionStart);
+        Coordinates start       = phi::min(pos, m_State.m_SelectionStart);
         phi::i32    total_lines = pos.m_Line - start.m_Line;
 
         total_lines += InsertTextAt(pos, value);
@@ -788,7 +808,7 @@ namespace dlxemu
                            0, static_cast<phi::int32_t>(m_Lines.size() - 1));
 
         // Move cursor to the beginning of the line after we reached the top
-        if (amount.unsafe() > old_pos.m_Line.unsafe())
+        if (amount.unsafe() > static_cast<phi::uint32_t>(old_pos.m_Line.unsafe()))
         {
             m_State.m_CursorPosition.m_Column = 0;
         }
@@ -812,7 +832,7 @@ namespace dlxemu
                            0, static_cast<phi::int32_t>(m_Lines.size()) - 1);
 
         // Move cursor to the end of the line after we reached the bottom
-        if (old_pos.m_Line.unsafe() == m_Lines.size() - 1u)
+        if (old_pos.m_Line.unsafe() == static_cast<phi::int32_t>(m_Lines.size() - 1u))
         {
             m_State.m_CursorPosition.m_Column = GetLineMaxColumn(m_State.m_CursorPosition.m_Line);
         }
@@ -882,7 +902,7 @@ namespace dlxemu
     {
         const Coordinates old_pos = m_State.m_CursorPosition;
 
-        if (old_pos.m_Line.unsafe() >= m_Lines.size() || amount == 0u)
+        if (old_pos.m_Line.unsafe() >= static_cast<phi::int32_t>(m_Lines.size()) || amount == 0u)
         {
             return;
         }
@@ -895,9 +915,10 @@ namespace dlxemu
             phi::i32 lindex = m_State.m_CursorPosition.m_Line;
             Line&    line   = m_Lines[lindex.unsafe()];
 
-            if (cindex.unsafe() >= line.size())
+            if (cindex.unsafe() >= static_cast<phi::int32_t>(line.size()))
             {
-                if (m_State.m_CursorPosition.m_Line.unsafe() < m_Lines.size() - 1)
+                if (m_State.m_CursorPosition.m_Line.unsafe() <
+                    static_cast<phi::int32_t>(m_Lines.size() - 1u))
                 {
                     m_State.m_CursorPosition.m_Line =
                             phi::clamp(m_State.m_CursorPosition.m_Line.unsafe() + 1, 0,
@@ -1026,12 +1047,9 @@ namespace dlxemu
                 break;
             }
             case CodeEditor::SelectionMode::Line: {
-                const phi::i32   line_no   = m_State.m_SelectionEnd.m_Line;
-                const phi::usize line_size = (phi::size_t)line_no.unsafe() < m_Lines.size() ?
-                                                     m_Lines[line_no.unsafe()].size() :
-                                                     0u;
-                m_State.m_SelectionStart   = Coordinates(m_State.m_SelectionStart.m_Line, 0);
-                m_State.m_SelectionEnd     = Coordinates(line_no, GetLineMaxColumn(line_no));
+                const phi::i32 line_no   = m_State.m_SelectionEnd.m_Line;
+                m_State.m_SelectionStart = Coordinates(m_State.m_SelectionStart.m_Line, 0);
+                m_State.m_SelectionEnd   = Coordinates(line_no, GetLineMaxColumn(line_no));
                 break;
             }
 #if !defined(DLXEMU_COVERAGE_BUILD)
@@ -1054,7 +1072,7 @@ namespace dlxemu
 
     void CodeEditor::SelectAll() noexcept
     {
-        SetSelection(Coordinates(0, 0), Coordinates((phi::int32_t)m_Lines.size(), 0));
+        SetSelection(Coordinates(0, 0), Coordinates(static_cast<phi::int32_t>(m_Lines.size()), 0));
     }
 
     void CodeEditor::ClearSelection() noexcept
@@ -1062,17 +1080,17 @@ namespace dlxemu
         SetSelection(Coordinates(0, 0), Coordinates(0, 0));
     }
 
-    bool CodeEditor::HasSelection() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::HasSelection() const noexcept
     {
         return m_State.m_SelectionEnd > m_State.m_SelectionStart;
     }
 
-    CodeEditor::Coordinates CodeEditor::GetSelectionStart() const noexcept
+    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::GetSelectionStart() const noexcept
     {
         return m_State.m_SelectionStart;
     }
 
-    CodeEditor::Coordinates CodeEditor::GetSelectionEnd() const noexcept
+    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::GetSelectionEnd() const noexcept
     {
         return m_State.m_SelectionEnd;
     }
@@ -1199,7 +1217,7 @@ namespace dlxemu
                 Line& next_line = m_Lines[pos.m_Line.unsafe() + 1];
                 line.insert(line.end(), next_line.begin(), next_line.end());
 
-                PHI_ASSERT(pos.m_Line.unsafe() <= m_Lines.size());
+                PHI_ASSERT(pos.m_Line.unsafe() <= static_cast<phi::int32_t>(m_Lines.size()));
                 RemoveLine(pos.m_Line + 1);
             }
             else
@@ -1211,7 +1229,7 @@ namespace dlxemu
                 }
 
                 phi::i32 cindex = GetCharacterIndex(pos);
-                PHI_ASSERT(cindex.unsafe() < line.size());
+                PHI_ASSERT(cindex.unsafe() < static_cast<phi::int32_t>(line.size()));
 
                 Coordinates current_cursor_pos = GetActualCursorCoordinates();
                 undo.m_RemovedStart            = current_cursor_pos;
@@ -1220,7 +1238,7 @@ namespace dlxemu
                 undo.m_Removed = GetText(undo.m_RemovedStart, undo.m_RemovedEnd);
 
                 phi::i32 length = UTF8CharLength(line[cindex.unsafe()].m_Char);
-                while (length-- > 0 && cindex < (phi::int32_t)line.size())
+                while (length-- > 0 && cindex < static_cast<phi::int32_t>(line.size()))
                 {
                     line.erase(line.begin() + cindex.unsafe());
 
@@ -1249,7 +1267,7 @@ namespace dlxemu
         AddUndo(undo);
     }
 
-    bool CodeEditor::CanUndo() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::CanUndo() const noexcept
     {
         return !m_ReadOnly && m_UndoIndex != 0u;
     }
@@ -1264,7 +1282,7 @@ namespace dlxemu
         }
     }
 
-    bool CodeEditor::CanRedo() const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::CanRedo() const noexcept
     {
         return !m_ReadOnly && m_UndoIndex < m_UndoBuffer.size();
     }
@@ -1311,9 +1329,9 @@ namespace dlxemu
         const std::vector<std::string> lines     = GetTextLines();
         std::string                    lines_text;
 
-        for (const std::string& str : lines)
+        for (const std::string& line : lines)
         {
-            lines_text += str + '\n';
+            lines_text += line + '\n';
         }
         lines_text.pop_back();
 
@@ -1434,26 +1452,29 @@ namespace dlxemu
 
         // Verify Selection is still in a valid state
         PHI_ASSERT(m_State.m_SelectionEnd >= m_State.m_SelectionStart);
-        PHI_ASSERT(m_State.m_SelectionStart.m_Line.unsafe() < m_Lines.size());
+        PHI_ASSERT(m_State.m_SelectionStart.m_Line.unsafe() <
+                   static_cast<phi::int32_t>(m_Lines.size()));
         PHI_ASSERT(m_State.m_SelectionStart.m_Column >= 0);
-        PHI_ASSERT(m_State.m_SelectionEnd.m_Line.unsafe() < m_Lines.size());
+        PHI_ASSERT(m_State.m_SelectionEnd.m_Line.unsafe() <
+                   static_cast<phi::int32_t>(m_Lines.size()));
         PHI_ASSERT(m_State.m_SelectionEnd.m_Column >= 0);
 
         // Verify cursor position
         PHI_ASSERT(m_State.m_CursorPosition.m_Line >= 0);
-        PHI_ASSERT(m_State.m_CursorPosition.m_Line.unsafe() < m_Lines.size());
+        PHI_ASSERT(m_State.m_CursorPosition.m_Line.unsafe() <
+                   static_cast<phi::int32_t>(m_Lines.size()));
         PHI_ASSERT(m_State.m_CursorPosition.m_Column >= 0);
 
         // This should also always be true. But its implementation is way to slow when fuzzing
 #if defined(DLXEMU_VERIFY_COLUMN)
         PHI_ASSERT(m_State.m_SelectionStart.m_Column <=
-                       GetLineMaxColumn(m_State.m_SelectionStart.m_Line));
+                   GetLineMaxColumn(m_State.m_SelectionStart.m_Line));
         PHI_ASSERT(m_State.m_SelectionEnd.m_Column <=
-                       GetLineMaxColumn(m_State.m_SelectionEnd.m_Line));
+                   GetLineMaxColumn(m_State.m_SelectionEnd.m_Line));
 #endif
     }
 
-    const CodeEditor::Palette& CodeEditor::GetDarkPalette() noexcept
+    PHI_ATTRIBUTE_CONST const CodeEditor::Palette& CodeEditor::GetDarkPalette() noexcept
     {
         constexpr const static Palette palette = {{
                 0xff7f7f7f, // Default
@@ -1474,7 +1495,7 @@ namespace dlxemu
         return palette;
     }
 
-    const CodeEditor::Palette& CodeEditor::GetLightPalette() noexcept
+    PHI_ATTRIBUTE_CONST const CodeEditor::Palette& CodeEditor::GetLightPalette() noexcept
     {
         constexpr const static Palette palette = {{
                 0xff7f7f7f, // Default
@@ -1495,7 +1516,7 @@ namespace dlxemu
         return palette;
     }
 
-    const CodeEditor::Palette& CodeEditor::GetRetroBluePalette() noexcept
+    PHI_ATTRIBUTE_CONST const CodeEditor::Palette& CodeEditor::GetRetroBluePalette() noexcept
     {
         constexpr const static Palette palette = {{
                 0xff00ffff, // Default
@@ -1517,13 +1538,15 @@ namespace dlxemu
     }
 
     // EditorState
-    bool CodeEditor::EditorState::operator==(const EditorState& other) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::EditorState::operator==(
+            const EditorState& other) const noexcept
     {
         return other.m_CursorPosition == m_CursorPosition &&
                other.m_SelectionStart == m_SelectionStart && other.m_SelectionEnd == m_SelectionEnd;
     }
 
-    bool CodeEditor::EditorState::operator!=(const EditorState& other) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::EditorState::operator!=(
+            const EditorState& other) const noexcept
     {
         return other.m_CursorPosition != m_CursorPosition ||
                other.m_SelectionStart != m_SelectionStart || other.m_SelectionEnd != m_SelectionEnd;
@@ -1635,11 +1658,12 @@ namespace dlxemu
     }
 
     // CodeEditor - private
+
     void CodeEditor::Colorize(phi::i32 from_line, phi::i32 count) noexcept
     {
-        const phi::i32 to_line = count == -1 ?
-                                         (phi::int32_t)m_Lines.size() :
-                                         phi::min((phi::int32_t)m_Lines.size(), from_line + count);
+        const phi::i32 to_line = count == -1 ? static_cast<phi::int32_t>(m_Lines.size()) :
+                                               phi::min(static_cast<phi::int32_t>(m_Lines.size()),
+                                                        from_line + count);
 
         m_ColorRangeMin = phi::min(m_ColorRangeMin, from_line);
         m_ColorRangeMax = phi::max(m_ColorRangeMax, to_line);
@@ -1656,7 +1680,8 @@ namespace dlxemu
                         ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr)
                         .x;
         phi::i32 col_index = GetCharacterIndex(from);
-        for (size_t it = 0u; it < line.size() && it < col_index.unsafe();)
+        for (phi::size_t it = 0u;
+             it < line.size() && it < static_cast<phi::size_t>(col_index.unsafe());)
         {
             if (line[it].m_Char == '\t')
             {
@@ -1670,8 +1695,7 @@ namespace dlxemu
                 phi::i32 length = UTF8CharLength(line[it].m_Char);
                 char     temp_c_string[7];
                 phi::i32 index = 0;
-                for (; index < 6 && length-- > 0 && it < static_cast<phi::int32_t>(line.size());
-                     ++index, ++it)
+                for (; index < 6 && length-- > 0 && it < line.size(); ++index, ++it)
                 {
                     temp_c_string[index.unsafe()] = static_cast<char>(line[it].m_Char);
                 }
@@ -1701,37 +1725,43 @@ namespace dlxemu
         float height = ImGui::GetWindowHeight();
         float width  = ImGui::GetWindowWidth();
 
-        phi::i32 top    = 1 + (phi::int32_t)std::ceil(scroll_y / m_CharAdvance.y);
-        phi::i32 bottom = (phi::int32_t)std::ceil((scroll_y + height) / m_CharAdvance.y);
+        phi::i32 top = 1 + static_cast<phi::int32_t>(std::ceil(scroll_y / m_CharAdvance.y));
+        phi::i32 bottom =
+                static_cast<phi::int32_t>(std::ceil((scroll_y + height) / m_CharAdvance.y));
 
-        phi::i32 left  = (phi::int32_t)std::ceil(scroll_x / m_CharAdvance.x);
-        phi::i32 right = (phi::int32_t)std::ceil((scroll_x + width) / m_CharAdvance.x);
+        phi::i32 left  = static_cast<phi::int32_t>(std::ceil(scroll_x / m_CharAdvance.x));
+        phi::i32 right = static_cast<phi::int32_t>(std::ceil((scroll_x + width) / m_CharAdvance.x));
 
         Coordinates pos = GetActualCursorCoordinates();
         float       len = TextDistanceToLineStart(pos);
 
         if (pos.m_Line < top)
         {
-            ImGui::SetScrollY(phi::max(0.0f, (pos.m_Line - 1).unsafe() * m_CharAdvance.y));
+            ImGui::SetScrollY(phi::max(0.0f, static_cast<float>((pos.m_Line - 1).unsafe()) *
+                                                     m_CharAdvance.y));
         }
         if (pos.m_Line > bottom - 4)
         {
-            ImGui::SetScrollY(phi::max(0.0f, (pos.m_Line + 4).unsafe() * m_CharAdvance.y - height));
+            ImGui::SetScrollY(
+                    phi::max(0.0f, static_cast<float>((pos.m_Line + 4).unsafe()) * m_CharAdvance.y -
+                                           height));
         }
-        if (len + m_TextStart < (left + 4).unsafe())
+        if (len + m_TextStart < static_cast<float>((left + 4).unsafe()))
         {
             ImGui::SetScrollX(phi::max(0.0f, len + m_TextStart - 4));
         }
-        if (len + m_TextStart > (right - 4).unsafe())
+        if (len + m_TextStart > static_cast<float>((right - 4).unsafe()))
         {
             ImGui::SetScrollX(phi::max(0.0f, len + m_TextStart + 4 - width));
         }
     }
 
+    // TODO: Can this really return a negative number? If not just change it to u32
     phi::i32 CodeEditor::GetPageSize() const noexcept
     {
         float height = ImGui::GetWindowHeight() - 20.0f;
-        return (phi::int32_t)std::floor(height / m_CharAdvance.y);
+
+        return static_cast<phi::int32_t>(std::floor(height / m_CharAdvance.y));
     }
 
     std::string CodeEditor::GetText(const Coordinates& start, const Coordinates& end) const noexcept
@@ -1744,7 +1774,7 @@ namespace dlxemu
         phi::i32   iend   = GetCharacterIndex(end);
         phi::usize s      = 0u;
 
-        PHI_ASSERT(lstart.unsafe() < m_Lines.size());
+        PHI_ASSERT(lstart.unsafe() < static_cast<phi::int32_t>(m_Lines.size()));
 
         for (phi::i32 i = lstart; i < lend; ++i)
         {
@@ -1768,7 +1798,7 @@ namespace dlxemu
                 istart = 0;
                 ++lstart;
 
-                if (lstart.unsafe() != m_Lines.size())
+                if (lstart.unsafe() != static_cast<phi::int32_t>(m_Lines.size()))
                 {
                     result += '\n';
                 }
@@ -1778,12 +1808,14 @@ namespace dlxemu
         return result;
     }
 
-    CodeEditor::Coordinates CodeEditor::GetActualCursorCoordinates() const noexcept
+    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::GetActualCursorCoordinates()
+            const noexcept
     {
         return SanitizeCoordinates(m_State.m_CursorPosition);
     }
 
-    CodeEditor::Coordinates CodeEditor::SanitizeCoordinates(const Coordinates& value) const noexcept
+    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::SanitizeCoordinates(
+            const Coordinates& value) const noexcept
     {
         phi::i32 line   = value.m_Line;
         phi::i32 column = value.m_Column;
@@ -1804,7 +1836,7 @@ namespace dlxemu
         }
 
         PHI_ASSERT(!m_Lines.empty());
-        PHI_ASSERT(line.unsafe() < m_Lines.size());
+        PHI_ASSERT(line.unsafe() < static_cast<phi::int32_t>(m_Lines.size()));
         PHI_ASSERT(line >= 0);
 
         // Sanitize column
@@ -1833,9 +1865,6 @@ namespace dlxemu
         PHI_ASSERT(new_column <= GetLineMaxColumn(line));
 
         column = new_column;
-
-        // Sanitize line
-        line = phi::max(0, line);
 
         return {line, column};
     }
@@ -1958,7 +1987,7 @@ namespace dlxemu
 
             if (*value == '\n')
             {
-                if (cindex < (phi::int32_t)m_Lines[where.m_Line.unsafe()].size())
+                if (cindex < static_cast<phi::int32_t>(m_Lines[where.m_Line.unsafe()].size()))
                 {
                     Line& new_line = InsertLine(where.m_Line + 1);
                     Line& line     = m_Lines[where.m_Line.unsafe()];
@@ -2070,11 +2099,12 @@ namespace dlxemu
         ImVec2 origin = ImGui::GetCursorScreenPos();
         ImVec2 local(position.x - origin.x, position.y - origin.y);
 
-        phi::i32 line_no = std::max(0, (phi::int32_t)floor(local.y / m_CharAdvance.y));
+        phi::i32 line_no =
+                phi::max(0, static_cast<phi::int32_t>(std::floor(local.y / m_CharAdvance.y)));
 
         phi::i32 column_coord = 0;
 
-        if (line_no >= 0 && line_no < (phi::int32_t)m_Lines.size())
+        if (line_no >= 0 && line_no < static_cast<phi::int32_t>(m_Lines.size()))
         {
             const Line& line = m_Lines[line_no.unsafe()];
 
@@ -2138,7 +2168,8 @@ namespace dlxemu
         return SanitizeCoordinates(Coordinates(line_no, column_coord));
     }
 
-    CodeEditor::Coordinates CodeEditor::FindWordStart(const Coordinates& from) const noexcept
+    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::FindWordStart(
+            const Coordinates& from) const noexcept
     {
         if (from.m_Line >= static_cast<phi::int32_t>(m_Lines.size()))
         {
@@ -2182,10 +2213,11 @@ namespace dlxemu
         return {from.m_Line, GetCharacterColumn(from.m_Line, cindex)};
     }
 
-    CodeEditor::Coordinates CodeEditor::FindWordEnd(const Coordinates& from) const noexcept
+    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::FindWordEnd(
+            const Coordinates& from) const noexcept
     {
         Coordinates at = from;
-        if (at.m_Line >= (phi::int32_t)m_Lines.size())
+        if (at.m_Line >= static_cast<phi::int32_t>(m_Lines.size()))
         {
             return at;
         }
@@ -2193,7 +2225,7 @@ namespace dlxemu
         const Line& line   = m_Lines[at.m_Line.unsafe()];
         phi::i32    cindex = GetCharacterIndex(at);
 
-        if (cindex >= (phi::int32_t)line.size())
+        if (cindex >= static_cast<phi::int32_t>(line.size()))
         {
             return at;
         }
@@ -2214,7 +2246,7 @@ namespace dlxemu
             {
                 if (phi::is_space(static_cast<char>(glyph.m_Char)))
                 {
-                    while (cindex < (phi::int32_t)line.size() &&
+                    while (cindex < static_cast<phi::int32_t>(line.size()) &&
                            phi::is_space(static_cast<char>(line[cindex.unsafe()].m_Char)))
                     {
                         cindex += 1;
@@ -2229,10 +2261,11 @@ namespace dlxemu
         return {from.m_Line, GetCharacterColumn(from.m_Line, cindex)};
     }
 
-    CodeEditor::Coordinates CodeEditor::FindNextWord(const Coordinates& from) const noexcept
+    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::FindNextWord(
+            const Coordinates& from) const noexcept
     {
         Coordinates at = from;
-        if (at.m_Line >= (phi::int32_t)m_Lines.size())
+        if (at.m_Line >= static_cast<phi::int32_t>(m_Lines.size()))
         {
             return at;
         }
@@ -2241,7 +2274,7 @@ namespace dlxemu
         phi::i32 cindex  = GetCharacterIndex(from);
         bool     is_word = false;
         bool     skip    = false;
-        if (cindex < (phi::int32_t)m_Lines[at.m_Line.unsafe()].size())
+        if (cindex < static_cast<phi::int32_t>(m_Lines[at.m_Line.unsafe()].size()))
         {
             const Line& line = m_Lines[at.m_Line.unsafe()];
             is_word = phi::is_alpha_numeric(static_cast<char>(line[cindex.unsafe()].m_Char));
@@ -2252,13 +2285,13 @@ namespace dlxemu
         {
             if (at.m_Line >= static_cast<phi::int32_t>(m_Lines.size()))
             {
-                phi::i32 line_number = phi::max(0, (phi::int32_t)m_Lines.size() - 1);
+                phi::i32 line_number = phi::max(0, static_cast<phi::int32_t>(m_Lines.size() - 1u));
 
                 return {line_number, GetLineMaxColumn(line_number)};
             }
 
             const Line& line = m_Lines[at.m_Line.unsafe()];
-            if (cindex < (phi::int32_t)line.size())
+            if (cindex < static_cast<phi::int32_t>(line.size()))
             {
                 is_word = phi::is_alpha_numeric(static_cast<char>(line[cindex.unsafe()].m_Char));
 
@@ -2288,7 +2321,7 @@ namespace dlxemu
 
     std::string CodeEditor::GetWordUnderCursor() const noexcept
     {
-        Coordinates coordinates = GetCursorPosition();
+        const Coordinates coordinates = GetCursorPosition();
         return GetWordAt(coordinates);
     }
 
@@ -2311,7 +2344,8 @@ namespace dlxemu
         return result;
     }
 
-    phi::i32 CodeEditor::GetCharacterIndex(const Coordinates& coordinates) const noexcept
+    PHI_ATTRIBUTE_PURE phi::i32 CodeEditor::GetCharacterIndex(
+            const Coordinates& coordinates) const noexcept
     {
         if (coordinates.m_Line >= static_cast<phi::int32_t>(m_Lines.size()))
         {
@@ -2339,17 +2373,18 @@ namespace dlxemu
         return index;
     }
 
-    phi::i32 CodeEditor::GetCharacterColumn(phi::i32 line_number, phi::i32 index) const noexcept
+    PHI_ATTRIBUTE_PURE phi::i32 CodeEditor::GetCharacterColumn(phi::i32 line_number,
+                                                               phi::i32 index) const noexcept
     {
         PHI_ASSERT(line_number < static_cast<phi::int32_t>(m_Lines.size()));
 
-        const Line& line   = m_Lines[line_number.unsafe()];
+        const Line& line   = m_Lines[static_cast<phi::size_t>(line_number.unsafe())];
         phi::i32    column = 0;
         phi::i32    i      = 0;
 
         while (i < index && i < static_cast<phi::int32_t>(line.size()))
         {
-            char character = static_cast<char>(line[i.unsafe()].m_Char);
+            char character = static_cast<char>(line[static_cast<phi::size_t>(i.unsafe())].m_Char);
             i += UTF8CharLength(character);
             if (character == '\t')
             {
@@ -2365,37 +2400,38 @@ namespace dlxemu
         return column;
     }
 
-    phi::i32 CodeEditor::GetLineCharacterCount(phi::i32 line_number) const noexcept
+    PHI_ATTRIBUTE_PURE phi::i32 CodeEditor::GetLineCharacterCount(
+            phi::i32 line_number) const noexcept
     {
         if (line_number >= static_cast<phi::int32_t>(m_Lines.size()))
         {
             return 0;
         }
 
-        const Line& line  = m_Lines[line_number.unsafe()];
+        const Line& line  = m_Lines[static_cast<phi::size_t>(line_number.unsafe())];
         phi::i32    count = 0;
 
         for (phi::i32 i{0}; i < static_cast<phi::int32_t>(line.size()); ++count)
         {
-            i += UTF8CharLength(line[i.unsafe()].m_Char);
+            i += UTF8CharLength(line[static_cast<phi::size_t>(i.unsafe())].m_Char);
         }
 
         return count;
     }
 
-    phi::i32 CodeEditor::GetLineMaxColumn(phi::i32 line_number) const noexcept
+    PHI_ATTRIBUTE_PURE phi::i32 CodeEditor::GetLineMaxColumn(phi::i32 line_number) const noexcept
     {
         if (line_number >= static_cast<phi::int32_t>(m_Lines.size()))
         {
             return 0;
         }
 
-        const Line& line = m_Lines[line_number.unsafe()];
+        const Line& line = m_Lines[static_cast<phi::size_t>(line_number.unsafe())];
         phi::i32    col  = 0;
 
         for (phi::i32 i = 0; i < static_cast<phi::int32_t>(line.size());)
         {
-            char character = static_cast<char>(line[i.unsafe()].m_Char);
+            char character = static_cast<char>(line[static_cast<phi::size_t>(i.unsafe())].m_Char);
             if (character == '\t')
             {
                 col = (col.unsafe() / m_TabSize.unsafe()) * m_TabSize.unsafe() + m_TabSize.unsafe();
@@ -2411,46 +2447,49 @@ namespace dlxemu
         return col;
     }
 
-    bool CodeEditor::IsOnWordBoundary(const Coordinates& at) const noexcept
+    PHI_ATTRIBUTE_PURE bool CodeEditor::IsOnWordBoundary(const Coordinates& at) const noexcept
     {
-        if (at.m_Line >= (phi::int32_t)m_Lines.size() || at.m_Column == 0)
+        if (at.m_Line >= static_cast<phi::int32_t>(m_Lines.size()) || at.m_Column == 0)
         {
             return true;
         }
 
-        const Line& line   = m_Lines[at.m_Line.unsafe()];
+        const Line& line   = m_Lines[static_cast<phi::size_t>(at.m_Line.unsafe())];
         phi::i32    cindex = GetCharacterIndex(at);
-        if (cindex >= (phi::int32_t)line.size())
+        if (cindex >= static_cast<phi::int32_t>(line.size()))
         {
             return true;
         }
 
         if (m_ColorizerEnabled)
         {
-            return line[cindex.unsafe()].m_ColorIndex !=
-                   line[phi::size_t(cindex.unsafe() - 1)].m_ColorIndex;
+            return line[static_cast<phi::size_t>(cindex.unsafe())].m_ColorIndex !=
+                   line[static_cast<phi::size_t>(cindex.unsafe() - 1)].m_ColorIndex;
         }
 
-        return phi::is_space(static_cast<char>(line[cindex.unsafe()].m_Char)) !=
-               phi::is_space(static_cast<char>(line[cindex.unsafe() - 1].m_Char));
+        return phi::is_space(
+                       static_cast<char>(line[static_cast<phi::size_t>(cindex.unsafe())].m_Char)) !=
+               phi::is_space(static_cast<char>(
+                       line[static_cast<phi::size_t>(cindex.unsafe() - 1)].m_Char));
     }
 
     void CodeEditor::RemoveLine(phi::i32 start, phi::i32 end) noexcept
     {
         PHI_ASSERT(!m_ReadOnly);
         PHI_ASSERT(end >= start);
-        PHI_ASSERT(m_Lines.size() > (phi::size_t)((end - start).unsafe()));
+        PHI_ASSERT(m_Lines.size() > static_cast<phi::size_t>((end - start).unsafe()));
 
         // Remove error markers
         ErrorMarkers etmp;
         for (const auto& marker : m_ErrorMarkers)
         {
-            ErrorMarkers::value_type error_marker(marker.first.unsafe() >= start.unsafe() ?
-                                                          marker.first.unsafe() - 1 :
-                                                          marker.first,
-                                                  marker.second);
-            if (error_marker.first.unsafe() >= start.unsafe() &&
-                error_marker.first.unsafe() <= end.unsafe())
+            ErrorMarkers::value_type error_marker(
+                    static_cast<phi::int32_t>(marker.first.unsafe()) >= start.unsafe() ?
+                            marker.first.unsafe() - 1 :
+                            marker.first,
+                    marker.second);
+            if (static_cast<phi::int32_t>(error_marker.first.unsafe()) >= start.unsafe() &&
+                static_cast<phi::int32_t>(error_marker.first.unsafe()) <= end.unsafe())
             {
                 continue;
             }
@@ -2462,12 +2501,14 @@ namespace dlxemu
         Breakpoints btmp;
         for (const auto line_number : m_Breakpoints)
         {
-            if (line_number.unsafe() >= start.unsafe() && line_number.unsafe() <= end.unsafe())
+            if (static_cast<phi::int32_t>(line_number.unsafe()) >= start.unsafe() &&
+                static_cast<phi::int32_t>(line_number.unsafe()) <= end.unsafe())
             {
                 continue;
             }
-            btmp.insert(line_number.unsafe() >= start.unsafe() ? line_number.unsafe() - 1 :
-                                                                 line_number.unsafe());
+            btmp.insert(static_cast<phi::int32_t>(line_number.unsafe()) >= start.unsafe() ?
+                                line_number.unsafe() - 1 :
+                                line_number.unsafe());
         }
         m_Breakpoints = phi::move(btmp);
 
@@ -2500,11 +2541,12 @@ namespace dlxemu
         ErrorMarkers etmp;
         for (const auto& marker : m_ErrorMarkers)
         {
-            ErrorMarkers::value_type error_marker(marker.first.unsafe() > index.unsafe() ?
+            ErrorMarkers::value_type error_marker(static_cast<phi::int32_t>(marker.first.unsafe()) >
+                                                                  index.unsafe() ?
                                                           marker.first.unsafe() - 1 :
                                                           marker.first,
                                                   marker.second);
-            if (error_marker.first.unsafe() - 1 == index.unsafe())
+            if (static_cast<phi::int32_t>(error_marker.first.unsafe() - 1u) == index.unsafe())
             {
                 continue;
             }
@@ -2516,13 +2558,14 @@ namespace dlxemu
         Breakpoints btmp;
         for (const auto line_number : m_Breakpoints)
         {
-            if (line_number.unsafe() == index.unsafe())
+            if (static_cast<phi::int32_t>(line_number.unsafe()) == index.unsafe())
             {
                 continue;
             }
 
-            btmp.insert(line_number.unsafe() >= index.unsafe() ? line_number.unsafe() - 1 :
-                                                                 line_number);
+            btmp.insert(static_cast<phi::int32_t>(line_number.unsafe()) >= index.unsafe() ?
+                                line_number.unsafe() - 1 :
+                                line_number);
         }
         m_Breakpoints = phi::move(btmp);
 
@@ -2551,7 +2594,8 @@ namespace dlxemu
         ErrorMarkers etmp;
         for (const auto& marker : m_ErrorMarkers)
         {
-            etmp.insert(ErrorMarkers::value_type(marker.first.unsafe() >= index.unsafe() ?
+            etmp.insert(ErrorMarkers::value_type(static_cast<phi::int32_t>(marker.first.unsafe()) >=
+                                                                 index.unsafe() ?
                                                          marker.first.unsafe() + 1 :
                                                          marker.first,
                                                  marker.second));
@@ -2561,8 +2605,9 @@ namespace dlxemu
         Breakpoints btmp;
         for (const phi::u32 line_number : m_Breakpoints)
         {
-            btmp.insert(line_number.unsafe() >= index.unsafe() ? line_number.unsafe() + 1 :
-                                                                 line_number);
+            btmp.insert(static_cast<phi::int32_t>(line_number.unsafe()) >= index.unsafe() ?
+                                line_number.unsafe() + 1 :
+                                line_number);
         }
         m_Breakpoints = phi::move(btmp);
 
@@ -2595,10 +2640,10 @@ namespace dlxemu
                 {
                     --end.m_Line;
                 }
-                if (end.m_Line >= (phi::int32_t)m_Lines.size())
+                if (end.m_Line >= static_cast<phi::int32_t>(m_Lines.size()))
                 {
                     PHI_ASSERT(!m_Lines.empty());
-                    end.m_Line = (phi::int32_t)m_Lines.size() - 1;
+                    end.m_Line = static_cast<phi::int32_t>(m_Lines.size() - 1u);
                 }
                 end.m_Column = GetLineMaxColumn(end.m_Line);
 
@@ -2613,7 +2658,7 @@ namespace dlxemu
 
                 for (phi::i32 line_index = start.m_Line; line_index <= end.m_Line; ++line_index)
                 {
-                    Line& line = m_Lines[line_index.unsafe()];
+                    Line& line = m_Lines[static_cast<phi::size_t>(line_index.unsafe())];
                     if (shift)
                     {
                         // Remove idention
@@ -2640,9 +2685,14 @@ namespace dlxemu
                     }
                     else
                     {
+                        PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wnull-dereference")
+                        PHI_ASSERT(line.begin().base() != nullptr);
+
                         // Add indention
                         line.insert(line.begin(), Glyph('\t', PaletteIndex::Background));
                         modified = true;
+
+                        PHI_GCC_SUPPRESS_WARNING_POP()
                     }
                 }
 
@@ -2698,24 +2748,29 @@ namespace dlxemu
             InsertLine(coord.m_Line + 1);
             undo.m_Added = static_cast<char>(character);
 
-            Line& line     = m_Lines[coord.m_Line.unsafe()];
-            Line& new_line = m_Lines[coord.m_Line.unsafe() + 1];
+            Line& line     = m_Lines[static_cast<phi::size_t>(coord.m_Line.unsafe())];
+            Line& new_line = m_Lines[static_cast<phi::size_t>(coord.m_Line.unsafe() + 1)];
 
-            for (phi::i32 it = 0; it < static_cast<phi::int32_t>(line.size()) &&
-                                  it < coord.m_Column && phi::is_blank(line[it.unsafe()].m_Char);
+            for (phi::i32 it = 0;
+                 it < static_cast<phi::int32_t>(line.size()) && it < coord.m_Column &&
+                 phi::is_blank(
+                         static_cast<char>(line[static_cast<phi::size_t>(it.unsafe())].m_Char));
                  ++it)
             {
-                new_line.push_back(line[it.unsafe()]);
-                undo.m_Added += static_cast<char>(line[it.unsafe()].m_Char);
+                new_line.push_back(line[static_cast<phi::size_t>(it.unsafe())]);
+                undo.m_Added +=
+                        static_cast<char>(line[static_cast<phi::size_t>(it.unsafe())].m_Char);
             }
 
             const phi::usize whitespace_size = new_line.size();
             phi::i32         cindex          = GetCharacterIndex(coord);
             new_line.insert(new_line.end(), line.begin() + cindex.unsafe(), line.end());
-            line.erase(line.begin() + cindex.unsafe(), line.begin() + line.size());
+            line.erase(line.begin() + cindex.unsafe(),
+                       line.begin() + static_cast<phi::int32_t>(line.size()));
             SetCursorPosition(Coordinates(
-                    coord.m_Line + 1, GetCharacterColumn(coord.m_Line.unsafe() + 1,
-                                                         (phi::int32_t)whitespace_size.unsafe())));
+                    coord.m_Line + 1,
+                    GetCharacterColumn(coord.m_Line.unsafe() + 1,
+                                       static_cast<phi::int32_t>(whitespace_size.unsafe()))));
 
             // Fix selection
             if (!HasSelection())
@@ -2731,28 +2786,32 @@ namespace dlxemu
             // We require a valid ut8 sequence
             PHI_ASSERT(length > 0u);
 
-            Line&    line   = m_Lines[coord.m_Line.unsafe()];
+            Line&    line   = m_Lines[static_cast<phi::size_t>(coord.m_Line.unsafe())];
             phi::i32 cindex = GetCharacterIndex(coord);
 
-            if (m_Overwrite && cindex < (phi::int32_t)line.size())
+            if (m_Overwrite && cindex < static_cast<phi::int32_t>(line.size()))
             {
-                phi::i32 length = UTF8CharLength(line[cindex.unsafe()].m_Char);
+                phi::i32 char_length =
+                        UTF8CharLength(line[static_cast<phi::size_t>(cindex.unsafe())].m_Char);
 
                 undo.m_RemovedStart = m_State.m_CursorPosition;
-                undo.m_RemovedEnd   = Coordinates(coord.m_Line,
-                                                  GetCharacterColumn(coord.m_Line, cindex + length));
+                undo.m_RemovedEnd   = Coordinates(
+                          coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + char_length));
 
-                while (length-- > 0 && cindex < (phi::int32_t)line.size())
+                while (char_length-- > 0 && cindex < static_cast<phi::int32_t>(line.size()))
                 {
-                    undo.m_Removed += static_cast<char>(line[cindex.unsafe()].m_Char);
+                    undo.m_Removed += static_cast<char>(
+                            line[static_cast<phi::size_t>(cindex.unsafe())].m_Char);
                     line.erase(line.begin() + cindex.unsafe());
                 }
             }
 
             for (char* pointer = buffer.begin(); *pointer != '\0'; ++pointer, ++cindex)
             {
-                line.insert(line.begin() + cindex.unsafe(), Glyph(*pointer, PaletteIndex::Default));
+                line.insert(line.begin() + cindex.unsafe(),
+                            Glyph(static_cast<phi::uint8_t>(*pointer), PaletteIndex::Default));
             }
+            // TODO: We know the length to just directly assign a string_view
             undo.m_Added = buffer.begin();
 
             SetCursorPosition(Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex)));
@@ -2802,8 +2861,10 @@ namespace dlxemu
                         Coordinates(pos.m_Line - 1, GetLineMaxColumn(pos.m_Line - 1));
                 Advance(undo.m_RemovedEnd);
 
-                Line&    line      = m_Lines[m_State.m_CursorPosition.m_Line.unsafe()];
-                Line&    prev_line = m_Lines[m_State.m_CursorPosition.m_Line.unsafe() - 1];
+                Line& line =
+                        m_Lines[static_cast<phi::size_t>(m_State.m_CursorPosition.m_Line.unsafe())];
+                Line&    prev_line = m_Lines[static_cast<phi::size_t>(
+                        m_State.m_CursorPosition.m_Line.unsafe() - 1)];
                 phi::i32 prev_size = GetLineMaxColumn(m_State.m_CursorPosition.m_Line - 1);
                 prev_line.insert(prev_line.end(), line.begin(), line.end());
 
@@ -2811,7 +2872,7 @@ namespace dlxemu
                 for (auto& error_marker : m_ErrorMarkers)
                 {
                     etmp.insert(ErrorMarkers::value_type(
-                            error_marker.first.unsafe() - 1 ==
+                            static_cast<phi::int32_t>(error_marker.first.unsafe() - 1u) ==
                                             m_State.m_CursorPosition.m_Line.unsafe() ?
                                     error_marker.first.unsafe() - 1 :
                                     error_marker.first,
@@ -2825,10 +2886,11 @@ namespace dlxemu
             }
             else
             {
-                Line&    line   = m_Lines[m_State.m_CursorPosition.m_Line.unsafe()];
+                Line& line =
+                        m_Lines[static_cast<phi::size_t>(m_State.m_CursorPosition.m_Line.unsafe())];
                 phi::i32 cindex = GetCharacterIndex(pos) - 1;
 
-                if (line[cindex.unsafe()].m_Char == '\t')
+                if (line[static_cast<phi::size_t>(cindex.unsafe())].m_Char == '\t')
                 {
                     undo.m_RemovedStart.m_Line = GetActualCursorCoordinates().m_Line;
                     undo.m_RemovedEnd          = GetActualCursorCoordinates();
@@ -2843,7 +2905,8 @@ namespace dlxemu
                 else
                 {
                     phi::i32 cend = cindex + 1;
-                    while (cindex > 0 && IsUTFSequence(line[cindex.unsafe()].m_Char))
+                    while (cindex > 0 &&
+                           IsUTFSequence(line[static_cast<phi::size_t>(cindex.unsafe())].m_Char))
                     {
                         --cindex;
                     }
@@ -2854,7 +2917,8 @@ namespace dlxemu
 
                     while (cindex < static_cast<phi::int32_t>(line.size()) && cend-- > cindex)
                     {
-                        undo.m_Removed += static_cast<char>(line[cindex.unsafe()].m_Char);
+                        undo.m_Removed += static_cast<char>(
+                                line[static_cast<phi::size_t>(cindex.unsafe())].m_Char);
                         line.erase(line.begin() + cindex.unsafe());
                     }
                 }
@@ -2889,7 +2953,7 @@ namespace dlxemu
         m_TextChanged = true;
     }
 
-    ImU32 CodeEditor::GetGlyphColor(const Glyph& glyph) const noexcept
+    PHI_ATTRIBUTE_PURE ImU32 CodeEditor::GetGlyphColor(const Glyph& glyph) const noexcept
     {
         if (!m_ColorizerEnabled)
         {
@@ -2953,11 +3017,13 @@ namespace dlxemu
         }
         else if (!alt && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_PageUp)))
         {
-            MoveUp(GetPageSize().unsafe() - 4u, shift);
+            const phi::u32 page_size = static_cast<phi::uint32_t>(GetPageSize().unsafe());
+            MoveUp(page_size - 4u, shift);
         }
         else if (!alt && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_PageDown)))
         {
-            MoveDown(GetPageSize().unsafe() - 4u, shift);
+            const phi::u32 page_size = static_cast<phi::uint32_t>(GetPageSize().unsafe());
+            MoveDown(page_size - 4u, shift);
         }
         else if (!alt && ctrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Home)))
         {
@@ -3035,10 +3101,10 @@ namespace dlxemu
         {
             for (phi::i32 i{0}; i < imgui_io.InputQueueCharacters.Size; ++i)
             {
-                ImWchar c = imgui_io.InputQueueCharacters[i.unsafe()];
-                if (c != 0 && (c == '\n' || c >= 32))
+                ImWchar input_char = imgui_io.InputQueueCharacters[i.unsafe()];
+                if (input_char != '\0' && (input_char == '\n' || input_char >= 32))
                 {
-                    EnterCharacterImpl(c, shift);
+                    EnterCharacterImpl(input_char, shift);
                 }
             }
 
@@ -3048,90 +3114,99 @@ namespace dlxemu
 
     void CodeEditor::HandleMouseInputs() noexcept
     {
+        // Do nothing if our window is not hovered
+        if (!ImGui::IsWindowHovered())
+        {
+            return;
+        }
+
         ImGuiIO& imgui_io = ImGui::GetIO();
         bool     shift    = imgui_io.KeyShift;
         bool     ctrl     = imgui_io.ConfigMacOSXBehaviors ? imgui_io.KeySuper : imgui_io.KeyCtrl;
         bool     alt      = imgui_io.ConfigMacOSXBehaviors ? imgui_io.KeyCtrl : imgui_io.KeyAlt;
 
-        if (ImGui::IsWindowHovered())
+        if (!shift && !alt)
         {
-            if (!shift && !alt)
+            // TODO: Maybe theres a smarter way here than suppressing the warning and comparing m_LastClick != -1.0f?
+            PHI_CLANG_AND_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wfloat-equal")
+
+            bool   click        = ImGui::IsMouseClicked(0);
+            bool   double_click = ImGui::IsMouseDoubleClicked(0);
+            double time         = ImGui::GetTime();
+            bool   triple_click = click && !double_click &&
+                                (m_LastClick != -1.0f && (static_cast<float>(time) - m_LastClick) <
+                                                                 imgui_io.MouseDoubleClickTime);
+
+            PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
+
+            /*
+                Left mouse button triple click
+            */
+
+            if (triple_click)
             {
-                bool   click        = ImGui::IsMouseClicked(0);
-                bool   double_click = ImGui::IsMouseDoubleClicked(0);
-                double time         = ImGui::GetTime();
-                bool   triple_click = click && !double_click &&
-                                    (m_LastClick != -1.0f &&
-                                     (time - m_LastClick) < imgui_io.MouseDoubleClickTime);
-
-                /*
-                    Left mouse button triple click
-                */
-
-                if (triple_click)
-                {
-                    if (!ctrl)
-                    {
-                        m_State.m_CursorPosition = m_InteractiveStart = m_InteractiveEnd =
-                                ScreenPosToCoordinates(ImGui::GetMousePos());
-                        m_SelectionMode = SelectionMode::Line;
-                        SetSelection(m_InteractiveStart, m_InteractiveEnd, m_SelectionMode);
-                    }
-
-                    m_LastClick = -1.0f;
-                }
-
-                /*
-                    Left mouse button double click
-                */
-
-                else if (double_click)
-                {
-                    if (!ctrl)
-                    {
-                        m_State.m_CursorPosition = m_InteractiveStart = m_InteractiveEnd =
-                                ScreenPosToCoordinates(ImGui::GetMousePos());
-                        if (m_SelectionMode == SelectionMode::Line)
-                        {
-                            m_SelectionMode = SelectionMode::Normal;
-                        }
-                        else
-                        {
-                            m_SelectionMode = SelectionMode::Word;
-                        }
-                        SetSelection(m_InteractiveStart, m_InteractiveEnd, m_SelectionMode);
-                    }
-
-                    m_LastClick = (float)ImGui::GetTime();
-                }
-
-                /*
-                    Left mouse button click
-                */
-                else if (click)
+                if (!ctrl)
                 {
                     m_State.m_CursorPosition = m_InteractiveStart = m_InteractiveEnd =
                             ScreenPosToCoordinates(ImGui::GetMousePos());
-                    if (ctrl)
-                    {
-                        m_SelectionMode = SelectionMode::Word;
-                    }
-                    else
+                    m_SelectionMode = SelectionMode::Line;
+                    SetSelection(m_InteractiveStart, m_InteractiveEnd, m_SelectionMode);
+                }
+
+                m_LastClick = -1.0f;
+            }
+
+            /*
+                Left mouse button double click
+            */
+
+            else if (double_click)
+            {
+                if (!ctrl)
+                {
+                    m_State.m_CursorPosition = m_InteractiveStart = m_InteractiveEnd =
+                            ScreenPosToCoordinates(ImGui::GetMousePos());
+                    if (m_SelectionMode == SelectionMode::Line)
                     {
                         m_SelectionMode = SelectionMode::Normal;
                     }
+                    else
+                    {
+                        m_SelectionMode = SelectionMode::Word;
+                    }
                     SetSelection(m_InteractiveStart, m_InteractiveEnd, m_SelectionMode);
+                }
 
-                    m_LastClick = (float)ImGui::GetTime();
-                }
-                // Mouse left button dragging (=> update selection)
-                else if (ImGui::IsMouseDragging(0) && ImGui::IsMouseDown(0))
+                m_LastClick = static_cast<float>(ImGui::GetTime());
+            }
+
+            /*
+                Left mouse button click
+            */
+
+            else if (click)
+            {
+                m_State.m_CursorPosition = m_InteractiveStart = m_InteractiveEnd =
+                        ScreenPosToCoordinates(ImGui::GetMousePos());
+                if (ctrl)
                 {
-                    imgui_io.WantCaptureMouse = true;
-                    m_State.m_CursorPosition  = m_InteractiveEnd =
-                            ScreenPosToCoordinates(ImGui::GetMousePos());
-                    SetSelection(m_InteractiveStart, m_InteractiveEnd, m_SelectionMode);
+                    m_SelectionMode = SelectionMode::Word;
                 }
+                else
+                {
+                    m_SelectionMode = SelectionMode::Normal;
+                }
+                SetSelection(m_InteractiveStart, m_InteractiveEnd, m_SelectionMode);
+
+                m_LastClick = static_cast<float>(ImGui::GetTime());
+            }
+            // Mouse left button dragging (=> update selection)
+            else if (ImGui::IsMouseDragging(0) && ImGui::IsMouseDown(0))
+            {
+                imgui_io.WantCaptureMouse = true;
+                m_State.m_CursorPosition  = m_InteractiveEnd =
+                        ScreenPosToCoordinates(ImGui::GetMousePos());
+                SetSelection(m_InteractiveStart, m_InteractiveEnd, m_SelectionMode);
             }
         }
     }
@@ -3146,7 +3221,7 @@ namespace dlxemu
         m_CharAdvance = ImVec2(font_size, ImGui::GetTextLineHeightWithSpacing() * m_LineSpacing);
 
         /* Update palette with the current alpha from style */
-        for (phi::usize i = 0u; i < (phi::size_t)PaletteIndex::Max; ++i)
+        for (phi::usize i = 0u; i < static_cast<phi::size_t>(PaletteIndex::Max); ++i)
         {
             ImVec4 color = ImGui::ColorConvertU32ToFloat4(m_PaletteBase[i]);
             color.w *= ImGui::GetStyle().Alpha;
@@ -3169,12 +3244,14 @@ namespace dlxemu
         float  scroll_x          = ImGui::GetScrollX();
         float  scroll_y          = ImGui::GetScrollY();
 
-        phi::i32 line_no         = (phi::int32_t)std::floor(scroll_y / m_CharAdvance.y);
-        phi::i32 global_line_max = (phi::int32_t)m_Lines.size();
-        phi::i32 line_max =
-                phi::clamp((phi::int32_t)m_Lines.size() - 1, 0,
-                           line_no.unsafe() + (phi::int32_t)std::floor((scroll_y + content_size.y) /
-                                                                       m_CharAdvance.y));
+        phi::i32       line_no = static_cast<phi::int32_t>(std::floor(scroll_y / m_CharAdvance.y));
+        const phi::i32 global_line_max = static_cast<phi::int32_t>(m_Lines.size());
+
+        // TODO: This is very unreadable
+        phi::i32 line_max = phi::clamp(
+                static_cast<phi::int32_t>(m_Lines.size() - 1u), 0,
+                line_no.unsafe() + static_cast<phi::int32_t>(std::floor(
+                                           (scroll_y + content_size.y) / m_CharAdvance.y)));
 
         // Deduce m_TextStart by evaluating mLines size (global lineMax) plus two spaces as text width
         char buf[16];
@@ -3183,7 +3260,7 @@ namespace dlxemu
                 ImGui::GetFont()
                         ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf, nullptr, nullptr)
                         .x +
-                m_LeftMargin.unsafe();
+                static_cast<float>(m_LeftMargin.unsafe());
 
         PHI_ASSERT(!m_Lines.empty());
         float space_size =
@@ -3194,11 +3271,12 @@ namespace dlxemu
         while (line_no <= line_max)
         {
             ImVec2 line_start_screen_pos = ImVec2(
-                    cursor_screen_pos.x, cursor_screen_pos.y + line_no.unsafe() * m_CharAdvance.y);
+                    cursor_screen_pos.x,
+                    cursor_screen_pos.y + static_cast<float>(line_no.unsafe()) * m_CharAdvance.y);
             ImVec2 text_screen_pos =
                     ImVec2(line_start_screen_pos.x + m_TextStart, line_start_screen_pos.y);
 
-            Line& line            = m_Lines[line_no.unsafe()];
+            Line& line            = m_Lines[static_cast<phi::size_t>(line_no.unsafe())];
             longest               = phi::max(m_TextStart + TextDistanceToLineStart(Coordinates(
                                                                    line_no, GetLineMaxColumn(line_no))),
                                              longest);
@@ -3230,6 +3308,8 @@ namespace dlxemu
                 ssend += m_CharAdvance.x;
             }
 
+            PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wfloat-equal")
+
             if (sstart != -1 && ssend != -1 && sstart < ssend)
             {
                 ImVec2 vstart(line_start_screen_pos.x + m_TextStart + sstart,
@@ -3240,10 +3320,12 @@ namespace dlxemu
                 draw_list->AddRectFilled(vstart, vend, GetPaletteForIndex(PaletteIndex::Selection));
             }
 
+            PHI_GCC_SUPPRESS_WARNING_POP()
+
             // Draw breakpoints
             ImVec2 start = ImVec2(line_start_screen_pos.x + scroll_x, line_start_screen_pos.y);
 
-            if (m_Breakpoints.contains((phi::uint32_t)(line_no + 1).unsafe()))
+            if (m_Breakpoints.contains(static_cast<phi::uint32_t>((line_no + 1).unsafe())))
             {
                 ImVec2 end = ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
                                     line_start_screen_pos.y + m_CharAdvance.y);
@@ -3251,7 +3333,7 @@ namespace dlxemu
             }
 
             // Draw error markers
-            auto error_it = m_ErrorMarkers.find((phi::uint32_t)(line_no + 1).unsafe());
+            auto error_it = m_ErrorMarkers.find(static_cast<phi::uint32_t>((line_no + 1).unsafe()));
             if (error_it != m_ErrorMarkers.end())
             {
                 ImVec2 end = ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
@@ -3263,7 +3345,7 @@ namespace dlxemu
                 {
                     ImGui::BeginTooltip();
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.2f, 0.2f, 1.0f));
-                    ImGui::Text("Error at line %d:", error_it->first.unsafe());
+                    ImGui::Text("Error at line %u:", error_it->first.unsafe());
                     ImGui::PopStyleColor();
                     ImGui::Separator();
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.2f, 1.0f));
@@ -3276,10 +3358,10 @@ namespace dlxemu
             // Draw line number (right aligned)
             snprintf(buf, 16, "%d  ", line_no.unsafe() + 1);
 
-            float line_no_width = ImGui::GetFont()
-                                          ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf,
-                                                          nullptr, nullptr)
-                                          .x;
+            const float line_no_width = ImGui::GetFont()
+                                                ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX,
+                                                                -1.0f, buf, nullptr, nullptr)
+                                                .x;
             draw_list->AddText(ImVec2(line_start_screen_pos.x + m_TextStart - line_no_width,
                                       line_start_screen_pos.y),
                                GetPaletteForIndex(PaletteIndex::LineNumber), buf);
@@ -3304,20 +3386,21 @@ namespace dlxemu
                 // Render the cursor
                 if (focused)
                 {
-                    std::int64_t time_end =
+                    phi::uint64_t time_end = static_cast<phi::uint64_t>(
                             std::chrono::duration_cast<std::chrono::milliseconds>(
                                     std::chrono::system_clock::now().time_since_epoch())
-                                    .count();
-                    std::uint64_t elapsed = time_end - m_StartTime;
+                                    .count());
+                    phi::uint64_t elapsed = time_end - m_StartTime;
                     if (elapsed > 400)
                     {
                         float    width  = 1.0f;
                         phi::i32 cindex = GetCharacterIndex(m_State.m_CursorPosition);
                         float    cx     = TextDistanceToLineStart(m_State.m_CursorPosition);
 
-                        if (m_Overwrite && cindex < (phi::int32_t)line.size())
+                        if (m_Overwrite && cindex < static_cast<phi::int32_t>(line.size()))
                         {
-                            char character = line[cindex.unsafe()].m_Char;
+                            char character = static_cast<char>(
+                                    line[static_cast<phi::size_t>(cindex.unsafe())].m_Char);
                             if (character == '\t')
                             {
                                 float x = (1.0f +
@@ -3329,7 +3412,8 @@ namespace dlxemu
                             else
                             {
                                 char buf2[2];
-                                buf2[0] = line[cindex.unsafe()].m_Char;
+                                buf2[0] = static_cast<char>(
+                                        line[static_cast<phi::size_t>(cindex.unsafe())].m_Char);
                                 buf2[1] = '\0';
                                 width   = ImGui::GetFont()
                                                 ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX,
@@ -3357,7 +3441,7 @@ namespace dlxemu
 
             for (phi::i32 i{0}; i < static_cast<phi::int32_t>(line.size());)
             {
-                CodeEditor::Glyph& glyph = line[i.unsafe()];
+                CodeEditor::Glyph& glyph = line[static_cast<phi::size_t>(i.unsafe())];
                 ImU32              color = GetGlyphColor(glyph);
 
                 if ((color != prev_color || glyph.m_Char == '\t' || glyph.m_Char == ' ') &&
@@ -3416,7 +3500,8 @@ namespace dlxemu
                     phi::i32 length = UTF8CharLength(glyph.m_Char);
                     while (length-- > 0)
                     {
-                        m_LineBuffer.push_back(static_cast<char>(line[i.unsafe()].m_Char));
+                        m_LineBuffer.push_back(static_cast<char>(
+                                line[static_cast<phi::size_t>(i.unsafe())].m_Char));
                         i += 1;
                     }
                 }
@@ -3461,7 +3546,7 @@ namespace dlxemu
             }
         }
 
-        ImGui::Dummy(ImVec2((longest + 2), m_Lines.size() * m_CharAdvance.y));
+        ImGui::Dummy(ImVec2((longest + 2), static_cast<float>(m_Lines.size()) * m_CharAdvance.y));
 
         if (m_ScrollToCursor)
         {
@@ -3553,13 +3638,13 @@ namespace dlxemu
         EnsureCursorVisible();
     }
 
-    phi::u8_fast CodeEditor::GetTabSizeAt(phi::i32 column) const noexcept
+    PHI_ATTRIBUTE_PURE phi::u8_fast CodeEditor::GetTabSizeAt(phi::i32 column) const noexcept
     {
         return static_cast<phi::uint_fast8_t>(m_TabSize.unsafe() -
                                               (column.unsafe() % m_TabSize.unsafe()));
     }
 
-    ImU32 CodeEditor::GetPaletteForIndex(PaletteIndex index) const noexcept
+    PHI_ATTRIBUTE_PURE ImU32 CodeEditor::GetPaletteForIndex(PaletteIndex index) const noexcept
     {
         phi::size_t int_value = static_cast<phi::size_t>(index);
 

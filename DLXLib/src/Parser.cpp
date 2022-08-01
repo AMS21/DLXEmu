@@ -124,6 +124,9 @@ namespace dlx
                         static_cast<FloatRegisterID>(token.GetHint()));
             }
             case Token::Type::RegisterStatus: {
+                program.AddParseError(ConstructReservedIdentiferParseError(token));
+
+                return {};
             }
             case Token::Type::LabelIdentifier: {
                 // Parse as Label
@@ -222,6 +225,8 @@ namespace dlx
 
                     // Handle jump labels
                     // Check if the last character of the identifier is a colon
+
+                    // TODO: Is at(size() - 1) == back()?
                     if (current_token.GetText().at(current_token.GetText().size() - 1) != ':')
                     {
                         program.AddParseError(
@@ -308,7 +313,7 @@ namespace dlx
                     PHI_ASSERT(info.GetArgumentType(2_u8) != ArgumentType::Unknown);
                     PHI_ASSERT(info.GetExecutor());
 
-                    phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
+                    const phi::u8 number_of_argument_required = info.GetNumberOfRequiredArguments();
                     //DLX_INFO("Instruction requires {} arguments",
                     //             number_of_argument_required.unsafe());
 
@@ -345,7 +350,6 @@ namespace dlx
 
                         if (token.GetType() == Token::Type::NewLine)
                         {
-                            phi::u8 missing_arguments = number_of_argument_required - argument_num;
                             program.AddParseError(ConstructTooFewArgumentsParseError(
                                     token, number_of_argument_required.unsafe(),
                                     argument_num.unsafe()));

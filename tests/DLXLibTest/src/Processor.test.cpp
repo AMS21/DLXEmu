@@ -3,6 +3,12 @@
 #include <DLX/Parser.hpp>
 #include <DLX/Processor.hpp>
 #include <DLX/RegisterNames.hpp>
+#include <phi/compiler_support/warning.hpp>
+
+PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wfloat-equal")
+PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
+PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
+PHI_GCC_SUPPRESS_WARNING("-Wuseless-cast")
 
 static dlx::Processor     proc;
 static dlx::ParsedProgram res;
@@ -2769,7 +2775,7 @@ TEST_CASE("CVTI2F")
     proc.ExecuteCurrentProgram();
 
     CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F0).unsafe() != -1.0f);
-    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0);
+    CHECK(proc.FloatRegisterGetFloatValue(dlx::FloatRegisterID::F2).unsafe() == 1.0f);
 }
 
 TEST_CASE("CVTI2D")

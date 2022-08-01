@@ -1,8 +1,12 @@
 #pragma once
 
 #include "DLX/OpCode.hpp"
+#include "DLX/StatusRegister.hpp"
+#include <phi/compiler_support/warning.hpp>
+
+PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
+
 #include <phi/core/assert.hpp>
-#include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
 #include <phi/type_traits/underlying_type.hpp>
 

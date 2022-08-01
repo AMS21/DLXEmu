@@ -1,5 +1,9 @@
 #include "DLX/FloatRegister.hpp"
 
+#include <phi/compiler_support/warning.hpp>
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
+
 namespace dlx
 {
     void FloatRegister::SetValue(const phi::f32 val) noexcept
@@ -7,7 +11,7 @@ namespace dlx
         m_Value = val;
     }
 
-    phi::f32 FloatRegister::GetValue() const noexcept
+    PHI_ATTRIBUTE_CONST phi::f32 FloatRegister::GetValue() const noexcept
     {
         return m_Value;
     }

@@ -465,7 +465,7 @@ namespace dlxemu
 
             // SetErrorMarkers
             case 30: {
-                std::uint32_t            amount = message_length_distrib(engine);
+                const std::uint32_t      amount = uint32_t_distrib(engine);
                 CodeEditor::ErrorMarkers markers;
                 for (std::size_t i{0u}; i < amount; ++i)
                 {
@@ -478,11 +478,12 @@ namespace dlxemu
                 DLX_DEBUG("SetErrorMarkers()");
 
                 editor.SetErrorMarkers(markers);
+                break;
             }
 
             // SetBreakpoints
             case 31: {
-                std::uint32_t           amount = message_length_distrib(engine);
+                const std::uint32_t     amount = uint32_t_distrib(engine);
                 CodeEditor::Breakpoints breakpoints;
 
                 for (std::size_t i{0u}; i < amount; ++i)
@@ -546,8 +547,12 @@ namespace dlxemu
 
     void DebugView::RunGuiTest() noexcept
     {
+        PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wexit-time-destructors")
+
         static std::random_device random_device;
         static std::mt19937       engine(random_device());
+
+        PHI_CLANG_SUPPRESS_WARNING_POP()
 
         CodeEditor& editor = m_Emulator->m_CodeEditor;
         spdlog::default_logger()->set_level(spdlog::level::trace);

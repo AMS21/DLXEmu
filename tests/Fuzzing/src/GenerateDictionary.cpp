@@ -1,30 +1,18 @@
-#include "DLX/Logger.hpp"
 #include <DLX/OpCode.hpp>
 #include <DLX/RegisterNames.hpp>
 #include <magic_enum.hpp>
-#include <spdlog/sinks/basic_file_sink.h>
+#include <phi/core/scope_guard.hpp>
+#include <spdlog/fmt/bundled/os.h>
+#include <spdlog/fmt/compile.h>
+#include <spdlog/fmt/fmt.h>
+#include <spdlog/fmt/ostr.h>
+#include <cstdio>
 #include <iostream>
 #include <memory>
 
-int main(int argc, char* argv[])
+int main()
 {
-    // Create log file
-    std::shared_ptr<spdlog::logger> file_log;
-
-    //try
-    //{
-    file_log = spdlog::basic_logger_st("file_logger", "Dictionary.txt", true);
-
-    file_log->set_level(spdlog::level::trace);
-    file_log->flush_on(spdlog::level::err);
-    file_log->set_pattern("%v");
-    /*}
-    catch (const spdlog::spdlog_ex& ex)
-    {
-        std::cerr << "Log initialization failed: " << ex.what() << std::endl;
-        return -1;
-    }
-    */
+    fmt::ostream out = fmt::output_file("Dictionary.txt");
 
     // Write all opcodes
     for (const auto& opcode : magic_enum::enum_names<dlx::OpCode>())
@@ -35,7 +23,7 @@ int main(int argc, char* argv[])
             continue;
         }
 
-        file_log->info(R"(opcode_{0}="{0}")", opcode);
+        out.print(R"(opcode_{0}="{0}")", opcode);
     }
 
     // Write all int registers
@@ -47,7 +35,7 @@ int main(int argc, char* argv[])
             continue;
         }
 
-        file_log->info(R"(int_register_id_{0}="{0}")", reg);
+        out.print(R"(int_register_id_{0}="{0}")", reg);
     }
 
     // Write all float registers
@@ -59,49 +47,47 @@ int main(int argc, char* argv[])
             continue;
         }
 
-        file_log->info(R"(float_register_id_{0}="{0}")", reg);
+        out.print(R"(float_register_id_{0}="{0}")", reg);
     }
 
     // Write FPSR
-    file_log->info(R"(FPSR="FPSR")");
+    out.print(R"(FPSR="FPSR")");
 
     // Write normal tokens
-    file_log->info(R"(space=" ")");
-    file_log->info(R"(comma=",")");
-    file_log->info(R"(colon=":")");
-    file_log->info(R"(new_line="\x0a")");
-    file_log->info(R"(open_bracket="(")");
-    file_log->info(R"t(closing_bracket=")")t");
-    file_log->info(R"(hash="#")");
-    file_log->info(R"(underscore="_")");
-    file_log->info(R"(forward_slash="/")");
-    file_log->info(R"(semicolon=";")");
+    out.print(R"(space=" ")");
+    out.print(R"(comma=",")");
+    out.print(R"(colon=":")");
+    out.print(R"(new_line="\x0a")");
+    out.print(R"(open_bracket="(")");
+    out.print(R"t(closing_bracket=")")t");
+    out.print(R"(hash="#")");
+    out.print(R"(underscore="_")");
+    out.print(R"(forward_slash="/")");
+    out.print(R"(semicolon=";")");
 
     // Write numbers
-    file_log->info(R"(num0="0")");
-    file_log->info(R"(num1="1")");
-    file_log->info(R"(num2="2")");
-    file_log->info(R"(num3="3")");
-    file_log->info(R"(num4="4")");
-    file_log->info(R"(num5="5")");
-    file_log->info(R"(num6="6")");
-    file_log->info(R"(num7="7")");
-    file_log->info(R"(num8="8")");
-    file_log->info(R"(num9="9")");
-    file_log->info(R"(hex10="A")");
-    file_log->info(R"(hex11="B")");
-    file_log->info(R"(hex12="C")");
-    file_log->info(R"(hex13="D")");
-    file_log->info(R"(hex14="E")");
-    file_log->info(R"(hex15="F")");
+    out.print(R"(num0="0")");
+    out.print(R"(num1="1")");
+    out.print(R"(num2="2")");
+    out.print(R"(num3="3")");
+    out.print(R"(num4="4")");
+    out.print(R"(num5="5")");
+    out.print(R"(num6="6")");
+    out.print(R"(num7="7")");
+    out.print(R"(num8="8")");
+    out.print(R"(num9="9")");
+    out.print(R"(hex10="A")");
+    out.print(R"(hex11="B")");
+    out.print(R"(hex12="C")");
+    out.print(R"(hex13="D")");
+    out.print(R"(hex14="E")");
+    out.print(R"(hex15="F")");
 
-    file_log->info(R"(hex_begin="0x")");
-    file_log->info(R"(bin_begin="0b")");
+    out.print(R"(hex_begin="0x")");
+    out.print(R"(bin_begin="0b")");
 
-    file_log->info(R"(plus="+")");
-    file_log->info(R"(minus="-")");
-
-    file_log->flush();
+    out.print(R"(plus="+")");
+    out.print(R"(minus="-")");
 
     return 0;
 }

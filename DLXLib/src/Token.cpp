@@ -1,9 +1,19 @@
 #include "DLX/Token.hpp"
 
 #include <magic_enum.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <string>
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
+#include <spdlog/fmt/bundled/core.h>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
+
+PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
@@ -12,8 +22,8 @@ namespace dlx
         , m_Text{text}
         , m_LineNumber{line_number}
         , m_Column{column}
-        , m_HasHint{false}
         , m_Hint{0u}
+        , m_HasHint{false}
     {}
 
     Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
@@ -22,51 +32,51 @@ namespace dlx
         , m_Text{text}
         , m_LineNumber{line_number}
         , m_Column{column}
-        , m_HasHint{true}
         , m_Hint{hint}
+        , m_HasHint{true}
     {}
 
-    Token::Type Token::GetType() const noexcept
+    PHI_ATTRIBUTE_CONST Token::Type Token::GetType() const noexcept
     {
         return m_Type;
     }
 
-    std::string_view Token::GetTypeName() const noexcept
+    PHI_ATTRIBUTE_CONST std::string_view Token::GetTypeName() const noexcept
     {
         return magic_enum::enum_name(m_Type);
     }
 
-    phi::u64 Token::GetLineNumber() const noexcept
+    PHI_ATTRIBUTE_CONST phi::u64 Token::GetLineNumber() const noexcept
     {
         return m_LineNumber;
     }
 
-    phi::u64 Token::GetColumn() const noexcept
+    PHI_ATTRIBUTE_CONST phi::u64 Token::GetColumn() const noexcept
     {
         return m_Column;
     }
 
-    phi::usize Token::GetLength() const noexcept
+    PHI_ATTRIBUTE_CONST phi::usize Token::GetLength() const noexcept
     {
         return m_Text.length();
     }
 
-    std::string_view Token::GetText() const noexcept
+    PHI_ATTRIBUTE_CONST std::string_view Token::GetText() const noexcept
     {
         return m_Text;
     }
 
-    std::string Token::GetTextString() const noexcept
+    PHI_ATTRIBUTE_CONST std::string Token::GetTextString() const noexcept
     {
         return std::string(m_Text.data(), m_Text.length());
     }
 
-    phi::boolean Token::HasHint() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean Token::HasHint() const noexcept
     {
         return m_HasHint;
     }
 
-    std::uint32_t Token::GetHint() const noexcept
+    PHI_ATTRIBUTE_CONST std::uint32_t Token::GetHint() const noexcept
     {
         PHI_ASSERT(m_Type == Type::RegisterInt || m_Type == Type::RegisterFloat ||
                    m_Type == Type::IntegerLiteral || m_Type == Type::OpCode ||
@@ -78,8 +88,8 @@ namespace dlx
 
     std::string Token::DebugInfo() const noexcept
     {
-        std::string pos_info = "(" + std::to_string(GetLineNumber().unsafe()) + ":" +
-                               std::to_string(GetColumn().unsafe()) + ")";
+        std::string pos_info =
+                fmt::format("({:d}:{:d}", GetLineNumber().unsafe(), GetColumn().unsafe());
 
         switch (m_Type)
         {

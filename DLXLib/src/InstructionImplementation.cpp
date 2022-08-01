@@ -6,10 +6,18 @@
 #include "DLX/Parser.hpp"
 #include "DLX/Processor.hpp"
 #include "DLX/RegisterNames.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
 #include <string_view>
+
+// TODO: Fix warnings
+PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wunused-parameter")
+PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wfloat-equal")
+PHI_CLANG_SUPPRESS_WARNING("-Wundefined-reinterpret-cast")
+PHI_GCC_SUPPRESS_WARNING("-Wstrict-aliasing")
+PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
 
 namespace dlx
 {
@@ -56,6 +64,8 @@ namespace dlx
         processor.SetNextProgramCounter(address.unsafe());
     }
 
+    PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wmaybe-uninitialized")
+
     static phi::optional<phi::i32> CalculateDisplacementAddress(
             Processor&                                      processor,
             const InstructionArgument::AddressDisplacement& adr_displacement) noexcept
@@ -72,6 +82,8 @@ namespace dlx
 
         return address;
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 
     static phi::optional<phi::i32> GetLoadStoreAddress(Processor&                processor,
                                                        const InstructionArgument argument) noexcept
@@ -102,8 +114,8 @@ namespace dlx
     static void SafeWriteInteger(Processor& processor, IntRegisterID dest_reg,
                                  phi::i64 value) noexcept
     {
-        constexpr phi::i64 min = phi::i32::limits_type::min();
-        constexpr phi::i64 max = phi::i32::limits_type::max();
+        static const constexpr phi::i64 min = phi::i32::limits_type::min();
+        static const constexpr phi::i64 max = phi::i32::limits_type::max();
 
         // Check for underflow
         if (value < min)
@@ -129,8 +141,7 @@ namespace dlx
     static void SafeWriteInteger(Processor& processor, IntRegisterID dest_reg,
                                  phi::u64 value) noexcept
     {
-        constexpr phi::u64 min = phi::u32::limits_type::min();
-        constexpr phi::u64 max = phi::u32::limits_type::max();
+        static constexpr const phi::u64 max = phi::u32::limits_type::max();
 
         // Check for overflow
         if (value > max)
@@ -1518,9 +1529,9 @@ namespace dlx
                 return;
             }
 
-            phi::i32 value = optional_value.value();
+            phi::u32 value = optional_value.value();
 
-            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, optional_value.value());
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, value);
         }
 
         void LH(Processor& processor, const InstructionArgument& arg1,
@@ -1550,7 +1561,7 @@ namespace dlx
 
             phi::i32 value = optional_value.value();
 
-            processor.IntRegisterSetSignedValue(dest_reg.register_id, optional_value.value());
+            processor.IntRegisterSetSignedValue(dest_reg.register_id, value);
         }
 
         void LHU(Processor& processor, const InstructionArgument& arg1,
@@ -1578,9 +1589,9 @@ namespace dlx
                 return;
             }
 
-            phi::i32 value = optional_value.value();
+            phi::u32 value = optional_value.value();
 
-            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, optional_value.value());
+            processor.IntRegisterSetUnsignedValue(dest_reg.register_id, value);
         }
 
         void LW(Processor& processor, const InstructionArgument& arg1,

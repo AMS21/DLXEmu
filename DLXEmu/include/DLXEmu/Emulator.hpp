@@ -58,6 +58,10 @@ namespace dlxemu
 
         void ParseProgram(dlx::TokenStream& tokens) noexcept;
 
+        [[nodiscard]] CodeEditor& GetEditor() noexcept;
+
+        [[nodiscard]] const CodeEditor& GetEditor() const noexcept;
+
     private:
         void RenderMenuBar() noexcept;
 

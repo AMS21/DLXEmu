@@ -2,8 +2,11 @@
 
 #include "DLX/InstructionArgument.hpp"
 #include <magic_enum.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <spdlog/fmt/fmt.h>
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
@@ -34,7 +37,7 @@ namespace dlx
         }
     }
 
-    std::string Instruction::DebugInfo() const noexcept
+    PHI_ATTRIBUTE_CONST std::string Instruction::DebugInfo() const noexcept
     {
         switch (m_Info.GetNumberOfRequiredArguments().unsafe())
         {
@@ -68,27 +71,27 @@ namespace dlx
         m_Info.Execute(processor, m_Arg1, m_Arg2, m_Arg3);
     }
 
-    const InstructionInfo& Instruction::GetInfo() const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionInfo& Instruction::GetInfo() const noexcept
     {
         return m_Info;
     }
 
-    const phi::u64 Instruction::GetSourceLine() const noexcept
+    PHI_ATTRIBUTE_CONST const phi::u64 Instruction::GetSourceLine() const noexcept
     {
         return m_SourceLine;
     }
 
-    const InstructionArgument& Instruction::GetArg1() const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg1() const noexcept
     {
         return m_Arg1;
     }
 
-    const InstructionArgument& Instruction::GetArg2() const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg2() const noexcept
     {
         return m_Arg2;
     }
 
-    const InstructionArgument& Instruction::GetArg3() const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg3() const noexcept
     {
         return m_Arg3;
     }

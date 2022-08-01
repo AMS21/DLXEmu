@@ -2,7 +2,7 @@
 
 #include "DLX/InstructionArgument.hpp"
 #include "DLX/InstructionInfo.hpp"
-#include "InstructionLibrary.hpp"
+#include "DLX/InstructionLibrary.hpp"
 
 namespace dlx::impl
 {

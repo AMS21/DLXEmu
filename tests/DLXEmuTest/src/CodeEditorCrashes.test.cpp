@@ -3,8 +3,12 @@
 #include "SetupImGui.hpp"
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
+#include <phi/compiler_support/warning.hpp>
 
 using namespace phi::literals;
+
+PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
+PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
 
 static dlxemu::Emulator emulator;
 
@@ -691,5 +695,14 @@ TEST_CASE("crash-b3eb38a122a8b517777553ac35921fd8878c964e")
     dlxemu::CodeEditor editor{&emulator};
 
     editor.MoveLeft(1024u, true, true);
+    editor.VerifyInternalState();
+}
+
+TEST_CASE("crash-f2b41ee47674a8c822a660b7b932eccef3a2875e")
+{
+    // NOTE: Requires DLXEMU_VERIFY_UNDO_REDO
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter(0x2020, true);
     editor.VerifyInternalState();
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <phi/compiler_support/warning.hpp>
 #include <phi/phi_config.hpp>
 
 #if defined(DLX_NO_LOG)
@@ -10,9 +11,13 @@
 #    define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_WARN
 #endif
 
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
 #include <phi/preprocessor/function_like_macro.hpp>
 #include <spdlog/logger.h>
 #include <spdlog/spdlog.h>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
 
 namespace dlx
 {

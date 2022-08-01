@@ -9,6 +9,10 @@
 #include <DLX/Processor.hpp>
 #include <DLX/RegisterNames.hpp>
 #include <DLX/Token.hpp>
+#include <phi/compiler_support/warning.hpp>
+
+PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
+PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
 static dlx::ParsedProgram res;
 
@@ -42,8 +46,6 @@ static dlx::ParsedProgram res;
 
 TEST_CASE("InstructionMatches")
 {
-    dlx::ParsedProgram res;
-
     res = dlx::Parser::Parse("ADD, R2, R4, R29");
     REQUIRE(res.m_ParseErrors.empty());
     REQUIRE(res.m_Instructions.size() == 1);
@@ -79,8 +81,6 @@ TEST_CASE("InstructionMatches")
 
 TEST_CASE("Only one instruction per line")
 {
-    dlx::ParsedProgram res;
-
     res = dlx::Parser::Parse("ADD R1 R2 R3 ADD R1 R2 R3");
     CHECK_FALSE(res.m_ParseErrors.empty());
 }

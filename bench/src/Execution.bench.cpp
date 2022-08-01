@@ -4,6 +4,8 @@
 #include <DLX/Processor.hpp>
 #include <phi/algorithm/string_length.hpp>
 
+PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
+
 static void BM_ProcessorCountWithADDI(benchmark::State& state)
 {
     static constexpr const char program_source[] = "ADDI R1 R1 #1\n";
@@ -15,7 +17,7 @@ static void BM_ProcessorCountWithADDI(benchmark::State& state)
     std::string source;
     source.reserve(count * string_length);
 
-    for (std::size_t i{0u}; i < count; ++i)
+    for (std::int64_t i{0}; i < count; ++i)
     {
         source += program_source;
     }
@@ -92,7 +94,7 @@ loop:
     J loop
 )dlx";
 
-    std::int64_t count         = state.range(0);
+    std::int64_t count = state.range(0);
 
     // Parse it
     auto prog = dlx::Parser::Parse(program_source);

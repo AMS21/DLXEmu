@@ -2,7 +2,7 @@
 
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/Token.hpp"
-#include <cstdint>
+#include <phi/core/sized_types.hpp>
 #include <string>
 
 namespace dlx
@@ -57,14 +57,14 @@ namespace dlx
         struct LabelAlreadyDefined
         {
             std::string_view label_name;
-            std::uint32_t    at_line;
-            std::uint32_t    at_column;
+            phi::uint64_t    at_line;
+            phi::uint64_t    at_column;
         };
 
         struct TooFewArguments
         {
-            std::uint8_t required;
-            std::uint8_t provided;
+            phi::uint8_t required;
+            phi::uint8_t provided;
         };
 
         struct EmptyLabel
@@ -75,9 +75,9 @@ namespace dlx
     public:
         [[nodiscard]] Type GetType() const noexcept;
 
-        [[nodiscard]] std::uint32_t GetLineNumber() const noexcept;
+        [[nodiscard]] phi::uint64_t GetLineNumber() const noexcept;
 
-        [[nodiscard]] std::uint32_t GetColumn() const noexcept;
+        [[nodiscard]] phi::uint64_t GetColumn() const noexcept;
 
         [[nodiscard]] std::string ConstructMessage() const noexcept;
 
@@ -101,8 +101,8 @@ namespace dlx
         ParseError() noexcept;
 
         Type          m_Type;
-        std::uint32_t m_LineNumber;
-        std::uint32_t m_Column;
+        phi::uint64_t m_LineNumber;
+        phi::uint64_t m_Column;
 
         union
         {
@@ -117,53 +117,53 @@ namespace dlx
         };
 
         friend ParseError ConstructUnexpectedArgumentTypeParseError(
-                std::uint32_t line_number, std::uint32_t column, ArgumentType expected_type,
+                phi::uint64_t line_number, phi::uint64_t column, ArgumentType expected_type,
                 ArgumentType actual_type) noexcept;
 
-        friend ParseError ConstructInvalidNumberParseError(std::uint32_t    line_number,
-                                                           std::uint32_t    column,
+        friend ParseError ConstructInvalidNumberParseError(phi::uint64_t    line_number,
+                                                           phi::uint64_t    column,
                                                            std::string_view text) noexcept;
 
         friend ParseError ConstructTooFewArgumentsAddressDisplacementParseError(
-                std::uint32_t line_number, std::uint32_t column) noexcept;
+                phi::uint64_t line_number, phi::uint64_t column) noexcept;
 
-        friend ParseError ConstructUnexpectedTokenParseError(std::uint32_t line_number,
-                                                             std::uint32_t column,
+        friend ParseError ConstructUnexpectedTokenParseError(phi::uint64_t line_number,
+                                                             phi::uint64_t column,
                                                              Token::Type   expected_type,
                                                              Token::Type   actual_type) noexcept;
 
         friend ParseError ConstructReservedIdentiferParseError(
-                std::uint32_t line_number, std::uint32_t column,
+                phi::uint64_t line_number, phi::uint64_t column,
                 std::string_view identifier) noexcept;
 
         friend ParseError ConstructInvalidLabelIdentifierParseError(
-                std::uint32_t line_number, std::uint32_t column,
+                phi::uint64_t line_number, phi::uint64_t column,
                 std::string_view identifier) noexcept;
 
-        friend ParseError ConstructLabelAlreadyDefinedParseError(std::uint32_t    line_number,
-                                                                 std::uint32_t    column,
+        friend ParseError ConstructLabelAlreadyDefinedParseError(phi::uint64_t    line_number,
+                                                                 phi::uint64_t    column,
                                                                  std::string_view label_name,
-                                                                 std::uint32_t    at_line,
-                                                                 std::uint32_t at_column) noexcept;
+                                                                 phi::uint64_t    at_line,
+                                                                 phi::uint64_t at_column) noexcept;
 
-        friend ParseError ConstructOneInstructionPerLineParseError(std::uint32_t line_number,
-                                                                   std::uint32_t column) noexcept;
+        friend ParseError ConstructOneInstructionPerLineParseError(phi::uint64_t line_number,
+                                                                   phi::uint64_t column) noexcept;
 
-        friend ParseError ConstructTooFewArgumentsParseError(std::uint32_t line_number,
-                                                             std::uint32_t column,
-                                                             std::uint8_t  required,
-                                                             std::uint8_t  provided) noexcept;
+        friend ParseError ConstructTooFewArgumentsParseError(phi::uint64_t line_number,
+                                                             phi::uint64_t column,
+                                                             phi::uint8_t  required,
+                                                             phi::uint8_t  provided) noexcept;
 
-        friend ParseError ConstructEmptyLabelParseError(std::uint32_t    line_number,
-                                                        std::uint32_t    column,
+        friend ParseError ConstructEmptyLabelParseError(phi::uint64_t    line_number,
+                                                        phi::uint64_t    column,
                                                         std::string_view label_name) noexcept;
 
-        friend ParseError ConstructTooManyCommaParseError(std::uint32_t line_number,
-                                                          std::uint32_t column) noexcept;
+        friend ParseError ConstructTooManyCommaParseError(phi::uint64_t line_number,
+                                                          phi::uint64_t column) noexcept;
     };
 
-    ParseError ConstructUnexpectedArgumentTypeParseError(std::uint32_t line_number,
-                                                         std::uint32_t column,
+    ParseError ConstructUnexpectedArgumentTypeParseError(phi::uint64_t line_number,
+                                                         phi::uint64_t column,
                                                          ArgumentType  expected_type,
                                                          ArgumentType  actual_type) noexcept;
 
@@ -171,62 +171,62 @@ namespace dlx
                                                          ArgumentType expected_type,
                                                          ArgumentType actual_type) noexcept;
 
-    ParseError ConstructInvalidNumberParseError(std::uint32_t line_number, std::uint32_t column,
+    ParseError ConstructInvalidNumberParseError(phi::uint64_t line_number, phi::uint64_t column,
                                                 std::string_view text) noexcept;
 
     ParseError ConstructInvalidNumberParseError(const Token& token) noexcept;
 
-    ParseError ConstructTooFewArgumentsAddressDisplacementParseError(std::uint32_t line_number,
-                                                                     std::uint32_t column) noexcept;
+    ParseError ConstructTooFewArgumentsAddressDisplacementParseError(phi::uint64_t line_number,
+                                                                     phi::uint64_t column) noexcept;
 
     ParseError ConstructTooFewArgumentsAddressDisplacementParseError(const Token& token) noexcept;
 
-    ParseError ConstructUnexpectedTokenParseError(std::uint32_t line_number, std::uint32_t column,
+    ParseError ConstructUnexpectedTokenParseError(phi::uint64_t line_number, phi::uint64_t column,
                                                   Token::Type expected_type,
                                                   Token::Type actual_type) noexcept;
 
     ParseError ConstructUnexpectedTokenParseError(const Token& token,
                                                   Token::Type  expected_type) noexcept;
 
-    ParseError ConstructReservedIdentiferParseError(std::uint32_t line_number, std::uint32_t column,
+    ParseError ConstructReservedIdentiferParseError(phi::uint64_t line_number, phi::uint64_t column,
                                                     std::string_view identifier) noexcept;
 
     ParseError ConstructReservedIdentiferParseError(const Token& token) noexcept;
 
-    ParseError ConstructInvalidLabelIdentifierParseError(std::uint32_t    line_number,
-                                                         std::uint32_t    column,
+    ParseError ConstructInvalidLabelIdentifierParseError(phi::uint64_t    line_number,
+                                                         phi::uint64_t    column,
                                                          std::string_view identifier) noexcept;
 
     ParseError ConstructInvalidLabelIdentifierParseError(const Token& token) noexcept;
 
-    ParseError ConstructLabelAlreadyDefinedParseError(std::uint32_t    line_number,
-                                                      std::uint32_t    column,
+    ParseError ConstructLabelAlreadyDefinedParseError(phi::uint64_t    line_number,
+                                                      phi::uint64_t    column,
                                                       std::string_view label_name,
-                                                      std::uint32_t    at_line,
-                                                      std::uint32_t    at_column) noexcept;
+                                                      phi::uint64_t    at_line,
+                                                      phi::uint64_t    at_column) noexcept;
 
     ParseError ConstructLabelAlreadyDefinedParseError(const Token& token,
                                                       const Token& first_definition) noexcept;
 
-    ParseError ConstructOneInstructionPerLineParseError(std::uint32_t line_number,
-                                                        std::uint32_t column) noexcept;
+    ParseError ConstructOneInstructionPerLineParseError(phi::uint64_t line_number,
+                                                        phi::uint64_t column) noexcept;
 
     ParseError ConstructOneInstructionPerLineParseError(const Token& token) noexcept;
 
-    ParseError ConstructTooFewArgumentsParseError(std::uint32_t line_number, std::uint32_t column,
-                                                  std::uint8_t required,
-                                                  std::uint8_t provided) noexcept;
+    ParseError ConstructTooFewArgumentsParseError(phi::uint64_t line_number, phi::uint64_t column,
+                                                  phi::uint8_t required,
+                                                  phi::uint8_t provided) noexcept;
 
-    ParseError ConstructTooFewArgumentsParseError(const Token& token, std::uint8_t required,
-                                                  std::uint8_t provided) noexcept;
+    ParseError ConstructTooFewArgumentsParseError(const Token& token, phi::uint8_t required,
+                                                  phi::uint8_t provided) noexcept;
 
-    ParseError ConstructEmptyLabelParseError(std::uint32_t line_number, std::uint32_t column,
+    ParseError ConstructEmptyLabelParseError(phi::uint64_t line_number, phi::uint64_t column,
                                              std::string_view label_name) noexcept;
 
     ParseError ConstructEmptyLabelParseError(const Token& token) noexcept;
 
-    ParseError ConstructTooManyCommaParseError(std::uint32_t line_number,
-                                               std::uint32_t column) noexcept;
+    ParseError ConstructTooManyCommaParseError(phi::uint64_t line_number,
+                                               phi::uint64_t column) noexcept;
 
     ParseError ConstructTooManyCommaParseError(const Token& token) noexcept;
 } // namespace dlx

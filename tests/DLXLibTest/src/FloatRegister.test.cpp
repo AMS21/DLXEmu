@@ -1,13 +1,16 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <DLX/FloatRegister.hpp>
+#include <phi/compiler_support/warning.hpp>
+
+PHI_GCC_SUPPRESS_WARNING("-Wfloat-equal")
 
 TEST_CASE("FloatRegister")
 {
-    dlx::FloatRegister r;
+    dlx::FloatRegister reg;
 
-    CHECK(r.GetValue().unsafe() == 0.0f);
+    CHECK(reg.GetValue().unsafe() == 0.0f);
 
-    r.SetValue(21.5f);
-    CHECK(r.GetValue().unsafe() == 21.5f);
+    reg.SetValue(21.5f);
+    CHECK(reg.GetValue().unsafe() == 21.5f);
 }

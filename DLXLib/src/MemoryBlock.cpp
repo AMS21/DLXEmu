@@ -1,8 +1,11 @@
 #include "DLX/MemoryBlock.hpp"
 
 #include "DLX/Logger.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/boolean.hpp>
 #include <cstdint>
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
@@ -242,8 +245,8 @@ namespace dlx
                (address + size) <= (m_StartingAddress + m_Values.size());
     }
 
-    phi::boolean MemoryBlock::IsAddressAlignedCorrectly(phi::usize address,
-                                                        phi::usize size) noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean MemoryBlock::IsAddressAlignedCorrectly(
+            phi::usize address, phi::usize size) noexcept
     {
         return (address % size) == 0u;
     }
@@ -256,7 +259,7 @@ namespace dlx
         }
     }
 
-    phi::usize MemoryBlock::GetStartingAddress() const noexcept
+    PHI_ATTRIBUTE_CONST phi::usize MemoryBlock::GetStartingAddress() const noexcept
     {
         return m_StartingAddress;
     }
@@ -266,17 +269,18 @@ namespace dlx
         m_StartingAddress = new_starting_address;
     }
 
-    phi::usize MemoryBlock::GetSize() const noexcept
+    PHI_ATTRIBUTE_CONST phi::usize MemoryBlock::GetSize() const noexcept
     {
         return m_Values.size();
     }
 
-    std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() noexcept
+    PHI_ATTRIBUTE_CONST std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() noexcept
     {
         return m_Values;
     }
 
-    const std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() const noexcept
+    PHI_ATTRIBUTE_CONST const std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory()
+            const noexcept
     {
         return m_Values;
     }

@@ -6,6 +6,7 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/types.hpp>
+#include <phi/text/hex_digit_value.hpp>
 #include <phi/text/is_alpha.hpp>
 #include <phi/text/is_alpha_numeric.hpp>
 #include <phi/text/is_binary_digit.hpp>
@@ -22,28 +23,6 @@ namespace dlx
     constexpr phi::boolean IsBeginCommentCharacter(const char c) noexcept
     {
         return (c == ';') || (c == '/');
-    }
-
-    constexpr std::uint8_t HexCharValue(const char c) noexcept
-    {
-        if (phi::is_digit(c))
-        {
-            return c - '0';
-        }
-
-        if (c >= 'a' && c <= 'f')
-        {
-            return 10 + (c - 'a');
-        }
-
-        if (c >= 'A' && c <= 'F')
-        {
-            return 10 + (c - 'A');
-        }
-
-#if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_ASSERT_NOT_REACHED();
-#endif
     }
 
     /* String functions */
@@ -73,7 +52,7 @@ namespace dlx
         return false;
     }
 
-    constexpr phi::boolean IsValidIdentifier(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST constexpr phi::boolean IsValidIdentifier(std::string_view token) noexcept
     {
         if (token.empty())
         {
@@ -116,7 +95,8 @@ namespace dlx
 
     /* Parsing functions */
 
-    constexpr phi::optional<phi::i16> ParseNumber(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST constexpr phi::optional<phi::i16> ParseNumber(
+            std::string_view token) noexcept
     {
         if (token.empty())
         {
@@ -259,7 +239,7 @@ namespace dlx
                 }
 
                 number <<= 4;
-                number |= HexCharValue(c);
+                number |= phi::hex_digit_value(c).unsafe();
             }
             else
             {

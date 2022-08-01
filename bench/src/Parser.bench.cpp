@@ -3,6 +3,9 @@
 #include <DLX/Parser.hpp>
 #include <DLX/Tokenize.hpp>
 #include <phi/algorithm/string_length.hpp>
+#include <phi/compiler_support/warning.hpp>
+
+PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
 static void BM_TokenizeAndParseADD(benchmark::State& state)
 {
@@ -13,7 +16,7 @@ static void BM_TokenizeAndParseADD(benchmark::State& state)
     std::string string;
     string.reserve(count * string_length);
 
-    for (std::size_t i{0u}; i < count; ++i)
+    for (std::int64_t i{0}; i < count; ++i)
     {
         string += "ADD\n";
     }
@@ -40,7 +43,7 @@ static void BM_ParseADD(benchmark::State& state)
     std::string string;
     string.reserve(count * string_length);
 
-    for (std::size_t i{0u}; i < count; ++i)
+    for (std::int64_t i{0}; i < count; ++i)
     {
         string += "ADD\n";
     }
@@ -71,7 +74,7 @@ static void BM_ParseADDR1R1R1(benchmark::State& state)
     std::string string;
     string.reserve(count * string_length);
 
-    for (std::size_t i{0u}; i < count; ++i)
+    for (std::int64_t i{0}; i < count; ++i)
     {
         string += test_string;
     }

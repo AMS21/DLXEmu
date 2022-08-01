@@ -2,17 +2,25 @@
 
 #include "DLX/InstructionInfo.hpp"
 #include <magic_enum.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
 #include <spdlog/fmt/bundled/core.h>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
     InstructionArgument::InstructionArgument() noexcept
-        : m_Type(ArgumentType::None)
-        , address_displacement()
+        : address_displacement{}
+        , m_Type{ArgumentType::None}
     {}
 
-    ArgumentType InstructionArgument::GetType() const noexcept
+    PHI_ATTRIBUTE_CONST ArgumentType InstructionArgument::GetType() const noexcept
     {
         return m_Type;
     }
@@ -55,44 +63,48 @@ namespace dlx
 #endif
     }
 
-    const InstructionArgument::RegisterInt& InstructionArgument::AsRegisterInt() const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionArgument::RegisterInt& InstructionArgument::AsRegisterInt()
+            const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::IntRegister);
 
         return register_int;
     }
 
-    const InstructionArgument::RegisterFloat& InstructionArgument::AsRegisterFloat() const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionArgument::RegisterFloat& InstructionArgument::
+            AsRegisterFloat() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::FloatRegister);
 
         return register_float;
     }
 
-    const InstructionArgument::ImmediateValue& InstructionArgument::AsImmediateValue()
-            const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionArgument::ImmediateValue& InstructionArgument::
+            AsImmediateValue() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::ImmediateInteger);
 
         return immediate_value;
     }
 
-    const InstructionArgument::AddressDisplacement& InstructionArgument::AsAddressDisplacement()
-            const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionArgument::AddressDisplacement& InstructionArgument::
+            AsAddressDisplacement() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::AddressDisplacement);
 
         return address_displacement;
     }
 
-    const InstructionArgument::Label& InstructionArgument::AsLabel() const noexcept
+    PHI_ATTRIBUTE_CONST const InstructionArgument::Label& InstructionArgument::AsLabel()
+            const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::Label);
 
         return label;
     }
 
-    phi::boolean operator==(const InstructionArgument& lhs, const InstructionArgument& rhs) noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean operator==(const InstructionArgument& lhs,
+                                                const InstructionArgument& rhs) noexcept
     {
         if (lhs.GetType() != rhs.GetType())
         {
@@ -135,12 +147,14 @@ namespace dlx
 #endif
     }
 
-    phi::boolean operator!=(const InstructionArgument& lhs, const InstructionArgument& rhs) noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean operator!=(const InstructionArgument& lhs,
+                                                const InstructionArgument& rhs) noexcept
     {
         return !(lhs == rhs);
     }
 
-    InstructionArgument ConstructInstructionArgumentRegisterInt(IntRegisterID id) noexcept
+    PHI_ATTRIBUTE_CONST InstructionArgument
+    ConstructInstructionArgumentRegisterInt(IntRegisterID id) noexcept
     {
         InstructionArgument arg;
         arg.m_Type                   = ArgumentType::IntRegister;
@@ -148,7 +162,8 @@ namespace dlx
         return arg;
     }
 
-    InstructionArgument ConstructInstructionArgumentRegisterFloat(FloatRegisterID id) noexcept
+    PHI_ATTRIBUTE_CONST InstructionArgument
+    ConstructInstructionArgumentRegisterFloat(FloatRegisterID id) noexcept
     {
         InstructionArgument arg;
         arg.m_Type                     = ArgumentType::FloatRegister;
@@ -156,7 +171,8 @@ namespace dlx
         return arg;
     }
 
-    InstructionArgument ConstructInstructionArgumentImmediateValue(std::int16_t value) noexcept
+    PHI_ATTRIBUTE_CONST InstructionArgument
+    ConstructInstructionArgumentImmediateValue(std::int16_t value) noexcept
     {
         InstructionArgument arg;
         arg.m_Type                       = ArgumentType::ImmediateInteger;
@@ -164,7 +180,7 @@ namespace dlx
         return arg;
     }
 
-    InstructionArgument ConstructInstructionArgumentAddressDisplacement(
+    PHI_ATTRIBUTE_CONST InstructionArgument ConstructInstructionArgumentAddressDisplacement(
             IntRegisterID id, phi::i32 displacement) noexcept
     {
         InstructionArgument arg;
@@ -174,7 +190,8 @@ namespace dlx
         return arg;
     }
 
-    InstructionArgument ConstructInstructionArgumentLabel(std::string_view label_name) noexcept
+    PHI_ATTRIBUTE_CONST InstructionArgument
+    ConstructInstructionArgumentLabel(std::string_view label_name) noexcept
     {
         InstructionArgument arg;
         arg.m_Type           = ArgumentType::Label;

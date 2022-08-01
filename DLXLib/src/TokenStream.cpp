@@ -1,6 +1,9 @@
 #include "DLX/TokenStream.hpp"
 
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
@@ -151,17 +154,17 @@ namespace dlx
         return count;
     }
 
-    [[nodiscard]] phi::boolean TokenStream::empty() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean TokenStream::empty() const noexcept
     {
         return m_Tokens.empty();
     }
 
-    [[nodiscard]] TokenStream::iterator TokenStream::current_position() noexcept
+    PHI_ATTRIBUTE_CONST TokenStream::iterator TokenStream::current_position() noexcept
     {
         return m_Iterator;
     }
 
-    [[nodiscard]] TokenStream::const_iterator TokenStream::current_position() const noexcept
+    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::current_position() const noexcept
     {
         return m_Iterator;
     }
@@ -175,7 +178,7 @@ namespace dlx
         m_Iterator = it;
     }
 
-    TokenStream::const_iterator TokenStream::begin() const noexcept
+    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::begin() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finialized);
@@ -184,7 +187,7 @@ namespace dlx
         return m_Tokens.begin();
     }
 
-    TokenStream::const_iterator TokenStream::cbegin() const noexcept
+    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::cbegin() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finialized);
@@ -193,7 +196,7 @@ namespace dlx
         return m_Tokens.cbegin();
     }
 
-    TokenStream::const_iterator TokenStream::end() const noexcept
+    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::end() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finialized);
@@ -202,7 +205,7 @@ namespace dlx
         return m_Tokens.end();
     }
 
-    TokenStream::const_iterator TokenStream::cend() const noexcept
+    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::cend() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finialized);
@@ -211,7 +214,7 @@ namespace dlx
         return m_Tokens.cend();
     }
 
-    [[nodiscard]] TokenStream::const_reverse_iterator TokenStream::rbegin() const noexcept
+    PHI_ATTRIBUTE_CONST TokenStream::const_reverse_iterator TokenStream::rbegin() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finialized);
@@ -220,7 +223,7 @@ namespace dlx
         return m_Tokens.rbegin();
     }
 
-    [[nodiscard]] TokenStream::const_reverse_iterator TokenStream::rend() const noexcept
+    TokenStream::const_reverse_iterator TokenStream::rend() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finialized);
@@ -229,12 +232,12 @@ namespace dlx
         return m_Tokens.rend();
     }
 
-    [[nodiscard]] const Token& TokenStream::front() const noexcept
+    PHI_ATTRIBUTE_CONST const Token& TokenStream::front() const noexcept
     {
         return m_Tokens.front();
     }
 
-    [[nodiscard]] const Token& TokenStream::back() const noexcept
+    PHI_ATTRIBUTE_CONST const Token& TokenStream::back() const noexcept
     {
         return m_Tokens.back();
     }

@@ -1,10 +1,13 @@
 #include <benchmark/benchmark.h>
 
 #include <DLX/Tokenize.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <cstdint>
 #include <cstdlib>
 #include <limits>
 #include <random>
+
+PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
 static void BM_TokzenizeRandom(benchmark::State& state)
 {
@@ -18,7 +21,7 @@ static void BM_TokzenizeRandom(benchmark::State& state)
     std::string string;
     string.resize(length);
 
-    for (std::size_t i{0u}; i < length; ++i)
+    for (std::int64_t i{0}; i < length; ++i)
     {
         string[i] = dist(random_device);
     }
@@ -43,7 +46,7 @@ static void BM_TokzenizeADD(benchmark::State& state)
     std::string string;
     string.reserve(count * string_length);
 
-    for (std::size_t i{0u}; i < count; ++i)
+    for (std::int64_t i{0u}; i < count; ++i)
     {
         string += "ADD\n";
     }

@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.10.2)
 
+# Policy
+if(${CMAKE_VERSION} VERSION_LESS 3.24)
+  cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+else()
+  cmake_policy(VERSION 3.24)
+endif()
+
 # Settings
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -88,6 +95,24 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/Phi/CMakeLists.txt")
   )
 endif()
 
+# Sadly some of our dependencies rely on undefined behaviour so we disable the checks here
+set(disable_checks
+    UNSIGNED_INTEGER_OVERFLOW
+    INTEGER
+    IMPLICIT_SIGNED_INTEGER_TRUNCATION
+    IMPLICIT_INTEGER_ARITHMETIC_VALUE_CHANGE
+    IMPLICIT_INTEGER_TRUNCATION
+    IMPLICIT_CONVERSION
+    IMPLICIT_INTEGER_SIGN_CHANGE
+    UNSIGNED_SHIFT_BASE
+    SHIFT_BASE
+    SHIFT)
+foreach(check ${disable_checks})
+  set("PHI_SUPPORTS_SANITIZER_${check}"
+      0
+      CACHE INTERNAL "Test PHI_SUPPORTS_SANITIZER_${check}")
+endforeach()
+
 # Dependencies
 add_subdirectory(external)
 
@@ -121,14 +146,38 @@ endif()
 
 include(ProjectOptions)
 
-phi_configure_project(
-  DEBUG_FLAGS
-  OPTIMIZATION_FLAGS
-  WARNINGS
-  PEDANTIC
-  FPM_PRECISE
-  NO_EXCEPTIONS
-  STANDARD
-  "latest"
-  EXTERNAL
-  "external")
+set(configure_options
+    DEBUG_FLAGS
+    OPTIMIZATION_FLAGS
+    WARNINGS
+    WARNINGS_AS_ERRORS
+    PEDANTIC
+    FPM_PRECISE
+    NO_EXCEPTIONS
+    STANDARD
+    "latest"
+    EXTERNAL
+    "external")
+
+# Sanitizer options
+set(san_options)
+if(DLXEMU_ENABLE_ASAN)
+  set(san_options "address")
+endif()
+if(DLXEMU_ENABLE_LSAN)
+  set(san_options "${san_options};leak")
+endif()
+if(DLXEMU_ENABLE_TSAN)
+  set(san_options "${san_options};thread")
+endif()
+if(DLXEMU_ENABLE_UBSAN)
+  set(san_options "${san_options};undefined")
+endif()
+
+if(san_options)
+  set(configure_options ${configure_options} SANITIZER ${san_options})
+
+  message(STATUS "Enabled sanitizers: ${san_options}")
+endif()
+
+phi_configure_project(${configure_options})

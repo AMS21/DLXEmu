@@ -9,22 +9,25 @@
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
 #include <magic_enum.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
+#include <phi/type_traits/to_underlying.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/bundled/format.h>
 #include <type_traits>
 #include <utility>
 
-template <typename EnumT>
-constexpr typename std::underlying_type<EnumT>::type to_underlying(EnumT val) noexcept
-{
-    return static_cast<typename std::underlying_type<EnumT>::type>(val);
-}
+PHI_GCC_SUPPRESS_WARNING("-Wconversion")
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
+// TODO: Fix strict aliasing problems
+PHI_GCC_SUPPRESS_WARNING("-Wstrict-aliasing")
 
 namespace dlx
 {
+    using phi::f64;
+
     static phi::boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
                                                   RegisterAccessType access) noexcept
     {
@@ -52,31 +55,30 @@ namespace dlx
     }
 
     Processor::Processor() noexcept
-        : m_MemoryBlock(1000u, 1000u)
-        , m_IntRegistersValueTypes{}
+        : m_IntRegistersValueTypes{}
         , m_FloatRegistersValueTypes{}
+        , m_MemoryBlock(1000u, 1000u)
     {
         // Mark R0 as ready only
         m_IntRegisters[0].SetReadOnly(true);
     }
 
-    IntRegister& Processor::GetIntRegister(IntRegisterID id) noexcept
+    PHI_ATTRIBUTE_CONST IntRegister& Processor::GetIntRegister(IntRegisterID id) noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
-        std::underlying_type_t<IntRegisterID> id_value = to_underlying(id);
+        phi::size_t id_value = phi::to_underlying(id);
 
-        PHI_ASSERT(id_value >= 0);
         PHI_ASSERT(id_value < m_IntRegisters.size());
 
         return m_IntRegisters[id_value];
     }
 
-    const IntRegister& Processor::GetIntRegister(IntRegisterID id) const noexcept
+    PHI_ATTRIBUTE_CONST const IntRegister& Processor::GetIntRegister(
+            IntRegisterID id) const noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
-        std::underlying_type_t<IntRegisterID> id_value = to_underlying(id);
+        phi::size_t id_value = phi::to_underlying(id);
 
-        PHI_ASSERT(id_value >= 0);
         PHI_ASSERT(id_value < m_IntRegisters.size());
 
         return m_IntRegisters[id_value];
@@ -88,10 +90,10 @@ namespace dlx
                                              RegisterAccessType::Signed),
                    "Mismatch for instruction access type");
 
-        PHI_ASSERT(to_underlying(id) >= 0);
-        PHI_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
-        const IntRegisterValueType register_value_type =
-                m_IntRegistersValueTypes[to_underlying(id)];
+        const phi::size_t id_value = phi::to_underlying(id);
+
+        PHI_ASSERT(id_value < m_IntRegistersValueTypes.size());
+        const IntRegisterValueType register_value_type = m_IntRegistersValueTypes[id_value];
         if (register_value_type != IntRegisterValueType::NotSet &&
             register_value_type != IntRegisterValueType::Signed)
         {
@@ -107,10 +109,10 @@ namespace dlx
                                              RegisterAccessType::Unsigned),
                    "Mismatch for instruction access type");
 
-        PHI_ASSERT(to_underlying(id) >= 0);
-        PHI_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
-        const IntRegisterValueType register_value_type =
-                m_IntRegistersValueTypes[to_underlying(id)];
+        const phi::size_t id_value = phi::to_underlying(id);
+
+        PHI_ASSERT(id_value < m_IntRegistersValueTypes.size());
+        const IntRegisterValueType register_value_type = m_IntRegistersValueTypes[id_value];
         if (register_value_type != IntRegisterValueType::NotSet &&
             register_value_type != IntRegisterValueType::Unsigned)
         {
@@ -135,9 +137,10 @@ namespace dlx
 
         reg.SetSignedValue(value);
 
-        PHI_ASSERT(to_underlying(id) >= 0);
-        PHI_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
-        m_IntRegistersValueTypes[to_underlying(id)] = IntRegisterValueType::Signed;
+        const phi::size_t id_value = phi::to_underlying(id);
+
+        PHI_ASSERT(id_value < m_IntRegistersValueTypes.size());
+        m_IntRegistersValueTypes[id_value] = IntRegisterValueType::Signed;
     }
 
     void Processor::IntRegisterSetUnsignedValue(IntRegisterID id, phi::u32 value) noexcept
@@ -155,30 +158,28 @@ namespace dlx
 
         reg.SetUnsignedValue(value);
 
-        PHI_ASSERT(to_underlying(id) >= 0);
-        PHI_ASSERT(to_underlying(id) < m_IntRegistersValueTypes.size());
-        m_IntRegistersValueTypes[to_underlying(id)] = IntRegisterValueType::Unsigned;
+        const phi::size_t id_value = phi::to_underlying(id);
+
+        PHI_ASSERT(id_value < m_IntRegistersValueTypes.size());
+        m_IntRegistersValueTypes[id_value] = IntRegisterValueType::Unsigned;
     }
 
-    FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) noexcept
+    PHI_ATTRIBUTE_CONST FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) noexcept
     {
         PHI_ASSERT(id != FloatRegisterID::None);
-        std::underlying_type_t<FloatRegisterID> id_value =
-                static_cast<std::underlying_type_t<FloatRegisterID>>(id);
+        const phi::size_t id_value = phi::to_underlying(id);
 
-        PHI_ASSERT(id_value >= 0);
         PHI_ASSERT(id_value < m_FloatRegisters.size());
 
         return m_FloatRegisters[id_value];
     }
 
-    const FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) const noexcept
+    PHI_ATTRIBUTE_CONST const FloatRegister& Processor::GetFloatRegister(
+            FloatRegisterID id) const noexcept
     {
         PHI_ASSERT(id != FloatRegisterID::None);
-        std::underlying_type_t<FloatRegisterID> id_value =
-                static_cast<std::underlying_type_t<FloatRegisterID>>(id);
+        const phi::size_t id_value = phi::to_underlying(id);
 
-        PHI_ASSERT(id_value >= 0);
         PHI_ASSERT(id_value < m_FloatRegisters.size());
 
         return m_FloatRegisters[id_value];
@@ -190,10 +191,10 @@ namespace dlx
                                              RegisterAccessType::Float),
                    "Mismatch for instruction access type");
 
-        PHI_ASSERT(to_underlying(id) >= 0);
-        PHI_ASSERT(to_underlying(id) < m_FloatRegistersValueTypes.size());
-        const FloatRegisterValueType register_value_type =
-                m_FloatRegistersValueTypes[to_underlying(id)];
+        const phi::size_t id_value = phi::to_underlying(id);
+
+        PHI_ASSERT(id_value < m_FloatRegistersValueTypes.size());
+        const FloatRegisterValueType register_value_type = m_FloatRegistersValueTypes[id_value];
         if (register_value_type != FloatRegisterValueType::NotSet &&
             register_value_type != FloatRegisterValueType::Float)
         {
@@ -216,13 +217,13 @@ namespace dlx
         if (id == FloatRegisterID::F31)
         {
             Raise(Exception::RegisterOutOfBounds);
-            return phi::f64(0.0);
+            return {0.0};
         }
 
-        PHI_ASSERT(to_underlying(id) >= 0);
-        PHI_ASSERT(to_underlying(id) + 1u < m_FloatRegistersValueTypes.size());
-        const FloatRegisterValueType register_value_type_low =
-                m_FloatRegistersValueTypes[to_underlying(id)];
+        const phi::size_t id_value = phi::to_underlying(id);
+
+        PHI_ASSERT(id_value + 1u < m_FloatRegistersValueTypes.size());
+        const FloatRegisterValueType register_value_type_low = m_FloatRegistersValueTypes[id_value];
         if (register_value_type_low != FloatRegisterValueType::NotSet &&
             register_value_type_low != FloatRegisterValueType::DoubleLow)
         {
@@ -230,9 +231,9 @@ namespace dlx
         }
 
         const FloatRegisterValueType register_value_type_high =
-                m_FloatRegistersValueTypes[to_underlying(id) + 1u];
-        if (register_value_type_low != FloatRegisterValueType::NotSet &&
-            register_value_type_low != FloatRegisterValueType::DoubleHigh)
+                m_FloatRegistersValueTypes[id_value + 1u];
+        if (register_value_type_high != FloatRegisterValueType::NotSet &&
+            register_value_type_high != FloatRegisterValueType::DoubleHigh)
         {
             DLX_WARN("Mismatch for register value type");
         }
@@ -244,6 +245,9 @@ namespace dlx
         const float first_value  = first_reg.GetValue().unsafe();
         const float second_value = second_reg.GetValue().unsafe();
 
+        // TODO: Don't invoke undefined behaviour this way. Instead use union type punning
+        PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wundefined-reinterpret-cast")
+
         const std::uint32_t first_value_bits =
                 *reinterpret_cast<const std::uint32_t*>(&first_value);
         const std::uint32_t second_value_bits =
@@ -253,6 +257,8 @@ namespace dlx
                 static_cast<std::uint64_t>(second_value_bits) << 32u | first_value_bits;
 
         return *reinterpret_cast<double*>(&final_value_bits);
+
+        PHI_CLANG_SUPPRESS_WARNING_POP()
     }
 
     void Processor::FloatRegisterSetFloatValue(FloatRegisterID id, phi::f32 value) noexcept
@@ -265,9 +271,10 @@ namespace dlx
 
         reg.SetValue(value);
 
-        PHI_ASSERT(to_underlying(id) >= 0);
-        PHI_ASSERT(to_underlying(id) < m_FloatRegistersValueTypes.size());
-        m_FloatRegistersValueTypes[to_underlying(id)] = FloatRegisterValueType::Float;
+        const phi::size_t id_value = phi::to_underlying(id);
+
+        PHI_ASSERT(id_value < m_FloatRegistersValueTypes.size());
+        m_FloatRegistersValueTypes[id_value] = FloatRegisterValueType::Float;
     }
 
     void Processor::FloatRegisterSetDoubleValue(FloatRegisterID id, phi::f64 value) noexcept
@@ -301,18 +308,19 @@ namespace dlx
         first_reg.SetValue(first_value);
         second_reg.SetValue(second_value);
 
-        PHI_ASSERT(to_underlying(id) >= 0);
-        PHI_ASSERT(to_underlying(id) + 1u < m_FloatRegistersValueTypes.size());
-        m_FloatRegistersValueTypes[to_underlying(id)]      = FloatRegisterValueType::DoubleLow;
-        m_FloatRegistersValueTypes[to_underlying(id) + 1u] = FloatRegisterValueType::DoubleHigh;
+        const phi::size_t id_value = phi::to_underlying(id);
+
+        PHI_ASSERT(id_value + 1u < m_FloatRegistersValueTypes.size());
+        m_FloatRegistersValueTypes[id_value]      = FloatRegisterValueType::DoubleLow;
+        m_FloatRegistersValueTypes[id_value + 1u] = FloatRegisterValueType::DoubleHigh;
     }
 
-    StatusRegister& Processor::GetFPSR() noexcept
+    PHI_ATTRIBUTE_CONST StatusRegister& Processor::GetFPSR() noexcept
     {
         return m_FPSR;
     }
 
-    const StatusRegister& Processor::GetFPSR() const noexcept
+    PHI_ATTRIBUTE_CONST const StatusRegister& Processor::GetFPSR() const noexcept
     {
         return m_FPSR;
     }
@@ -357,7 +365,8 @@ namespace dlx
         return true;
     }
 
-    phi::observer_ptr<ParsedProgram> Processor::GetCurrentProgramm() const noexcept
+    PHI_ATTRIBUTE_CONST phi::observer_ptr<ParsedProgram> Processor::GetCurrentProgramm()
+            const noexcept
     {
         return m_CurrentProgram;
     }
@@ -521,27 +530,27 @@ namespace dlx
 #endif
     }
 
-    Exception Processor::GetLastRaisedException() const noexcept
+    PHI_ATTRIBUTE_CONST Exception Processor::GetLastRaisedException() const noexcept
     {
         return m_LastRaisedException;
     }
 
-    phi::boolean Processor::IsHalted() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean Processor::IsHalted() const noexcept
     {
         return m_Halted;
     }
 
-    const MemoryBlock& Processor::GetMemory() const noexcept
+    PHI_ATTRIBUTE_CONST const MemoryBlock& Processor::GetMemory() const noexcept
     {
         return m_MemoryBlock;
     }
 
-    MemoryBlock& Processor::GetMemory() noexcept
+    PHI_ATTRIBUTE_CONST MemoryBlock& Processor::GetMemory() noexcept
     {
         return m_MemoryBlock;
     }
 
-    phi::u32 Processor::GetProgramCounter() const noexcept
+    PHI_ATTRIBUTE_CONST phi::u32 Processor::GetProgramCounter() const noexcept
     {
         return m_ProgramCounter;
     }
@@ -551,7 +560,7 @@ namespace dlx
         m_ProgramCounter = new_pc;
     }
 
-    [[nodiscard]] phi::u32 Processor::GetNextProgramCounter() const noexcept
+    PHI_ATTRIBUTE_CONST phi::u32 Processor::GetNextProgramCounter() const noexcept
     {
         return m_NextProgramCounter;
     }
@@ -561,7 +570,7 @@ namespace dlx
         m_NextProgramCounter = new_npc;
     }
 
-    phi::usize Processor::GetCurrentStepCount() const noexcept
+    PHI_ATTRIBUTE_CONST phi::usize Processor::GetCurrentStepCount() const noexcept
     {
         return m_CurrentStepCount;
     }

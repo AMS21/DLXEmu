@@ -2,21 +2,22 @@
 
 #include <DLX/OpCode.hpp>
 #include <magic_enum.hpp>
+#include <phi/core/size_t.hpp>
 #include <cctype>
 #include <cmath>
 #include <iostream>
 
 void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
 {
-    for (int i{0}; i < std::pow(2, str.length()); ++i)
+    for (phi::size_t i{0}; i < static_cast<phi::size_t>(std::pow(2u, str.length())); ++i)
     {
         std::string test_str;
         test_str.reserve(str.length());
 
         // Construct string
-        for (int j{0}; j < str.length(); ++j)
+        for (phi::size_t j{0}; j < str.length(); ++j)
         {
-            if (i & static_cast<int>(std::pow(2, j)))
+            if (i & static_cast<phi::size_t>(std::pow(2u, j)))
             {
                 test_str += static_cast<char>(std::toupper(str[j]));
             }

@@ -1,6 +1,12 @@
+#include <phi/compiler_support/warning.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
+
+PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
+PHI_CLANG_SUPPRESS_WARNING("-Wkeyword-macro")
+
+// TODO: Declare LLVMFuzzerTestOneInput as a friend?
 
 // Evil hack to access private members and functions
 #define private public
@@ -13,7 +19,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
     std::string_view source = std::string_view(reinterpret_cast<const char*>(data), size);
 
-    dlxemu::CodeEditor editor = emu.m_CodeEditor;
+    dlxemu::CodeEditor& editor = emu.GetEditor();
 
     // Parse it
     editor.SetText(std::string(source.data(), source.size()));

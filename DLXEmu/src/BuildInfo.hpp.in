@@ -1,7 +1,8 @@
 // ${CMAKE_AUTO_GENENERATED_WARNING}
 #pragma once
 
-#include <cstdint>
+#include <phi/compiler_support/warning.hpp>
+#include <phi/core/sized_types.hpp>
 
 // clang-format off
 // Versions
@@ -28,17 +29,21 @@
 
 namespace dlxemu
 {
-    constexpr static std::uint32_t VersionMajor{DLXEMU_VERSION_MAJOR};
-    constexpr static std::uint32_t VersionMinor{DLXEMU_VERSION_MINOR};
-    constexpr static std::uint32_t VersionPatch{DLXEMU_VERSION_PATCH};
+    constexpr static phi::uint32_t VersionMajor{DLXEMU_VERSION_MAJOR};
+    constexpr static phi::uint32_t VersionMinor{DLXEMU_VERSION_MINOR};
+    constexpr static phi::uint32_t VersionPatch{DLXEMU_VERSION_PATCH};
 
     constexpr static const char GitShaFull[]{DLXEMU_GIT_SHA_FULL};
     constexpr static const char GitShaShort[]{DLXEMU_GIT_SHA_SHORT};
 
     constexpr static const char GitBranch[]{DLXEMU_GIT_BRANCH};
 
+    PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wdate-time")
+
     constexpr static const char BuildDate[]{__DATE__};
     constexpr static const char BuildTime[]{__TIME__};
+
+    PHI_CLANG_SUPPRESS_WARNING_POP()
 
     constexpr static const char UName[]{DLXEMU_UNAME};
 

@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <magic_enum.hpp>
+#include <phi/algorithm/clamp.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
@@ -249,12 +250,12 @@ template <typename T>
                        hex_str.substr(0, hex_str.size() - 2));
 }
 
-[[nodiscard]] std::string print_char(const ImWchar c) noexcept
+[[nodiscard]] std::string print_char(const ImWchar character) noexcept
 {
     std::string print_str;
 
     // Make some special characters printable
-    switch (c)
+    switch (character)
     {
         case '\n':
             print_str += "\\n";
@@ -265,16 +266,23 @@ template <typename T>
         case '\t':
             print_str += "\\t";
             break;
+        case '\v':
+            print_str += "\\v";
+            break;
         case '\r':
             print_str += "\\r";
             break;
+        case '\b':
+            print_str += "\\b";
+            break;
 
         default:
-            print_str += static_cast<char>(c);
+            print_str += static_cast<char>(character);
             break;
     }
 
-    return fmt::format(R"(ImWchar("{:s}" (\0x{:02X})))", print_str, static_cast<std::uint32_t>(c));
+    return fmt::format(R"(ImWchar("{:s}" (\0x{:02X})))", print_str,
+                       static_cast<std::uint32_t>(character));
 }
 
 [[nodiscard]] std::string print_vector_string(const std::vector<std::string>& vec) noexcept
@@ -403,8 +411,11 @@ bool InitializeLogger()
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
 {
     static bool imgui_init = SetupImGui();
+    (void)imgui_init;
+
 #if defined(FUZZ_LOG)
     static bool log_init = dlx::InitializeDefaultLogger();
+    (void)log_init;
 #endif
 
     // Ensure frame count doesn't overflow
@@ -881,8 +892,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                     return 0;
                 }
                 dlxemu::CodeEditor::SelectionMode selection_mode =
-                        static_cast<dlxemu::CodeEditor::SelectionMode>(std::clamp(
-                                selection_mode_opt.value(), (std::uint8_t)0u, (std::uint8_t)2u));
+                        static_cast<dlxemu::CodeEditor::SelectionMode>(phi::clamp(
+                                selection_mode_opt.value(), static_cast<phi::uint8_t>(0u),
+                                static_cast<phi::uint8_t>(2u)));
 
                 FUZZ_LOG("SetSelection(Coordinates({:s}, {:s}), Coordiantes({:s}, {:s}), {:s})",
                          print_int(line_start), print_int(column_start), print_int(line_end),

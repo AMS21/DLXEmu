@@ -5,7 +5,7 @@
 
 namespace dlx
 {
-    enum class IntRegisterID
+    enum class IntRegisterID : unsigned
     {
         R0 = 0,
         R1,
@@ -44,9 +44,9 @@ namespace dlx
 
     IntRegisterID StringToIntRegister(std::string_view token) noexcept;
 
-    enum class FloatRegisterID
+    enum class FloatRegisterID : unsigned
     {
-        F0,
+        F0 = 0,
         F1,
         F2,
         F3,

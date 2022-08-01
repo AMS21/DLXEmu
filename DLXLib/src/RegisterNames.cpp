@@ -1,10 +1,14 @@
 #include "DLX/RegisterNames.hpp"
 
+#include <phi/compiler_support/extended_attributes.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <string_view>
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
-    IntRegisterID StringToIntRegister(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST IntRegisterID StringToIntRegister(std::string_view token) noexcept
     {
         if (token.length() == 2)
         {
@@ -59,7 +63,7 @@ namespace dlx
         return IntRegisterID::None;
     }
 
-    FloatRegisterID StringToFloatRegister(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST FloatRegisterID StringToFloatRegister(std::string_view token) noexcept
     {
         if (token.length() == 2)
         {
@@ -114,7 +118,7 @@ namespace dlx
         return FloatRegisterID::None;
     }
 
-    bool IsFPSR(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST bool IsFPSR(std::string_view token) noexcept
     {
         if (token.length() == 4)
         {

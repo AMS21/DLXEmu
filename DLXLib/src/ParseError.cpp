@@ -2,25 +2,33 @@
 
 #include "DLX/InstructionInfo.hpp"
 #include <magic_enum.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
 #include <spdlog/fmt/bundled/core.h>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
     ParseError::ParseError() noexcept
     {}
 
-    ParseError::Type ParseError::GetType() const noexcept
+    PHI_ATTRIBUTE_CONST ParseError::Type ParseError::GetType() const noexcept
     {
         return m_Type;
     }
 
-    std::uint32_t ParseError::GetLineNumber() const noexcept
+    PHI_ATTRIBUTE_CONST phi::uint64_t ParseError::GetLineNumber() const noexcept
     {
         return m_LineNumber;
     }
 
-    std::uint32_t ParseError::GetColumn() const noexcept
+    PHI_ATTRIBUTE_CONST phi::uint64_t ParseError::GetColumn() const noexcept
     {
         return m_Column;
     }
@@ -103,57 +111,63 @@ namespace dlx
         }
     }
 
-    const ParseError::UnexpectedArgumentType& ParseError::GetUnexpectedArgumentType() const noexcept
+    PHI_ATTRIBUTE_CONST const ParseError::UnexpectedArgumentType& ParseError::
+            GetUnexpectedArgumentType() const noexcept
     {
         PHI_ASSERT(m_Type == Type::UnexpectedArgumentType);
 
         return unexpected_argument_type;
     }
 
-    const ParseError::InvalidNumber& ParseError::GetInvalidNumber() const noexcept
+    PHI_ATTRIBUTE_CONST const ParseError::InvalidNumber& ParseError::GetInvalidNumber()
+            const noexcept
     {
         PHI_ASSERT(m_Type == Type::InvalidNumber);
 
         return invalid_number;
     }
 
-    const ParseError::UnexpectedToken& ParseError::GetUnexpectedToken() const noexcept
+    PHI_ATTRIBUTE_CONST const ParseError::UnexpectedToken& ParseError::GetUnexpectedToken()
+            const noexcept
     {
         PHI_ASSERT(m_Type == Type::UnexpectedToken);
 
         return unexpected_token;
     }
 
-    const ParseError::ReserverdIdentifier& ParseError::ParseError::GetReserverIdentifier()
-            const noexcept
+    PHI_ATTRIBUTE_CONST const ParseError::ReserverdIdentifier& ParseError::ParseError::
+            GetReserverIdentifier() const noexcept
     {
         PHI_ASSERT(m_Type == Type::ReserverdIdentifier);
 
         return reserverd_identifier;
     }
 
-    const ParseError::InvalidLabelIdentifier& ParseError::GetInvalidLabelIdentifier() const noexcept
+    PHI_ATTRIBUTE_CONST const ParseError::InvalidLabelIdentifier& ParseError::
+            GetInvalidLabelIdentifier() const noexcept
     {
         PHI_ASSERT(m_Type == Type::InvalidLabelIdentifier);
 
         return invalid_label_identifier;
     }
 
-    const ParseError::LabelAlreadyDefined& ParseError::GetLabelAlreadyDefined() const noexcept
+    PHI_ATTRIBUTE_CONST const ParseError::LabelAlreadyDefined& ParseError::GetLabelAlreadyDefined()
+            const noexcept
     {
         PHI_ASSERT(m_Type == Type::LabelAlreadyDefined);
 
         return label_already_defined;
     }
 
-    const ParseError::TooFewArguments& ParseError::GetTooFewArguments() const noexcept
+    PHI_ATTRIBUTE_CONST const ParseError::TooFewArguments& ParseError::GetTooFewArguments()
+            const noexcept
     {
         PHI_ASSERT(m_Type == Type::TooFewArgument);
 
         return too_few_arguments;
     }
 
-    const ParseError::EmptyLabel& ParseError::GetEmptyLabel() const noexcept
+    PHI_ATTRIBUTE_CONST const ParseError::EmptyLabel& ParseError::GetEmptyLabel() const noexcept
     {
         PHI_ASSERT(m_Type == Type::EmptyLabel);
 
@@ -162,10 +176,9 @@ namespace dlx
 
     // Constructor functions
 
-    ParseError ConstructUnexpectedArgumentTypeParseError(std::uint32_t line_number,
-                                                         std::uint32_t column,
-                                                         ArgumentType  expected_type,
-                                                         ArgumentType  actual_type) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructUnexpectedArgumentTypeParseError(
+            phi::uint64_t line_number, phi::uint64_t column, ArgumentType expected_type,
+            ArgumentType actual_type) noexcept
     {
         ParseError err;
 
@@ -178,17 +191,17 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructUnexpectedArgumentTypeParseError(const Token& token,
-                                                         ArgumentType expected_type,
-                                                         ArgumentType actual_type) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructUnexpectedArgumentTypeParseError(
+            const Token& token, ArgumentType expected_type, ArgumentType actual_type) noexcept
     {
         return ConstructUnexpectedArgumentTypeParseError(token.GetLineNumber().unsafe(),
                                                          token.GetColumn().unsafe(), expected_type,
                                                          actual_type);
     }
 
-    ParseError ConstructInvalidNumberParseError(std::uint32_t line_number, std::uint32_t column,
-                                                std::string_view text) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructInvalidNumberParseError(phi::uint64_t    line_number,
+                                                                    phi::uint64_t    column,
+                                                                    std::string_view text) noexcept
     {
         ParseError err;
 
@@ -200,14 +213,14 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructInvalidNumberParseError(const Token& token) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructInvalidNumberParseError(const Token& token) noexcept
     {
         return ConstructInvalidNumberParseError(token.GetLineNumber().unsafe(),
                                                 token.GetColumn().unsafe(), token.GetText());
     }
 
-    ParseError ConstructTooFewArgumentsAddressDisplacementParseError(std::uint32_t line_number,
-                                                                     std::uint32_t column) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructTooFewArgumentsAddressDisplacementParseError(
+            phi::uint64_t line_number, phi::uint64_t column) noexcept
     {
         ParseError err;
 
@@ -218,15 +231,16 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructTooFewArgumentsAddressDisplacementParseError(const Token& token) noexcept
+    PHI_ATTRIBUTE_CONST ParseError
+    ConstructTooFewArgumentsAddressDisplacementParseError(const Token& token) noexcept
     {
         return ConstructTooFewArgumentsAddressDisplacementParseError(token.GetLineNumber().unsafe(),
                                                                      token.GetColumn().unsafe());
     }
 
-    ParseError ConstructUnexpectedTokenParseError(std::uint32_t line_number, std::uint32_t column,
-                                                  Token::Type expected_type,
-                                                  Token::Type actual_type) noexcept
+    PHI_ATTRIBUTE_CONST ParseError
+    ConstructUnexpectedTokenParseError(phi::uint64_t line_number, phi::uint64_t column,
+                                       Token::Type expected_type, Token::Type actual_type) noexcept
     {
         ParseError err;
 
@@ -239,16 +253,16 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructUnexpectedTokenParseError(const Token& token,
-                                                  Token::Type  expected_type) noexcept
+    PHI_ATTRIBUTE_CONST ParseError
+    ConstructUnexpectedTokenParseError(const Token& token, Token::Type expected_type) noexcept
     {
         return ConstructUnexpectedTokenParseError(token.GetLineNumber().unsafe(),
                                                   token.GetColumn().unsafe(), expected_type,
                                                   token.GetType());
     }
 
-    ParseError ConstructReservedIdentiferParseError(std::uint32_t line_number, std::uint32_t column,
-                                                    std::string_view identifier) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructReservedIdentiferParseError(
+            phi::uint64_t line_number, phi::uint64_t column, std::string_view identifier) noexcept
     {
         ParseError err;
 
@@ -260,15 +274,14 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructReservedIdentiferParseError(const Token& token) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructReservedIdentiferParseError(const Token& token) noexcept
     {
         return ConstructReservedIdentiferParseError(token.GetLineNumber().unsafe(),
                                                     token.GetColumn().unsafe(), token.GetText());
     }
 
-    ParseError ConstructInvalidLabelIdentifierParseError(std::uint32_t    line_number,
-                                                         std::uint32_t    column,
-                                                         std::string_view identifier) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructInvalidLabelIdentifierParseError(
+            phi::uint64_t line_number, phi::uint64_t column, std::string_view identifier) noexcept
     {
         ParseError err;
 
@@ -280,17 +293,16 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructInvalidLabelIdentifierParseError(const Token& token) noexcept
+    PHI_ATTRIBUTE_CONST ParseError
+    ConstructInvalidLabelIdentifierParseError(const Token& token) noexcept
     {
         return ConstructInvalidLabelIdentifierParseError(
                 token.GetLineNumber().unsafe(), token.GetColumn().unsafe(), token.GetText());
     }
 
-    ParseError ConstructLabelAlreadyDefinedParseError(std::uint32_t    line_number,
-                                                      std::uint32_t    column,
-                                                      std::string_view label_name,
-                                                      std::uint32_t    at_line,
-                                                      std::uint32_t    at_column) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructLabelAlreadyDefinedParseError(
+            phi::uint64_t line_number, phi::uint64_t column, std::string_view label_name,
+            phi::uint64_t at_line, phi::uint64_t at_column) noexcept
     {
         ParseError err;
 
@@ -304,16 +316,16 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructLabelAlreadyDefinedParseError(const Token& token,
-                                                      const Token& first_definition) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructLabelAlreadyDefinedParseError(
+            const Token& token, const Token& first_definition) noexcept
     {
         return ConstructLabelAlreadyDefinedParseError(
                 token.GetLineNumber().unsafe(), token.GetColumn().unsafe(), token.GetText(),
                 first_definition.GetLineNumber().unsafe(), first_definition.GetColumn().unsafe());
     }
 
-    ParseError ConstructOneInstructionPerLineParseError(std::uint32_t line_number,
-                                                        std::uint32_t column) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructOneInstructionPerLineParseError(
+            phi::uint64_t line_number, phi::uint64_t column) noexcept
     {
         ParseError err;
 
@@ -324,15 +336,16 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructOneInstructionPerLineParseError(const Token& token) noexcept
+    PHI_ATTRIBUTE_CONST ParseError
+    ConstructOneInstructionPerLineParseError(const Token& token) noexcept
     {
         return ConstructOneInstructionPerLineParseError(token.GetLineNumber().unsafe(),
                                                         token.GetColumn().unsafe());
     }
 
-    ParseError ConstructTooFewArgumentsParseError(std::uint32_t line_number, std::uint32_t column,
-                                                  std::uint8_t required,
-                                                  std::uint8_t provided) noexcept
+    PHI_ATTRIBUTE_CONST ParseError
+    ConstructTooFewArgumentsParseError(phi::uint64_t line_number, phi::uint64_t column,
+                                       phi::uint8_t required, phi::uint8_t provided) noexcept
     {
         ParseError err;
 
@@ -345,15 +358,15 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructTooFewArgumentsParseError(const Token& token, std::uint8_t required,
-                                                  std::uint8_t provided) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructTooFewArgumentsParseError(
+            const Token& token, std::uint8_t required, std::uint8_t provided) noexcept
     {
         return ConstructTooFewArgumentsParseError(token.GetLineNumber().unsafe(),
                                                   token.GetColumn().unsafe(), required, provided);
     }
 
-    ParseError ConstructEmptyLabelParseError(std::uint32_t line_number, std::uint32_t column,
-                                             std::string_view label_name) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructEmptyLabelParseError(
+            phi::uint64_t line_number, phi::uint64_t column, std::string_view label_name) noexcept
     {
         ParseError err;
 
@@ -365,7 +378,7 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructEmptyLabelParseError(const Token& token) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructEmptyLabelParseError(const Token& token) noexcept
     {
         return ConstructEmptyLabelParseError(
                 token.GetLineNumber().unsafe(), token.GetColumn().unsafe(),
@@ -374,8 +387,8 @@ namespace dlx
                         token.GetText());
     }
 
-    ParseError ConstructTooManyCommaParseError(std::uint32_t line_number,
-                                               std::uint32_t column) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructTooManyCommaParseError(phi::uint64_t line_number,
+                                                                   phi::uint64_t column) noexcept
     {
         ParseError err;
 
@@ -386,7 +399,7 @@ namespace dlx
         return err;
     }
 
-    ParseError ConstructTooManyCommaParseError(const Token& token) noexcept
+    PHI_ATTRIBUTE_CONST ParseError ConstructTooManyCommaParseError(const Token& token) noexcept
     {
         return ConstructTooManyCommaParseError(token.GetLineNumber().unsafe(),
                                                token.GetColumn().unsafe());

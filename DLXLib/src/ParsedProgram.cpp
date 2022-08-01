@@ -1,16 +1,24 @@
 #include "DLX/ParsedProgram.hpp"
 
+#include <phi/compiler_support/warning.hpp>
+#include <phi/core/move.hpp>
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
 #include <spdlog/fmt/bundled/core.h>
-#include <utility>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
     void ParsedProgram::AddParseError(ParseError&& error) noexcept
     {
-        m_ParseErrors.emplace_back(std::move(error));
+        m_ParseErrors.emplace_back(phi::move(error));
     }
 
-    phi::boolean ParsedProgram::IsValid() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean ParsedProgram::IsValid() const noexcept
     {
         return m_ParseErrors.empty() && !m_Instructions.empty();
     }

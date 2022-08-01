@@ -118,14 +118,12 @@ namespace dlx
                 }
 
                 parsing_comment = true;
-                current_token   = std::string_view(
-                          source.substr(token_begin.unsafe(), current_token.length() + 1));
+                current_token   = source.substr(token_begin.unsafe(), current_token.length() + 1);
             }
             else if (parsing_comment)
             {
                 // simply append the character
-                current_token = std::string_view(
-                        source.substr(token_begin.unsafe(), current_token.length() + 1));
+                current_token = source.substr(token_begin.unsafe(), current_token.length() + 1);
             }
             else
             {
@@ -152,8 +150,8 @@ namespace dlx
                         // Need to parse label names together with their colon
                         if (!current_token.empty())
                         {
-                            current_token = std::string_view(source.substr(
-                                    token_begin.unsafe(), current_token.length() + 1));
+                            current_token =
+                                    source.substr(token_begin.unsafe(), current_token.length() + 1);
                             tokens.emplace_back(ParseToken(
                                     source.substr(token_begin.unsafe(), current_token.length()),
                                     current_line_number,
@@ -215,8 +213,8 @@ namespace dlx
                         }
 
                         // simply append the character
-                        current_token = std::string_view(
-                                source.substr(token_begin.unsafe(), current_token.length() + 1));
+                        current_token =
+                                source.substr(token_begin.unsafe(), current_token.length() + 1);
                 }
             }
 

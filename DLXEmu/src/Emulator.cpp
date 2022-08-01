@@ -7,12 +7,15 @@
 #include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
+#include <phi/algorithm/for_each.hpp>
 #include <phi/algorithm/string_length.hpp>
 #include <phi/compiler_support/compiler.hpp>
 #include <phi/compiler_support/platform.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
+#include <phi/text/to_lower_case.hpp>
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/fmt.h>
 #include <string_view>
@@ -43,7 +46,10 @@ namespace dlxemu
         for (phi::i32 arg_num{1}; arg_num < argc; ++arg_num)
         {
             std::string arg_value = argv[arg_num.unsafe()];
-            std::transform(arg_value.begin(), arg_value.end(), arg_value.begin(), ::tolower);
+
+            // Convert all characters to lower case
+            phi::for_each(arg_value.begin(), arg_value.end(), phi::to_lower_case);
+            //std::transform(arg_value.begin(), arg_value.end(), arg_value.begin(), ::tolower);
 
             PHI_ASSERT(!arg_value.empty());
 
@@ -146,12 +152,12 @@ namespace dlxemu
         m_Window.EndFrame();
     }
 
-    dlx::Processor& Emulator::GetProcessor() noexcept
+    PHI_ATTRIBUTE_CONST dlx::Processor& Emulator::GetProcessor() noexcept
     {
         return m_Processor;
     }
 
-    const dlx::ParsedProgram& Emulator::GetProgram() const noexcept
+    PHI_ATTRIBUTE_CONST const dlx::ParsedProgram& Emulator::GetProgram() const noexcept
     {
         return m_DLXProgram;
     }
@@ -174,6 +180,16 @@ namespace dlxemu
         {
             m_Processor.LoadProgram(m_DLXProgram);
         }
+    }
+
+    PHI_ATTRIBUTE_CONST CodeEditor& Emulator::GetEditor() noexcept
+    {
+        return m_CodeEditor;
+    }
+
+    PHI_ATTRIBUTE_CONST const CodeEditor& Emulator::GetEditor() const noexcept
+    {
+        return m_CodeEditor;
     }
 
     void Emulator::RenderMenuBar() noexcept
@@ -384,7 +400,11 @@ namespace dlxemu
 
                 const auto& current_instruction =
                         m_DLXProgram.m_Instructions.at(m_Processor.GetProgramCounter().unsafe());
+#if PHI_COMPILER_IS(EMCC)
+                ImGui::Text("LN: %llu", current_instruction.GetSourceLine().unsafe());
+#else
                 ImGui::Text("LN: %lu", current_instruction.GetSourceLine().unsafe());
+#endif
             }
             else
             {
@@ -397,10 +417,14 @@ namespace dlxemu
 
     constexpr static const char* get_lsb_info() noexcept
     {
+        PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wunreachable-code-return")
+
         if (phi::string_length(dlxemu::LSBId) == 0u)
         {
             return "";
         }
+
+        PHI_CLANG_SUPPRESS_WARNING_POP()
 
         return "\nLSB:        " DLXEMU_LSB_DESCRIPTION " - " DLXEMU_LSB_RELEASE
                " " DLXEMU_LSB_CODENAME;
@@ -417,6 +441,8 @@ namespace dlxemu
         {
             static constexpr const char* arch_flag{sizeof(void*) == 8 ? "x64" : "x32"};
             static constexpr const char* lsb_info{get_lsb_info()};
+
+            PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wexit-time-destructors")
 
             static std::string about_text = fmt::format(
                     "Version:    {:d}.{:d}.{:d} {:s}\n"
@@ -435,6 +461,8 @@ namespace dlxemu
                     DLXEMU_UNAME, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
                     PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH(),
                     lsb_info);
+
+            PHI_CLANG_SUPPRESS_WARNING_POP()
 
             ImGui::TextUnformatted(about_text.c_str());
 
@@ -515,6 +543,8 @@ namespace dlxemu
 
     void Emulator::Update() noexcept
     {
+        PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
+
         switch (m_CurrentExecutionMode)
         {
             case ExecutionMode::None:
@@ -542,6 +572,7 @@ namespace dlxemu
                 PHI_ASSERT_NOT_REACHED();
                 break;
         }
+        PHI_CLANG_SUPPRESS_WARNING_POP()
 
         if (m_Processor.IsHalted())
         {

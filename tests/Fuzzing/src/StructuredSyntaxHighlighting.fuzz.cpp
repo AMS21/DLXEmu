@@ -1,7 +1,11 @@
 #include "StructureParser.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
+
+PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
+PHI_CLANG_SUPPRESS_WARNING("-Wkeyword-macro")
 
 // Evil hack to access private members and functions
 #define private public
@@ -14,7 +18,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
     std::string source = fuzz::ParseAsStrucutedDLXCode(data, size);
 
-    dlxemu::CodeEditor editor = emu.m_CodeEditor;
+    dlxemu::CodeEditor& editor = emu.GetEditor();
 
     // Parse it
     editor.SetText(source);

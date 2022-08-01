@@ -29,6 +29,6 @@ TEST_CASE("GetRawMemory")
 
     const std::vector<dlx::MemoryBlock::MemoryByte>& const_vec = const_mem.GetRawMemory();
 
-    CHECK_FALSE(vec.empty());
-    CHECK(vec.size() == 10u);
+    CHECK_FALSE(const_vec.empty());
+    CHECK(const_vec.size() == 10u);
 }

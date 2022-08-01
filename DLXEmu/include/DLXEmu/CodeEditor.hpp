@@ -38,6 +38,8 @@ SOFTWARE.
 #include <unordered_set>
 #include <vector>
 
+// TODO: Fully upgrade the lines and columns to 64 bit numbers
+
 namespace dlxemu
 {
     class Emulator;
@@ -135,6 +137,8 @@ namespace dlxemu
         using Lines = std::vector<Line>;
 
         explicit CodeEditor(Emulator* emulator) noexcept;
+
+        CodeEditor(const CodeEditor&) = delete;
 
         ~CodeEditor() noexcept;
 
@@ -369,6 +373,7 @@ namespace dlxemu
         std::string  m_LineBuffer;
         uint64_t     m_StartTime;
 
+        // TODO: Where saving a float but ImGui returns a double
         float m_LastClick;
 
         Emulator*   m_Emulator;
