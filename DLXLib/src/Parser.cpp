@@ -225,9 +225,7 @@ namespace dlx
 
                     // Handle jump labels
                     // Check if the last character of the identifier is a colon
-
-                    // TODO: Is at(size() - 1) == back()?
-                    if (current_token.GetText().at(current_token.GetText().size() - 1) != ':')
+                    if (current_token.GetText().back() != ':')
                     {
                         program.AddParseError(
                                 ConstructInvalidLabelIdentifierParseError(current_token));

@@ -2800,8 +2800,7 @@ namespace dlxemu
                 line.insert(line.begin() + cindex.unsafe(),
                             Glyph(static_cast<phi::uint8_t>(*pointer), PaletteIndex::Default));
             }
-            // TODO: We know the length to just directly assign a string_view
-            undo.m_Added = buffer.begin();
+            undo.m_Added = std::string_view{buffer.begin(), length.unsafe()};
 
             SetCursorPosition(Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex)));
         }
