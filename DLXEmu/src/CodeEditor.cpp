@@ -193,12 +193,6 @@ namespace dlxemu
         PHI_ASSERT(column >= 0);
     }
 
-    CodeEditor::Coordinates CodeEditor::Coordinates::Invalid() noexcept
-    {
-        static Coordinates invalid{dont_use{}, dont_use{}};
-        return invalid;
-    }
-
     PHI_ATTRIBUTE_PURE bool CodeEditor::Coordinates::operator==(
             const Coordinates& other) const noexcept
     {
@@ -254,11 +248,6 @@ namespace dlxemu
 
         return m_Column >= other.m_Column;
     }
-
-    CodeEditor::Coordinates::Coordinates(dont_use /*unused*/, dont_use /*unused*/) noexcept
-        : m_Line{-1}
-        , m_Column{-1}
-    {}
 
     // Glyph
 

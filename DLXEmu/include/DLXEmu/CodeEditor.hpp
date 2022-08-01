@@ -95,8 +95,6 @@ namespace dlxemu
 
             Coordinates(phi::i32 line, phi::i32 column) noexcept;
 
-            [[nodiscard]] static Coordinates Invalid() noexcept;
-
             bool operator==(const Coordinates& other) const noexcept;
 
             bool operator!=(const Coordinates& other) const noexcept;
@@ -111,12 +109,6 @@ namespace dlxemu
 
             phi::i32 m_Line;
             phi::i32 m_Column;
-
-        private:
-            struct dont_use
-            {};
-
-            Coordinates(dont_use, dont_use) noexcept;
         };
 
         using ErrorMarkers = std::map<phi::u32, std::string>;

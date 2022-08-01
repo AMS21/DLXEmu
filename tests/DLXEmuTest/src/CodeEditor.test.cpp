@@ -22,10 +22,6 @@ TEST_CASE("CodeEditor::Coordinates")
     CHECK(bool(coords.m_Line == 42));
     CHECK(bool(coords.m_Column == 22));
 
-    const dlxemu::CodeEditor::Coordinates invalid{dlxemu::CodeEditor::Coordinates::Invalid()};
-    CHECK(bool(invalid.m_Line == -1));
-    CHECK(bool(invalid.m_Column == -1));
-
     const dlxemu::CodeEditor::Coordinates a{1, 0};
     const dlxemu::CodeEditor::Coordinates b{1, 1};
     const dlxemu::CodeEditor::Coordinates c{2, 0};
