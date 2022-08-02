@@ -339,18 +339,16 @@ namespace dlxemu
         UndoBuffer  m_UndoBuffer;
         phi::usize  m_UndoIndex;
 
-        phi::u8_fast m_TabSize;
-        bool         m_Overwrite : 1;
-        bool         m_ReadOnly : 1;
-        bool         m_WithinRender : 1;
-        bool         m_ScrollToCursor : 1;
-        bool         m_ScrollToTop : 1;
-        bool         m_TextChanged : 1;
-        bool         m_ColorizerEnabled : 1;
-        bool         m_CursorPositionChanged : 1;
-        float        m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
-        phi::i32     m_LeftMargin;
-        // TODO: For what are these two actually used??
+        phi::u8_fast  m_TabSize;
+        bool          m_Overwrite : 1;
+        bool          m_ReadOnly : 1;
+        bool          m_WithinRender : 1;
+        bool          m_ScrollToCursor : 1;
+        bool          m_ScrollToTop : 1;
+        bool          m_TextChanged : 1;
+        bool          m_ColorizerEnabled : 1;
+        bool          m_CursorPositionChanged : 1;
+        float         m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
         phi::u32      m_ColorRangeMin;
         phi::u32      m_ColorRangeMax;
         SelectionMode m_SelectionMode;
@@ -377,5 +375,7 @@ namespace dlxemu
         // Constants
         static const constexpr phi::u8_fast MinTabSize{static_cast<phi::uint_fast8_t>(1u)};
         static const constexpr phi::u8_fast MaxTabSize{static_cast<phi::uint_fast8_t>(32u)};
+
+        static const constexpr float LeftMargin{10.0f};
     };
 } // namespace dlxemu

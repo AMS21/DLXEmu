@@ -268,7 +268,6 @@ namespace dlxemu
         , m_ColorizerEnabled(true)
         , m_CursorPositionChanged(false)
         , m_TextStart(20.0f)
-        , m_LeftMargin(10)
         , m_ColorRangeMin(0u)
         , m_ColorRangeMax(0u)
         , m_SelectionMode(SelectionMode::Normal)
@@ -3325,7 +3324,7 @@ namespace dlxemu
                 ImGui::GetFont()
                         ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf, nullptr, nullptr)
                         .x +
-                static_cast<float>(m_LeftMargin.unsafe());
+                LeftMargin;
 
         PHI_ASSERT(!m_Lines.empty());
         float space_size =
