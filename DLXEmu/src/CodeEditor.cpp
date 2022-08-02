@@ -2194,24 +2194,23 @@ namespace dlxemu
                 }
                 else
                 {
-                    // TODO: Use an phi::array instead
-                    char     buf[7];
-                    phi::u32 length = UTF8CharLength(line[column_index.unsafe()].m_Char);
-                    phi::u32 index  = 0u;
+                    phi::array<char, 7u> buffer;
+                    phi::u32   length = UTF8CharLength(line[column_index.unsafe()].m_Char);
+                    phi::usize index  = 0u;
 
                     while (index < 6u && length > 0u)
                     {
-                        buf[index.unsafe()] = static_cast<char>(line[column_index.unsafe()].m_Char);
+                        buffer[index] = static_cast<char>(line[column_index.unsafe()].m_Char);
                         index += 1u;
                         column_index += 1u;
                         length -= 1u;
                     }
 
-                    buf[index.unsafe()] = '\0';
-                    column_width =
-                            ImGui::GetFont()
-                                    ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf)
-                                    .x;
+                    buffer[index] = '\0';
+                    column_width  = ImGui::GetFont()
+                                           ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f,
+                                                           buffer.data())
+                                           .x;
                     if (m_TextStart + column_x + column_width * 0.5f > local.x)
                     {
                         break;
@@ -2868,12 +2867,12 @@ namespace dlxemu
                 }
             }
 
-            for (char* pointer = buffer.begin(); *pointer != '\0'; ++pointer, ++cindex)
+            for (char* pointer = buffer.data(); *pointer != '\0'; ++pointer, ++cindex)
             {
                 line.insert(line.begin() + cindex.unsafe(),
                             Glyph(static_cast<phi::uint8_t>(*pointer), PaletteIndex::Default));
             }
-            undo.m_Added = std::string_view{buffer.begin(), length.unsafe()};
+            undo.m_Added = std::string_view{buffer.data(), length.unsafe()};
 
             SetCursorPosition(Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex)));
         }
@@ -3317,14 +3316,13 @@ namespace dlxemu
                                            (scroll_y + content_size.y) / m_CharAdvance.y))));
 
         // Deduce m_TextStart by evaluating mLines size (global lineMax) plus two spaces as text width
-        // TODO: Replace with phi::array and use of fmtlib
-        char buf[16];
-        snprintf(buf, 16, " %u ", global_line_max.unsafe());
-        m_TextStart =
-                ImGui::GetFont()
-                        ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf, nullptr, nullptr)
-                        .x +
-                LeftMargin;
+        phi::array<char, 16u> buffer;
+        snprintf(buffer.data(), buffer.size().unsafe(), " %u ", global_line_max.unsafe());
+        m_TextStart = ImGui::GetFont()
+                              ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buffer.data(),
+                                              nullptr, nullptr)
+                              .x +
+                      LeftMargin;
 
         PHI_ASSERT(!m_Lines.empty());
         float space_size =
@@ -3422,16 +3420,16 @@ namespace dlxemu
             }
 
             // Draw line number (right aligned)
-            // TODO: Replace with fmtlib
-            snprintf(buf, 16, "%u  ", line_no.unsafe() + 1);
+            snprintf(buffer.data(), buffer.size().unsafe(), "%u  ", line_no.unsafe() + 1u);
 
-            const float line_no_width = ImGui::GetFont()
-                                                ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX,
-                                                                -1.0f, buf, nullptr, nullptr)
-                                                .x;
+            const float line_no_width =
+                    ImGui::GetFont()
+                            ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buffer.data(),
+                                            nullptr, nullptr)
+                            .x;
             draw_list->AddText(ImVec2(line_start_screen_pos.x + m_TextStart - line_no_width,
                                       line_start_screen_pos.y),
-                               GetPaletteForIndex(PaletteIndex::LineNumber), buf);
+                               GetPaletteForIndex(PaletteIndex::LineNumber), buffer.data());
 
             if (m_State.m_CursorPosition.m_Line == line_no)
             {
