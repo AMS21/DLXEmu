@@ -4,7 +4,7 @@
 #include "DLX/InstructionImplementation.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/OpCode.hpp"
-#include <magic_enum.hpp>
+
 #include <phi/compiler_support/warning.hpp>
 #include <algorithm>
 #include <array>
@@ -19,7 +19,7 @@ namespace dlx
                                    InstructionExecutor executor) noexcept
     {
         PHI_ASSERT(table.at(static_cast<std::size_t>(opcode)).GetExecutor() == nullptr,
-                   "Already registered instruction {}", magic_enum::enum_name(opcode));
+                   "Already registered instruction {}", dlx::enum_name(opcode));
 
         table.at(static_cast<std::size_t>(opcode)) =
                 InstructionInfo(opcode, arg1, arg2, arg3, register_access_type, executor);

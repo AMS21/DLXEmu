@@ -1,6 +1,6 @@
 #include <DLX/OpCode.hpp>
 #include <DLX/RegisterNames.hpp>
-#include <magic_enum.hpp>
+#include <phi/container/array.hpp>
 #include <phi/core/scope_guard.hpp>
 #include <spdlog/fmt/bundled/os.h>
 #include <spdlog/fmt/compile.h>
@@ -14,39 +14,39 @@ int main()
 {
     fmt::ostream out = fmt::output_file("Dictionary.txt");
 
-    // Write all opcodes
-    for (const auto& opcode : magic_enum::enum_names<dlx::OpCode>())
-    {
-        // Skip non tokens
-        if (opcode == "NONE" || opcode == "NUMBER_OF_ELEMENTS")
-        {
-            continue;
-        }
+    static const constexpr phi::array opcodes{
+#define DLX_ENUM_OPCODE_IMPL(name) #name,
+            DLX_ENUM_OPCODE
+#undef DLX_ENUM_OPCODE_IMPL
+    };
 
+    static const constexpr phi::array int_regs{
+#define DLX_ENUM_INT_REGISTER_ID_IMPL(name) #name,
+            DLX_ENUM_INT_REGISTER_ID
+#undef DLX_ENUM_INT_REGISTER_ID_IMPL
+    };
+
+    static const constexpr phi::array float_regs{
+#define DLX_ENUM_FLOAT_REGISTER_ID_IMPL(name) #name,
+            DLX_ENUM_FLOAT_REGISTER_ID
+#undef DLX_ENUM_FLOAT_REGISTER_ID_IMPL
+    };
+
+    // Write all opcodes
+    for (const auto& opcode : opcodes)
+    {
         out.print(R"(opcode_{0}="{0}")", opcode);
     }
 
     // Write all int registers
-    for (const auto& reg : magic_enum::enum_names<dlx::IntRegisterID>())
+    for (const auto& reg : int_regs)
     {
-        // Skip none registers
-        if (reg == "None")
-        {
-            continue;
-        }
-
         out.print(R"(int_register_id_{0}="{0}")", reg);
     }
 
     // Write all float registers
-    for (const auto& reg : magic_enum::enum_names<dlx::FloatRegisterID>())
+    for (const auto& reg : float_regs)
     {
-        // Skip none registers
-        if (reg == "None")
-        {
-            continue;
-        }
-
         out.print(R"(float_register_id_{0}="{0}")", reg);
     }
 

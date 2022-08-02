@@ -1,7 +1,7 @@
 #include "DLX/Instruction.hpp"
 
 #include "DLX/InstructionArgument.hpp"
-#include <magic_enum.hpp>
+
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <spdlog/fmt/fmt.h>
@@ -42,15 +42,15 @@ namespace dlx
         switch (m_Info.GetNumberOfRequiredArguments().unsafe())
         {
             case 0:
-                return fmt::format("{}", magic_enum::enum_name(m_Info.GetOpCode()));
+                return fmt::format("{}", dlx::enum_name(m_Info.GetOpCode()));
             case 1:
-                return fmt::format("{}, {}", magic_enum::enum_name(m_Info.GetOpCode()),
+                return fmt::format("{}, {}", dlx::enum_name(m_Info.GetOpCode()),
                                    m_Arg1.DebugInfo());
             case 2:
-                return fmt::format("{}, {}, {}", magic_enum::enum_name(m_Info.GetOpCode()),
+                return fmt::format("{}, {}, {}", dlx::enum_name(m_Info.GetOpCode()),
                                    m_Arg1.DebugInfo(), m_Arg2.DebugInfo());
             case 3:
-                return fmt::format("{}, {}, {}, {}", magic_enum::enum_name(m_Info.GetOpCode()),
+                return fmt::format("{}, {}, {}, {}", dlx::enum_name(m_Info.GetOpCode()),
                                    m_Arg1.DebugInfo(), m_Arg2.DebugInfo(), m_Arg3.DebugInfo());
 
 #if !defined(DLXEMU_COVERAGE_BUILD)

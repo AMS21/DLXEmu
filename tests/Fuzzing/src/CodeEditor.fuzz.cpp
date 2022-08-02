@@ -3,7 +3,6 @@
 #include <DLXEmu/Emulator.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <magic_enum.hpp>
 #include <phi/algorithm/clamp.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
@@ -898,7 +897,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
                 FUZZ_LOG("SetSelection(Coordinates({:s}, {:s}), Coordiantes({:s}, {:s}), {:s})",
                          print_int(line_start), print_int(column_start), print_int(line_end),
-                         print_int(column_end), magic_enum::enum_name(selection_mode));
+                         print_int(column_end), dlx::enum_name(selection_mode));
 
                 editor.SetSelection(coord_start, coord_end, selection_mode);
                 break;
@@ -1091,7 +1090,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
         }
     }
 
-    FUZZ_LOG("VerifyInternalState");
+    FUZZ_LOG("VerifyInternalState()");
     editor.VerifyInternalState();
 
     FUZZ_LOG("Finished execution");

@@ -1,11 +1,11 @@
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 
+#include <DLX/EnumName.hpp>
 #include <DLX/OpCode.hpp>
 #include <DLX/Token.hpp>
 #include <DLX/TokenStream.hpp>
 #include <DLX/Tokenize.hpp>
-#include <magic_enum.hpp>
 
 void TokenMatches(const dlx::Token& token, const std::string_view expected_text,
                   dlx::Token::Type expected_type, std::size_t expected_line_number,
@@ -18,7 +18,7 @@ void TokenMatches(const dlx::Token& token, const std::string_view expected_text,
     CAPTURE(token.GetColumn());
 
     CAPTURE(expected_text);
-    CAPTURE(magic_enum::enum_name(expected_type));
+    CAPTURE(dlx::enum_name(expected_type));
     CAPTURE(expected_line_number);
     CAPTURE(expected_column);
 

@@ -1,7 +1,7 @@
 #include "DLX/InstructionArgument.hpp"
 
 #include "DLX/InstructionInfo.hpp"
-#include <magic_enum.hpp>
+
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 
@@ -35,14 +35,14 @@ namespace dlx
             case ArgumentType::AddressDisplacement: {
                 AddressDisplacement adr = AsAddressDisplacement();
                 return fmt::format("{:d}({:s})", adr.displacement.unsafe(),
-                                   magic_enum::enum_name(adr.register_id));
+                                   dlx::enum_name(adr.register_id));
             }
 
             case ArgumentType::FloatRegister:
-                return fmt::format("{:s}", magic_enum::enum_name(AsRegisterFloat().register_id));
+                return fmt::format("{:s}", dlx::enum_name(AsRegisterFloat().register_id));
 
             case ArgumentType::IntRegister:
-                return fmt::format("{:s}", magic_enum::enum_name(AsRegisterInt().register_id));
+                return fmt::format("{:s}", dlx::enum_name(AsRegisterInt().register_id));
 
             case ArgumentType::ImmediateInteger:
                 return fmt::format("#{:d}", AsImmediateValue().signed_value.unsafe());

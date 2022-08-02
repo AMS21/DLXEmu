@@ -1,6 +1,6 @@
 #include "DLX/Token.hpp"
 
-#include <magic_enum.hpp>
+#include "DLX/EnumName.hpp"
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
@@ -43,7 +43,7 @@ namespace dlx
 
     PHI_ATTRIBUTE_CONST std::string_view Token::GetTypeName() const noexcept
     {
-        return magic_enum::enum_name(m_Type);
+        return dlx::enum_name(m_Type);
     }
 
     PHI_ATTRIBUTE_CONST phi::u64 Token::GetLineNumber() const noexcept

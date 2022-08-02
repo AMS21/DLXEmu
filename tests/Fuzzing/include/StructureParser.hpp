@@ -3,7 +3,6 @@
 #include <DLX/OpCode.hpp>
 #include <DLX/ParserUtils.hpp>
 #include <DLX/RegisterNames.hpp>
-#include <magic_enum.hpp>
 #include <phi/text/is_alpha_numeric.hpp>
 #include <algorithm>
 #include <cstdint>
@@ -72,7 +71,7 @@ namespace fuzz
                     {
                         std::uint8_t opcode_value = data[index++] % number_of_opcodes;
 
-                        ret += magic_enum::enum_name(static_cast<dlx::OpCode>(opcode_value));
+                        ret += dlx::enum_name(static_cast<dlx::OpCode>(opcode_value));
 
                         if (!detail::AddSeperatorToken(ret, data, size, index))
                         {
@@ -89,7 +88,7 @@ namespace fuzz
                     {
                         std::uint8_t opcode_value = data[index++] % number_of_int_registers;
 
-                        ret += magic_enum::enum_name(static_cast<dlx::IntRegisterID>(opcode_value));
+                        ret += dlx::enum_name(static_cast<dlx::IntRegisterID>(opcode_value));
                         if (!detail::AddSeperatorToken(ret, data, size, index))
                         {
                             return detail::ErrorString;
@@ -105,8 +104,7 @@ namespace fuzz
                     {
                         std::uint8_t opcode_value = data[index++] % number_of_float_registers;
 
-                        ret += magic_enum::enum_name(
-                                static_cast<dlx::FloatRegisterID>(opcode_value));
+                        ret += dlx::enum_name(static_cast<dlx::FloatRegisterID>(opcode_value));
                         if (!detail::AddSeperatorToken(ret, data, size, index))
                         {
                             return detail::ErrorString;

@@ -26,9 +26,12 @@ SOFTWARE.
 
 #pragma once
 
+#include <DLX/EnumName.hpp>
 #include <DLX/Token.hpp>
 #include <imgui.h>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/container/array.hpp>
+#include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
@@ -379,3 +382,28 @@ namespace dlxemu
         static const constexpr float LeftMargin{10.0f};
     };
 } // namespace dlxemu
+
+PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
+
+namespace dlx
+{
+    template <>
+    [[nodiscard]] constexpr std::string_view enum_name<dlxemu::CodeEditor::SelectionMode>(
+            dlxemu::CodeEditor::SelectionMode value) noexcept
+    {
+        switch (value)
+        {
+            case dlxemu::CodeEditor::SelectionMode::Line:
+                return "Line";
+            case dlxemu::CodeEditor::SelectionMode::Normal:
+                return "Normal";
+            case dlxemu::CodeEditor::SelectionMode::Word:
+                return "Word";
+
+            default:
+                PHI_ASSERT_NOT_REACHED();
+        }
+    }
+} // namespace dlx
+
+PHI_CLANG_SUPPRESS_WARNING_POP()

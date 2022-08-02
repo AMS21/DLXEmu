@@ -1,6 +1,5 @@
 #include "DLX/OpCode.hpp"
 
-#include <magic_enum.hpp>
 #include <phi/compiler_support/extended_attributes.hpp>
 #include <phi/compiler_support/inline.hpp>
 #include <phi/compiler_support/warning.hpp>

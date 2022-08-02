@@ -3,9 +3,11 @@
 #include "DLX/OpCode.hpp"
 #include "DLX/StatusRegister.hpp"
 #include <phi/compiler_support/warning.hpp>
+#include <phi/type_traits/to_underlying.hpp>
 
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
 
+#include "DLX/EnumName.hpp"
 #include <phi/core/assert.hpp>
 #include <phi/core/types.hpp>
 #include <phi/type_traits/underlying_type.hpp>
@@ -15,15 +17,20 @@ namespace dlx
     class Processor;
     class InstructionArgument;
 
+#define DLX_ENUM_ARGUMENT_TYPE                                                                     \
+    DLX_ENUM_ARGUMENT_TYPE_IMPL(Unknown, 0)                                                        \
+    DLX_ENUM_ARGUMENT_TYPE_IMPL(None, 1)                                                           \
+    DLX_ENUM_ARGUMENT_TYPE_IMPL(IntRegister, 2)                                                    \
+    DLX_ENUM_ARGUMENT_TYPE_IMPL(FloatRegister, 4)                                                  \
+    DLX_ENUM_ARGUMENT_TYPE_IMPL(ImmediateInteger, 8)                                               \
+    DLX_ENUM_ARGUMENT_TYPE_IMPL(Label, 16)                                                         \
+    DLX_ENUM_ARGUMENT_TYPE_IMPL(AddressDisplacement, 32)
+
     enum class ArgumentType : phi::uint8_t
     {
-        Unknown          = 0,  // Should not be used just to check for errors
-        None             = 1,  // Meaning this argument is expected to be not present
-        IntRegister      = 2,  // Meaning this argument is expected to be an integer register
-        FloatRegister    = 4,  // Meaning this argument is expected to be an float register
-        ImmediateInteger = 8,  // Meaning this argument is expected to be an immediate integer value
-        Label            = 16, // Meaning this argument is expected to be an Label identifier
-        AddressDisplacement = 32, // Meaning this argument is expected to be an address displacement
+#define DLX_ENUM_ARGUMENT_TYPE_IMPL(name, value) name = value,
+        DLX_ENUM_ARGUMENT_TYPE
+#undef DLX_ENUM_ARGUMENT_TYPE_IMPL
     };
 
     constexpr ArgumentType operator&(ArgumentType lhs, ArgumentType rhs) noexcept
@@ -50,19 +57,65 @@ namespace dlx
         return static_cast<underlying_t>(type & test) != 0;
     }
 
+    template <>
+    [[nodiscard]] constexpr std::string_view enum_name<ArgumentType>(ArgumentType value) noexcept
+    {
+        switch (phi::to_underlying(value))
+        {
+#define DLX_ENUM_ARGUMENT_TYPE_IMPL(name, enum_value)                                              \
+    case enum_value:                                                                               \
+        return #name;
+
+            DLX_ENUM_ARGUMENT_TYPE
+
+#undef DLX_ENUM_ARGUMENT_TYPE_IMPL
+
+            // Explicitly handle the combine cases
+            case phi::to_underlying(ArgumentType::ImmediateInteger |
+                                    ArgumentType::AddressDisplacement):
+                return "ImmediateInteger/AddressDisplacement";
+
+            default:
+                PHI_ASSERT_NOT_REACHED();
+        }
+    }
+
+#define DLX_ENUM_REGISTER_ACCESS_TYPE                                                              \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(None)                                                       \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(Signed)                                                     \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(Unsigned)                                                   \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(MixedSignedUnsigned)                                        \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(Float)                                                      \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(Double)                                                     \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(MixedFloatDouble)                                           \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(MixedFloatSigned)                                           \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(MixedDoubleSigned)                                          \
+    DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(Ignored)
+
     enum class RegisterAccessType : phi::uint8_t
     {
-        None,
-        Signed,
-        Unsigned,
-        MixedSignedUnsigned,
-        Float,
-        Double,
-        MixedFloatDouble,
-        MixedFloatSigned,
-        MixedDoubleSigned,
-        Ignored,
+#define DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(name) name,
+        DLX_ENUM_REGISTER_ACCESS_TYPE
+#undef DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL
     };
+
+    template <>
+    [[nodiscard]] constexpr std::string_view enum_name<RegisterAccessType>(
+            RegisterAccessType value) noexcept
+    {
+        switch (value)
+        {
+#define DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(name)                                                   \
+    case RegisterAccessType::name:                                                                 \
+        return #name;
+
+            DLX_ENUM_REGISTER_ACCESS_TYPE
+#undef DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL
+
+            default:
+                PHI_ASSERT_NOT_REACHED();
+        }
+    }
 
     using InstructionExecutor = std::add_pointer_t<void(
             Processor& processor, const InstructionArgument& arg1, const InstructionArgument& arg2,

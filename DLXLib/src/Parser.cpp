@@ -12,7 +12,6 @@
 #include "DLX/Token.hpp"
 #include "DLX/TokenStream.hpp"
 #include "DLX/Tokenize.hpp"
-#include <magic_enum.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/conversion.hpp>
@@ -33,7 +32,7 @@ namespace dlx
             ParsedProgram& program) noexcept
     {
         // DLX_INFO("Parsing argument with token '{}' and expected type '{}'", token.DebugInfo(),
-        //              magic_enum::enum_name(expected_argument_type));
+        //              dlx::enum_name(expected_argument_type));
 
         switch (token.GetType())
         {
@@ -90,7 +89,7 @@ namespace dlx
                 tokens.set_position(it + 3u);
 
                 //DLX_INFO("Parsed address displacement with '{}' displacement and Register '{}'",
-                //             value, magic_enum::enum_name(reg_id));
+                //             value, dlx::enum_name(reg_id));
 
                 return ConstructInstructionArgumentAddressDisplacement(
                         static_cast<IntRegisterID>(second_token.GetHint()), value);
@@ -104,7 +103,7 @@ namespace dlx
                 }
 
                 //DLX_INFO("Parsed identifier as int register {}",
-                //             magic_enum::enum_name(reg_id));
+                //             dlx::enum_name(reg_id));
 
                 return ConstructInstructionArgumentRegisterInt(
                         static_cast<IntRegisterID>(token.GetHint()));
@@ -118,7 +117,7 @@ namespace dlx
                 }
 
                 //DLX_INFO("Parsed identifier as float register {}",
-                //             magic_enum::enum_name(float_reg_id));
+                //             dlx::enum_name(float_reg_id));
 
                 return ConstructInstructionArgumentRegisterFloat(
                         static_cast<FloatRegisterID>(token.GetHint()));
@@ -301,7 +300,7 @@ namespace dlx
                     PHI_ASSERT(current_token.HasHint());
                     OpCode opcode = static_cast<OpCode>(current_token.GetHint());
 
-                    //DLX_INFO("Instruction opcode: {}", magic_enum::enum_name(opcode));
+                    //DLX_INFO("Instruction opcode: {}", dlx::enum_name(opcode));
 
                     const InstructionInfo& info = LookUpIntructionInfo(opcode);
 

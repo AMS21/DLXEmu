@@ -1,7 +1,6 @@
 #include "DLX/ParseError.hpp"
 
 #include "DLX/InstructionInfo.hpp"
-#include <magic_enum.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 
@@ -41,8 +40,8 @@ namespace dlx
                 const UnexpectedArgumentType& detail = GetUnexpectedArgumentType();
 
                 return fmt::format("Expected {:s} but got {:s}",
-                                   magic_enum::enum_name(detail.expected_type),
-                                   magic_enum::enum_name(detail.actual_type));
+                                   dlx::enum_name(detail.expected_type),
+                                   dlx::enum_name(detail.actual_type));
             }
 
             case Type::InvalidNumber: {
@@ -59,8 +58,8 @@ namespace dlx
                 const UnexpectedToken& detail = GetUnexpectedToken();
 
                 return fmt::format("Expected token of type {:s} but got {:s}",
-                                   magic_enum::enum_name(detail.expected_type),
-                                   magic_enum::enum_name(detail.actual_type));
+                                   dlx::enum_name(detail.expected_type),
+                                   dlx::enum_name(detail.actual_type));
             }
 
             case Type::ReserverdIdentifier: {

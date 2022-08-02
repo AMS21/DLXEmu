@@ -1,7 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <DLX/EnumName.hpp>
 #include <DLX/OpCode.hpp>
-#include <magic_enum.hpp>
+#include <phi/container/array.hpp>
+#include <phi/core/optional.hpp>
 #include <phi/core/size_t.hpp>
 #include <cctype>
 #include <cmath>
@@ -33,17 +35,15 @@ void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
 
 TEST_CASE("StringToOpCode")
 {
-    auto codes = magic_enum::enum_entries<dlx::OpCode>();
+    static const constexpr phi::array codes{
+#define DLX_ENUM_OPCODE_IMPL(name) dlx::OpCode::name,
+            DLX_ENUM_OPCODE
+#undef DLX_ENUM_OPCODE_IMPL
+    };
 
-    for (auto& x : codes)
+    for (const auto& opcode : codes)
     {
-        // Skip special member
-        if (x.first == dlx::OpCode::NUMBER_OF_ELEMENTS)
-        {
-            continue;
-        }
-
-        test_all_variants(x.second, x.first);
+        test_all_variants(dlx::enum_name(opcode), opcode);
     }
 
     CHECK(dlx::StringToOpCode("sw") == dlx::OpCode::SW);

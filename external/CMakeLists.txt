@@ -67,9 +67,6 @@ set(OpenGL_GL_PREFERENCE "GLVND")
 
 find_package(OpenGL REQUIRED)
 
-# magic_enum
-add_subdirectory(magic_enum)
-
 # spdlog
 set(SPDLOG_DISABLE_DEFAULT_LOGGER
     ON

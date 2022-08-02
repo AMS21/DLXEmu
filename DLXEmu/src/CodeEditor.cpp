@@ -30,7 +30,6 @@ SOFTWARE.
 #include <DLX/Parser.hpp>
 #include <DLX/ParserUtils.hpp>
 #include <DLX/Token.hpp>
-#include <magic_enum.hpp>
 #include <phi/algorithm/clamp.hpp>
 #include <phi/algorithm/max.hpp>
 #include <phi/algorithm/string_length.hpp>
@@ -1346,7 +1345,7 @@ namespace dlxemu
         str += fmt::format("Overwrite: {:s}\n", IsOverwrite() ? "true" : "false");
         str += fmt::format("Read only: {:s}\n", IsReadOnly() ? "true" : "false");
         str += fmt::format("Show whitespaces: {:s}\n", IsShowingWhitespaces() ? "true" : "false");
-        str += fmt::format("Selection mode: {:s}\n", magic_enum::enum_name(m_SelectionMode));
+        str += fmt::format("Selection mode: {:s}\n", dlx::enum_name(m_SelectionMode));
 
         const std::string              full_text = GetText();
         const std::vector<std::string> lines     = GetTextLines();

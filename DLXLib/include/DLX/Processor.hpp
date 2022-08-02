@@ -1,7 +1,9 @@
 #pragma once
 
+#include "DLX/EnumName.hpp"
 #include "DLX/FloatRegister.hpp"
 #include "DLX/Instruction.hpp"
+#include "DLX/InstructionInfo.hpp"
 #include "DLX/IntRegister.hpp"
 #include "DLX/MemoryBlock.hpp"
 #include "DLX/RegisterNames.hpp"
@@ -15,19 +17,46 @@ namespace dlx
 {
     struct ParsedProgram;
 
+#define DLX_ENUM_EXCEPTION                                                                         \
+    DLX_ENUM_EXCEPTION_IMPL(None)                                                                  \
+    DLX_ENUM_EXCEPTION_IMPL(DivideByZero)                                                          \
+    DLX_ENUM_EXCEPTION_IMPL(Overflow)                                                              \
+    DLX_ENUM_EXCEPTION_IMPL(Underflow)                                                             \
+    DLX_ENUM_EXCEPTION_IMPL(Trap)                                                                  \
+    DLX_ENUM_EXCEPTION_IMPL(Halt)                                                                  \
+    DLX_ENUM_EXCEPTION_IMPL(UnknownLabel)                                                          \
+    DLX_ENUM_EXCEPTION_IMPL(BadShift)                                                              \
+    DLX_ENUM_EXCEPTION_IMPL(AddressOutOfBounds)                                                    \
+    DLX_ENUM_EXCEPTION_IMPL(RegisterOutOfBounds)
+
     enum class Exception
     {
-        None,
-        DivideByZero,
-        Overflow,
-        Underflow,
-        Trap,
-        Halt,
-        UnknownLabel,
-        BadShift,
-        AddressOutOfBounds,
-        RegisterOutOfBounds,
+#define DLX_ENUM_EXCEPTION_IMPL(name) name,
+
+        DLX_ENUM_EXCEPTION
+
+#undef DLX_ENUM_EXCEPTION_IMPL
+
+                NUMBER_OF_ELEMENTS,
     };
+
+    template <>
+    [[nodiscard]] constexpr std::string_view enum_name<Exception>(Exception value) noexcept
+    {
+        switch (value)
+        {
+#define DLX_ENUM_EXCEPTION_IMPL(name)                                                              \
+    case Exception::name:                                                                          \
+        return #name;
+
+            DLX_ENUM_EXCEPTION
+
+#undef DLX_ENUM_EXCEPTION_IMPL
+
+            default:
+                PHI_ASSERT_NOT_REACHED();
+        }
+    }
 
     enum class IntRegisterValueType
     {

@@ -8,7 +8,6 @@
 #include "DLX/Parser.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
-#include <magic_enum.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
@@ -485,11 +484,6 @@ namespace dlx
 
         switch (exception)
         {
-#if !defined(DLXEMU_COVERAGE_BUILD)
-            case Exception::None:
-                PHI_ASSERT_NOT_REACHED();
-                return;
-#endif
             case Exception::DivideByZero:
                 m_Halted = true;
                 DLX_ERROR("Division through zero");
@@ -523,6 +517,11 @@ namespace dlx
                 DLX_ERROR("Register out of bounds");
                 m_Halted = true;
                 return;
+
+#if !defined(DLXEMU_COVERAGE_BUILD)
+            default:
+                PHI_ASSERT_NOT_REACHED();
+#endif
         }
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
@@ -646,8 +645,8 @@ namespace dlx
             text.append("INSTR:\nNo program loaded\n");
         }
 
-        text.append(fmt::format("EX: {}\n", magic_enum::enum_name(m_LastRaisedException)));
-        text.append(fmt::format("IAT: {}", magic_enum::enum_name(m_CurrentInstructionAccessType)));
+        text.append(fmt::format("EX: {}\n", dlx::enum_name(m_LastRaisedException)));
+        text.append(fmt::format("IAT: {}", dlx::enum_name(m_CurrentInstructionAccessType)));
 
         return text;
     }

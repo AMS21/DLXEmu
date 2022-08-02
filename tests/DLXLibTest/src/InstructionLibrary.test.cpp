@@ -1,3 +1,4 @@
+#include "DLX/EnumName.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 #include <DLX/InstructionInfo.hpp>
@@ -28,8 +29,18 @@ TEST_CASE("InstructionLibrary")
         CHECK(info.GetOpCode() == opcode);
         CHECK(info.GetExecutor() != nullptr);
         CHECK((info.GetNumberOfRequiredArguments() >= 0).unsafe());
-        CHECK(info.GetArgumentType(0_u8) != dlx::ArgumentType::Unknown);
-        CHECK(info.GetArgumentType(1_u8) != dlx::ArgumentType::Unknown);
-        CHECK(info.GetArgumentType(2_u8) != dlx::ArgumentType::Unknown);
+
+        const dlx::ArgumentType arg_type_0 = info.GetArgumentType(0_u8);
+        const dlx::ArgumentType arg_type_1 = info.GetArgumentType(1_u8);
+        const dlx::ArgumentType arg_type_2 = info.GetArgumentType(2_u8);
+
+        CHECK(arg_type_0 != dlx::ArgumentType::Unknown);
+        CHECK_FALSE(dlx::enum_name(arg_type_0).empty());
+
+        CHECK(arg_type_1 != dlx::ArgumentType::Unknown);
+        CHECK_FALSE(dlx::enum_name(arg_type_1).empty());
+
+        CHECK(arg_type_2 != dlx::ArgumentType::Unknown);
+        CHECK_FALSE(dlx::enum_name(arg_type_2).empty());
     }
 }
