@@ -150,7 +150,6 @@ set(configure_options
     DEBUG_FLAGS
     OPTIMIZATION_FLAGS
     WARNINGS
-    WARNINGS_AS_ERRORS
     PEDANTIC
     FPM_PRECISE
     NO_EXCEPTIONS
@@ -159,19 +158,24 @@ set(configure_options
     EXTERNAL
     "external")
 
+# Warnings as errors
+if(NOT PHI_PLATFORM_EMSCRIPTEN)
+  set(configure_options ${configure_options} WARNINGS_AS_ERRORS)
+endif()
+
 # Sanitizer options
 set(san_options)
 if(DLXEMU_ENABLE_ASAN)
-  set(san_options "address")
+  set(san_options ${san_options} "address")
 endif()
 if(DLXEMU_ENABLE_LSAN)
-  set(san_options "${san_options};leak")
+  set(san_options ${san_options} "leak")
 endif()
 if(DLXEMU_ENABLE_TSAN)
-  set(san_options "${san_options};thread")
+  set(san_options ${san_options} "thread")
 endif()
 if(DLXEMU_ENABLE_UBSAN)
-  set(san_options "${san_options};undefined")
+  set(san_options ${san_options} "undefined")
 endif()
 
 if(san_options)

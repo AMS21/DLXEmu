@@ -89,7 +89,7 @@ namespace dlx
     std::string Token::DebugInfo() const noexcept
     {
         std::string pos_info =
-                fmt::format("({:d}:{:d}", GetLineNumber().unsafe(), GetColumn().unsafe());
+                fmt::format("({:d}:{:d})", GetLineNumber().unsafe(), GetColumn().unsafe());
 
         switch (m_Type)
         {

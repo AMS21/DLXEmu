@@ -179,19 +179,19 @@ template <typename T>
 [[nodiscard]] phi::optional<dlxemu::CodeEditor::Coordinates> consume_coordinates(
         const std::uint8_t* data, const std::size_t size, std::size_t& index) noexcept
 {
-    auto column_opt = consume_t<std::int16_t>(data, size, index);
+    auto column_opt = consume_t<std::uint32_t>(data, size, index);
     if (!column_opt)
     {
         return {};
     }
-    std::int16_t column = column_opt.value();
+    std::uint32_t column = column_opt.value();
 
-    auto line_opt = consume_t<std::int16_t>(data, size, index);
+    auto line_opt = consume_t<std::uint32_t>(data, size, index);
     if (!line_opt)
     {
         return {};
     }
-    std::int16_t line = line_opt.value();
+    std::uint32_t line = line_opt.value();
 
     dlxemu::CodeEditor::Coordinates coords;
     coords.m_Column = column;
@@ -796,19 +796,19 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetSelectionStart
             case 22: {
-                auto column_opt = consume_t<std::int32_t>(data, size, index);
+                auto column_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!column_opt)
                 {
                     return 0;
                 }
-                std::int32_t column = column_opt.value();
+                std::uint32_t column = column_opt.value();
 
-                auto line_opt = consume_t<std::int32_t>(data, size, index);
+                auto line_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!line_opt)
                 {
                     return 0;
                 }
-                std::int32_t line = line_opt.value();
+                std::uint32_t line = line_opt.value();
 
                 dlxemu::CodeEditor::Coordinates coord;
                 coord.m_Column = column;
@@ -823,19 +823,19 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetSelectionEnd
             case 23: {
-                auto column_opt = consume_t<std::int32_t>(data, size, index);
+                auto column_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!column_opt)
                 {
                     return 0;
                 }
-                std::int32_t column = column_opt.value();
+                std::uint32_t column = column_opt.value();
 
-                auto line_opt = consume_t<std::int32_t>(data, size, index);
+                auto line_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!line_opt)
                 {
                     return 0;
                 }
-                std::int32_t line = line_opt.value();
+                std::uint32_t line = line_opt.value();
 
                 dlxemu::CodeEditor::Coordinates coord;
                 coord.m_Column = column;
@@ -850,37 +850,37 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetSelection
             case 24: {
-                auto column_start_opt = consume_t<std::int32_t>(data, size, index);
+                auto column_start_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!column_start_opt)
                 {
                     return 0;
                 }
-                std::int32_t column_start = column_start_opt.value();
+                std::uint32_t column_start = column_start_opt.value();
 
-                auto line_start_opt = consume_t<std::int32_t>(data, size, index);
+                auto line_start_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!line_start_opt)
                 {
                     return 0;
                 }
-                std::int32_t line_start = line_start_opt.value();
+                std::uint32_t line_start = line_start_opt.value();
 
                 dlxemu::CodeEditor::Coordinates coord_start;
                 coord_start.m_Column = column_start;
                 coord_start.m_Line   = line_start;
 
-                auto column_end_opt = consume_t<std::int32_t>(data, size, index);
+                auto column_end_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!column_end_opt)
                 {
                     return 0;
                 }
-                std::int32_t column_end = column_end_opt.value();
+                std::uint32_t column_end = column_end_opt.value();
 
-                auto line_end_opt = consume_t<std::int32_t>(data, size, index);
+                auto line_end_opt = consume_t<std::uint32_t>(data, size, index);
                 if (!line_end_opt)
                 {
                     return 0;
                 }
-                std::int32_t line_end = line_end_opt.value();
+                std::uint32_t line_end = line_end_opt.value();
 
                 dlxemu::CodeEditor::Coordinates coord_end;
                 coord_end.m_Column = column_end;

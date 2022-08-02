@@ -122,8 +122,8 @@ namespace dlxemu
         std::uniform_int_distribution<std::size_t>   message_length_distrib(0, 20);
         std::uniform_int_distribution<std::uint16_t> bool_distrib(0, 1);
 
-        std::uniform_int_distribution<std::int16_t> coord_distrib(
-                -1, std::numeric_limits<std::int16_t>::max());
+        std::uniform_int_distribution<std::uint32_t> coord_distrib(
+                0, std::numeric_limits<std::uint32_t>::max());
         std::uniform_int_distribution<std::size_t> size_t_distrib(
                 std::numeric_limits<std::size_t>::min(), std::numeric_limits<std::size_t>::max());
         std::uniform_int_distribution<std::int32_t> int32_t_distrib(
@@ -374,8 +374,8 @@ namespace dlxemu
 
             // SetSelectionStart
             case 22: {
-                std::int32_t column = coord_distrib(engine);
-                std::int32_t line   = coord_distrib(engine);
+                std::uint32_t column = coord_distrib(engine);
+                std::uint32_t line   = coord_distrib(engine);
 
                 CodeEditor::Coordinates coord;
                 coord.m_Column = column;
@@ -387,8 +387,8 @@ namespace dlxemu
 
             // SetSelectionEnd
             case 23: {
-                std::int32_t column = coord_distrib(engine);
-                std::int32_t line   = coord_distrib(engine);
+                std::uint32_t column = coord_distrib(engine);
+                std::uint32_t line   = coord_distrib(engine);
 
                 CodeEditor::Coordinates coord;
                 coord.m_Column = column;
@@ -402,11 +402,11 @@ namespace dlxemu
             case 24: {
                 std::uniform_int_distribution<std::uint16_t> selection_mode_distrib(0, 2);
 
-                std::int32_t column_start = coord_distrib(engine);
-                std::int32_t line_start   = coord_distrib(engine);
+                std::uint32_t column_start = coord_distrib(engine);
+                std::uint32_t line_start   = coord_distrib(engine);
 
-                std::int32_t column_end = coord_distrib(engine);
-                std::int32_t line_end   = coord_distrib(engine);
+                std::uint32_t column_end = coord_distrib(engine);
+                std::uint32_t line_end   = coord_distrib(engine);
 
                 CodeEditor::Coordinates coord_start;
                 coord_start.m_Column = column_start;

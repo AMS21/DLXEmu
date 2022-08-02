@@ -93,7 +93,7 @@ namespace dlxemu
         public:
             Coordinates() noexcept;
 
-            Coordinates(phi::i32 line, phi::i32 column) noexcept;
+            Coordinates(phi::u32 line, phi::u32 column) noexcept;
 
             bool operator==(const Coordinates& other) const noexcept;
 
@@ -107,8 +107,8 @@ namespace dlxemu
 
             bool operator>=(const Coordinates& other) const noexcept;
 
-            phi::i32 m_Line;
-            phi::i32 m_Column;
+            phi::u32 m_Line;
+            phi::u32 m_Column;
         };
 
         using ErrorMarkers = std::map<phi::u32, std::string>;
@@ -276,10 +276,10 @@ namespace dlxemu
 
         using UndoBuffer = std::vector<UndoRecord>;
 
-        void                      Colorize(phi::i32 from_line = 0, phi::i32 count = -1) noexcept;
+        void                      Colorize(phi::u32 from_line = 0u, phi::i64 count = -1) noexcept;
         [[nodiscard]] float       TextDistanceToLineStart(const Coordinates& from) const noexcept;
         void                      EnsureCursorVisible() noexcept;
-        [[nodiscard]] phi::i32    GetPageSize() const noexcept;
+        [[nodiscard]] phi::u32    GetPageSize() const noexcept;
         [[nodiscard]] std::string GetText(const Coordinates& start,
                                           const Coordinates& end) const noexcept;
         [[nodiscard]] Coordinates GetActualCursorCoordinates() const noexcept;
@@ -288,7 +288,7 @@ namespace dlxemu
 
         void DeleteRange(const Coordinates& start, const Coordinates& end) noexcept;
 
-        phi::i32 InsertTextAt(Coordinates& where, const char* value) noexcept;
+        phi::u32 InsertTextAt(Coordinates& where, const char* value) noexcept;
 
         void AddUndo(UndoRecord& value) noexcept;
 
@@ -300,17 +300,18 @@ namespace dlxemu
         [[nodiscard]] std::string GetWordUnderCursor() const noexcept;
         [[nodiscard]] std::string GetWordAt(const Coordinates& coords) const noexcept;
 
-        [[nodiscard]] phi::i32 GetCharacterIndex(const Coordinates& coordinates) const noexcept;
-        [[nodiscard]] phi::i32 GetCharacterColumn(phi::i32 line_number,
-                                                  phi::i32 index) const noexcept;
-        [[nodiscard]] phi::i32 GetLineCharacterCount(phi::i32 line) const noexcept;
-        [[nodiscard]] phi::i32 GetLineMaxColumn(phi::i32 line) const noexcept;
+        [[nodiscard]] phi::u32 GetCharacterIndex(const Coordinates& coordinates) const noexcept;
+        [[nodiscard]] phi::u32 GetCharacterColumn(phi::u32 line_number,
+                                                  phi::u32 index) const noexcept;
+        [[nodiscard]] phi::u32 GetLineCharacterCount(phi::u32 line) const noexcept;
+        [[nodiscard]] phi::u32 GetLineMaxColumn(phi::u32 line) const noexcept;
+        [[nodiscard]] phi::u32 GetMaxLineNumber() const noexcept;
 
         [[nodiscard]] bool IsOnWordBoundary(const Coordinates& at) const noexcept;
 
-        void  RemoveLine(phi::i32 start, phi::i32 end) noexcept;
-        void  RemoveLine(phi::i32 index) noexcept;
-        Line& InsertLine(phi::i32 index) noexcept;
+        void  RemoveLine(phi::u32 start, phi::u32 end) noexcept;
+        void  RemoveLine(phi::u32 index) noexcept;
+        Line& InsertLine(phi::u32 index) noexcept;
 
         void EnterCharacterImpl(ImWchar character, bool shift) noexcept;
 
@@ -327,7 +328,7 @@ namespace dlxemu
         void ColorizeToken(const dlx::Token& token) noexcept;
         void ColorizeInternal() noexcept;
 
-        [[nodiscard]] phi::u8_fast GetTabSizeAt(phi::i32 column) const noexcept;
+        [[nodiscard]] phi::u8_fast GetTabSizeAt(phi::u32 column) const noexcept;
         [[nodiscard]] ImU32        GetPaletteForIndex(PaletteIndex index) const noexcept;
 
         void ResetState() noexcept;
@@ -338,19 +339,20 @@ namespace dlxemu
         UndoBuffer  m_UndoBuffer;
         phi::usize  m_UndoIndex;
 
-        phi::u8_fast  m_TabSize;
-        bool          m_Overwrite : 1;
-        bool          m_ReadOnly : 1;
-        bool          m_WithinRender : 1;
-        bool          m_ScrollToCursor : 1;
-        bool          m_ScrollToTop : 1;
-        bool          m_TextChanged : 1;
-        bool          m_ColorizerEnabled : 1;
-        bool          m_CursorPositionChanged : 1;
-        float         m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
-        phi::i32      m_LeftMargin;
-        phi::i32      m_ColorRangeMin;
-        phi::i32      m_ColorRangeMax;
+        phi::u8_fast m_TabSize;
+        bool         m_Overwrite : 1;
+        bool         m_ReadOnly : 1;
+        bool         m_WithinRender : 1;
+        bool         m_ScrollToCursor : 1;
+        bool         m_ScrollToTop : 1;
+        bool         m_TextChanged : 1;
+        bool         m_ColorizerEnabled : 1;
+        bool         m_CursorPositionChanged : 1;
+        float        m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
+        phi::i32     m_LeftMargin;
+        // TODO: For what are these two actually used??
+        phi::u32      m_ColorRangeMin;
+        phi::u32      m_ColorRangeMax;
         SelectionMode m_SelectionMode;
         bool          m_ShowWhitespaces : 1;
 

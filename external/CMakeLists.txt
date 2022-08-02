@@ -80,13 +80,15 @@ set(SPDLOG_NO_EXCEPTIONS
 add_subdirectory(spdlog)
 
 # benchmark
-set(BENCHMARK_ENABLE_TESTING
-    OFF
-    CACHE INTERNAL "")
-set(BENCHMARK_ENABLE_INSTALL
-    OFF
-    CACHE INTERNAL "")
-set(BENCHMARK_ENABLE_EXCEPTIONS
-    OFF
-    CACHE INTERNAL "")
-add_subdirectory(benchmark EXCLUDE_FROM_ALL)
+if(DLXEMU_BUILD_BENCHMARKS)
+  set(BENCHMARK_ENABLE_TESTING
+      OFF
+      CACHE INTERNAL "")
+  set(BENCHMARK_ENABLE_INSTALL
+      OFF
+      CACHE INTERNAL "")
+  set(BENCHMARK_ENABLE_EXCEPTIONS
+      OFF
+      CACHE INTERNAL "")
+  add_subdirectory(benchmark EXCLUDE_FROM_ALL)
+endif()

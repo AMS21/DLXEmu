@@ -19,9 +19,9 @@ static void BM_TokzenizeRandom(benchmark::State& state)
 
     // Prepare string
     std::string string;
-    string.resize(length);
+    string.resize(static_cast<phi::size_t>(length));
 
-    for (std::int64_t i{0}; i < length; ++i)
+    for (std::size_t i{0u}; i < static_cast<std::size_t>(length); ++i)
     {
         string[i] = dist(random_device);
     }
@@ -44,7 +44,7 @@ static void BM_TokzenizeADD(benchmark::State& state)
 
     // Prepare string
     std::string string;
-    string.reserve(count * string_length);
+    string.reserve(static_cast<phi::size_t>(count * string_length));
 
     for (std::int64_t i{0u}; i < count; ++i)
     {

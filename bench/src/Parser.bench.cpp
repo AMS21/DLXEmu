@@ -4,6 +4,7 @@
 #include <DLX/Tokenize.hpp>
 #include <phi/algorithm/string_length.hpp>
 #include <phi/compiler_support/warning.hpp>
+#include <phi/core/types.hpp>
 
 PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
@@ -14,7 +15,7 @@ static void BM_TokenizeAndParseADD(benchmark::State& state)
 
     // Prepare string
     std::string string;
-    string.reserve(count * string_length);
+    string.reserve(static_cast<phi::size_t>(count * string_length));
 
     for (std::int64_t i{0}; i < count; ++i)
     {
@@ -41,7 +42,7 @@ static void BM_ParseADD(benchmark::State& state)
 
     // Prepare string
     std::string string;
-    string.reserve(count * string_length);
+    string.reserve(static_cast<phi::size_t>(count * string_length));
 
     for (std::int64_t i{0}; i < count; ++i)
     {
@@ -68,11 +69,11 @@ static void BM_ParseADDR1R1R1(benchmark::State& state)
 {
     std::int64_t                count         = state.range(0);
     constexpr static const char test_string[] = "ADD, R1, R1, R1\n";
-    std::int64_t                string_length = phi::string_length(test_string).unsafe();
+    std::int64_t string_length = std::int64_t(phi::string_length(test_string).unsafe());
 
     // Prepare string
     std::string string;
-    string.reserve(count * string_length);
+    string.reserve(static_cast<phi::size_t>(count * string_length));
 
     for (std::int64_t i{0}; i < count; ++i)
     {
