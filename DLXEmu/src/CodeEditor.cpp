@@ -2968,11 +2968,12 @@ namespace dlxemu
                     --undo.m_RemovedStart.m_Column;
                     --m_State.m_CursorPosition.m_Column;
 
-                    while (cindex < static_cast<phi::uint32_t>(line.size()) && cend-- > cindex)
+                    while (cindex < static_cast<phi::uint32_t>(line.size()) && cend > cindex)
                     {
                         undo.m_Removed += static_cast<char>(
                                 line[static_cast<phi::size_t>(cindex.unsafe())].m_Char);
                         line.erase(line.begin() + cindex.unsafe());
+                        cend -= 1u;
                     }
                 }
             }

@@ -39,7 +39,6 @@ namespace dlxemu
         // No args
         if (argc <= 1)
         {
-            DLX_DEBUG("No args provides");
             return ShouldContinueInitilization::Yes;
         }
 
@@ -484,7 +483,7 @@ namespace dlxemu
 
     void Emulator::RenderOptionsMenu() noexcept
     {
-        constexpr static ImGuiWindowFlags options_flags =
+        constexpr const static ImGuiWindowFlags options_flags =
                 ImGuiWindowFlags_NoDocking + ImGuiWindowFlags_NoCollapse;
 
         if (ImGui::Begin("Options", &m_ShowOptionsMenu, options_flags))
