@@ -807,8 +807,7 @@ namespace dlxemu
         SetSelection(pos, pos);
         SetCursorPosition(pos);
 
-        const phi::u32 start_line = start.m_Line == 0u ? 0u : start.m_Line - 1u;
-        Colorize(start_line, total_lines + 2u);
+        Colorize(start.m_Line, total_lines);
     }
 
     void CodeEditor::MoveUp(phi::u32 amount, bool select) noexcept
@@ -1597,21 +1596,17 @@ namespace dlxemu
     {
         PHI_ASSERT(editor != nullptr);
 
-        // TODO: Why start colorizing at the previous line and go diff +2 anyways?
-
         if (!m_Added.empty())
         {
             editor->DeleteRange(m_AddedStart, m_AddedEnd);
-            editor->Colorize((m_AddedStart.m_Line == 0u) ? 0u : m_AddedStart.m_Line - 1u,
-                             m_AddedEnd.m_Line - m_AddedStart.m_Line + 2u);
+            editor->Colorize(m_AddedStart.m_Line, m_AddedEnd.m_Line - m_AddedStart.m_Line);
         }
 
         if (!m_Removed.empty())
         {
             Coordinates start = m_RemovedStart;
             editor->InsertTextAt(start, m_Removed.c_str());
-            editor->Colorize((start.m_Line == 0u) ? 0u : start.m_Line - 1u,
-                             m_RemovedEnd.m_Line - m_RemovedStart.m_Line + 2u);
+            editor->Colorize(start.m_Line, m_RemovedEnd.m_Line - m_RemovedStart.m_Line);
         }
 
         ApplyBeforeState(editor);
@@ -1625,16 +1620,14 @@ namespace dlxemu
         if (!m_Removed.empty())
         {
             editor->DeleteRange(m_RemovedStart, m_RemovedEnd);
-            editor->Colorize((m_RemovedStart.m_Line == 0u) ? 0u : m_RemovedStart.m_Line - 1u,
-                             m_RemovedEnd.m_Line - m_RemovedStart.m_Line + 1u);
+            editor->Colorize(m_RemovedStart.m_Line, m_RemovedEnd.m_Line - m_RemovedStart.m_Line);
         }
 
         if (!m_Added.empty())
         {
             Coordinates start = m_AddedStart;
             editor->InsertTextAt(start, m_Added.c_str());
-            editor->Colorize((start.m_Line == 0u) ? 0u : start.m_Line - 1u,
-                             m_AddedEnd.m_Line - m_AddedStart.m_Line + 1u);
+            editor->Colorize(start.m_Line, m_AddedEnd.m_Line - m_AddedStart.m_Line);
         }
 
         ApplyAfterState(editor);
@@ -2884,8 +2877,7 @@ namespace dlxemu
 
         AddUndo(undo);
 
-        // TODO: Why colorize the next 3 lines?
-        Colorize((coord.m_Line == 0u) ? 0u : coord.m_Line - 1u, 3u);
+        Colorize(coord.m_Line, 1u);
         EnsureCursorVisible();
     }
 
