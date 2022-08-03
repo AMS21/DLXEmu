@@ -800,12 +800,27 @@ TEST_CASE("crash-dba6d073dbbd3540a269e29713a6fdd2ec07810a")
 {
     dlxemu::CodeEditor editor{&emulator};
 
-    editor.EnterCharacter('\n', true);
-    editor.VerifyInternalState();
+    // Original
+    {
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
 
-    editor.AddErrorMarker(1u, "");
-    editor.VerifyInternalState();
+        editor.AddErrorMarker(1u, "");
+        editor.VerifyInternalState();
 
-    editor.Undo();
-    editor.VerifyInternalState();
+        editor.Undo();
+        editor.VerifyInternalState();
+    }
+
+    // Same but with break point
+    {
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
+
+        editor.AddBreakpoint(1u);
+        editor.VerifyInternalState();
+
+        editor.Undo();
+        editor.VerifyInternalState();
+    }
 }
