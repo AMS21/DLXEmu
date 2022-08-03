@@ -50,7 +50,7 @@ namespace dlxemu
     class CodeEditor
     {
     public:
-        enum class PaletteIndex : phi::int8_t
+        enum class PaletteIndex : phi::uint8_t
         {
             Default,
             OpCode,
@@ -69,7 +69,7 @@ namespace dlxemu
             Max
         };
 
-        enum class SelectionMode : phi::int8_t
+        enum class SelectionMode : phi::uint8_t
         {
             Normal,
             Word,
@@ -80,7 +80,7 @@ namespace dlxemu
         {
         public:
             phi::int32_t m_Line{-1};
-            bool         m_Enabled{false};
+            phi::boolean m_Enabled{false};
             std::string  m_Condition;
         };
 
@@ -98,17 +98,17 @@ namespace dlxemu
 
             Coordinates(phi::u32 line, phi::u32 column) noexcept;
 
-            bool operator==(const Coordinates& other) const noexcept;
+            [[nodiscard]] phi::boolean operator==(const Coordinates& other) const noexcept;
 
-            bool operator!=(const Coordinates& other) const noexcept;
+            [[nodiscard]] phi::boolean operator!=(const Coordinates& other) const noexcept;
 
-            bool operator<(const Coordinates& other) const noexcept;
+            [[nodiscard]] phi::boolean operator<(const Coordinates& other) const noexcept;
 
-            bool operator>(const Coordinates& other) const noexcept;
+            [[nodiscard]] phi::boolean operator>(const Coordinates& other) const noexcept;
 
-            bool operator<=(const Coordinates& other) const noexcept;
+            [[nodiscard]] phi::boolean operator<=(const Coordinates& other) const noexcept;
 
-            bool operator>=(const Coordinates& other) const noexcept;
+            [[nodiscard]] phi::boolean operator>=(const Coordinates& other) const noexcept;
 
             phi::u32 m_Line;
             phi::u32 m_Column;
@@ -154,7 +154,7 @@ namespace dlxemu
         [[nodiscard]] Breakpoints&       GetBreakpoints() noexcept;
         [[nodiscard]] const Breakpoints& GetBreakpoints() const noexcept;
 
-        void Render(const ImVec2& size = ImVec2(), bool border = false) noexcept;
+        void Render(const ImVec2& size = ImVec2(), phi::boolean border = false) noexcept;
 
         void                      SetText(const std::string& text) noexcept;
         [[nodiscard]] std::string GetText() const noexcept;
@@ -168,67 +168,69 @@ namespace dlxemu
 
         [[nodiscard]] phi::usize GetTotalLines() const noexcept;
 
-        void               SetOverwrite(bool overwrite) noexcept;
-        void               ToggleOverwrite() noexcept;
-        [[nodiscard]] bool IsOverwrite() const noexcept;
+        void                       SetOverwrite(phi::boolean overwrite) noexcept;
+        void                       ToggleOverwrite() noexcept;
+        [[nodiscard]] phi::boolean IsOverwrite() const noexcept;
 
-        void               SetReadOnly(bool value) noexcept;
-        void               ToggleReadOnly() noexcept;
-        [[nodiscard]] bool IsReadOnly() const noexcept;
+        void                       SetReadOnly(phi::boolean value) noexcept;
+        void                       ToggleReadOnly() noexcept;
+        [[nodiscard]] phi::boolean IsReadOnly() const noexcept;
 
-        [[nodiscard]] bool IsTextChanged() const noexcept;
-        [[nodiscard]] bool IsCursorPositionChanged() const noexcept;
+        [[nodiscard]] phi::boolean IsTextChanged() const noexcept;
+        [[nodiscard]] phi::boolean IsCursorPositionChanged() const noexcept;
 
-        void               SetColorizerEnable(bool value) noexcept;
-        void               ToggleColorizerEnabled() noexcept;
-        [[nodiscard]] bool IsColorizerEnabled() const noexcept;
+        void                       SetColorizerEnable(phi::boolean value) noexcept;
+        void                       ToggleColorizerEnabled() noexcept;
+        [[nodiscard]] phi::boolean IsColorizerEnabled() const noexcept;
 
         [[nodiscard]] Coordinates GetCursorPosition() const noexcept;
         void                      SetCursorPosition(const Coordinates& position) noexcept;
 
-        void               SetShowWhitespaces(bool value) noexcept;
-        void               ToggleShowWhitespaces() noexcept;
-        [[nodiscard]] bool IsShowingWhitespaces() const noexcept;
+        void                       SetShowWhitespaces(phi::boolean value) noexcept;
+        void                       ToggleShowWhitespaces() noexcept;
+        [[nodiscard]] phi::boolean IsShowingWhitespaces() const noexcept;
 
         void                       SetTabSize(phi::u8_fast new_tab_size) noexcept;
         [[nodiscard]] phi::u8_fast GetTabSize() const noexcept;
 
-        void EnterCharacter(ImWchar character, bool shift = false) noexcept;
+        void EnterCharacter(ImWchar character, phi::boolean shift = false) noexcept;
         void Backspace() noexcept;
 
         void InsertText(const std::string& value) noexcept;
         void InsertText(const char* value) noexcept;
 
-        void MoveUp(phi::u32 amount = 1u, bool select = false) noexcept;
-        void MoveDown(phi::u32 amount = 1u, bool select = false) noexcept;
-        void MoveLeft(phi::u32 amount = 1u, bool select = false, bool word_mode = false) noexcept;
-        void MoveRight(phi::u32 amount = 1u, bool select = false, bool word_mode = false) noexcept;
-        void MoveTop(bool select = false) noexcept;
-        void MoveBottom(bool select = false) noexcept;
-        void MoveHome(bool select = false) noexcept;
-        void MoveEnd(bool select = false) noexcept;
+        void MoveUp(phi::u32 amount = 1u, phi::boolean select = false) noexcept;
+        void MoveDown(phi::u32 amount = 1u, phi::boolean select = false) noexcept;
+        void MoveLeft(phi::u32 amount = 1u, phi::boolean select = false,
+                      phi::boolean word_mode = false) noexcept;
+        void MoveRight(phi::u32 amount = 1u, phi::boolean select = false,
+                       phi::boolean word_mode = false) noexcept;
+        void MoveTop(phi::boolean select = false) noexcept;
+        void MoveBottom(phi::boolean select = false) noexcept;
+        void MoveHome(phi::boolean select = false) noexcept;
+        void MoveEnd(phi::boolean select = false) noexcept;
 
-        void                      SetSelectionStart(const Coordinates& position) noexcept;
-        void                      SetSelectionEnd(const Coordinates& position) noexcept;
-        void                      SetSelection(const Coordinates& start, const Coordinates& end,
-                                               SelectionMode mode = SelectionMode::Normal) noexcept;
-        void                      SelectWordUnderCursor() noexcept;
-        void                      SelectAll() noexcept;
-        void                      ClearSelection() noexcept;
-        [[nodiscard]] bool        HasSelection() const noexcept;
-        [[nodiscard]] Coordinates GetSelectionStart() const noexcept;
-        [[nodiscard]] Coordinates GetSelectionEnd() const noexcept;
+        void                       SetSelectionStart(const Coordinates& position) noexcept;
+        void                       SetSelectionEnd(const Coordinates& position) noexcept;
+        void                       SetSelection(const Coordinates& start, const Coordinates& end,
+                                                SelectionMode mode = SelectionMode::Normal) noexcept;
+        void                       SelectWordUnderCursor() noexcept;
+        void                       SelectAll() noexcept;
+        void                       ClearSelection() noexcept;
+        [[nodiscard]] phi::boolean HasSelection() const noexcept;
+        [[nodiscard]] Coordinates  GetSelectionStart() const noexcept;
+        [[nodiscard]] Coordinates  GetSelectionEnd() const noexcept;
 
         void Copy() const noexcept;
         void Cut() noexcept;
         void Paste() noexcept;
         void Delete() noexcept;
 
-        [[nodiscard]] bool CanUndo() const noexcept;
-        void               Undo(phi::u32 steps = 1u) noexcept;
+        [[nodiscard]] phi::boolean CanUndo() const noexcept;
+        void                       Undo(phi::u32 steps = 1u) noexcept;
 
-        [[nodiscard]] bool CanRedo() const noexcept;
-        void               Redo(phi::u32 steps = 1u) noexcept;
+        [[nodiscard]] phi::boolean CanRedo() const noexcept;
+        void                       Redo(phi::u32 steps = 1u) noexcept;
 
         [[nodiscard]] std::string GetEditorDump() const noexcept;
 
@@ -246,9 +248,9 @@ namespace dlxemu
             Coordinates m_SelectionEnd;
             Coordinates m_CursorPosition;
 
-            bool operator==(const EditorState& other) const noexcept;
+            phi::boolean operator==(const EditorState& other) const noexcept;
 
-            bool operator!=(const EditorState& other) const noexcept;
+            phi::boolean operator!=(const EditorState& other) const noexcept;
         };
 
         class UndoRecord
@@ -310,13 +312,13 @@ namespace dlxemu
         [[nodiscard]] phi::u32 GetLineMaxColumn(phi::u32 line) const noexcept;
         [[nodiscard]] phi::u32 GetMaxLineNumber() const noexcept;
 
-        [[nodiscard]] bool IsOnWordBoundary(const Coordinates& at) const noexcept;
+        [[nodiscard]] phi::boolean IsOnWordBoundary(const Coordinates& at) const noexcept;
 
         void  RemoveLine(phi::u32 start, phi::u32 end) noexcept;
         void  RemoveLine(phi::u32 index) noexcept;
         Line& InsertLine(phi::u32 index) noexcept;
 
-        void EnterCharacterImpl(ImWchar character, bool shift) noexcept;
+        void EnterCharacterImpl(ImWchar character, phi::boolean shift) noexcept;
 
         void BackspaceImpl() noexcept;
         void DeleteSelection() noexcept;
@@ -343,19 +345,19 @@ namespace dlxemu
         phi::usize  m_UndoIndex;
 
         phi::u8_fast  m_TabSize;
-        bool          m_Overwrite : 1;
-        bool          m_ReadOnly : 1;
-        bool          m_WithinRender : 1;
-        bool          m_ScrollToCursor : 1;
-        bool          m_ScrollToTop : 1;
-        bool          m_TextChanged : 1;
-        bool          m_ColorizerEnabled : 1;
-        bool          m_CursorPositionChanged : 1;
+        phi::boolean  m_Overwrite;
+        phi::boolean  m_ReadOnly;
+        phi::boolean  m_WithinRender;
+        phi::boolean  m_ScrollToCursor;
+        phi::boolean  m_ScrollToTop;
+        phi::boolean  m_TextChanged;
+        phi::boolean  m_ColorizerEnabled;
+        phi::boolean  m_CursorPositionChanged;
         float         m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
         phi::u32      m_ColorRangeMin;
         phi::u32      m_ColorRangeMax;
         SelectionMode m_SelectionMode;
-        bool          m_ShowWhitespaces : 1;
+        phi::boolean  m_ShowWhitespaces;
 
         Palette m_PaletteBase;
         Palette m_Palette;
