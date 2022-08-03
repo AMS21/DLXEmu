@@ -798,10 +798,10 @@ TEST_CASE("crash-a2facddc6dcca65b1ed29b8b2db9860e5d85de5e")
 
 TEST_CASE("crash-dba6d073dbbd3540a269e29713a6fdd2ec07810a")
 {
-    dlxemu::CodeEditor editor{&emulator};
-
     // Original
     {
+        dlxemu::CodeEditor editor{&emulator};
+
         editor.EnterCharacter('\n', true);
         editor.VerifyInternalState();
 
@@ -814,6 +814,8 @@ TEST_CASE("crash-dba6d073dbbd3540a269e29713a6fdd2ec07810a")
 
     // Same but with break point
     {
+        dlxemu::CodeEditor editor{&emulator};
+
         editor.EnterCharacter('\n', true);
         editor.VerifyInternalState();
 
@@ -821,6 +823,37 @@ TEST_CASE("crash-dba6d073dbbd3540a269e29713a6fdd2ec07810a")
         editor.VerifyInternalState();
 
         editor.Undo();
+        editor.VerifyInternalState();
+    }
+}
+
+TEST_CASE("crash-fb51886e58a0f6657347eadf6e435a5253946875")
+{
+    // Original
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
+
+        editor.SetBreakpoints({2u});
+        editor.VerifyInternalState();
+
+        editor.ClearText();
+        editor.VerifyInternalState();
+    }
+
+    // Same but with error markers
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter('\n', true);
+        editor.VerifyInternalState();
+
+        editor.AddErrorMarker(2u, "");
+        editor.VerifyInternalState();
+
+        editor.ClearText();
         editor.VerifyInternalState();
     }
 }

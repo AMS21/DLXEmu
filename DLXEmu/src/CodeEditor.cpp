@@ -3664,6 +3664,10 @@ namespace dlxemu
         m_State.m_CursorPosition = Coordinates(0u, 0u);
         m_State.m_SelectionStart = Coordinates(0u, 0u);
         m_State.m_SelectionEnd   = Coordinates(0u, 0u);
+
+        // Clear breakpoints and markers
+        ClearBreakPoints();
+        ClearErrorMarkers();
     }
 
     void CodeEditor::FixSelectionAfterMove(phi::boolean select, Coordinates old_pos) noexcept
