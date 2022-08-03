@@ -41,6 +41,8 @@ SOFTWARE.
 #include <unordered_set>
 #include <vector>
 
+extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size);
+
 // TODO: Fully upgrade the lines and columns to 64 bit numbers
 
 namespace dlxemu
@@ -382,6 +384,9 @@ namespace dlxemu
         static const constexpr phi::u8_fast MaxTabSize{static_cast<phi::uint_fast8_t>(32u)};
 
         static const constexpr float LeftMargin{10.0f};
+
+        // Declare fuzzer function as a friend so it can access all members and functions
+        friend int ::LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size);
     };
 } // namespace dlxemu
 

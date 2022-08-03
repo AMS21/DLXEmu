@@ -1,16 +1,10 @@
+#include <DLXEmu/Emulator.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
 
 PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
-PHI_CLANG_SUPPRESS_WARNING("-Wkeyword-macro")
-
-// TODO: Declare LLVMFuzzerTestOneInput as a friend?
-
-// Evil hack to access private members and functions
-#define private public
-#include <DLXEmu/Emulator.hpp>
 
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)

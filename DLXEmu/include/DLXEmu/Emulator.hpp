@@ -102,5 +102,8 @@ namespace dlxemu
         bool m_ShowRegisterViewer{true};
         bool m_ShowAbout{false};
         bool m_ShowOptionsMenu{false};
+
+        // Declare fuzzer function as a friend so it can access all members and functions
+        friend int ::LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size);
     };
 } // namespace dlxemu
