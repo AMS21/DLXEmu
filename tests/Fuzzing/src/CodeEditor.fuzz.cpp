@@ -1,22 +1,21 @@
-#include "DLX/Logger.hpp"
+#include <DLX/Logger.hpp>
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <phi/algorithm/clamp.hpp>
+#include <phi/compiler_support/assume.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
-#include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/scope_guard.hpp>
+#include <phi/core/types.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
+#include <phi/type_traits/make_unsigned.hpp>
 #include <spdlog/fmt/bundled/core.h>
-#include <algorithm>
 #include <cmath>
 #include <cstdint>
-#include <limits>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 #if defined(FUZZ_VERBOSE_LOG)
@@ -28,10 +27,50 @@
 #    define FUZZ_LOG(...) PHI_EMPTY_MACRO()
 #endif
 
-static constexpr const std::size_t MaxVectorSize{0x1000};
+PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
+PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
-[[nodiscard]] bool has_x_more(const std::size_t index, const std::size_t x,
-                              const std::size_t size) noexcept
+// TODO: Use string_view as much as possible so we avoid needless copies
+
+// Limits
+static constexpr const phi::size_t MaxVectorSize{8u};
+static constexpr const phi::size_t MaxStringLength{16u};
+
+struct Cache
+{
+    using svec = std::vector<std::string>;
+
+    svec vector_string[MaxVectorSize];
+
+    std::string string;
+
+    static Cache Initialize() noexcept
+    {
+        Cache c;
+
+        // Resize vector args
+        for (phi::usize i{0u}; i < MaxVectorSize; ++i)
+        {
+            svec& vector = c.vector_string[i.unsafe()];
+            vector.resize(i.unsafe());
+
+            // Reserve max size
+            for (std::string& str : vector)
+            {
+                str.reserve(MaxStringLength);
+            }
+        }
+
+        c.string.reserve(MaxStringLength);
+
+        return c;
+    }
+};
+
+static Cache cache = Cache::Initialize();
+
+[[nodiscard]] constexpr bool has_x_more(const std::size_t index, const std::size_t x,
+                                        const std::size_t size) noexcept
 {
     return index + x < size;
 }
@@ -51,7 +90,7 @@ template <typename T>
         return {};
     }
 
-    PHI_ASSERT(index % sizeof(void*) == 0);
+    PHI_ASSUME(index % sizeof(void*) == 0);
 
     T value = *reinterpret_cast<const T*>(data + index);
     index += aligned_size<T>();
@@ -67,7 +106,7 @@ template <typename T>
         return {};
     }
 
-    PHI_ASSERT(index % sizeof(void*) == 0);
+    PHI_ASSUME(index % sizeof(void*) == 0);
 
     bool value = static_cast<bool>((data + index));
     index += aligned_size<bool>();
@@ -89,67 +128,43 @@ template <typename T>
     return consume_t<std::size_t>(data, size, index);
 }
 
-[[nodiscard]] phi::optional<std::string> consume_string(const std::uint8_t* data,
-                                                        const std::size_t   size,
-                                                        std::size_t&        index) noexcept
+[[nodiscard]] bool consume_string(const std::uint8_t* data, const std::size_t size,
+                                  std::size_t& index) noexcept
 {
-    std::string value;
+    const char* str_begin = reinterpret_cast<const char*>(data);
+    phi::size_t str_len   = 0u;
 
     while (index < size && data[index] != '\0')
     {
-        value += static_cast<char>(data[index]);
-        index++;
+        ++index;
+        ++str_len;
     }
 
-    // Make sure our string is null termianted
-    if (!value.empty())
+    // Reject too long strings
+    if (str_len - 1u > MaxStringLength)
     {
-        value.back() = '\0';
+        return false;
+    }
+
+    // Reject strings that are not null terminated
+    if (data[index - 1u] != '\0')
+    {
+        return false;
     }
 
     // Move back to proper alignemnt
     index += (sizeof(void*) - (index % sizeof(void*)));
 
-    return value;
+    // Assign string value to cache
+    cache.string = str_begin;
+
+    return true;
 }
 
-[[nodiscard]] bool is_valid_ascii_char(char c) noexcept
-{
-    return c == '\0' || c == '\t' || (c >= 32 && c <= 126);
-}
-
-[[nodiscard]] phi::optional<std::string> consume_ascii_string(const std::uint8_t* data,
-                                                              const std::size_t   size,
-                                                              std::size_t&        index) noexcept
-{
-    std::string value;
-
-    while (index < size && data[index] != '\0')
-    {
-        if (!is_valid_ascii_char(static_cast<char>(data[index])))
-        {
-            // Reject non printable ascii characters
-            return {};
-        }
-
-        value += static_cast<char>(data[index]);
-        index++;
-    }
-
-    // Make sure our string is null termianted
-    if (!value.empty())
-    {
-        value.append("\0");
-    }
-
-    // Move back to proper alignemnt
-    index += (sizeof(void*) - (index % sizeof(void*)));
-
-    return value;
-}
-
-[[nodiscard]] phi::optional<std::vector<std::string>> consume_vector_string(
-        const std::uint8_t* data, const std::size_t size, std::size_t& index) noexcept
+// Returns an index into cache.vector_string
+[[nodiscard]] phi::optional<phi::size_t> consume_vector_string(const std::uint8_t* data,
+                                                               const std::size_t   size,
+                                                               std::size_t&        index) noexcept
 {
     auto number_of_lines_opt = consume_size_t(data, size, index);
     if (!number_of_lines_opt)
@@ -157,22 +172,24 @@ template <typename T>
         return {};
     }
 
-    std::size_t              number_of_lines = std::min(number_of_lines_opt.value(), MaxVectorSize);
-    std::vector<std::string> result;
-    result.reserve(number_of_lines);
+    const std::size_t number_of_lines = number_of_lines_opt.value();
+    if (number_of_lines >= MaxVectorSize)
+    {
+        return {};
+    }
 
+    std::vector<std::string>& res = cache.vector_string[number_of_lines];
     for (std::size_t i{0u}; i < number_of_lines; ++i)
     {
-        auto message_opt = consume_ascii_string(data, size, index);
-        if (!message_opt)
+        if (!consume_string(data, size, index))
         {
             return {};
         }
 
-        result.emplace_back(message_opt.value());
+        res[i] = cache.string;
     }
 
-    return result;
+    return number_of_lines;
 }
 
 [[nodiscard]] phi::optional<dlxemu::CodeEditor::Coordinates> consume_coordinates(
@@ -192,17 +209,38 @@ template <typename T>
     }
     std::uint32_t line = line_opt.value();
 
-    dlxemu::CodeEditor::Coordinates coords;
-    coords.m_Column = column;
-    coords.m_Line   = line;
-
-    return coords;
+    return dlxemu::CodeEditor::Coordinates{column, line};
 }
 
 template <typename T>
 [[nodiscard]] std::string print_int(const T val) noexcept
 {
-    return fmt::format("{0:d} 0x{1:02X}", val, static_cast<std::make_unsigned_t<T>>(val));
+    return fmt::format("{0:d} 0x{1:02X}", val, static_cast<phi::make_unsigned_t<T>>(val));
+}
+
+template <typename T>
+[[nodiscard]] std::string pretty_char(const T c) noexcept
+{
+    switch (c)
+    {
+        case '\n':
+            return "\\n";
+        case '\0':
+            return "\\0";
+        case '\t':
+            return "\\t";
+        case '\r':
+            return "\\r";
+        case '\a':
+            return "\\a";
+        case '\v':
+            return "\\v";
+        case '"':
+            return "\\\"";
+
+        default:
+            return {1u, static_cast<const char>(c)};
+    }
 }
 
 [[nodiscard]] std::string print_string(const std::string& str) noexcept
@@ -215,34 +253,7 @@ template <typename T>
         hex_str += fmt::format("\\0x{:02X}, ", static_cast<std::uint8_t>(c));
 
         // Make some special characters printable
-        switch (c)
-        {
-            case '\n':
-                print_str += "\\n";
-                break;
-            case '\0':
-                print_str += "\\0";
-                break;
-            case '\t':
-                print_str += "\\t";
-                break;
-            case '\r':
-                print_str += "\\r";
-                break;
-            case '\a':
-                print_str += "\\a";
-                break;
-            case '\v':
-                print_str += "\\v";
-                break;
-            case '"':
-                print_str += "\\\"";
-                break;
-
-            default:
-                print_str += c;
-                break;
-        }
+        print_str += pretty_char(c);
     }
 
     return fmt::format("String(\"{:s}\" size: {:d} ({:s}))", print_str, str.size(),
@@ -251,36 +262,7 @@ template <typename T>
 
 [[nodiscard]] std::string print_char(const ImWchar character) noexcept
 {
-    std::string print_str;
-
-    // Make some special characters printable
-    switch (character)
-    {
-        case '\n':
-            print_str += "\\n";
-            break;
-        case '\0':
-            print_str += "\\0";
-            break;
-        case '\t':
-            print_str += "\\t";
-            break;
-        case '\v':
-            print_str += "\\v";
-            break;
-        case '\r':
-            print_str += "\\r";
-            break;
-        case '\b':
-            print_str += "\\b";
-            break;
-
-        default:
-            print_str += static_cast<char>(character);
-            break;
-    }
-
-    return fmt::format(R"(ImWchar("{:s}" (\0x{:02X})))", print_str,
+    return fmt::format(R"(ImWchar("{:s}" (\0x{:02X})))", pretty_char(character),
                        static_cast<std::uint32_t>(character));
 }
 
@@ -452,12 +434,11 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 std::uint32_t line_number = line_number_opt.value();
 
-                auto message_opt = consume_ascii_string(data, size, index);
-                if (!message_opt)
+                if (!consume_string(data, size, index))
                 {
                     return 0;
                 }
-                std::string message = message_opt.value();
+                std::string& message = cache.string;
 
                 FUZZ_LOG("AddErrorMarker({:s}, {:s})", print_int(line_number),
                          print_string(message));
@@ -476,12 +457,11 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetText
             case 2: {
-                auto text_opt = consume_ascii_string(data, size, index);
-                if (!text_opt)
+                if (!consume_string(data, size, index))
                 {
                     return 0;
                 }
-                std::string text = text_opt.value();
+                std::string& text = cache.string;
 
                 FUZZ_LOG("SetText({:s})", print_string(text));
 
@@ -506,7 +486,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                     return 0;
                 }
 
-                std::vector<std::string> lines = lines_opt.value();
+                const std::vector<std::string>& lines = cache.vector_string[lines_opt.value()];
 
                 FUZZ_LOG("SetTextLines({:s})", print_vector_string(lines));
 
@@ -545,7 +525,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             case 8: {
                 auto read_only_opt = consume_bool(data, size, index);
                 if (!read_only_opt)
-
                 {
                     return 0;
                 }
@@ -615,13 +594,12 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // InsertText
             case 13: {
-                auto message_opt = consume_ascii_string(data, size, index);
-                if (!message_opt)
+                if (!consume_string(data, size, index))
                 {
                     return 0;
                 }
 
-                std::string message = message_opt.value();
+                std::string& message = cache.string;
 
                 FUZZ_LOG("InsertText({:s})", print_string(message));
 
@@ -886,16 +864,15 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 coord_end.m_Line   = line_end;
 
                 auto selection_mode_opt = consume_t<std::uint8_t>(data, size, index);
-                if (!selection_mode_opt)
+                if (!selection_mode_opt || selection_mode_opt.value() > 2u)
                 {
                     return 0;
                 }
                 dlxemu::CodeEditor::SelectionMode selection_mode =
-                        static_cast<dlxemu::CodeEditor::SelectionMode>(phi::clamp(
-                                selection_mode_opt.value(), static_cast<phi::uint8_t>(0u),
-                                static_cast<phi::uint8_t>(2u)));
+                        static_cast<dlxemu::CodeEditor::SelectionMode>(selection_mode_opt.value());
 
-                FUZZ_LOG("SetSelection(Coordinates({:s}, {:s}), Coordiantes({:s}, {:s}), {:s})",
+                FUZZ_LOG("SetSelection(Coordinates({:s}, {:s}), Coordiantes({:s}, "
+                         "{:s}), {:s})",
                          print_int(line_start), print_int(column_start), print_int(line_end),
                          print_int(column_end), dlx::enum_name(selection_mode));
 
@@ -962,12 +939,11 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                     }
                     std::uint32_t line_number = line_number_opt.value();
 
-                    auto message_opt = consume_ascii_string(data, size, index);
-                    if (!message_opt)
+                    if (!consume_string(data, size, index))
                     {
                         return 0;
                     }
-                    std::string message = message_opt.value();
+                    std::string& message = cache.string;
 
                     // Add to error markers
                     markers[line_number] = message;

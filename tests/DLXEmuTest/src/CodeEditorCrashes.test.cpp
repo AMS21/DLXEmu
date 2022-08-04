@@ -4,7 +4,6 @@
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
 #include <imgui.h>
-#include <math.h>
 #include <phi/compiler_support/warning.hpp>
 
 using namespace phi::literals;
