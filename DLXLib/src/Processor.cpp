@@ -25,10 +25,8 @@ PHI_GCC_SUPPRESS_WARNING("-Wstrict-aliasing")
 
 namespace dlx
 {
-    using phi::f64;
-
-    static phi::boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
-                                                  RegisterAccessType access) noexcept
+    static constexpr phi::boolean RegisterAccessTypeMatches(RegisterAccessType expected_access,
+                                                            RegisterAccessType access) noexcept
     {
         PHI_ASSERT(access == RegisterAccessType::Signed || access == RegisterAccessType::Unsigned ||
                    access == RegisterAccessType::Float || access == RegisterAccessType::Double);
@@ -213,9 +211,9 @@ namespace dlx
                                              RegisterAccessType::Double),
                    "Mismatch for instruction access type");
 
-        if (id == FloatRegisterID::F31)
+        if (phi::to_underlying(id) % 2 == 1)
         {
-            Raise(Exception::RegisterOutOfBounds);
+            Raise(Exception::MisalignedRegisterAccess);
             return {0.0};
         }
 
@@ -282,9 +280,9 @@ namespace dlx
                                              RegisterAccessType::Double),
                    "Mismatch for instruction access type");
 
-        if (id == FloatRegisterID::F31)
+        if (phi::to_underlying(id) % 2 == 1)
         {
-            Raise(Exception::RegisterOutOfBounds);
+            Raise(Exception::MisalignedRegisterAccess);
             return;
         }
 
@@ -499,8 +497,7 @@ namespace dlx
                 DLX_ERROR("Trapped");
                 return;
             case Exception::Halt:
-                m_Halted                       = true;
-                m_CurrentInstructionAccessType = RegisterAccessType::Ignored;
+                m_Halted = true;
                 return;
             case Exception::UnknownLabel:
                 m_Halted = true;
@@ -513,8 +510,8 @@ namespace dlx
                 DLX_ERROR("Address out of bounds");
                 m_Halted = true;
                 return;
-            case Exception::RegisterOutOfBounds:
-                DLX_ERROR("Register out of bounds");
+            case Exception::MisalignedRegisterAccess:
+                DLX_ERROR("Misaligned register access");
                 m_Halted = true;
                 return;
 

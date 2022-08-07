@@ -4,6 +4,13 @@
 #include <DLX/Processor.hpp>
 #include <DLX/RegisterNames.hpp>
 #include <phi/compiler_support/warning.hpp>
+#include <phi/core/types.hpp>
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
+#include <spdlog/fmt/bundled/core.h>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wfloat-equal")
 PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
@@ -4440,27 +4447,31 @@ TEST_CASE("Storing invalid address - SD")
     CHECK(proc.GetLastRaisedException() == dlx::Exception::AddressOutOfBounds);
 }
 
-TEST_CASE("Register out of bounds")
+TEST_CASE("MisalignedRegisterAccess")
 {
-    // Write out of bounds
-    res = dlx::Parser::Parse("ADDD F31 F0 F0");
-    REQUIRE(res.m_ParseErrors.empty());
+    // Iterate over all odd registers
+    for (phi::usize i{1u}; i < 30u; i += 2u)
+    {
+        // Write to
+        res = dlx::Parser::Parse(fmt::format("ADDD F{} F0 F0", i.unsafe()));
+        REQUIRE(res.m_ParseErrors.empty());
 
-    proc.LoadProgram(res);
-    proc.ExecuteCurrentProgram();
+        proc.LoadProgram(res);
+        proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IsHalted());
-    CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
+        CHECK(proc.IsHalted());
+        CHECK(proc.GetLastRaisedException() == dlx::Exception::MisalignedRegisterAccess);
 
-    // Read out of bounds
-    res = dlx::Parser::Parse("ADDD F0 F31 F0");
-    REQUIRE(res.m_ParseErrors.empty());
+        // Read from
+        res = dlx::Parser::Parse(fmt::format("ADDD F0 F{} F0", i.unsafe()));
+        REQUIRE(res.m_ParseErrors.empty());
 
-    proc.LoadProgram(res);
-    proc.ExecuteCurrentProgram();
+        proc.LoadProgram(res);
+        proc.ExecuteCurrentProgram();
 
-    CHECK(proc.IsHalted());
-    CHECK(proc.GetLastRaisedException() == dlx::Exception::RegisterOutOfBounds);
+        CHECK(proc.IsHalted());
+        CHECK(proc.GetLastRaisedException() == dlx::Exception::MisalignedRegisterAccess);
+    }
 }
 
 // Other tests

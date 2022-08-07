@@ -27,7 +27,7 @@ namespace dlx
     DLX_ENUM_EXCEPTION_IMPL(UnknownLabel)                                                          \
     DLX_ENUM_EXCEPTION_IMPL(BadShift)                                                              \
     DLX_ENUM_EXCEPTION_IMPL(AddressOutOfBounds)                                                    \
-    DLX_ENUM_EXCEPTION_IMPL(RegisterOutOfBounds)
+    DLX_ENUM_EXCEPTION_IMPL(MisalignedRegisterAccess)
 
     enum class Exception
     {
