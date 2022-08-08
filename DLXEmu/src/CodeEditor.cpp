@@ -3148,7 +3148,8 @@ namespace dlxemu
         {
             SelectAll();
         }
-        else if (!IsReadOnly() && !ctrl && !shift && !alt && ImGui::IsKeyPressed(ImGuiKey_Enter))
+        else if (!IsReadOnly() && !ctrl && !shift && !alt &&
+                 (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)))
         {
             EnterCharacterImpl('\n', false);
         }
