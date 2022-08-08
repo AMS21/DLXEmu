@@ -28,9 +28,7 @@ namespace dlx
     {
         std::string text;
 
-        bool valid = !m_Instructions.empty() && m_ParseErrors.empty();
-
-        text.append(fmt::format("Valid: {:s}\n\n", valid ? "True" : "False"));
+        text.append(fmt::format("Valid: {:s}\n\n", IsValid() ? "True" : "False"));
 
         // Parser errors
         text.append("Parser errors:\n");
