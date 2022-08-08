@@ -10,6 +10,7 @@
 #include <phi/core/optional.hpp>
 #include <phi/core/scope_guard.hpp>
 #include <phi/core/types.hpp>
+#include <phi/math/abs.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
 #include <phi/type_traits/make_unsigned.hpp>
 #include <spdlog/fmt/bundled/core.h>
@@ -381,6 +382,9 @@ void EndImGui() noexcept
     }
 
     ImGui::EndFrame();
+
+    // Ensure frame count doesn't overflow
+    GImGui->FrameCount %= 16384;
 }
 
 bool InitializeLogger()
@@ -391,25 +395,25 @@ bool InitializeLogger()
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
 {
-    static bool imgui_init = SetupImGui();
-    (void)imgui_init;
-
 #if defined(FUZZ_LOG)
     static bool log_init = dlx::InitializeDefaultLogger();
     (void)log_init;
 #endif
 
-    // Ensure frame count doesn't overflow
-    if (GImGui)
-    {
-        GImGui->FrameCount %= 16384;
-    }
+    static bool imgui_init = SetupImGui();
+    (void)imgui_init;
 
-    ImGui::NewFrame();
-    auto guard = phi::make_scope_guard(&EndImGui);
+    // Reset some ImGui states
+    ImGui::GetIO().ClearInputCharacters();
+    ImGui::GetIO().ClearInputKeys();
+    ImGui::GetIO().InputQueueSurrogate = 0;
+    GImGui->InputEventsQueue.resize(0u);
+    ImGui::FocusWindow(nullptr);
 
     dlxemu::Emulator   emulator;
     dlxemu::CodeEditor editor{&emulator};
+
+    editor.UpdatePalette();
 
     FUZZ_LOG("Beginning execution");
 
@@ -1011,7 +1015,10 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
                 FUZZ_LOG("Render(ImVec2({:f}, {:f}), {:s})", x, y, border ? "true" : "false");
 
+                ImGui::NewFrame();
                 editor.Render(size_vec, border);
+                EndImGui();
+
                 break;
             }
 
@@ -1057,6 +1064,208 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 FUZZ_LOG("Backspace");
 
                 editor.Backspace();
+                break;
+            }
+
+            // ImGui::AddKeyEvent
+            case 37: {
+                auto key_opt = consume_t<ImGuiKey>(data, size, index);
+                if (!key_opt)
+                {
+                    return 0;
+                }
+                ImGuiKey key = key_opt.value();
+
+                if (!ImGui::IsNamedKey(key))
+                {
+                    return 0;
+                }
+
+                auto down_opt = consume_bool(data, size, index);
+                if (!down_opt)
+                {
+                    return 0;
+                }
+                bool down = down_opt.value();
+
+                FUZZ_LOG("ImGui::GetIO().AddKeyEvent({}, {:s})", key, print_bool(down));
+                ImGui::GetIO().AddKeyEvent(key, down);
+
+                break;
+            }
+
+            // ImGui::AddKeyAnalogEvent
+            case 38: {
+                auto key_opt = consume_t<ImGuiKey>(data, size, index);
+                if (!key_opt)
+                {
+                    return 0;
+                }
+                ImGuiKey key = key_opt.value();
+
+                if (!ImGui::IsNamedKey(key))
+                {
+                    return 0;
+                }
+
+                auto down_opt = consume_bool(data, size, index);
+                if (!down_opt)
+                {
+                    return 0;
+                }
+                bool down = down_opt.value();
+
+                auto value_opt = consume_t<float>(data, size, index);
+                if (!value_opt)
+                {
+                    return 0;
+                }
+                float value = value_opt.value();
+
+                FUZZ_LOG("ImGui::GetIO().AddKeyAnalogEvent({}, {:s}, {:f})", key, print_bool(down),
+                         value);
+                ImGui::GetIO().AddKeyAnalogEvent(key, down, value);
+
+                break;
+            }
+
+            // ImGui::AddMousePosEvent
+            case 39: {
+                auto x_opt = consume_t<float>(data, size, index);
+                if (!x_opt)
+                {
+                    return 0;
+                }
+                float x = x_opt.value();
+
+                if (phi::abs(x) >= 1024.0f)
+                {
+                    return 0;
+                }
+
+                auto y_opt = consume_t<float>(data, size, index);
+                if (!y_opt)
+                {
+                    return 0;
+                }
+                float y = y_opt.value();
+
+                if (phi::abs(y) >= 1024.0f)
+                {
+                    return 0;
+                }
+
+                FUZZ_LOG("ImGui::GetIO().AddMousePosEvent({:f}, {:f})", x, y);
+                ImGui::GetIO().AddMousePosEvent(x, y);
+
+                break;
+            }
+
+            // ImGui::AddMouseButtonEvent
+            case 40: {
+                auto button_opt = consume_t<int>(data, size, index);
+                if (!button_opt)
+                {
+                    return 0;
+                }
+                int button = button_opt.value();
+
+                if (button < 0 || button >= ImGuiMouseButton_COUNT)
+                {
+                    return 0;
+                }
+
+                auto down_opt = consume_bool(data, size, index);
+                if (!down_opt)
+                {
+                    return 0;
+                }
+                bool down = down_opt.value();
+
+                FUZZ_LOG("ImGui::GetIO().AddMouseButtonEvent({}, {:s})", button, print_bool(down));
+                ImGui::GetIO().AddMouseButtonEvent(button, down);
+
+                break;
+            }
+
+            // ImGui::AddMouseWheelEvent
+            case 41: {
+                auto wh_x_opt = consume_t<float>(data, size, index);
+                if (!wh_x_opt)
+                {
+                    return 0;
+                }
+                float wh_x = wh_x_opt.value();
+
+                auto wh_y_opt = consume_t<float>(data, size, index);
+                if (!wh_y_opt)
+                {
+                    return 0;
+                }
+                float wh_y = wh_y_opt.value();
+
+                FUZZ_LOG("ImGui::GetIO().AddMouseWheelEvent({:f}, {:f})", wh_x, wh_y);
+                ImGui::GetIO().AddMouseWheelEvent(wh_x, wh_y);
+
+                break;
+            }
+
+            // ImGui::AddFocusEvent
+            case 42: {
+                auto focused_opt = consume_bool(data, size, index);
+                if (!focused_opt)
+                {
+                    return 0;
+                }
+                bool focused = focused_opt.value();
+
+                FUZZ_LOG("ImGui::GetIO().AddFocusEvent({:s})", print_bool(focused));
+                ImGui::GetIO().AddFocusEvent(focused);
+
+                break;
+            }
+
+            // ImGui::AddInputCharacter
+            case 43: {
+                auto c_opt = consume_t<unsigned int>(data, size, index);
+                if (!c_opt)
+                {
+                    return 0;
+                }
+                unsigned int c = c_opt.value();
+
+                FUZZ_LOG("ImGui::GetIO().AddInputCharacter({})", c);
+                ImGui::GetIO().AddInputCharacter(c);
+
+                break;
+            }
+
+            // ImGui::AddInputCharacterUTF16
+            case 44: {
+                auto c_opt = consume_t<ImWchar16>(data, size, index);
+                if (!c_opt)
+                {
+                    return 0;
+                }
+                ImWchar16 c = c_opt.value();
+
+                FUZZ_LOG("ImGui::GetIO().AddInputCharacterUTF16({})", c);
+                ImGui::GetIO().AddInputCharacterUTF16(c);
+
+                break;
+            }
+
+            // ImGui::AddInputCharactersUTF8
+            case 45: {
+                if (!consume_string(data, size, index))
+                {
+                    return 0;
+                }
+                std::string& str = cache.string;
+
+                FUZZ_LOG("ImGui::GetIO().AddInputCharactersUTF8({:s})", print_string(str));
+                ImGui::GetIO().AddInputCharactersUTF8(str.c_str());
+
                 break;
             }
 
