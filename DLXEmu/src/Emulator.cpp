@@ -255,7 +255,7 @@ namespace dlxemu
                     m_CodeEditor.Copy();
                 }
 
-                const bool can_paste =
+                const phi::boolean can_paste =
                         phi::string_length(ImGui::GetClipboardText()) != 0u && !m_DisableEditing;
 
                 if (ImGui::MenuItem("Paste", "CTRL+V", false, can_paste))

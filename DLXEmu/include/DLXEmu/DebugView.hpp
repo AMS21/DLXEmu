@@ -1,5 +1,7 @@
 #pragma once
 
+#include <phi/core/boolean.hpp>
+
 namespace dlxemu
 {
     class Emulator;

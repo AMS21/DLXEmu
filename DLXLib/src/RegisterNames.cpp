@@ -2,6 +2,7 @@
 
 #include <phi/compiler_support/extended_attributes.hpp>
 #include <phi/compiler_support/warning.hpp>
+#include <phi/core/boolean.hpp>
 #include <string_view>
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
@@ -118,7 +119,7 @@ namespace dlx
         return FloatRegisterID::None;
     }
 
-    PHI_ATTRIBUTE_CONST bool IsFPSR(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean IsFPSR(std::string_view token) noexcept
     {
         if (token.length() == 4)
         {

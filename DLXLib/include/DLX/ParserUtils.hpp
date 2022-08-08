@@ -120,13 +120,13 @@ namespace dlx
         }
 
         std::int32_t number{0};
-        bool         is_negative{false};
-        bool         starts_with_zero{false};
-        bool         parsing_binary{false};
-        bool         parsing_octal{false};
-        bool         parsing_hexadecimal{false};
-        bool         parsed_something{false};
-        bool         parsed_seperator{false};
+        phi::boolean is_negative{false};
+        phi::boolean starts_with_zero{false};
+        phi::boolean parsing_binary{false};
+        phi::boolean parsing_octal{false};
+        phi::boolean parsing_hexadecimal{false};
+        phi::boolean parsed_something{false};
+        phi::boolean parsed_seperator{false};
 
         // TODO: Move x'th character checks out of the for loop
 

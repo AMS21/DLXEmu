@@ -1,6 +1,7 @@
 #include "DLX/Logger.hpp"
 
 #include <phi/core/assert.hpp>
+#include <phi/core/boolean.hpp>
 #include <spdlog/common.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
@@ -11,14 +12,12 @@ static constexpr const char DefaultFormattingString[]{
 
 namespace dlx
 {
-    static bool is_initialized{false};
+    static phi::boolean is_initialized{false};
 
-    bool InitializeDefaultLogger() noexcept
+    phi::boolean InitializeDefaultLogger() noexcept
     {
         PHI_ASSERT(!is_initialized, "Logger is already initialized");
 
-        // try
-        // {
         std::shared_ptr<spdlog::logger> console = spdlog::stdout_color_mt("");
         spdlog::set_default_logger(console);
         spdlog::set_pattern(DefaultFormattingString);
@@ -33,15 +32,6 @@ namespace dlx
         is_initialized = true;
 
         return true;
-        /*
-        }
-        catch (const spdlog::spdlog_ex& ex)
-        {
-            std::cerr << "Failed to initalize logger!\n";
-            std::cerr << "spdlog message: " << ex.what() << '\n';
-            return false;
-        }
-        */
     }
 
     spdlog::logger* GetLogger() noexcept

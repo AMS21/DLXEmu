@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CodeEditor.hpp"
-#include "DLX/TokenStream.hpp"
 #include "DebugView.hpp"
 #include "MemoryViewer.hpp"
 #include "RegisterViewer.hpp"
@@ -10,6 +9,7 @@
 #include <DLX/Parser.hpp>
 #include <DLX/Processor.hpp>
 #include <DLX/Token.hpp>
+#include <DLX/TokenStream.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
@@ -88,8 +88,8 @@ namespace dlxemu
 #endif
 
         ExecutionMode m_CurrentExecutionMode{ExecutionMode::None};
-        double        m_LastExecTime{0.0};
-        double        m_StepThroughDelayMS{0.5f};
+        phi::f64      m_LastExecTime{0.0};
+        phi::f64      m_StepThroughDelayMS{0.5};
         phi::boolean  m_DisableEditing{false};
 
         // Menu

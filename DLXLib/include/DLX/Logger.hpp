@@ -1,6 +1,7 @@
 #pragma once
 
 #include <phi/compiler_support/warning.hpp>
+#include <phi/core/boolean.hpp>
 #include <phi/phi_config.hpp>
 
 #if defined(DLX_NO_LOG)
@@ -21,7 +22,7 @@ PHI_GCC_SUPPRESS_WARNING_POP()
 
 namespace dlx
 {
-    bool InitializeDefaultLogger() noexcept;
+    phi::boolean InitializeDefaultLogger() noexcept;
 
     [[nodiscard]] spdlog::logger* GetLogger() noexcept;
 } // namespace dlx

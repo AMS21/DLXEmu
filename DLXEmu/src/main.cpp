@@ -8,7 +8,7 @@
 
 #    include <emscripten.h>
 
-static bool inited{false};
+static phi::boolean inited{false};
 
 extern "C" void main_loop(void* /*data*/) noexcept
 {

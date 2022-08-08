@@ -1,6 +1,7 @@
 #include "DLX/ParsedProgram.hpp"
 
 #include <phi/compiler_support/warning.hpp>
+#include <phi/core/boolean.hpp>
 #include <phi/core/move.hpp>
 
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")

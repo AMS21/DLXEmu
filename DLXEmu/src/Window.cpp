@@ -18,8 +18,8 @@ extern ImGuiContext* GImGui;
 // GLFW needs to be included after opengl
 #include <GLFW/glfw3.h>
 
-static bool glfw_initialized{false};
-static bool imgui_initialized{false};
+static phi::boolean glfw_initialized{false};
+static phi::boolean imgui_initialized{false};
 
 namespace dlxemu
 {
