@@ -236,6 +236,8 @@ namespace dlxemu
 
         [[nodiscard]] std::string GetEditorDump() const noexcept;
 
+        void UpdatePalette() noexcept;
+
         void VerifyInternalState() const noexcept;
 
         static const Palette& GetDarkPalette() noexcept;
@@ -283,9 +285,12 @@ namespace dlxemu
 
         using UndoBuffer = std::vector<UndoRecord>;
 
-        void                      Colorize(phi::u32 from_line = 0u, phi::i64 count = -1) noexcept;
-        [[nodiscard]] float       TextDistanceToLineStart(const Coordinates& from) const noexcept;
-        void                      EnsureCursorVisible() noexcept;
+        void                Colorize(phi::u32 from_line = 0u, phi::i64 count = -1) noexcept;
+        [[nodiscard]] float TextDistanceToLineStart(const Coordinates& from) const noexcept;
+
+        void EnsureCursorVisible() noexcept;
+        void ScrollToCursor() noexcept;
+
         [[nodiscard]] phi::u32    GetPageSize() const noexcept;
         [[nodiscard]] std::string GetText(const Coordinates& start,
                                           const Coordinates& end) const noexcept;
@@ -341,6 +346,8 @@ namespace dlxemu
         void ResetState() noexcept;
         void FixSelectionAfterMove(phi::boolean select, Coordinates old_pos) noexcept;
 
+        void ComputeCharAdvance() noexcept;
+
         float       m_LineSpacing;
         EditorState m_State;
         UndoBuffer  m_UndoBuffer;
@@ -349,7 +356,6 @@ namespace dlxemu
         phi::u8_fast  m_TabSize;
         phi::boolean  m_Overwrite;
         phi::boolean  m_ReadOnly;
-        phi::boolean  m_WithinRender;
         phi::boolean  m_ScrollToCursor;
         phi::boolean  m_ScrollToTop;
         phi::boolean  m_TextChanged;

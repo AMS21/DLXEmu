@@ -4,6 +4,7 @@
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <phi/compiler_support/warning.hpp>
 
 using namespace phi::literals;
@@ -855,4 +856,19 @@ TEST_CASE("crash-fb51886e58a0f6657347eadf6e435a5253946875")
         editor.ClearText();
         editor.VerifyInternalState();
     }
+}
+
+TEST_CASE("crash-749abb6be89c8e168059ab62c631ccb0a3c12f07")
+{
+    BeginImGui();
+
+    dlxemu::CodeEditor editor{&emulator};
+
+    ImGui::GetIO().AddInputCharacterUTF16(57339);
+    editor.VerifyInternalState();
+
+    editor.Render({0.000000, -605108545849894421659648.000000});
+    editor.VerifyInternalState();
+
+    EndImgui();
 }

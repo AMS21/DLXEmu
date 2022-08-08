@@ -89,6 +89,9 @@ namespace dlxemu
             return false;
         }
 
+        // Make sure the pallete is updated correctly
+        m_CodeEditor.UpdatePalette();
+
         return true;
     }
 
@@ -499,12 +502,15 @@ namespace dlxemu
                         {
                             case 0:
                                 ImGui::StyleColorsDark();
+                                m_CodeEditor.UpdatePalette();
                                 break;
                             case 1:
                                 ImGui::StyleColorsLight();
+                                m_CodeEditor.UpdatePalette();
                                 break;
                             case 2:
                                 ImGui::StyleColorsClassic();
+                                m_CodeEditor.UpdatePalette();
                                 break;
                             default:
                                 PHI_ASSERT_NOT_REACHED();
@@ -571,6 +577,7 @@ namespace dlxemu
                 PHI_ASSERT_NOT_REACHED();
                 break;
         }
+
         PHI_CLANG_SUPPRESS_WARNING_POP()
 
         if (m_Processor.IsHalted())

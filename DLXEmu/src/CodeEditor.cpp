@@ -261,7 +261,6 @@ namespace dlxemu
         , m_TabSize{static_cast<phi::uint_fast8_t>(4u)}
         , m_Overwrite(false)
         , m_ReadOnly(false)
-        , m_WithinRender(false)
         , m_ScrollToCursor(false)
         , m_ScrollToTop(false)
         , m_TextChanged(false)
@@ -297,6 +296,8 @@ namespace dlxemu
     void CodeEditor::SetPalette(const Palette& value) noexcept
     {
         m_PaletteBase = value;
+
+        UpdatePalette();
     }
 
     void CodeEditor::SetErrorMarkers(const ErrorMarkers& markers) noexcept
@@ -414,9 +415,8 @@ namespace dlxemu
     void CodeEditor::Render(const ImVec2& size, phi::boolean border) noexcept
     {
         // Verify that ImGui is correctly initialzied
-        PHI_ASSERT(GImGui, "ImGui was not initialized!");
+        PHI_ASSERT(GImGui && GImGui->Initialized, "ImGui was not initialized!");
 
-        m_WithinRender          = true;
         m_CursorPositionChanged = false;
 
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(GetPaletteForIndex(
@@ -454,6 +454,9 @@ namespace dlxemu
                                       ImGuiWindowFlags_AlwaysHorizontalScrollbar |
                                       ImGuiWindowFlags_NoMove);
 
+            // Need to calculate char advance before any inputs which use the values
+            ComputeCharAdvance();
+
             HandleKeyboardInputs();
             ImGui::PushAllowKeyboardFocus(true);
 
@@ -485,13 +488,10 @@ namespace dlxemu
 
             ImGui::EndChild();
         }
-
         ImGui::End();
 
         ImGui::PopStyleVar();
         ImGui::PopStyleColor();
-
-        m_WithinRender = false;
     }
 
     void CodeEditor::SetText(const std::string& text) noexcept
@@ -1474,6 +1474,19 @@ namespace dlxemu
         return str;
     }
 
+    void CodeEditor::UpdatePalette() noexcept
+    {
+        PHI_ASSERT(GImGui && GImGui->Initialized);
+
+        // Update palette with the current alpha from style
+        for (phi::usize i = 0u; i < phi::to_underlying(PaletteIndex::Max); ++i)
+        {
+            ImVec4 color = ImGui::ColorConvertU32ToFloat4(m_PaletteBase[i]);
+            color.w *= ImGui::GetStyle().Alpha;
+            m_Palette[i] = ImGui::ColorConvertFloat4ToU32(color);
+        }
+    }
+
     void CodeEditor::VerifyInternalState() const noexcept
     {
         // Lines should never be empty
@@ -1759,11 +1772,12 @@ namespace dlxemu
 
     void CodeEditor::EnsureCursorVisible() noexcept
     {
-        if (!m_WithinRender)
-        {
-            m_ScrollToCursor = true;
-            return;
-        }
+        m_ScrollToCursor = true;
+    }
+
+    void CodeEditor::ScrollToCursor() noexcept
+    {
+        PHI_ASSERT(m_ScrollToCursor);
 
         float scroll_x = ImGui::GetScrollX();
         float scroll_y = ImGui::GetScrollY();
@@ -1771,6 +1785,8 @@ namespace dlxemu
         float height = ImGui::GetWindowHeight();
         float width  = ImGui::GetWindowWidth();
 
+        PHI_ASSERT(m_CharAdvance.x != 0.0f);
+        PHI_ASSERT(m_CharAdvance.y != 0.0f);
         phi::u32 top = 1u + static_cast<phi::uint32_t>(std::ceil(scroll_y / m_CharAdvance.y));
         phi::u32 bottom =
                 static_cast<phi::uint32_t>(std::ceil((scroll_y + height) / m_CharAdvance.y));
@@ -1809,6 +1825,7 @@ namespace dlxemu
     {
         const float height = ImGui::GetWindowHeight() - 20.0f;
 
+        PHI_ASSERT(m_CharAdvance.y != 0.0f);
         return static_cast<phi::uint32_t>(std::floor(height / m_CharAdvance.y));
     }
 
@@ -2142,6 +2159,7 @@ namespace dlxemu
         const ImVec2 origin = ImGui::GetCursorScreenPos();
         const ImVec2 local(position.x - origin.x, position.y - origin.y);
 
+        PHI_ASSERT(m_CharAdvance.y != 0.0f);
         const phi::u32 line_no =
                 phi::max(0u, static_cast<phi::int32_t>(std::floor(local.y / m_CharAdvance.y)));
 
@@ -2669,6 +2687,7 @@ namespace dlxemu
     {
         PHI_ASSERT(!m_ReadOnly);
         PHI_ASSERT(IsValidUTF8Sequence(character));
+        PHI_ASSERT(character != '\0');
 
         UndoRecord undo;
         undo.StoreBeforeState(this);
@@ -2875,7 +2894,6 @@ namespace dlxemu
         AddUndo(undo);
 
         Colorize(coord.m_Line, 1u);
-        EnsureCursorVisible();
     }
 
     void CodeEditor::BackspaceImpl() noexcept
@@ -3144,7 +3162,7 @@ namespace dlxemu
             for (phi::i32 i{0}; i < imgui_io.InputQueueCharacters.Size; ++i)
             {
                 ImWchar input_char = imgui_io.InputQueueCharacters[i.unsafe()];
-                if (input_char != '\0' && (input_char == '\n' || input_char >= 32))
+                if (input_char != '\0' && IsValidUTF8Sequence(input_char))
                 {
                     EnterCharacterImpl(input_char, shift);
                 }
@@ -3262,21 +3280,6 @@ namespace dlxemu
     // TODO: This function is a real mess Split it into multiple sub functions for the different parts maybe?
     void CodeEditor::InternalRender() noexcept
     {
-        // Compute m_CharAdvance regarding to scaled font size (Ctrl + mouse wheel)
-        const float font_size =
-                ImGui::GetFont()
-                        ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, "#", nullptr, nullptr)
-                        .x;
-        m_CharAdvance = ImVec2(font_size, ImGui::GetTextLineHeightWithSpacing() * m_LineSpacing);
-
-        // Update palette with the current alpha from style
-        for (phi::usize i = 0u; i < phi::to_underlying(PaletteIndex::Max); ++i)
-        {
-            ImVec4 color = ImGui::ColorConvertU32ToFloat4(m_PaletteBase[i]);
-            color.w *= ImGui::GetStyle().Alpha;
-            m_Palette[i] = ImGui::ColorConvertFloat4ToU32(color);
-        }
-
         PHI_ASSERT(m_LineBuffer.empty());
 
         const ImVec2 content_size = ImGui::GetWindowContentRegionMax();
@@ -3293,10 +3296,12 @@ namespace dlxemu
         const float  scroll_x          = ImGui::GetScrollX();
         const float  scroll_y          = ImGui::GetScrollY();
 
+        PHI_ASSERT(m_CharAdvance.y != 0.0f);
         phi::u32       line_no = static_cast<phi::uint32_t>(std::floor(scroll_y / m_CharAdvance.y));
         const phi::u32 global_line_max = static_cast<phi::uint32_t>(m_Lines.size());
 
         // TODO: This is very unreadable
+        PHI_ASSERT(m_CharAdvance.y != 0.0f);
         const phi::u32 line_max = static_cast<phi::uint32_t>(phi::clamp(
                 GetMaxLineNumber().unsafe(), 0u,
                 line_no.unsafe() + static_cast<phi::int32_t>(std::floor(
@@ -3523,6 +3528,12 @@ namespace dlxemu
 
                     if (m_ShowWhitespaces)
                     {
+                        const float font_size =
+                                ImGui::GetFont()
+                                        ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, "#",
+                                                        nullptr, nullptr)
+                                        .x;
+
                         const float  s  = ImGui::GetFontSize();
                         const float  x1 = text_screen_pos.x + old_x + 1.0f;
                         const float  x2 = text_screen_pos.x + buffer_offset.x - 1.0f;
@@ -3604,7 +3615,7 @@ namespace dlxemu
 
         if (m_ScrollToCursor)
         {
-            EnsureCursorVisible();
+            ScrollToCursor();
             ImGui::SetWindowFocus();
             m_ScrollToCursor = false;
         }
@@ -3711,5 +3722,18 @@ namespace dlxemu
         PHI_ASSERT(int_value < m_Palette.size());
 
         return m_Palette[int_value];
+    }
+
+    void CodeEditor::ComputeCharAdvance() noexcept
+    {
+        // Compute m_CharAdvance regarding to scaled font size (Ctrl + mouse wheel)
+        const float font_size =
+                ImGui::GetFont()
+                        ->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, "#", nullptr, nullptr)
+                        .x;
+        m_CharAdvance = ImVec2(font_size, ImGui::GetTextLineHeightWithSpacing() * m_LineSpacing);
+
+        PHI_ASSERT(m_CharAdvance.x != 0.0f);
+        PHI_ASSERT(m_CharAdvance.y != 0.0f);
     }
 } // namespace dlxemu

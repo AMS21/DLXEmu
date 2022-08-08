@@ -250,6 +250,8 @@ TEST_CASE("Construct/Destruct")
 
 TEST_CASE("Set/GetPalette")
 {
+    BeginImGui();
+
     dlxemu::CodeEditor editor{&emulator};
 
     // Default
@@ -298,6 +300,8 @@ TEST_CASE("Set/GetPalette")
     {
         CHECK(current_palette[i] == retro_blue_palette[i]);
     }
+
+    EndImgui();
 }
 
 TEST_CASE("ErrorMarkers")
