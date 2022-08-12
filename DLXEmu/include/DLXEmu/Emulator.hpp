@@ -62,6 +62,11 @@ namespace dlxemu
 
         [[nodiscard]] const CodeEditor& GetEditor() const noexcept;
 
+        [[nodiscard]] ExecutionMode GetExecutionMode() const noexcept;
+
+        // Note: Return 0 if there is none
+        [[nodiscard]] phi::u64 GetExecutingLineNumber() const noexcept;
+
     private:
         void RenderMenuBar() noexcept;
 

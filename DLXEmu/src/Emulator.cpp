@@ -10,6 +10,7 @@
 #include <phi/algorithm/for_each.hpp>
 #include <phi/algorithm/string_length.hpp>
 #include <phi/compiler_support/compiler.hpp>
+#include <phi/compiler_support/extended_attributes.hpp>
 #include <phi/compiler_support/platform.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
@@ -192,6 +193,28 @@ namespace dlxemu
     PHI_ATTRIBUTE_CONST const CodeEditor& Emulator::GetEditor() const noexcept
     {
         return m_CodeEditor;
+    }
+
+    PHI_ATTRIBUTE_CONST Emulator::ExecutionMode Emulator::GetExecutionMode() const noexcept
+    {
+        return m_CurrentExecutionMode;
+    }
+
+    PHI_ATTRIBUTE_CONST phi::u64 Emulator::GetExecutingLineNumber() const noexcept
+    {
+        if (m_DLXProgram.IsValid() && !m_Processor.IsHalted() &&
+            m_CurrentExecutionMode != ExecutionMode::None)
+        {
+            PHI_ASSERT(m_Processor.GetProgramCounter() < m_DLXProgram.m_Instructions.size());
+
+            const auto& current_instruction =
+                    m_DLXProgram.m_Instructions.at(m_Processor.GetProgramCounter().unsafe());
+
+            return current_instruction.GetSourceLine();
+        }
+
+        // Not valid
+        return 0u;
     }
 
     void Emulator::RenderMenuBar() noexcept

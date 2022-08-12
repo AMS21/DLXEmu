@@ -3417,6 +3417,17 @@ namespace dlxemu
                 }
             }
 
+            // Highlight PC line
+            const phi::u64 current_execution_line_number = m_Emulator->GetExecutingLineNumber();
+            if (line_no + 1u == current_execution_line_number)
+            {
+                const ImVec2 end =
+                        ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
+                               line_start_screen_pos.y + m_CharAdvance.y);
+                // TODO: Don't hardcode color
+                draw_list->AddRectFilled(start, end, 0x40ffff00);
+            }
+
             // Draw line number (right aligned)
             snprintf(buffer.data(), buffer.size().unsafe(), "%u  ", line_no.unsafe() + 1u);
 
