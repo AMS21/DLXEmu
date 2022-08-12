@@ -70,6 +70,7 @@ PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
 // TODO: Fix all the warnigns from gcc
 PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
+PHI_GCC_SUPPRESS_WARNING("-Wfloat-equal")
 
 //#define DLXEMU_VERIFY_UNDO_REDO
 //#define DLXEMU_VERIFY_COLUMN
