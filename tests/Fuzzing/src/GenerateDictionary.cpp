@@ -1,11 +1,9 @@
 #include <DLX/OpCode.hpp>
 #include <DLX/RegisterNames.hpp>
+#include <fmt/os.h>
+#include <fmt/ostream.h>
 #include <phi/container/array.hpp>
 #include <phi/core/scope_guard.hpp>
-#include <spdlog/fmt/bundled/os.h>
-#include <spdlog/fmt/compile.h>
-#include <spdlog/fmt/fmt.h>
-#include <spdlog/fmt/ostr.h>
 #include <cstdio>
 #include <iostream>
 #include <memory>

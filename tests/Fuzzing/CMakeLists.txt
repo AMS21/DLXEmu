@@ -10,15 +10,15 @@ set(FUZZ_RUNTIME
 
 # Dictionary
 
-# TODO: Reenable once we can add fmtlib directly as a submodule
-# add_executable(generate_dictionary_app "src/GenerateDictionary.cpp")
-# target_link_libraries(generate_dictionary_app PRIVATE DLXLib Threads::Threads)
+add_executable(generate_dictionary_app "src/GenerateDictionary.cpp")
+target_link_libraries(generate_dictionary_app PRIVATE DLXLib fmt::fmt Threads::Threads)
 
 add_custom_target(
-  generate_dictionary COMMENT "Generating fuzzing dictionary" # COMMAND generate_dictionary_app
-)
+  generate_dictionary
+  COMMENT "Generating fuzzing dictionary"
+  COMMAND generate_dictionary_app)
 
-# TODO: Reenable me add_dependencies(generate_dictionary generate_dictionary_app)
+add_dependencies(generate_dictionary generate_dictionary_app)
 
 # Convert structured text
 add_executable(convert_structured_text "src/ConvertStructuredText.cpp")

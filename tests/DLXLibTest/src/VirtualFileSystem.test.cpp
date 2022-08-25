@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include <phi/test/test_macros.hpp>
 
 #include <DLX/VirtualFileSystem.hpp>
 #include <phi/core/observer_ptr.hpp>

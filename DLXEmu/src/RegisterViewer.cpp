@@ -8,7 +8,7 @@
 
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
-#include <spdlog/fmt/fmt.h>
+#include <fmt/core.h>
 
 PHI_GCC_SUPPRESS_WARNING_POP()
 

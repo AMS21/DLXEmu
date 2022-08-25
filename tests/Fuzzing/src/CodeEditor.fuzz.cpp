@@ -1,6 +1,7 @@
 #include <DLX/Logger.hpp>
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
+#include <fmt/core.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <phi/compiler_support/assume.hpp>
@@ -13,7 +14,6 @@
 #include <phi/math/abs.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
 #include <phi/type_traits/make_unsigned.hpp>
-#include <spdlog/fmt/bundled/core.h>
 #include <cmath>
 #include <cstdint>
 #include <string>
@@ -290,7 +290,7 @@ template <typename T>
 
     for (const auto& val : markers)
     {
-        ret += fmt::format("{:s}: {:s}\n", print_int(val.first.unsafe()), print_string(val.second));
+        ret += fmt::format("{:s}: {:s}\n", print_int(val.first), print_string(val.second));
     }
 
     return ret;
@@ -387,7 +387,7 @@ void EndImGui() noexcept
     GImGui->FrameCount %= 16384;
 }
 
-bool InitializeLogger()
+phi::boolean InitializeLogger()
 {
     return dlx::InitializeDefaultLogger();
 }
@@ -396,7 +396,7 @@ bool InitializeLogger()
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
 {
 #if defined(FUZZ_LOG)
-    static bool log_init = dlx::InitializeDefaultLogger();
+    static phi::boolean log_init = dlx::InitializeDefaultLogger();
     (void)log_init;
 #endif
 
@@ -1076,7 +1076,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 ImGuiKey key = key_opt.value();
 
-                if (!ImGui::IsNamedKey(key))
+                if (!ImGui::IsNamedKey(key) || ImGui::IsAliasKey(key))
                 {
                     return 0;
                 }
@@ -1103,7 +1103,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 ImGuiKey key = key_opt.value();
 
-                if (!ImGui::IsNamedKey(key))
+                if (!ImGui::IsNamedKey(key) || ImGui::IsAliasKey(key))
                 {
                     return 0;
                 }

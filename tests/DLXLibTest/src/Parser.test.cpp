@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include <phi/test/test_macros.hpp>
 
 #include <DLX/Instruction.hpp>
 #include <DLX/InstructionArgument.hpp>
@@ -16,10 +16,9 @@ PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
 static dlx::ParsedProgram res;
 
-[[nodiscard]] phi::boolean InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcode,
-                                              dlx::InstructionArgument arg1,
-                                              dlx::InstructionArgument arg2,
-                                              dlx::InstructionArgument arg3)
+[[nodiscard]] bool InstructionMatches(const dlx::Instruction& instr, dlx::OpCode opcode,
+                                      dlx::InstructionArgument arg1, dlx::InstructionArgument arg2,
+                                      dlx::InstructionArgument arg3)
 {
     if (instr.GetInfo().GetOpCode() != opcode)
     {

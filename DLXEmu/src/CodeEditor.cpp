@@ -62,7 +62,7 @@ SOFTWARE.
 
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
-#include <spdlog/fmt/bundled/core.h>
+#include <fmt/core.h>
 
 PHI_GCC_SUPPRESS_WARNING_POP()
 
@@ -324,13 +324,13 @@ namespace dlxemu
             return;
         }
 
-        if (m_ErrorMarkers.contains(line_number))
+        if (m_ErrorMarkers.contains(line_number.unsafe()))
         {
-            m_ErrorMarkers[line_number] += '\n' + message;
+            m_ErrorMarkers[line_number.unsafe()] += '\n' + message;
         }
         else
         {
-            m_ErrorMarkers[line_number] = message;
+            m_ErrorMarkers[line_number.unsafe()] = message;
         }
     }
 
@@ -370,12 +370,12 @@ namespace dlxemu
             return false;
         }
 
-        return m_Breakpoints.insert(line_number).second;
+        return m_Breakpoints.insert(line_number.unsafe()).second;
     }
 
     phi::boolean CodeEditor::RemoveBreakpoint(const phi::u32 line_number) noexcept
     {
-        auto iterator = m_Breakpoints.find(line_number);
+        auto iterator = m_Breakpoints.find(line_number.unsafe());
 
         if (iterator != m_Breakpoints.end())
         {
@@ -388,7 +388,8 @@ namespace dlxemu
 
     phi::boolean CodeEditor::ToggleBreakpoint(const phi::u32 line_number) noexcept
     {
-        if (auto iterator = m_Breakpoints.find(line_number); iterator != m_Breakpoints.end())
+        if (auto iterator = m_Breakpoints.find(line_number.unsafe());
+            iterator != m_Breakpoints.end())
         {
             m_Breakpoints.erase(iterator);
             return false;
@@ -450,7 +451,7 @@ namespace dlxemu
 
         if (ImGui::Begin("Code Editor"))
         {
-            ImGui::BeginChild("Code Editor", sanitized_size, border,
+            ImGui::BeginChild("Code Editor", sanitized_size, border.unsafe(),
                               ImGuiWindowFlags_HorizontalScrollbar |
                                       ImGuiWindowFlags_AlwaysHorizontalScrollbar |
                                       ImGuiWindowFlags_NoMove);
@@ -1402,7 +1403,7 @@ namespace dlxemu
         }
         for (const auto& marker : GetErrorMarkers())
         {
-            str += fmt::format("{:02d}: {:s}\n", marker.first.unsafe(), marker.second);
+            str += fmt::format("{:02d}: {:s}\n", marker.first, marker.second);
         }
 
         str += "\n";
@@ -1413,7 +1414,7 @@ namespace dlxemu
         }
         for (const auto break_point : GetBreakpoints())
         {
-            str += fmt::format("{:02d}\n", break_point.unsafe());
+            str += fmt::format("{:02d}\n", break_point);
         }
 
         str += "\n";
@@ -2677,7 +2678,7 @@ namespace dlxemu
         Breakpoints btmp;
         for (const phi::u32 line_number : m_Breakpoints)
         {
-            btmp.insert(line_number >= index ? line_number + 1u : line_number);
+            btmp.insert(line_number >= index ? line_number.unsafe() + 1u : line_number.unsafe());
         }
         m_Breakpoints = phi::move(btmp);
 
@@ -3384,7 +3385,7 @@ namespace dlxemu
             const ImVec2 start =
                     ImVec2(line_start_screen_pos.x + scroll_x, line_start_screen_pos.y);
 
-            if (m_Breakpoints.contains(line_no + 1u))
+            if (m_Breakpoints.contains(line_no.unsafe() + 1u))
             {
                 const ImVec2 end =
                         ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
@@ -3394,7 +3395,7 @@ namespace dlxemu
             }
 
             // Draw error markers
-            auto error_it = m_ErrorMarkers.find(line_no + 1u);
+            auto error_it = m_ErrorMarkers.find(line_no.unsafe() + 1u);
             if (error_it != m_ErrorMarkers.end())
             {
                 const ImVec2 end =
@@ -3407,7 +3408,7 @@ namespace dlxemu
                 {
                     ImGui::BeginTooltip();
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.2f, 0.2f, 1.0f));
-                    ImGui::Text("Error at line %u:", error_it->first.unsafe());
+                    ImGui::Text("Error at line %u:", error_it->first);
                     ImGui::PopStyleColor();
                     ImGui::Separator();
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.2f, 1.0f));

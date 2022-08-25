@@ -21,13 +21,8 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD ${LatestCXXStandard})
 
-# Catch2
-add_subdirectory(Catch2)
-
-# https://cmake.org/cmake/help/latest/policy/CMP0079.html
-cmake_policy(SET CMP0079 NEW)
-# Need to link threads with catch2 for emscripten to build
-target_link_libraries(Catch2 PUBLIC Threads::Threads)
+# fmt
+add_subdirectory(fmt)
 
 # glad
 add_subdirectory(glad)
@@ -72,6 +67,9 @@ set(SPDLOG_DISABLE_DEFAULT_LOGGER
     ON
     CACHE INTERNAL "")
 set(SPDLOG_NO_EXCEPTIONS
+    ON
+    CACHE INTERNAL "")
+set(SPDLOG_FMT_EXTERNAL
     ON
     CACHE INTERNAL "")
 add_subdirectory(spdlog)

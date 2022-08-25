@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include <phi/test/test_macros.hpp>
 
 #include "SetupImGui.hpp"
 #include <DLXEmu/CodeEditor.hpp>
@@ -20,12 +20,12 @@ static dlxemu::Emulator emulator;
 TEST_CASE("CodeEditor::Coordinates")
 {
     const dlxemu::CodeEditor::Coordinates default_coord{};
-    CHECK(bool(default_coord.m_Line == 0u));
-    CHECK(bool(default_coord.m_Column == 0u));
+    CHECK(default_coord.m_Line == 0u);
+    CHECK(default_coord.m_Column == 0u);
 
     const dlxemu::CodeEditor::Coordinates coords{42u, 22u};
-    CHECK(bool(coords.m_Line == 42u));
-    CHECK(bool(coords.m_Column == 22u));
+    CHECK(coords.m_Line == 42u);
+    CHECK(coords.m_Column == 22u);
 
     const dlxemu::CodeEditor::Coordinates a{1u, 0u};
     const dlxemu::CodeEditor::Coordinates b{1u, 1u};
@@ -565,7 +565,7 @@ TEST_CASE("Get/SetText")
     CHECK(text.empty());
     CHECK(lines.size() == 1);
     CHECK(lines.at(0).empty());
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     constexpr const char* t1{"A simple line"};
     editor.SetText(t1);
@@ -575,7 +575,7 @@ TEST_CASE("Get/SetText")
     CHECK(text == t1);
     CHECK(lines.size() == 1);
     CHECK(lines.at(0) == t1);
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     constexpr const char* t2{"\n"};
     editor.SetText(t2);
@@ -586,7 +586,7 @@ TEST_CASE("Get/SetText")
     CHECK(lines.size() == 2);
     CHECK(lines.at(0).empty());
     CHECK(lines.at(1).empty());
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
 
     constexpr const char* t3{"\n\n"};
     editor.SetText(t3);
@@ -598,7 +598,7 @@ TEST_CASE("Get/SetText")
     CHECK(lines.at(0).empty());
     CHECK(lines.at(1).empty());
     CHECK(lines.at(2).empty());
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     constexpr const char* t4{"Multiple\nLines"};
     editor.SetText(t4);
@@ -609,7 +609,7 @@ TEST_CASE("Get/SetText")
     CHECK(lines.size() == 2);
     CHECK(lines.at(0) == "Multiple");
     CHECK(lines.at(1) == "Lines");
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
 
     constexpr const char* t5{"Line\nWith\nNewLines\n"};
     editor.SetText(t5);
@@ -622,7 +622,7 @@ TEST_CASE("Get/SetText")
     CHECK(lines.at(1) == "With");
     CHECK(lines.at(2) == "NewLines");
     CHECK(lines.at(3).empty());
-    CHECK(bool(editor.GetTotalLines() == 4u));
+    CHECK(editor.GetTotalLines() == 4u);
 
     // Empty text
     editor.SetText("");
@@ -633,7 +633,7 @@ TEST_CASE("Get/SetText")
     CHECK(text.empty());
     CHECK(lines.size() == 1u);
     CHECK(lines.at(0u).empty());
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     // SetText doesn't ignore tabs
     editor.SetText("\t");
@@ -643,7 +643,7 @@ TEST_CASE("Get/SetText")
     lines = editor.GetTextLines();
     CHECK(text == "\t");
     CHECK(lines.size() == 1u);
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
     CHECK(lines.at(0u) == "\t");
 }
 
@@ -679,8 +679,8 @@ TEST_CASE("ClearText")
     CHECK(editor.GetText().empty());
     CHECK_FALSE(editor.HasSelection());
     dlxemu::CodeEditor::Coordinates coords = editor.GetCursorPosition();
-    CHECK(bool(coords.m_Line == 0u));
-    CHECK(bool(coords.m_Column == 0u));
+    CHECK(coords.m_Line == 0u);
+    CHECK(coords.m_Column == 0u);
 
     // Undo restores correctly
     CHECK(editor.CanUndo());
@@ -691,8 +691,8 @@ TEST_CASE("ClearText")
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectedText() == "Hello World");
     coords = editor.GetCursorPosition();
-    CHECK(bool(coords.m_Line == 0u));
-    CHECK(bool(coords.m_Column == 3u));
+    CHECK(coords.m_Line == 0u);
+    CHECK(coords.m_Column == 3u);
 
     // Redo works correctly
     CHECK(editor.CanRedo());
@@ -702,8 +702,8 @@ TEST_CASE("ClearText")
     CHECK(editor.GetText().empty());
     CHECK_FALSE(editor.HasSelection());
     coords = editor.GetCursorPosition();
-    CHECK(bool(coords.m_Line == 0u));
-    CHECK(bool(coords.m_Column == 0u));
+    CHECK(coords.m_Line == 0u);
+    CHECK(coords.m_Column == 0u);
 
     // ClearText in ReadOnly mode does nothing
     editor.SetText("Hello World!");
@@ -751,7 +751,7 @@ TEST_CASE("SetTextLines")
     CHECK(text == "Hi");
     CHECK(lines.size() == 1u);
     CHECK(lines.at(0u) == "Hi");
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     // Two lines
     new_lines.clear();
@@ -768,7 +768,7 @@ TEST_CASE("SetTextLines")
     CHECK(lines.size() == 2u);
     CHECK(lines.at(0u) == "Hello");
     CHECK(lines.at(1u) == "World");
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
 
     new_lines.clear();
     new_lines.reserve(0);
@@ -781,7 +781,7 @@ TEST_CASE("SetTextLines")
     CHECK(text.empty());
     CHECK(lines.size() == 1);
     CHECK(lines.at(0).empty());
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     // Test with embeded null characters
     new_lines.clear();
@@ -799,7 +799,7 @@ TEST_CASE("SetTextLines")
     CHECK(lines.at(0u) == "A single line with newline at the end");
     CHECK(lines.at(1u).empty());
     CHECK(lines.at(2u) == "Normal everyday line");
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     // New line in the middle
     new_lines.clear();
@@ -817,7 +817,7 @@ TEST_CASE("SetTextLines")
     CHECK(lines.at(1u) == "SetTextLines supports");
     CHECK(lines.at(2u) == "Embedded new lines");
     CHECK(lines.at(3u) == "Awesome");
-    CHECK(bool(editor.GetTotalLines() == 4u));
+    CHECK(editor.GetTotalLines() == 4u);
 }
 
 TEST_CASE("GetSelectedText")
@@ -913,28 +913,28 @@ TEST_CASE("GetTotalLines")
     dlxemu::CodeEditor editor{&emulator};
 
     // Default
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     editor.SetText("One line");
     editor.VerifyInternalState();
 
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     editor.SetText("Two\nLines");
     editor.VerifyInternalState();
 
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
 
     editor.SetText("Three\nLines\nNow");
     editor.VerifyInternalState();
 
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     // Empty lines
     editor.SetText("\n\n\n\n\n\n\n\n\n");
     editor.VerifyInternalState();
 
-    CHECK(bool(editor.GetTotalLines() == 10u));
+    CHECK(editor.GetTotalLines() == 10u);
 }
 
 TEST_CASE("Overwrite")
@@ -1107,56 +1107,56 @@ TEST_CASE("Get/SetCursorPosition")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100u, 100u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetText("123456789");
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0u, 5u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 5u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 5u);
 
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100u, 100u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 9u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 9u);
 
     editor.InsertText("\n123456789\n123456789");
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 2u));
-    CHECK(bool(pos.m_Column == 9u));
+    CHECK(pos.m_Line == 2u);
+    CHECK(pos.m_Column == 9u);
 
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1u, 7u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 1u));
-    CHECK(bool(pos.m_Column == 7u));
+    CHECK(pos.m_Line == 1u);
+    CHECK(pos.m_Column == 7u);
 
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100u, 100u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 2u));
-    CHECK(bool(pos.m_Column == 9u));
+    CHECK(pos.m_Line == 2u);
+    CHECK(pos.m_Column == 9u);
 
     editor.SetText("");
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     // Correctly sanitize invalid positions inside a tab
     editor.SetText("\t");
@@ -1165,44 +1165,44 @@ TEST_CASE("Get/SetCursorPosition")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetCursorPosition({0u, 1u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     editor.SetCursorPosition({0u, 2u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     editor.SetCursorPosition({0u, 3u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     editor.SetCursorPosition({0u, 4u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     // Clamped
     editor.SetCursorPosition({0u, 5u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     // Test with 2 tabs
     editor.SetText("\t\t");
@@ -1212,72 +1212,72 @@ TEST_CASE("Get/SetCursorPosition")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetCursorPosition({0u, 1u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     editor.SetCursorPosition({0u, 2u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     editor.SetCursorPosition({0u, 3u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     editor.SetCursorPosition({0u, 4u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     editor.SetCursorPosition({0u, 5u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 8u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 8u);
 
     editor.SetCursorPosition({0u, 6u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 8u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 8u);
 
     editor.SetCursorPosition({0u, 7u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 8u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 8u);
 
     editor.SetCursorPosition({0u, 8u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 8u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 8u);
 
     // Clamped
     editor.SetCursorPosition({0u, 9u});
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 8u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 8u);
 }
 
 TEST_CASE("ShowWhitespaces")
@@ -1367,7 +1367,7 @@ TEST_CASE("EnterCharacter")
     CHECK(text == "H");
     CHECK(lines.size() == 1);
     CHECK(lines.at(0) == "H");
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     editor.EnterCharacter('i');
     editor.VerifyInternalState();
@@ -1377,7 +1377,7 @@ TEST_CASE("EnterCharacter")
     CHECK(text == "Hi");
     CHECK(lines.size() == 1);
     CHECK(lines.at(0) == "Hi");
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     editor.MoveHome();
     editor.VerifyInternalState();
@@ -1389,7 +1389,7 @@ TEST_CASE("EnterCharacter")
     CHECK(text == "-Hi");
     CHECK(lines.size() == 1);
     CHECK(lines.at(0) == "-Hi");
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     editor.SelectAll();
     editor.VerifyInternalState();
@@ -1401,7 +1401,7 @@ TEST_CASE("EnterCharacter")
     CHECK(text == "A");
     CHECK(lines.size() == 1);
     CHECK(lines.at(0) == "A");
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     editor.EnterCharacter('\n');
     editor.VerifyInternalState();
@@ -1412,7 +1412,7 @@ TEST_CASE("EnterCharacter")
     CHECK(lines.size() == 2);
     CHECK(lines.at(0) == "A");
     CHECK(lines.at(1).empty());
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
 
     editor.SetOverwrite(true);
     editor.VerifyInternalState();
@@ -1427,7 +1427,7 @@ TEST_CASE("EnterCharacter")
     CHECK(lines.size() == 2);
     CHECK(lines.at(0) == "B");
     CHECK(lines.at(1).empty());
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
 
     editor.EnterCharacter('C');
     editor.VerifyInternalState();
@@ -1438,7 +1438,7 @@ TEST_CASE("EnterCharacter")
     CHECK(lines.size() == 2);
     CHECK(lines.at(0) == "BC");
     CHECK(lines.at(1).empty());
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
 
     editor.SetOverwrite(false);
     editor.VerifyInternalState();
@@ -1453,7 +1453,7 @@ TEST_CASE("EnterCharacter")
     CHECK(lines.size() == 2);
     CHECK(lines.at(0) == "BC");
     CHECK(lines.at(1).empty());
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
 
     // Entering '\0' does nothing
     editor.SetReadOnly(false);
@@ -1466,7 +1466,7 @@ TEST_CASE("EnterCharacter")
     CHECK_FALSE(editor.IsReadOnly());
     CHECK(text == "BC\n");
     CHECK(lines.size() == 2u);
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
     CHECK(lines.at(0u) == "BC");
     CHECK(lines.at(1u).empty());
 
@@ -1482,7 +1482,7 @@ TEST_CASE("EnterCharacter")
     lines = editor.GetTextLines();
     CHECK(text == "   ABC\n   ");
     CHECK(lines.size() == 2u);
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
     CHECK(lines.at(0u) == "   ABC");
     CHECK(lines.at(1u) == "   ");
 
@@ -1493,7 +1493,7 @@ TEST_CASE("EnterCharacter")
     lines = editor.GetTextLines();
     CHECK(text == "   ABC\n   \n   ");
     CHECK(lines.size() == 3u);
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
     CHECK(lines.at(0u) == "   ABC");
     CHECK(lines.at(1u) == "   ");
     CHECK(lines.at(2u) == "   ");
@@ -1510,7 +1510,7 @@ TEST_CASE("EnterCharacter")
     lines = editor.GetTextLines();
     CHECK(text == "\t\tTabedLine");
     CHECK(lines.size() == 1u);
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
     CHECK(lines.at(0u) == "\t\tTabedLine");
 
     // Shift tab removes tab
@@ -1521,7 +1521,7 @@ TEST_CASE("EnterCharacter")
     lines = editor.GetTextLines();
     CHECK(text == "\tTabedLine");
     CHECK(lines.size() == 1u);
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
     CHECK(lines.at(0u) == "\tTabedLine");
 
     editor.EnterCharacter('\t', true);
@@ -1531,7 +1531,7 @@ TEST_CASE("EnterCharacter")
     lines = editor.GetTextLines();
     CHECK(text == "TabedLine");
     CHECK(lines.size() == 1u);
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
     CHECK(lines.at(0u) == "TabedLine");
 
     // Shift tab does nothing when theres no tab
@@ -1542,7 +1542,7 @@ TEST_CASE("EnterCharacter")
     lines = editor.GetTextLines();
     CHECK(text == "TabedLine");
     CHECK(lines.size() == 1u);
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
     CHECK(lines.at(0u) == "TabedLine");
 
     // Multiline tab indent
@@ -1557,7 +1557,7 @@ TEST_CASE("EnterCharacter")
     lines = editor.GetTextLines();
     CHECK(text == "\tHi\n\t:)");
     CHECK(lines.size() == 2u);
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
     CHECK(lines.at(0u) == "\tHi");
     CHECK(lines.at(1u) == "\t:)");
 
@@ -1569,7 +1569,7 @@ TEST_CASE("EnterCharacter")
     lines = editor.GetTextLines();
     CHECK(text == "Hi\n:)");
     CHECK(lines.size() == 2u);
-    CHECK(bool(editor.GetTotalLines() == 2u));
+    CHECK(editor.GetTotalLines() == 2u);
     CHECK(lines.at(0u) == "Hi");
     CHECK(lines.at(1u) == ":)");
 }
@@ -1748,7 +1748,7 @@ TEST_CASE("InsertText")
     CHECK(text == "Hello World!");
     CHECK(lines.size() == 1);
     CHECK(lines.at(0) == "Hello World!");
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     editor.InsertText("\nTest string\n");
     editor.VerifyInternalState();
@@ -1760,7 +1760,7 @@ TEST_CASE("InsertText")
     CHECK(lines.at(0) == "Hello World!");
     CHECK(lines.at(1) == "Test string");
     CHECK(lines.at(2).empty());
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(0u, 0u));
     editor.VerifyInternalState();
@@ -1774,7 +1774,7 @@ TEST_CASE("InsertText")
     CHECK(lines.at(0) == "I say hi and Hello World!");
     CHECK(lines.at(1) == "Test string");
     CHECK(lines.at(2).empty());
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     editor.SelectAll();
     editor.VerifyInternalState();
@@ -1790,7 +1790,7 @@ TEST_CASE("InsertText")
     CHECK(lines.at(0) == "I say hi and Hello World!");
     CHECK(lines.at(1) == "Test awesome string");
     CHECK(lines.at(2).empty());
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     // Insert nullptr
     editor.InsertText(nullptr);
@@ -1803,7 +1803,7 @@ TEST_CASE("InsertText")
     CHECK(lines.at(0) == "I say hi and Hello World!");
     CHECK(lines.at(1) == "Test awesome string");
     CHECK(lines.at(2).empty());
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     // Insert empty string
     editor.InsertText("");
@@ -1816,7 +1816,7 @@ TEST_CASE("InsertText")
     CHECK(lines.at(0) == "I say hi and Hello World!");
     CHECK(lines.at(1) == "Test awesome string");
     CHECK(lines.at(2).empty());
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     // Insert while in read-only mode
     editor.SetReadOnly(true);
@@ -1831,7 +1831,7 @@ TEST_CASE("InsertText")
     CHECK(lines.at(0) == "I say hi and Hello World!");
     CHECK(lines.at(1) == "Test awesome string");
     CHECK(lines.at(2).empty());
-    CHECK(bool(editor.GetTotalLines() == 3u));
+    CHECK(editor.GetTotalLines() == 3u);
 
     // Not skipping characters
     editor.SetReadOnly(false);
@@ -1846,7 +1846,7 @@ TEST_CASE("InsertText")
     CHECK(text == "\r\r\r");
     CHECK(lines.size() == 1u);
     CHECK(lines.at(0u) == "\r\r\r");
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
 
     // Insert text with tab character
     editor.ClearText();
@@ -1859,7 +1859,7 @@ TEST_CASE("InsertText")
     CHECK(text == "\x7F\t\a");
     CHECK(lines.size() == 1u);
     CHECK(lines.at(0u) == "\x7F\t\a");
-    CHECK(bool(editor.GetTotalLines() == 1u));
+    CHECK(editor.GetTotalLines() == 1u);
     // Make sure were at the end
     dlxemu::CodeEditor::Coordinates coord = editor.GetCursorPosition();
     editor.MoveEnd();
@@ -1871,105 +1871,105 @@ TEST_CASE("MoveUp")
     dlxemu::CodeEditor editor{&emulator};
 
     dlxemu::CodeEditor::Coordinates pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveUp(1u);
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveUp(100u);
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetText("Line 1\nLine 2\nLine 3\nLine 4\n");
     editor.VerifyInternalState();
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(100u, 100u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 4u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 4u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveUp(1u);
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 3u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 3u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveUp(2u);
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 1u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 1u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(3u, 6u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 3u));
-    CHECK(bool(pos.m_Column == 6u));
+    CHECK(pos.m_Line == 3u);
+    CHECK(pos.m_Column == 6u);
 
     editor.MoveUp(1u);
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 2u));
-    CHECK(bool(pos.m_Column == 6u));
+    CHECK(pos.m_Line == 2u);
+    CHECK(pos.m_Column == 6u);
 
     editor.MoveUp(2u);
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 6u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 6u);
 
     editor.SetText("short line\nA very long line of text");
     editor.VerifyInternalState();
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1u, 100u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 1u));
-    CHECK(bool(pos.m_Column == 24u));
+    CHECK(pos.m_Line == 1u);
+    CHECK(pos.m_Column == 24u);
 
     editor.MoveUp();
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 10u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 10u);
 
     editor.SetText("This is quite a long line of text wow\ncute\nAnother long line of text");
     editor.VerifyInternalState();
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(2u, 25u));
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 2u));
-    CHECK(bool(pos.m_Column == 25u));
+    CHECK(pos.m_Line == 2u);
+    CHECK(pos.m_Column == 25u);
 
     editor.MoveUp();
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 1u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 1u);
+    CHECK(pos.m_Column == 4u);
 
     editor.MoveUp();
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 25u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 25u);
 
     editor.MoveUp();
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetCursorPosition(dlxemu::CodeEditor::Coordinates(1u, 4u));
     editor.VerifyInternalState();
     editor.MoveUp(2u);
     editor.VerifyInternalState();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 }
 
 TEST_CASE("MoveDown")
@@ -1977,52 +1977,52 @@ TEST_CASE("MoveDown")
     dlxemu::CodeEditor editor{&emulator};
 
     dlxemu::CodeEditor::Coordinates pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveDown(1u);
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveDown(100u);
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetText("Line number 1 awesome\nLine 2\nLast Line is this and its pretty long wow");
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveDown();
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 1u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 1u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveEnd();
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 1u));
-    CHECK(bool(pos.m_Column == 6u));
+    CHECK(pos.m_Line == 1u);
+    CHECK(pos.m_Column == 6u);
 
     // Column is not changed when moving down and the last line has enough characters
     editor.MoveDown();
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 2u));
-    CHECK(bool(pos.m_Column == 6u));
+    CHECK(pos.m_Line == 2u);
+    CHECK(pos.m_Column == 6u);
 
     // Moving down on the final line moves to the end of the line
     editor.MoveDown();
     editor.VerifyInternalState();
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 2u));
-    CHECK(bool(pos.m_Column == 41u));
+    CHECK(pos.m_Line == 2u);
+    CHECK(pos.m_Column == 41u);
 }
 
 TEST_CASE("MoveLeft")
@@ -2030,15 +2030,15 @@ TEST_CASE("MoveLeft")
     dlxemu::CodeEditor editor{&emulator};
 
     dlxemu::CodeEditor::Coordinates pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveLeft();
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
 
     editor.SetText("One line");
     editor.VerifyInternalState();
@@ -2046,29 +2046,29 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 8u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 8u);
 
     editor.MoveLeft();
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 7u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 7u);
 
     editor.MoveLeft(4u);
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 3u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 3u);
 
     editor.MoveLeft(25u, true);
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectedText() == "One");
     CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
@@ -2079,8 +2079,8 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
     CHECK_FALSE(editor.HasSelection());
 
     // Word mode
@@ -2088,22 +2088,22 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 8u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 8u);
 
     editor.MoveLeft(1u, false, true);
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 4u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 4u);
 
     editor.MoveLeft(1u, true, true);
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectedText() == "One ");
     CHECK(editor.GetSelectionStart() == dlxemu::CodeEditor::Coordinates{0u, 0u});
@@ -2114,8 +2114,8 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
     CHECK_FALSE(editor.HasSelection());
 
     // Multiple lines
@@ -2125,29 +2125,29 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 3u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 3u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveLeft();
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 2u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 2u);
+    CHECK(pos.m_Column == 0u);
 
     editor.MoveLeft(1u, false, true);
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 1u));
-    CHECK(bool(pos.m_Column == 3u));
+    CHECK(pos.m_Line == 1u);
+    CHECK(pos.m_Column == 3u);
 
     editor.MoveLeft(1u, true, true);
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 1u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 1u);
+    CHECK(pos.m_Column == 0u);
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectedText() == "Two");
 
@@ -2155,8 +2155,8 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 1u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 1u);
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectedText() == "\nTwo");
 
@@ -2164,8 +2164,8 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectedText() == "1\nTwo");
 
@@ -2174,8 +2174,8 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
     CHECK(editor.HasSelection());
     CHECK(editor.GetSelectedText() == "1\nTwo");
 
@@ -2184,8 +2184,8 @@ TEST_CASE("MoveLeft")
     editor.VerifyInternalState();
 
     pos = editor.GetCursorPosition();
-    CHECK(bool(pos.m_Line == 0u));
-    CHECK(bool(pos.m_Column == 0u));
+    CHECK(pos.m_Line == 0u);
+    CHECK(pos.m_Column == 0u);
     CHECK_FALSE(editor.HasSelection());
 }
 

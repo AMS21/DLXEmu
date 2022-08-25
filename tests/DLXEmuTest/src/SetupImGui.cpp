@@ -1,9 +1,9 @@
 #include "SetupImGui.hpp"
 
-#include <catch2/catch_test_macros.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <phi/compiler_support/unused.hpp>
+#include <phi/test/test_macros.hpp>
 
 void BeginImGui() noexcept
 {

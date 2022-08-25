@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include <phi/test/test_macros.hpp>
 
 #include <DLX/Parser.hpp>
 #include <DLX/Processor.hpp>
@@ -8,7 +8,7 @@
 
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
-#include <spdlog/fmt/bundled/core.h>
+#include <fmt/core.h>
 
 PHI_GCC_SUPPRESS_WARNING_POP()
 

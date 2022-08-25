@@ -2,9 +2,9 @@
 
 #include "DLX/InstructionArgument.hpp"
 
+#include <fmt/format.h>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
-#include <spdlog/fmt/fmt.h>
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 

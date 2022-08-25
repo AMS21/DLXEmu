@@ -1,5 +1,4 @@
-#include <catch2/catch_message.hpp>
-#include <catch2/catch_test_macros.hpp>
+#include <phi/test/test_macros.hpp>
 
 #include <DLX/EnumName.hpp>
 #include <DLX/OpCode.hpp>
@@ -11,17 +10,6 @@ void TokenMatches(const dlx::Token& token, const std::string_view expected_text,
                   dlx::Token::Type expected_type, std::size_t expected_line_number,
                   std::size_t expected_column)
 {
-    CAPTURE(token.GetText());
-    CAPTURE(token.GetTypeName());
-    CAPTURE(token.GetLength());
-    CAPTURE(token.GetLineNumber());
-    CAPTURE(token.GetColumn());
-
-    CAPTURE(expected_text);
-    CAPTURE(dlx::enum_name(expected_type));
-    CAPTURE(expected_line_number);
-    CAPTURE(expected_column);
-
     CHECK(token.GetText() == expected_text);
     CHECK(token.GetType() == expected_type);
     CHECK((token.GetLength() == expected_text.length()).unsafe());

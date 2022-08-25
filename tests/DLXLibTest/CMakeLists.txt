@@ -26,13 +26,13 @@ file(
   "src/Token.test.cpp"
   "src/Tokenize.test.cpp"
   "src/TokenStream.test.cpp")
-file(GLOB DLXLIB_TEST_HEADERS "include/StringHelper.hpp")
+file(GLOB DLXLIB_TEST_HEADERS "include/StringHelper.hpp" "include/Unary.hpp")
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${DLXLIB_TEST_SOURCES} ${DLXLIB_TEST_HEADERS})
 
 add_executable("DLXLibUnittest" ${DLXLIB_TEST_SOURCES} ${DLXLIB_TEST_HEADERS})
 
-target_link_libraries("DLXLibUnittest" PRIVATE DLXLib Catch2::Catch2WithMain)
+target_link_libraries("DLXLibUnittest" PRIVATE DLXLib Phi::Test)
 
 target_include_directories("DLXLibUnittest" PRIVATE "include")
 

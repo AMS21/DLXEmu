@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include <phi/test/test_macros.hpp>
 
 #include <DLX/FloatRegister.hpp>
 #include <phi/compiler_support/warning.hpp>

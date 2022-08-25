@@ -6,13 +6,13 @@ project("DLXEmuTest" CXX)
 # Files
 file(GLOB DLXEMU_TEST_SOURCES "src/CodeEditor.test.cpp" "src/CodeEditorCrashes.test.cpp"
      "src/SetupImGui.cpp")
-file(GLOB DLXEMU_TEST_HEADERS "include/SetupImGui.hpp")
+file(GLOB DLXEMU_TEST_HEADERS "include/SetupImGui.hpp" "include/Unary.hpp")
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${DLXEMU_TEST_SOURCES} ${DLXEMU_TEST_HEADERS})
 
 add_executable("DLXEmuUnittest" ${DLXEMU_TEST_SOURCES} ${DLXEMU_TEST_HEADERS})
 
-target_link_libraries("DLXEmuUnittest" PRIVATE DLXEmuLib Catch2::Catch2WithMain)
+target_link_libraries("DLXEmuUnittest" PRIVATE DLXEmuLib Phi::Test)
 
 target_include_directories("DLXEmuUnittest" PRIVATE "include")
 

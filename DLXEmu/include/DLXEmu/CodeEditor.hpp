@@ -116,8 +116,8 @@ namespace dlxemu
             phi::u32 m_Column;
         };
 
-        using ErrorMarkers = std::map<phi::u32, std::string>;
-        using Breakpoints  = std::unordered_set<phi::u32>;
+        using ErrorMarkers = std::map<phi::uint32_t, std::string>;
+        using Breakpoints  = std::unordered_set<phi::uint32_t>;
         using Palette      = phi::array<ImU32, static_cast<phi::size_t>(PaletteIndex::Max)>;
         using Char         = uint8_t;
 

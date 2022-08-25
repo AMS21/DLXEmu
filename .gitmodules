@@ -15,10 +15,6 @@ url = https://github.com/AirGuanZ/imgui-filebrowser.git
 [submodule "external/glfw"]
 path = external/glfw
 url = https://github.com/glfw/glfw.git
-[submodule "external/Catch2"]
-path = external/Catch2
-url = https://github.com/catchorg/Catch2.git
-branch = devel
 [submodule "external/spdlog"]
 path = external/spdlog
 url = https://github.com/gabime/spdlog.git
@@ -27,3 +23,7 @@ branch = v1.x
 path = external/benchmark
 url = https://github.com/google/benchmark.git
 branch = main
+[submodule "external/fmt"]
+	path = external/fmt
+	url = https://github.com/fmtlib/fmt.git
+	branch = master

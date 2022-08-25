@@ -1,10 +1,9 @@
 #include "DLX/EnumName.hpp"
-#include <catch2/catch_test_macros.hpp>
-
 #include <DLX/InstructionInfo.hpp>
 #include <DLX/InstructionLibrary.hpp>
 #include <DLX/OpCode.hpp>
 #include <phi/core/types.hpp>
+#include <phi/test/test_macros.hpp>
 #include <algorithm>
 #include <array>
 

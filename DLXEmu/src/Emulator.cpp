@@ -6,6 +6,7 @@
 #include <DLX/Logger.hpp>
 #include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
+#include <fmt/core.h>
 #include <imgui.h>
 #include <phi/algorithm/for_each.hpp>
 #include <phi/algorithm/string_length.hpp>
@@ -17,8 +18,6 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
 #include <phi/text/to_lower_case.hpp>
-#include <spdlog/fmt/bundled/core.h>
-#include <spdlog/fmt/fmt.h>
 #include <string_view>
 
 static constexpr const phi::size_t MaxExecutionPerFrame{500'000u};
@@ -256,24 +255,24 @@ namespace dlxemu
 
             if (ImGui::BeginMenu("Edit"))
             {
-                if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_CodeEditor.CanUndo()))
+                if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_CodeEditor.CanUndo().unsafe()))
                 {
                     m_CodeEditor.Undo();
                 }
 
-                if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_CodeEditor.CanRedo()))
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_CodeEditor.CanRedo().unsafe()))
                 {
                     m_CodeEditor.Redo();
                 }
 
                 ImGui::Separator();
 
-                if (ImGui::MenuItem("Cut", "CTRL+X", false, m_CodeEditor.HasSelection()))
+                if (ImGui::MenuItem("Cut", "CTRL+X", false, m_CodeEditor.HasSelection().unsafe()))
                 {
                     m_CodeEditor.Cut();
                 }
 
-                if (ImGui::MenuItem("Copy", "CTRL+C", false, m_CodeEditor.HasSelection()))
+                if (ImGui::MenuItem("Copy", "CTRL+C", false, m_CodeEditor.HasSelection().unsafe()))
                 {
                     m_CodeEditor.Copy();
                 }
@@ -281,7 +280,7 @@ namespace dlxemu
                 const phi::boolean can_paste =
                         phi::string_length(ImGui::GetClipboardText()) != 0u && !m_DisableEditing;
 
-                if (ImGui::MenuItem("Paste", "CTRL+V", false, can_paste))
+                if (ImGui::MenuItem("Paste", "CTRL+V", false, can_paste.unsafe()))
                 {
                     m_CodeEditor.Paste();
                 }
