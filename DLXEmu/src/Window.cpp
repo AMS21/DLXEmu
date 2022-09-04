@@ -25,6 +25,9 @@ namespace dlxemu
 {
     static void glfw_error_callback(int error, const char* message) noexcept
     {
+        (void)error;
+        (void)message;
+
         DLX_ERROR("GLFW error {:d}: {:s}", error, message);
     }
 

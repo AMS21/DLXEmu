@@ -62,18 +62,6 @@ set(OpenGL_GL_PREFERENCE "GLVND")
 
 find_package(OpenGL REQUIRED)
 
-# spdlog
-set(SPDLOG_DISABLE_DEFAULT_LOGGER
-    ON
-    CACHE INTERNAL "")
-set(SPDLOG_NO_EXCEPTIONS
-    ON
-    CACHE INTERNAL "")
-set(SPDLOG_FMT_EXTERNAL
-    ON
-    CACHE INTERNAL "")
-add_subdirectory(spdlog)
-
 # benchmark
 if(DLXEMU_BUILD_BENCHMARKS)
   set(BENCHMARK_ENABLE_TESTING

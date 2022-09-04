@@ -6,7 +6,6 @@
 #include <DLX/Logger.hpp>
 #include <DLX/TokenStream.hpp>
 #include <GLFW/glfw3.h>
-#include <fmt/core.h>
 #include <imgui.h>
 #include <phi/algorithm/for_each.hpp>
 #include <phi/algorithm/string_length.hpp>
@@ -19,6 +18,12 @@
 #include <phi/core/types.hpp>
 #include <phi/text/to_lower_case.hpp>
 #include <string_view>
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+
+#include <fmt/core.h>
+
+PHI_GCC_SUPPRESS_WARNING_POP()
 
 static constexpr const phi::size_t MaxExecutionPerFrame{500'000u};
 

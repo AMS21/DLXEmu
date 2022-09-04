@@ -387,19 +387,9 @@ void EndImGui() noexcept
     GImGui->FrameCount %= 16384;
 }
 
-phi::boolean InitializeLogger()
-{
-    return dlx::InitializeDefaultLogger();
-}
-
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
 {
-#if defined(FUZZ_LOG)
-    static phi::boolean log_init = dlx::InitializeDefaultLogger();
-    (void)log_init;
-#endif
-
     static bool imgui_init = SetupImGui();
     (void)imgui_init;
 

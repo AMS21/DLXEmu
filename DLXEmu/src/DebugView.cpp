@@ -8,7 +8,6 @@
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
-#include <spdlog/spdlog.h>
 #include <limits>
 #include <random>
 #include <vector>
@@ -555,7 +554,6 @@ namespace dlxemu
         PHI_CLANG_SUPPRESS_WARNING_POP()
 
         CodeEditor& editor = m_Emulator->m_CodeEditor;
-        spdlog::default_logger()->set_level(spdlog::level::trace);
 
         // Execute 50 random functions
         for (int i{0}; i < 50; ++i)

@@ -9,9 +9,8 @@ set(FUZZ_RUNTIME
     CACHE STRING "Number of seconds to run fuzz tests during ctest run") # Default of 10 seconds
 
 # Dictionary
-
 add_executable(generate_dictionary_app "src/GenerateDictionary.cpp")
-target_link_libraries(generate_dictionary_app PRIVATE DLXLib fmt::fmt Threads::Threads)
+target_link_libraries(generate_dictionary_app PRIVATE DLXLib Threads::Threads)
 
 add_custom_target(
   generate_dictionary

@@ -3,6 +3,7 @@
 #include "SetupImGui.hpp"
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
+#include <fmt/format.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <phi/compiler_support/warning.hpp>

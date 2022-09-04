@@ -18,6 +18,8 @@ namespace dlxemu
 
         Emulator* m_Emulator;
 
+#if defined(PHI_DEBUG)
         bool m_TestGuiMode{false};
+#endif
     };
 } // namespace dlxemu

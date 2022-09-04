@@ -7,8 +7,6 @@
 
 TEST_CASE("crash-bf9a230d40aedbcc07b5f06dfac1c44f8884c23f")
 {
-    dlx::InitializeDefaultLogger();
-
     dlx::ParsedProgram prog = dlx::Parser::Parse("J Z\nJ Z");
     REQUIRE(prog.IsValid());
 

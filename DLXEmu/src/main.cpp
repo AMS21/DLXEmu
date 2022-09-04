@@ -33,8 +33,6 @@ extern "C" void main_loop(void* /*data*/) noexcept
 
 int main(int argc, char* argv[])
 {
-    dlx::InitializeDefaultLogger();
-
 #if PHI_PLATFORM_IS(WEB)
     PHI_UNUSED_PARAMETER(argc);
     PHI_UNUSED_PARAMETER(argv);
