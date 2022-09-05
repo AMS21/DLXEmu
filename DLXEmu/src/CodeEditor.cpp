@@ -3150,10 +3150,10 @@ namespace dlxemu
         {
             SelectAll();
         }
-        else if (!IsReadOnly() && !ctrl && !shift && !alt &&
+        else if (!IsReadOnly() && !ctrl && !alt &&
                  (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)))
         {
-            EnterCharacterImpl('\n', false);
+            EnterCharacterImpl('\n', shift);
         }
         else if (!IsReadOnly() && !ctrl && !alt && ImGui::IsKeyPressed(ImGuiKey_Tab))
         {
