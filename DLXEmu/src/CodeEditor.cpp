@@ -1965,8 +1965,8 @@ namespace dlxemu
         PHI_ASSERT(start.m_Line < m_Lines.size());
         PHI_ASSERT(end.m_Line < m_Lines.size());
 
-        phi::u32 start_index = GetCharacterIndex(start);
-        phi::u32 end_index   = GetCharacterIndex(end);
+        const phi::u32 start_index = GetCharacterIndex(start);
+        const phi::u32 end_index   = GetCharacterIndex(end);
 
         if (start.m_Line == end.m_Line)
         {
@@ -2555,13 +2555,16 @@ namespace dlxemu
         ErrorMarkers etmp;
         for (const auto& marker : m_ErrorMarkers)
         {
-            ErrorMarkers::value_type error_marker(
-                    marker.first >= start ? phi::max(marker.first - 1u, 1u) : marker.first,
-                    marker.second);
-            if (error_marker.first >= start && error_marker.first <= end)
+            if (marker.first >= start && marker.first <= end)
             {
                 continue;
             }
+
+            ErrorMarkers::value_type error_marker(
+                    marker.first >= start ? phi::max(marker.first - (end - start + 1u), 1u) :
+                                            marker.first,
+                    marker.second);
+
             etmp.insert(error_marker);
         }
         m_ErrorMarkers = phi::move(etmp);
@@ -2574,7 +2577,9 @@ namespace dlxemu
             {
                 continue;
             }
-            btmp.insert(line_number >= start ? phi::max(line_number - 1u, 1u) : line_number);
+            btmp.insert(line_number >= start ?
+                                phi::max(line_number - (end - start + 1u).unsafe(), 1u) :
+                                line_number);
         }
         m_Breakpoints = phi::move(btmp);
 

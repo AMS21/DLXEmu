@@ -873,3 +873,39 @@ TEST_CASE("crash-749abb6be89c8e168059ab62c631ccb0a3c12f07")
 
     EndImgui();
 }
+
+TEST_CASE("crash-b50b36a0abacb8343855b0e477e235df9844f2f6")
+{
+    BeginImGui();
+
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter(0x2000, true);
+    editor.VerifyInternalState();
+
+    editor.Render({0.000000, 0.000000}, true);
+    editor.VerifyInternalState();
+
+    editor.SetCursorPosition({1u, 5u});
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    editor.MoveUp(4211081216u, true);
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    EndImgui();
+}
