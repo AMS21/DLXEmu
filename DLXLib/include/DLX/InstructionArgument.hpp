@@ -47,7 +47,7 @@ namespace dlx
         InstructionArgument(InstructionArgument&&)      = default;
 
         InstructionArgument& operator=(const InstructionArgument&) = default;
-        InstructionArgument& operator=(InstructionArgument&&) = default;
+        InstructionArgument& operator=(InstructionArgument&&)      = default;
 
         [[nodiscard]] ArgumentType GetType() const noexcept;
 
