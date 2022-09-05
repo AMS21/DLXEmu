@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DLX/OpCode.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
 #include <string>
@@ -72,6 +73,9 @@ namespace dlx
         phi::boolean     m_HasHint;
     };
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     template <>
     [[nodiscard]] constexpr std::string_view enum_name<Token::Type>(Token::Type value) noexcept
     {
@@ -89,4 +93,7 @@ namespace dlx
                 PHI_ASSERT_NOT_REACHED();
         }
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
+
 } // namespace dlx
