@@ -60,13 +60,13 @@ jobs:
         uses: lukka/get-cmake@v3.23.0
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: DLXEmu-App/scripts/ci/InstallDependencies.sh
 
       - name: Setup Environment
-        run: external/Phi/scripts/ci/SetupEnvironment.sh
+        run: DLXEmu-App/external/Phi/scripts/ci/SetupEnvironment.sh
 
       - name: Install compiler
-        run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} ninja
+        run: DLXEmu-App/external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} ninja
 
       - name: Configure build directory
         run: |
