@@ -65,10 +65,6 @@ jobs:
         working-directory: ./build
         run: cmake --build . --config Release
 
-      - name: Run tests
-        working-directory: ./build
-        run: ctest . -C Release
-
       - name: Disabling CPU Frequency Scaling
         continue-on-error: true
         run: |
