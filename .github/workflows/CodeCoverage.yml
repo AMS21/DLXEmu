@@ -71,7 +71,7 @@ jobs:
           mkdir build -p
           cd build
 
-          cmake -DCMAKE_BUILD_TYPE=Debug -DPHI_COVERAGE_BUILD=ON -DDLXEMU_COVERAGE_BUILD=On -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN -DPHI_DEBUG" ..
+          cmake -DCMAKE_BUILD_TYPE=Debug -DDLXEMU_COVERAGE_BUILD:BOOL=ON -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN -DPHI_DEBUG" ..
 
       - name: Build
         working-directory: ./build
