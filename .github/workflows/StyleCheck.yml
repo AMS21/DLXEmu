@@ -290,6 +290,7 @@ jobs:
 
       - name: Run alex with reviewdog
         uses: reviewdog/action-alex@v1.5
+        continue-on-error: true
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
