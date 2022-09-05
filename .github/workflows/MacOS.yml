@@ -40,7 +40,7 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          - { compiler: gcc,   compiler_version: "11" }
+          - { compiler: gcc,   compiler_version: "12" }
           - { compiler: clang, compiler_version: "13.3.1" }
 
         build_type:
