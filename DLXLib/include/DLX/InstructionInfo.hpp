@@ -57,6 +57,9 @@ namespace dlx
         return static_cast<underlying_t>(type & test) != 0;
     }
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     template <>
     [[nodiscard]] constexpr std::string_view enum_name<ArgumentType>(ArgumentType value) noexcept
     {
@@ -80,6 +83,8 @@ namespace dlx
         }
     }
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
+
 #define DLX_ENUM_REGISTER_ACCESS_TYPE                                                              \
     DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(None)                                                       \
     DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL(Signed)                                                     \
@@ -99,6 +104,9 @@ namespace dlx
 #undef DLX_ENUM_REGISTER_ACCESS_TYPE_IMPL
     };
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     template <>
     [[nodiscard]] constexpr std::string_view enum_name<RegisterAccessType>(
             RegisterAccessType value) noexcept
@@ -116,6 +124,8 @@ namespace dlx
                 PHI_ASSERT_NOT_REACHED();
         }
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     using InstructionExecutor = std::add_pointer_t<void(
             Processor& processor, const InstructionArgument& arg1, const InstructionArgument& arg2,
