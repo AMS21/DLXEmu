@@ -247,7 +247,7 @@ namespace dlx
         const float first_value  = first_reg.GetValue().unsafe();
         const float second_value = second_reg.GetValue().unsafe();
 
-        // TODO: Don't invoke undefined behaviour this way. Instead use union type punning
+        // TODO: Don't invoke undefined behavior this way. Instead use union type punning
         PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wundefined-reinterpret-cast")
 
         const std::uint32_t first_value_bits =

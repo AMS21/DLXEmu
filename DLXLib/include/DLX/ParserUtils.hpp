@@ -126,7 +126,7 @@ namespace dlx
         phi::boolean parsing_octal{false};
         phi::boolean parsing_hexadecimal{false};
         phi::boolean parsed_something{false};
-        phi::boolean parsed_seperator{false};
+        phi::boolean parsed_separator{false};
 
         // TODO: Move x'th character checks out of the for loop
 
@@ -187,12 +187,12 @@ namespace dlx
             // Handle seperators
             if (c == '\'')
             {
-                if (parsed_seperator)
+                if (parsed_separator)
                 {
                     return {};
                 }
 
-                parsed_seperator = true;
+                parsed_separator = true;
                 continue;
             }
 
@@ -208,7 +208,7 @@ namespace dlx
                 return {};
             }
 
-            parsed_seperator = false;
+            parsed_separator = false;
             parsed_something = true;
 
             if (parsing_binary)

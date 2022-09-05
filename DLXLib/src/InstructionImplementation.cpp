@@ -26,7 +26,7 @@ namespace dlx
 
     static std::int32_t clear_top_n_bits(std::int32_t value, std::int32_t n) noexcept
     {
-        PHI_ASSERT(n > 0 && n < 32, "Would invoke undefined behaviour");
+        PHI_ASSERT(n > 0 && n < 32, "Would invoke undefined behavior");
 
         return value & ~(-1 << (32 - n));
     }
@@ -268,7 +268,7 @@ namespace dlx
             return;
         }
 
-        // Negative shifts are undefiend behaviour
+        // Negative shifts are undefiend behavior
         if (shift < 0)
         {
             processor.Raise(Exception::BadShift);
@@ -304,7 +304,7 @@ namespace dlx
             return;
         }
 
-        // Negative shifts are undefined behaviour
+        // Negative shifts are undefined behavior
         if (shift < 0)
         {
             processor.Raise(Exception::BadShift);

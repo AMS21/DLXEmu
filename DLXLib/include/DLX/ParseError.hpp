@@ -44,7 +44,7 @@ namespace dlx
             Token::Type actual_type;
         };
 
-        struct ReserverdIdentifier
+        struct ReservedIdentifier
         {
             std::string_view identifier;
         };
@@ -87,7 +87,7 @@ namespace dlx
 
         [[nodiscard]] const UnexpectedToken& GetUnexpectedToken() const noexcept;
 
-        [[nodiscard]] const ReserverdIdentifier& GetReserverIdentifier() const noexcept;
+        [[nodiscard]] const ReservedIdentifier& GetReserverIdentifier() const noexcept;
 
         [[nodiscard]] const InvalidLabelIdentifier& GetInvalidLabelIdentifier() const noexcept;
 
@@ -109,7 +109,7 @@ namespace dlx
             UnexpectedArgumentType unexpected_argument_type;
             InvalidNumber          invalid_number;
             UnexpectedToken        unexpected_token;
-            ReserverdIdentifier    reserverd_identifier;
+            ReservedIdentifier     reserved_identifier;
             InvalidLabelIdentifier invalid_label_identifier;
             LabelAlreadyDefined    label_already_defined;
             TooFewArguments        too_few_arguments;

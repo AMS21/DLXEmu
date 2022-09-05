@@ -63,7 +63,7 @@ namespace dlx
                         ArgumentType::FloatRegister, ArgumentType::FloatRegister,
                         RegisterAccessType::Double, impl::SUBD);
 
-        // Multiplikation
+        // Multiplication
         InitInstruction(table, OpCode::MULT, ArgumentType::IntRegister, ArgumentType::IntRegister,
                         ArgumentType::IntRegister, RegisterAccessType::Signed, impl::MULT);
         InitInstruction(table, OpCode::MULTI, ArgumentType::IntRegister, ArgumentType::IntRegister,

@@ -783,7 +783,7 @@ TEST_CASE("SetTextLines")
     CHECK(lines.at(0).empty());
     CHECK(editor.GetTotalLines() == 1u);
 
-    // Test with embeded null characters
+    // Test with embedded null characters
     new_lines.clear();
     new_lines.reserve(2u);
     new_lines.emplace_back("A single line with newline at the end\n");

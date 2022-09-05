@@ -157,7 +157,7 @@ TEST_CASE("Tokenize - Comments")
     TokenMatches(res.consume(), "; Comment: With (s)peci(a)l chars, /// \\ ;;",
                  dlx::Token::Type::Comment, 1, 1);
 
-    // Comment characters seperate tokens
+    // Comment characters separate tokens
     res = dlx::Tokenize("ADD;Comment");
     REQUIRE(bool(res.size() == 2u));
     TokenMatches(res.consume(), "ADD", dlx::Token::Type::OpCode, 1, 1);

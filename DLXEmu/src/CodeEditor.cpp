@@ -1338,7 +1338,7 @@ namespace dlxemu
         str += fmt::format("Cursor position: {:d}, {:d}\n",
                            m_State.m_CursorPosition.m_Line.unsafe(),
                            m_State.m_CursorPosition.m_Column.unsafe());
-        str += fmt::format("Actual cursor positon: {:d}, {:d}\n", cursor_pos.m_Line.unsafe(),
+        str += fmt::format("Actual cursor position: {:d}, {:d}\n", cursor_pos.m_Line.unsafe(),
                            cursor_pos.m_Column.unsafe());
         str += fmt::format("Selection start: {:d}, {:d}\n",
                            m_State.m_SelectionStart.m_Line.unsafe(),

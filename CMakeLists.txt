@@ -87,7 +87,7 @@ if(PHI_PLATFORM_EMSCRIPTEN)
                    -sDISABLE_EXCEPTION_CATCHING=1)
 endif()
 
-# Ensure submodules were cloned corretly
+# Ensure submodules were cloned correctly
 if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/Phi/CMakeLists.txt")
   message(
     FATAL_ERROR
@@ -95,7 +95,7 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/Phi/CMakeLists.txt")
   )
 endif()
 
-# Sadly some of our dependencies rely on undefined behaviour so we disable the checks here
+# Sadly some of our dependencies rely on undefined behavior so we disable the checks here
 set(disable_checks
     UNSIGNED_INTEGER_OVERFLOW
     INTEGER

@@ -63,7 +63,7 @@ namespace dlx
             }
 
             case Type::ReserverdIdentifier: {
-                const ReserverdIdentifier& detail = GetReserverIdentifier();
+                const ReservedIdentifier& detail = GetReserverIdentifier();
 
                 return fmt::format("'{:s}' is a reserved identifier", detail.identifier);
             }
@@ -134,12 +134,12 @@ namespace dlx
         return unexpected_token;
     }
 
-    PHI_ATTRIBUTE_CONST const ParseError::ReserverdIdentifier& ParseError::ParseError::
+    PHI_ATTRIBUTE_CONST const ParseError::ReservedIdentifier& ParseError::ParseError::
             GetReserverIdentifier() const noexcept
     {
         PHI_ASSERT(m_Type == Type::ReserverdIdentifier);
 
-        return reserverd_identifier;
+        return reserved_identifier;
     }
 
     PHI_ATTRIBUTE_CONST const ParseError::InvalidLabelIdentifier& ParseError::
@@ -265,10 +265,10 @@ namespace dlx
     {
         ParseError err;
 
-        err.m_Type                          = ParseError::Type::ReserverdIdentifier;
-        err.m_LineNumber                    = line_number;
-        err.m_Column                        = column;
-        err.reserverd_identifier.identifier = identifier;
+        err.m_Type                         = ParseError::Type::ReserverdIdentifier;
+        err.m_LineNumber                   = line_number;
+        err.m_Column                       = column;
+        err.reserved_identifier.identifier = identifier;
 
         return err;
     }

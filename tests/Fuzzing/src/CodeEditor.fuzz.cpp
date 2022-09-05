@@ -153,7 +153,7 @@ template <typename T>
         return false;
     }
 
-    // Move back to proper alignemnt
+    // Move back to proper alignment
     index += (sizeof(void*) - (index % sizeof(void*)));
 
     // Assign string value to cache
@@ -865,7 +865,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 dlxemu::CodeEditor::SelectionMode selection_mode =
                         static_cast<dlxemu::CodeEditor::SelectionMode>(selection_mode_opt.value());
 
-                FUZZ_LOG("SetSelection(Coordinates({:s}, {:s}), Coordiantes({:s}, "
+                FUZZ_LOG("SetSelection(Coordinates({:s}, {:s}), Coordinates({:s}, "
                          "{:s}), {:s})",
                          print_int(line_start), print_int(column_start), print_int(line_end),
                          print_int(column_end), dlx::enum_name(selection_mode));

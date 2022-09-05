@@ -129,7 +129,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetColumn() == 2);
             CHECK_FALSE(err.ConstructMessage().empty());
 
-            const dlx::ParseError::ReserverdIdentifier& detail = err.GetReserverIdentifier();
+            const dlx::ParseError::ReservedIdentifier& detail = err.GetReserverIdentifier();
             CHECK(detail.identifier == "J");
         }
 
@@ -142,7 +142,7 @@ TEST_CASE("ParseError")
             CHECK(err.GetColumn() == 2);
             CHECK_FALSE(err.ConstructMessage().empty());
 
-            const dlx::ParseError::ReserverdIdentifier& detail = err.GetReserverIdentifier();
+            const dlx::ParseError::ReservedIdentifier& detail = err.GetReserverIdentifier();
             CHECK(detail.identifier == "J");
         }
     }

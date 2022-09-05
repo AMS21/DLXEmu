@@ -94,7 +94,7 @@ namespace dlxemu
             return false;
         }
 
-        // Make sure the pallete is updated correctly
+        // Make sure the palette is updated correctly
         m_CodeEditor.UpdatePalette();
 
         return true;

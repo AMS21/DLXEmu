@@ -110,7 +110,7 @@ jobs:
             echo "Failed to generate Dictionary.txt"
             exit 1
           else
-            echo "Sucessfully genreated the Dictionary"
+            echo "Successfully genreated the Dictionary"
             echo "Dictionary:"
             cat Dictionary.txt
           fi
@@ -285,7 +285,7 @@ jobs:
                 git push -u origin main | true
 
                 if [ "${PIPESTATUS[0]}" = 0 ]; then
-                  echo "Sucessfully pushed after $i tries"
+                  echo "Successfully pushed after $i tries"
                   break
                 else
                   if [ "$i" = 5 ]; then
@@ -379,7 +379,7 @@ jobs:
               git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
-                echo "Sucessfully pushed after $i tries"
+                echo "Successfully pushed after $i tries"
                 break
               else
                 if [ "$i" = 5 ]; then
@@ -433,7 +433,7 @@ jobs:
               git push -u origin main | true
 
               if [ "${PIPESTATUS[0]}" = 0 ]; then
-                echo "Sucessfully pushed after $i tries"
+                echo "Successfully pushed after $i tries"
                 break
               else
                 if [ "$i" = 5 ]; then
