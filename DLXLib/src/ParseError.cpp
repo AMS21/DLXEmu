@@ -32,6 +32,10 @@ namespace dlx
         return m_Column;
     }
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     std::string ParseError::ConstructMessage() const noexcept
     {
         switch (m_Type)
@@ -109,6 +113,8 @@ namespace dlx
 #endif
         }
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     PHI_ATTRIBUTE_CONST const ParseError::UnexpectedArgumentType& ParseError::
             GetUnexpectedArgumentType() const noexcept

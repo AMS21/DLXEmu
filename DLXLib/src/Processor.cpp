@@ -479,6 +479,9 @@ namespace dlx
         m_MemoryBlock.Clear();
     }
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
+
     void Processor::Raise(Exception exception) noexcept
     {
         PHI_ASSERT(exception != Exception::None, "Cannot raise None exception");
@@ -530,6 +533,8 @@ namespace dlx
         PHI_ASSERT_NOT_REACHED();
 #endif
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     PHI_ATTRIBUTE_CONST Exception Processor::GetLastRaisedException() const noexcept
     {

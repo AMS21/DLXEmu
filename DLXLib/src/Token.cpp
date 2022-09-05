@@ -86,6 +86,10 @@ namespace dlx
         return m_Hint;
     }
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     std::string Token::DebugInfo() const noexcept
     {
         std::string pos_info =
@@ -142,4 +146,7 @@ namespace dlx
 #endif
         }
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
+
 } // namespace dlx

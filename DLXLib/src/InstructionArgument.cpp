@@ -25,6 +25,10 @@ namespace dlx
         return m_Type;
     }
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     std::string InstructionArgument::DebugInfo() const noexcept
     {
         switch (m_Type)
@@ -62,6 +66,8 @@ namespace dlx
         return "Unknown";
 #endif
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     PHI_ATTRIBUTE_CONST const InstructionArgument::RegisterInt& InstructionArgument::AsRegisterInt()
             const noexcept
@@ -102,6 +108,10 @@ namespace dlx
 
         return label;
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
 
     PHI_ATTRIBUTE_CONST phi::boolean operator==(const InstructionArgument& lhs,
                                                 const InstructionArgument& rhs) noexcept
@@ -146,6 +156,8 @@ namespace dlx
         return false;
 #endif
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     PHI_ATTRIBUTE_CONST phi::boolean operator!=(const InstructionArgument& lhs,
                                                 const InstructionArgument& rhs) noexcept

@@ -150,6 +150,9 @@ namespace dlx
             return m_OpCode;
         }
 
+        PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+        PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
         [[nodiscard]] constexpr ArgumentType GetArgumentType(phi::u8 index) const noexcept
         {
             PHI_ASSERT(index < 3u);
@@ -172,6 +175,8 @@ namespace dlx
 #endif
             }
         }
+
+        PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
         [[nodiscard]] constexpr phi::u8 GetNumberOfRequiredArguments() const noexcept
         {

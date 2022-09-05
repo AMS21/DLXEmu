@@ -166,18 +166,8 @@ namespace dlx
                             static_cast<std::int16_t>(token.GetHint()));
                 }
 
-                auto parsed_value = ParseNumber(token.GetText().substr(1));
-                if (!parsed_value)
-                {
-                    program.AddParseError(ConstructInvalidNumberParseError(token));
-                    return {};
-                }
-
-                //DLX_INFO("Parsed Immediate Integer with value {}", parsed_value.value().unsafe());
-
-#if !defined(DLXEMU_COVERAGE_BUILD)
-                return ConstructInstructionArgumentImmediateValue(parsed_value.value().unsafe());
-#endif
+                program.AddParseError(ConstructInvalidNumberParseError(token));
+                return {};
             }
 
             default:

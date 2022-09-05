@@ -37,6 +37,9 @@ namespace dlx
         }
     }
 
+    PHI_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     PHI_ATTRIBUTE_CONST std::string Instruction::DebugInfo() const noexcept
     {
         switch (m_Info.GetNumberOfRequiredArguments().unsafe())
@@ -65,6 +68,8 @@ namespace dlx
         return "Unknown";
 #endif
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 
     void Instruction::Execute(Processor& processor) const noexcept
     {

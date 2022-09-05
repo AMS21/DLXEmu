@@ -90,6 +90,9 @@ namespace dlx
 
     PHI_GCC_SUPPRESS_WARNING_POP()
 
+    PHI_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     static phi::optional<phi::i32> GetLoadStoreAddress(Processor&                processor,
                                                        const InstructionArgument argument) noexcept
     {
@@ -115,6 +118,8 @@ namespace dlx
         PHI_ASSERT_NOT_REACHED();
 #endif
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 
     static void SafeWriteInteger(Processor& processor, IntRegisterID dest_reg,
                                  phi::i64 value) noexcept
