@@ -58,6 +58,8 @@ jobs:
 
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v11
+        # Continue on error to ignore problems with caching
+        continue-on-error: true
         with:
           version: ${{ matrix.em_version }}
           actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
