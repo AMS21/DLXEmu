@@ -76,7 +76,7 @@ jobs:
           sudo cpupower frequency-set --governor performance
 
           # Verify it worked
-          cpupower frequency-info -o proc
+          sudo cpupower frequency-info -o proc
 
       - name: Run benchmark
         working-directory: ./build
