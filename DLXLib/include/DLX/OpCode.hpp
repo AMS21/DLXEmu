@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DLX/EnumName.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/types.hpp>
 #include <string>
@@ -190,6 +191,9 @@ namespace dlx
     static constexpr const phi::usize NumberOfOpCodes{
             static_cast<phi::size_t>(OpCode::NUMBER_OF_ELEMENTS)};
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     template <>
     [[nodiscard]] constexpr std::string_view enum_name<OpCode>(OpCode value) noexcept
     {
@@ -207,6 +211,8 @@ namespace dlx
                 PHI_ASSERT_NOT_REACHED();
         }
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     OpCode StringToOpCode(std::string_view token) noexcept;
 } // namespace dlx

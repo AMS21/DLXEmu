@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DLX/EnumName.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <string>
@@ -86,6 +87,9 @@ namespace dlx
                 None,
     };
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+
     template <>
     [[nodiscard]] constexpr std::string_view enum_name<IntRegisterID>(IntRegisterID value) noexcept
     {
@@ -104,6 +108,8 @@ namespace dlx
         }
     }
 
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
+
     IntRegisterID StringToIntRegister(std::string_view token) noexcept;
 
     enum class FloatRegisterID : unsigned
@@ -114,6 +120,9 @@ namespace dlx
 
                 None,
     };
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
 
     template <>
     [[nodiscard]] constexpr std::string_view enum_name<FloatRegisterID>(
@@ -133,6 +142,8 @@ namespace dlx
                 PHI_ASSERT_NOT_REACHED();
         }
     }
+
+    PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     FloatRegisterID StringToFloatRegister(std::string_view token) noexcept;
 
