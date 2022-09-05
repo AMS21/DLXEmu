@@ -24,7 +24,7 @@ on:
 
 jobs:
   Build:
-    runs-on: macos-latest
+    runs-on: macos-12
 
     env:
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
@@ -41,7 +41,7 @@ jobs:
       matrix:
         cfg:
           - { compiler: gcc,   compiler_version: "12" }
-          - { compiler: clang, compiler_version: "13.3.1" }
+          - { compiler: clang, compiler_version: "13.4.1" }
 
         build_type:
           - "Debug"
