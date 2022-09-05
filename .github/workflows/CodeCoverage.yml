@@ -75,11 +75,11 @@ jobs:
 
       - name: Build
         working-directory: ./build
-        run: cmake --build . --config ${{ matrix.build_type }}
+        run: cmake --build . --config Debug
 
       - name: Run tests
         working-directory: ./build
-        run: ctest . -C ${{ matrix.build_type }}
+        run: ctest . -C Debug
 
       - name: Checkout Corpus
         uses: actions/checkout@v3

@@ -21,12 +21,17 @@ PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
 
 namespace dlx
 {
+    PHI_GCC_SUPPRESS_WARNING_PUSH()
+    PHI_GCC_SUPPRESS_WARNING("-Wshift-negative-value")
+
     static std::int32_t clear_top_n_bits(std::int32_t value, std::int32_t n) noexcept
     {
         PHI_ASSERT(n > 0 && n < 32, "Would invoke undefined behaviour");
 
         return value & ~(-1 << (32 - n));
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 
     static void JumpToLabel(Processor& processor, std::string_view label_name) noexcept
     {

@@ -49,7 +49,7 @@ jobs:
           path: DLXEmu-Corpus
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: DLXEmu-App/scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.23.0
