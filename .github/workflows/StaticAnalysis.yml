@@ -137,8 +137,11 @@ jobs:
           # Run clang-tidy
           run-clang-tidy-${{ env.LLVM_VERSION }} -quiet -header-filter ".*" -j $(nproc) > clang_tidy.log
 
+          # Filter to only include warnings
+          cat clang_tidy.log | grep "warning:" > clang_tidy_warnings.log
+
           # Filter out external libraries and test code
-          cat clang_tidy.log | grep -Ev "DLXEmu/external|DLXEmu/tests" > clang_tidy_filtered.log || true
+          cat clang_tidy_warnings.log | grep -Ev "DLXEmu/external|DLXEmu/tests|\[clang-diagnostic-ignored-optimization-argument\]" > clang_tidy_filtered.log || true
 
           # Remove duplicate entries
           sort clang_tidy_filtered.log | uniq -d > clang_tidy_output.log
