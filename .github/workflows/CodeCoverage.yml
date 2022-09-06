@@ -41,7 +41,7 @@ jobs:
       matrix:
         compiler:
           - "gcc-12"
-          - "clang-14"
+          - "clang-15"
 
     steps:
       - name: Checkout

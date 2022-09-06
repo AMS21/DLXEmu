@@ -33,7 +33,7 @@ jobs:
   cppcheck:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 14
+      LLVM_VERSION: 15
 
     steps:
       - name: Checkout
@@ -96,7 +96,7 @@ jobs:
   clang-tidy:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 13 # TODO: Revert back to 14 once https://github.com/llvm/llvm-project/issues/57568 is resolved
+      LLVM_VERSION: 15
 
     steps:
       - name: Checkout
@@ -269,7 +269,7 @@ jobs:
   pvs-studio:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 14
+      LLVM_VERSION: 15
 
     steps:
       - name: Checkout
@@ -347,7 +347,7 @@ jobs:
 
         compiler:
           - 'gcc-12'
-          - 'clang-14'
+          - 'clang-15'
 
         build_type:
           - 'Debug'

@@ -31,7 +31,7 @@ jobs:
 
       matrix:
         compiler:
-          - "clang-14"
+          - "clang-15"
           - "gcc-12"
 
     steps:
