@@ -610,7 +610,7 @@ namespace dlxemu
         if (m_Processor.IsHalted())
         {
             DLX_INFO("Processor halted");
-            m_CurrentExecutionMode = ExecutionMode::None;
+            SetExecutionMode(ExecutionMode::None);
         }
     }
 
