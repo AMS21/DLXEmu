@@ -473,7 +473,7 @@ namespace dlxemu
 
             PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wexit-time-destructors")
 
-            static std::string about_text = fmt::format(
+            static const std::string about_text = fmt::format(
                     "Version:    {:d}.{:d}.{:d} {:s}\n"
                     "Commit:     {:s}\n"
                     "Build date: {:s} {:s}\n"
