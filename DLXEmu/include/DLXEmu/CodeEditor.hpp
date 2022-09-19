@@ -353,15 +353,15 @@ namespace dlxemu
         UndoBuffer  m_UndoBuffer;
         phi::usize  m_UndoIndex;
 
-        phi::u8_fast  m_TabSize;
-        phi::boolean  m_Overwrite;
-        phi::boolean  m_ReadOnly;
-        phi::boolean  m_ScrollToCursor;
-        phi::boolean  m_ScrollToTop;
-        phi::boolean  m_TextChanged;
-        phi::boolean  m_ColorizerEnabled;
-        phi::boolean  m_CursorPositionChanged;
-        float         m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
+        phi::u8_fast m_TabSize;
+        phi::boolean m_Overwrite;
+        phi::boolean m_ReadOnly;
+        phi::boolean m_ScrollToCursor;
+        phi::boolean m_ScrollToTop;
+        phi::boolean m_TextChanged;
+        phi::boolean m_ColorizerEnabled;
+        phi::boolean m_CursorPositionChanged;
+        float m_TextStart; // position (in pixels) where a code line starts relative to the left of the CodeEditor.
         phi::u32      m_ColorRangeMin;
         phi::u32      m_ColorRangeMax;
         SelectionMode m_SelectionMode;

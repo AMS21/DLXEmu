@@ -2874,7 +2874,7 @@ namespace dlxemu
 
                 undo.m_RemovedStart = m_State.m_CursorPosition;
                 undo.m_RemovedEnd   = Coordinates(
-                          coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + char_length));
+                        coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + char_length));
 
                 for (; char_length > 0u && cindex < line.size(); --char_length)
                 {
@@ -3342,7 +3342,7 @@ namespace dlxemu
             const Line& line = m_Lines[line_no.unsafe()];
 
             longest               = phi::max(m_TextStart + TextDistanceToLineStart(Coordinates(
-                                                                   line_no, GetLineMaxColumn(line_no))),
+                                                     line_no, GetLineMaxColumn(line_no))),
                                              longest);
             phi::u32    column_no = 0u;
             Coordinates line_start_coord(line_no, 0u);
