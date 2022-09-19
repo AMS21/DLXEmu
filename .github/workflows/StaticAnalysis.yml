@@ -405,6 +405,21 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+        with:
+          upload: False
+          output: sarif-results
+
+      - name: filter-sarif
+        uses: advanced-security/filter-sarif@main
+        with:
+          patterns: -**/external/** # Ignore external directory
+          input: sarif-results/${{ matrix.language }}.sarif
+          output: sarif-results/${{ matrix.language }}.sarif
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: sarif-results/${{ matrix.language }}.sarif
 
   msvc-code-analysis:
     permissions:
@@ -416,6 +431,13 @@ jobs:
     defaults:
       run:
         shell: bash
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        build_type:
+          - 'RelWithDebInfo'
 
     steps:
       - name: Checkout repository
@@ -437,13 +459,21 @@ jobs:
         run: cmake --build .
 
       - name: Initialize MSVC Code Analysis
-        uses: microsoft/msvc-code-analysis-action@24c285ab36952c9e9182f4b78dfafbac38a7e5ee
+        uses: microsoft/msvc-code-analysis-action@v0.1.1
         # Provide a unique ID to access the sarif output path
         id: run-analysis
         with:
-          cmakeBuildDirectory: build
+          cmakeBuildDirectory: '${{ github.workspace }}/build'
+          buildConfiguration: ${{ matrix.build_type }}
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
+
+      - name: filter-sarif
+        uses: advanced-security/filter-sarif@main
+        with:
+          patterns: -**/external/** # Ignore external directory
+          input: ${{ steps.run-analysis.outputs.sarif }}
+          output: ${{ steps.run-analysis.outputs.sarif }}
 
       # Upload SARIF file to GitHub Code Scanning Alerts
       - name: Upload SARIF to GitHub
@@ -470,8 +500,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          submodules: recursive
 
       - name: Run DevSkim scanner
         uses: microsoft/DevSkim-Action@v1
@@ -498,7 +526,7 @@ jobs:
 
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI
-        uses: codacy/codacy-analysis-cli-action@8abcaf1b06f1d9bd44d5795bbc679440aeb6ea7c
+        uses: codacy/codacy-analysis-cli-action@v4.1.0
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           verbose: true
@@ -509,6 +537,14 @@ jobs:
           # Force 0 exit code to allow SARIF file generation
           # This will handover control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
+          run-staticcheck: "true"
+
+      - name: filter-sarif
+        uses: advanced-security/filter-sarif@main
+        with:
+          patterns: -**/external/** # Ignore external directory
+          input: results.sarif
+          output: results.sarif
 
       # Upload the SARIF file generated in the previous step
       - name: Upload SARIF results file
