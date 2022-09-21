@@ -199,10 +199,14 @@ namespace dlxemu
         return m_CodeEditor;
     }
 
+    PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wsuggest-attribute=pure")
+
     PHI_ATTRIBUTE_CONST Emulator::ExecutionMode Emulator::GetExecutionMode() const noexcept
     {
         return m_CurrentExecutionMode;
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 
     PHI_ATTRIBUTE_CONST phi::u64 Emulator::GetExecutingLineNumber() const noexcept
     {

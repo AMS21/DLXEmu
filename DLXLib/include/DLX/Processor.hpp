@@ -8,6 +8,7 @@
 #include "DLX/MemoryBlock.hpp"
 #include "DLX/RegisterNames.hpp"
 #include "DLX/StatusRegister.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/observer_ptr.hpp>
 #include <phi/core/scope_ptr.hpp>
@@ -40,6 +41,8 @@ namespace dlx
                 NUMBER_OF_ELEMENTS,
     };
 
+    PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wreturn-type")
+
     template <>
     [[nodiscard]] constexpr std::string_view enum_name<Exception>(Exception value) noexcept
     {
@@ -57,6 +60,8 @@ namespace dlx
                 PHI_ASSERT_NOT_REACHED();
         }
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 
     enum class IntRegisterValueType
     {
