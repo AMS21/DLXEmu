@@ -397,6 +397,7 @@ namespace dlxemu
 } // namespace dlxemu
 
 PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wreturn-type")
 
 namespace dlx
 {
@@ -419,4 +420,5 @@ namespace dlx
     }
 } // namespace dlx
 
+PHI_GCC_SUPPRESS_WARNING_POP()
 PHI_CLANG_SUPPRESS_WARNING_POP()
