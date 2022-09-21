@@ -337,7 +337,7 @@ namespace dlx
             return;
         }
 
-        // Negative shifts are undefined behaviour
+        // Negative shifts are undefined behavior
         if (shift < 0)
         {
             processor.Raise(Exception::BadShift);
