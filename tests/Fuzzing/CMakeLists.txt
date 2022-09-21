@@ -36,7 +36,7 @@ function(define_fuzzer)
     add_dependencies(${df_NAME} ${df_DEPENDENCY})
   endif()
   # Don't inline functions defined as always inline
-  target_compile_definitions(${df_NAME} PRIVATE PHI_CONFIG_ALWAYS_INLINE_OVERWRITE=PHI_NEVER_INLINE)
+  target_compile_definitions(${df_NAME} PRIVATE PHI_CONFIG_ALWAYS_INLINE_OVERWRITE=inline)
 
   phi_target_enable_optimizations(TARGET ${df_NAME} PSO "native")
   # phi_target_enable_sanitizer(TARGET ${df_NAME} SANITIZERS "address;undefined")
