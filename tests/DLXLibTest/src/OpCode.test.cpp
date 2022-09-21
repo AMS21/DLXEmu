@@ -2,6 +2,7 @@
 
 #include <DLX/EnumName.hpp>
 #include <DLX/OpCode.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/container/array.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/size_t.hpp>
@@ -32,6 +33,8 @@ void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
         CHECK(dlx::StringToOpCode(str) == opcode);
     }
 }
+
+PHI_MSVC_SUPPRESS_WARNING(5246)
 
 TEST_CASE("StringToOpCode")
 {

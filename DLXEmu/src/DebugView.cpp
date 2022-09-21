@@ -505,8 +505,8 @@ namespace dlxemu
 
             // EnterCharacter
             case 33: {
-                ImWchar character = imwchar_distrib(engine);
-                bool    shift     = bool_distrib(engine);
+                const ImWchar character = imwchar_distrib(engine);
+                const bool    shift     = bool_distrib(engine) == 1;
 
                 DLX_DEBUG("EnterCharacter({} (\0x{:02X}) {:s})", static_cast<char>(character),
                           static_cast<std::uint32_t>(character), shift ? "True" : "False");

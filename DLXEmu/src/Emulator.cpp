@@ -29,6 +29,8 @@ static constexpr const phi::size_t MaxExecutionPerFrame{500'000u};
 
 namespace dlxemu
 {
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4355)
+
     Emulator::Emulator() noexcept
         : m_CodeEditor(this)
         , m_MemoryViewer(this)
@@ -37,6 +39,8 @@ namespace dlxemu
         , m_DebugView(this)
 #endif
     {}
+
+    PHI_MSVC_SUPPRESS_WARNING_POP()
 
     Emulator::ShouldContinueInitilization Emulator::HandleCommandLineArguments(phi::i32 argc,
                                                                                char** argv) noexcept
@@ -515,6 +519,8 @@ namespace dlxemu
         ImGui::End();
     } // namespace dlxemu
 
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
+
     void Emulator::RenderOptionsMenu() noexcept
     {
         constexpr const static ImGuiWindowFlags options_flags =
@@ -577,10 +583,13 @@ namespace dlxemu
         ImGui::End();
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
+
+    PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
+
     void Emulator::Update() noexcept
     {
-        PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
-
         switch (m_CurrentExecutionMode)
         {
             case ExecutionMode::None:
@@ -609,14 +618,15 @@ namespace dlxemu
                 break;
         }
 
-        PHI_CLANG_SUPPRESS_WARNING_POP()
-
         if (m_Processor.IsHalted())
         {
             DLX_INFO("Processor halted");
             SetExecutionMode(ExecutionMode::None);
         }
     }
+
+    PHI_MSVC_SUPPRESS_WARNING_POP()
+    PHI_CLANG_SUPPRESS_WARNING_POP()
 
     void Emulator::SetExecutionMode(ExecutionMode mode) noexcept
     {

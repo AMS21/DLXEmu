@@ -13,6 +13,8 @@ PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
+PHI_MSVC_SUPPRESS_WARNING(4582)
+
 namespace dlx
 {
     InstructionArgument::InstructionArgument() noexcept

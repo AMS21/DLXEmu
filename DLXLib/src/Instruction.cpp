@@ -15,6 +15,8 @@ namespace dlx
         , m_SourceLine{source_line}
     {}
 
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
+
     void Instruction::SetArgument(phi::u8 argument_number, InstructionArgument argument) noexcept
     {
         PHI_ASSERT(argument_number < 3u);
@@ -36,6 +38,8 @@ namespace dlx
 #endif
         }
     }
+
+    PHI_MSVC_SUPPRESS_WARNING_POP()
 
     PHI_GCC_SUPPRESS_WARNING_PUSH()
     PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")

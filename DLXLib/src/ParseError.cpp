@@ -12,6 +12,8 @@ PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
+PHI_MSVC_SUPPRESS_WARNING(4582)
+
 namespace dlx
 {
     ParseError::ParseError() noexcept
@@ -35,6 +37,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
 
     std::string ParseError::ConstructMessage() const noexcept
     {
@@ -114,6 +117,7 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     PHI_ATTRIBUTE_CONST const ParseError::UnexpectedArgumentType& ParseError::

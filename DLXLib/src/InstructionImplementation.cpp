@@ -18,6 +18,7 @@ PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wfloat-equal")
 PHI_CLANG_SUPPRESS_WARNING("-Wundefined-reinterpret-cast")
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-aliasing")
 PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
+PHI_MSVC_SUPPRESS_WARNING(4100)
 
 namespace dlx
 {
@@ -92,6 +93,7 @@ namespace dlx
 
     PHI_GCC_SUPPRESS_WARNING_PUSH()
     PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
 
     static phi::optional<phi::i32> GetLoadStoreAddress(Processor&                processor,
                                                        const InstructionArgument argument) noexcept
@@ -119,6 +121,7 @@ namespace dlx
 #endif
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_GCC_SUPPRESS_WARNING_POP()
 
     static void SafeWriteInteger(Processor& processor, IntRegisterID dest_reg,

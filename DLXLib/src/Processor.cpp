@@ -481,6 +481,7 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
 
     void Processor::Raise(Exception exception) noexcept
     {
@@ -534,6 +535,7 @@ namespace dlx
 #endif
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     PHI_ATTRIBUTE_CONST Exception Processor::GetLastRaisedException() const noexcept

@@ -274,9 +274,10 @@ namespace dlxemu
         , m_ShowWhitespaces(false)
         , m_PaletteBase(GetDarkPalette())
         , m_Palette()
-        , m_StartTime(std::chrono::duration_cast<std::chrono::milliseconds>(
-                              std::chrono::system_clock::now().time_since_epoch())
-                              .count())
+        , m_StartTime(static_cast<std::uint64_t>(
+                  std::chrono::duration_cast<std::chrono::milliseconds>(
+                          std::chrono::system_clock::now().time_since_epoch())
+                          .count()))
         , m_LastClick(-1.0f)
         , m_Emulator(emulator)
     {
@@ -599,7 +600,7 @@ namespace dlxemu
                     else
                     {
                         m_Lines[line_number.unsafe()].emplace_back(
-                                Glyph(character, PaletteIndex::Default));
+                                Glyph(static_cast<Char>(character), PaletteIndex::Default));
                     }
                 }
             }
@@ -1047,6 +1048,8 @@ namespace dlxemu
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
+
     void CodeEditor::SetSelection(const Coordinates& start, const Coordinates& end,
                                   SelectionMode mode) noexcept
     {
@@ -1089,6 +1092,8 @@ namespace dlxemu
             m_CursorPositionChanged = true;
         }
     }
+
+    PHI_MSVC_SUPPRESS_WARNING_POP()
 
     void CodeEditor::SelectWordUnderCursor() noexcept
     {
@@ -2072,7 +2077,8 @@ namespace dlxemu
             {
                 Line& line = m_Lines[where.m_Line.unsafe()];
 
-                line.insert(line.begin() + cindex.unsafe(), Glyph(*value++, PaletteIndex::Default));
+                line.insert(line.begin() + cindex.unsafe(),
+                            Glyph(static_cast<Char>(*value++), PaletteIndex::Default));
                 cindex += 1u;
 
                 where.m_Column += GetTabSizeAt(where.m_Column);
@@ -2085,7 +2091,7 @@ namespace dlxemu
                      ++cindex, --length)
                 {
                     line.insert(line.begin() + cindex.unsafe(),
-                                Glyph(*value++, PaletteIndex::Default));
+                                Glyph(static_cast<Char>(*value++), PaletteIndex::Default));
                 }
 
                 ++where.m_Column;
@@ -2764,7 +2770,7 @@ namespace dlxemu
                     else
                     {
                         PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wnull-dereference")
-                        PHI_ASSERT(line.begin().base() != nullptr);
+                        PHI_ASSERT(!line.empty());
                         PHI_ASSERT(line.data() != nullptr);
 
                         // Add indention

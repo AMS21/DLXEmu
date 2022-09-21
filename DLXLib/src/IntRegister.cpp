@@ -3,6 +3,7 @@
 #include <phi/compiler_support/warning.hpp>
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
+PHI_MSVC_SUPPRESS_WARNING(4582)
 
 namespace dlx
 {
