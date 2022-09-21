@@ -1833,7 +1833,9 @@ namespace dlxemu
         const float height = ImGui::GetWindowHeight() - 20.0f;
 
         PHI_ASSERT(m_CharAdvance.y != 0.0f);
-        return static_cast<phi::uint32_t>(std::floor(height / m_CharAdvance.y));
+        const float page_size = std::floor(height / m_CharAdvance.y);
+
+        return static_cast<phi::uint32_t>(phi::max(page_size, 5.0f));
     }
 
     PHI_ATTRIBUTE_PURE std::string CodeEditor::GetText(const Coordinates& start,

@@ -909,3 +909,24 @@ TEST_CASE("crash-b50b36a0abacb8343855b0e477e235df9844f2f6")
 
     EndImgui();
 }
+
+TEST_CASE("crash-286340ec276cb402999df27b2bb407f5791230e5")
+{
+    BeginImGui();
+
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter(0x1, true);
+    editor.VerifyInternalState();
+
+    editor.Render({0.0, 0.0}, true);
+    editor.VerifyInternalState();
+
+    ImGui::GetIO().AddKeyEvent(ImGuiKey_PageUp, true); // ImGuiKey_PageUp = 517
+    editor.VerifyInternalState();
+
+    editor.Render({0.0, 0.0}, true);
+    editor.VerifyInternalState();
+
+    EndImgui();
+}
