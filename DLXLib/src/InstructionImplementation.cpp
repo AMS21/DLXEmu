@@ -1479,7 +1479,7 @@ namespace dlx
             const IntRegisterID dest_reg  = arg1.AsRegisterInt().register_id;
             std::int32_t        imm_value = arg2.AsImmediateValue().signed_value.unsafe();
 
-            imm_value = (imm_value << 16) & 0xFFFF0000;
+            imm_value = static_cast<std::int32_t>((imm_value << 16) & 0xFFFF0000);
 
             processor.IntRegisterSetSignedValue(dest_reg, imm_value);
         }
