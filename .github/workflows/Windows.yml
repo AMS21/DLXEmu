@@ -55,7 +55,7 @@ jobs:
         cfg:
           - { compiler: cl }
           #- { compiler: g++ }
-          - { compiler: clang++ }
+          #- { compiler: clang++ }
           #- { compiler: clang++, sanitizer: "ubsan" }
 
         build_type:
