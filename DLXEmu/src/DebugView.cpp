@@ -4,13 +4,18 @@
 #include "DLXEmu/Emulator.hpp"
 #include <DLX/Logger.hpp>
 #include <DLX/Processor.hpp>
-#include <imgui.h>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
+
+PHI_EXTERNAL_HEADERS_BEGIN()
+
+#include <imgui.h>
 #include <limits>
 #include <random>
 #include <vector>
+
+PHI_EXTERNAL_HEADERS_END()
 
 namespace dlxemu
 {
