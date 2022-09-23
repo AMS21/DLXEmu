@@ -33,6 +33,8 @@ add_subdirectory(glad)
 # glfw
 if(NOT PHI_PLATFORM_EMSCRIPTEN)
   add_subdirectory(glfw)
+else()
+  message(STATUS "Using system glfw")
 endif()
 
 # ImGui
