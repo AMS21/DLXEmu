@@ -83,8 +83,14 @@ project(
 # Build js files when using emscripten
 if(PHI_PLATFORM_EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
-  add_link_options(-sUSE_GLFW=3 -sFETCH=1 -sFULL_ES2=1 -sFULL_ES3=1 -sASSERTIONS=1
-                   -sDISABLE_EXCEPTION_CATCHING=1)
+  add_link_options(
+    -sUSE_GLFW=3
+    -sFETCH=1
+    -sFULL_ES2=1
+    -sFULL_ES3=1
+    -sASSERTIONS=1
+    -sDISABLE_EXCEPTION_CATCHING=1
+    -sERROR_ON_UNDEFINED_SYMBOLS=0)
 endif()
 
 # Ensure submodules were cloned correctly
