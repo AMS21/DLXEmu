@@ -77,7 +77,7 @@ endif()
 # Project
 project(
   "DLXEmu"
-  LANGUAGES CXX
+  LANGUAGES CXX C
   VERSION ${DLXEMU_VERSION_MAJOR}.${DLXEMU_VERSION_MINOR}.${DLXEMU_VERSION_PATCH})
 
 # Build js files when using emscripten
