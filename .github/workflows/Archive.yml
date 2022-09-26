@@ -23,5 +23,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Move archive script
+        run: mv external/Phi/scripts/ci/ArchiveAllLinks.sh .
+
+      - name: Remove external directory
+        run: rm -rf external
+
       - name: Run Script
-        run: external/Phi/scripts/ci/ArchiveAllLinks.sh
+        run: ./ArchiveAllLinks.sh
