@@ -82,7 +82,7 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh gcovr
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.23.0
+        uses: lukka/get-cmake@v3.24.2
 
       - name: Install dependencies
         run: scripts/ci/InstallDependencies.sh

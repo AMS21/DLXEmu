@@ -70,7 +70,7 @@ jobs:
           submodules: recursive
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.23.0
+        uses: lukka/get-cmake@v3.24.2
 
       - name: Install
         shell: powershell
