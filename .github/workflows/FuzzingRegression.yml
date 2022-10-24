@@ -56,7 +56,7 @@ jobs:
         run: DLXEmu-App/scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.23.0
+        uses: lukka/get-cmake@v3.24.2
 
       - name: Install
         run: |
