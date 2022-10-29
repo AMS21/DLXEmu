@@ -3,7 +3,7 @@
 #include "DLX/Logger.hpp"
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <imgui.h>
 #include <phi/core/boolean.hpp>
 
@@ -20,6 +20,8 @@ extern ImGuiContext* GImGui;
 
 static phi::boolean glfw_initialized{false};
 static phi::boolean imgui_initialized{false};
+
+static int glad_gl_version = 0;
 
 namespace dlxemu
 {
@@ -81,11 +83,8 @@ namespace dlxemu
         glfwSwapInterval(1); // Enable vsync
 
         // Initilaize OpenGL using glad
-#if PHI_PLATFORM_IS(WEB)
-        if (!gladLoadGLLoader((GLADloadproc)emscripten_GetProcAddress))
-#else
-        if (!gladLoadGL())
-#endif
+        glad_gl_version = gladLoadGL(glfwGetProcAddress);
+        if (glad_gl_version == 0)
         {
             DLX_ERROR("Failed to load OpenGL!");
             return false;
@@ -96,7 +95,7 @@ namespace dlxemu
         glad_glPolygonMode = [](GLenum /*face*/, GLenum /*mode*/) -> void { return; };
 #endif
 
-        DLX_INFO("Successfully loaded OpenGL version {}.{}", GLVersion.major, GLVersion.minor);
+        DLX_INFO("Successfully loaded OpenGL version {}.{}", GLAD_VERSION_MAJOR(glad_gl_version), GLAD_VERSION_MINOR(glad_gl_version));
 
         InitializeImGui();
 

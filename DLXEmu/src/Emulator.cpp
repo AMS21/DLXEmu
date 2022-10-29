@@ -1,6 +1,6 @@
 #include "DLXEmu/Emulator.hpp"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include "DLXEmu/generated/BuildInfo.hpp"
 #include <DLX/Logger.hpp>
@@ -26,6 +26,8 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 static constexpr const phi::size_t MaxExecutionPerFrame{500'000u};
+
+static int glad_gl_version;
 
 namespace dlxemu
 {
@@ -493,7 +495,7 @@ namespace dlxemu
                     "Compiler:   {:s} ({:d}.{:d}.{:d}){}",
                     dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
                     dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
-                    GLVersion.major, GLVersion.minor, GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR,
+                    GLAD_VERSION_MAJOR(glad_gl_version), GLAD_VERSION_MINOR(glad_gl_version), GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR,
                     GLFW_VERSION_REVISION, IMGUI_VERSION, PHI_PLATFORM_NAME(), arch_flag,
                     DLXEMU_UNAME, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
                     PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH(),

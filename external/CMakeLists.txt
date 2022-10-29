@@ -28,7 +28,11 @@ add_subdirectory(fmt)
 target_compile_definitions(fmt PUBLIC FMT_EXCEPTIONS=0)
 
 # glad
-add_subdirectory(glad)
+add_subdirectory(glad/cmake)
+
+# Add target
+glad_add_library(glad STATIC LANGUAGE C++ API gl:core=3.3)
+add_library(glad::glad ALIAS glad)
 
 # glfw
 if(NOT PHI_PLATFORM_EMSCRIPTEN)
@@ -68,7 +72,7 @@ target_compile_definitions(
 
 target_include_directories("ImGui" PUBLIC "imgui")
 
-target_link_libraries("ImGui" PUBLIC glad glfw Phi::Core)
+target_link_libraries("ImGui" PUBLIC glad::glad glfw Phi::Core)
 
 # ImGuiFilebrowser
 add_library("ImGuiFilebrowser" INTERFACE)
