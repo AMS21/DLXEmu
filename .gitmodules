@@ -9,17 +9,20 @@ branch = develop
 [submodule "external/glad"]
 path = external/glad
 url = https://github.com/Dav1dde/glad.git
+branch = glad2
 [submodule "external/imgui-filebrowser"]
 path = external/imgui-filebrowser
 url = https://github.com/AirGuanZ/imgui-filebrowser.git
+branch = master
 [submodule "external/glfw"]
 path = external/glfw
 url = https://github.com/glfw/glfw.git
+branch = master
 [submodule "external/benchmark"]
 path = external/benchmark
 url = https://github.com/google/benchmark.git
 branch = main
 [submodule "external/fmt"]
-	path = external/fmt
-	url = https://github.com/fmtlib/fmt.git
-	branch = master
+path = external/fmt
+url = https://github.com/fmtlib/fmt.git
+branch = master
