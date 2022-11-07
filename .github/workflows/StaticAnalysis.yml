@@ -54,7 +54,7 @@ jobs:
         run: scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.24.2
+        uses: lukka/get-cmake@v3.24.3
 
       - name: Install
         env:
@@ -121,7 +121,7 @@ jobs:
         run: scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.24.2
+        uses: lukka/get-cmake@v3.24.3
 
       - name: Install
         run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} clang-tidy-${{ env.LLVM_VERSION }} ninja
@@ -197,7 +197,7 @@ jobs:
         run: scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.24.2
+        uses: lukka/get-cmake@v3.24.3
 
       - name: Run Include-What-You-Use
         run: |
