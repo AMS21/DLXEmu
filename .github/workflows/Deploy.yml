@@ -56,7 +56,7 @@ jobs:
           sudo npm install uglify-js -g
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.24.3
+        uses: lukka/get-cmake@v3.25.1
 
       - name: Build main
         run: |
