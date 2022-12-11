@@ -70,7 +70,7 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh ninja
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.25.1

@@ -62,7 +62,7 @@ jobs:
           key: ${{ matrix.os }}-${{ matrix.compiler }}
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Setup Environment
         run: external/Phi/scripts/ci/SetupEnvironment.sh

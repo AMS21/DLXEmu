@@ -51,7 +51,7 @@ jobs:
           reviewdog_version: latest
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.25.1
@@ -118,7 +118,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.25.1
@@ -194,7 +194,7 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh iwyu-${{ env.LLVM_VERSION }} ninja
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
         uses: lukka/get-cmake@v3.25.1
@@ -296,7 +296,7 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} pvs-studio ninja
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Configure build directory
         run: |
@@ -379,7 +379,7 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Configure build directory
         run: |
