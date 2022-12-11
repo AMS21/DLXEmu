@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.10.2)
 
 # Policy
-if(${CMAKE_VERSION} VERSION_LESS 3.24)
+if(${CMAKE_VERSION} VERSION_LESS 3.25)
   cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 else()
-  cmake_policy(VERSION 3.24)
+  cmake_policy(VERSION 3.25)
 endif()
 
 # Settings
@@ -159,6 +159,7 @@ set(configure_options
     PEDANTIC
     FPM_PRECISE
     NO_EXCEPTIONS
+    LTO
     STANDARD
     "latest"
     EXTERNAL
