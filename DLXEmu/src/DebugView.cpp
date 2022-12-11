@@ -8,14 +8,14 @@
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 
-PHI_EXTERNAL_HEADERS_BEGIN()
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
 
 #include <imgui.h>
 #include <limits>
 #include <random>
 #include <vector>
 
-PHI_EXTERNAL_HEADERS_END()
+PHI_MSVC_SUPPRESS_WARNING_POP()
 
 namespace dlxemu
 {
@@ -77,19 +77,23 @@ namespace dlxemu
     [[nodiscard]] std::string generate_random_code_string(std::mt19937& engine,
                                                           std::size_t   max_length) noexcept
     {
-        constexpr static const char possible_characters[]{
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused variable?
+
+        static constexpr const char possible_characters[]{
                 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:/;# \t\n"};
-        constexpr static std::size_t number_of_possible_characters =
+        static constexpr const phi::size_t number_of_possible_characters =
                 sizeof(possible_characters) / sizeof(char);
 
-        std::uniform_int_distribution<> dist(0, number_of_possible_characters - 1);
+        PHI_MSVC_SUPPRESS_WARNING_POP()
+
+        std::uniform_int_distribution<phi::size_t> dist(0u, number_of_possible_characters - 1);
 
         std::string ret;
         ret.reserve(max_length);
 
         for (std::size_t i{0}; i < max_length; ++i)
         {
-            int random_index = dist(engine);
+            const phi::size_t random_index = dist(engine);
             ret += possible_characters[random_index];
         }
 
@@ -99,19 +103,23 @@ namespace dlxemu
     [[nodiscard]] std::string generate_random_line(std::mt19937& engine,
                                                    std::size_t   max_length) noexcept
     {
-        constexpr static const char possible_characters[]{
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused variable?
+
+        static constexpr const char possible_characters[]{
                 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:/;# \t"};
-        constexpr static std::size_t number_of_possible_characters =
+        static constexpr const phi::size_t number_of_possible_characters =
                 sizeof(possible_characters) / sizeof(char);
 
-        std::uniform_int_distribution<> dist(0, number_of_possible_characters - 1);
+        PHI_MSVC_SUPPRESS_WARNING_POP()
+
+        std::uniform_int_distribution<phi::size_t> dist(0u, number_of_possible_characters - 1u);
 
         std::string ret;
         ret.reserve(max_length);
 
         for (std::size_t i{0}; i < max_length; ++i)
         {
-            int random_index = dist(engine);
+            const phi::size_t random_index = dist(engine);
             ret += possible_characters[random_index];
         }
 

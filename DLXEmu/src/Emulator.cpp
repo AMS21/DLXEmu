@@ -471,10 +471,14 @@ namespace dlxemu
 
     void Emulator::RenderAbout() noexcept
     {
-        constexpr static ImGuiWindowFlags about_flags =
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused variable?
+
+        static constexpr const ImGuiWindowFlags about_flags =
                 ImGuiWindowFlags_AlwaysAutoResize + ImGuiWindowFlags_NoDocking +
                 ImGuiWindowFlags_NoResize + ImGuiWindowFlags_NoCollapse +
                 ImGuiWindowFlags_NoSavedSettings;
+
+        PHI_MSVC_SUPPRESS_WARNING_POP()
 
         if (ImGui::Begin("DLXEmu - About", &m_ShowAbout, about_flags))
         {
@@ -525,8 +529,12 @@ namespace dlxemu
 
     void Emulator::RenderOptionsMenu() noexcept
     {
-        constexpr const static ImGuiWindowFlags options_flags =
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264)
+
+        static constexpr const ImGuiWindowFlags options_flags =
                 ImGuiWindowFlags_NoDocking + ImGuiWindowFlags_NoCollapse;
+
+        PHI_MSVC_SUPPRESS_WARNING_POP()
 
         if (ImGui::Begin("Options", &m_ShowOptionsMenu, options_flags))
         {

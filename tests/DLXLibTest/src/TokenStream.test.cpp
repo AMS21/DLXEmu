@@ -2,18 +2,23 @@
 
 #include <DLX/Token.hpp>
 #include <DLX/TokenStream.hpp>
-#include <type_traits>
+#include <phi/type_traits/is_nothrow_default_constructible.hpp>
+#include <phi/type_traits/is_nothrow_destructible.hpp>
+#include <phi/type_traits/is_copy_constructible.hpp>
+#include <phi/type_traits/is_copy_assignable.hpp>
+#include <phi/type_traits/is_copy_assignable.hpp>
+#include <phi/type_traits/is_copy_constructible.hpp>
 
 TEST_CASE("TokenStream")
 {
     SECTION("Traits")
     {
-        STATIC_REQUIRE(std::is_nothrow_default_constructible<dlx::TokenStream>::value);
-        STATIC_REQUIRE(std::is_nothrow_destructible<dlx::TokenStream>::value);
-        STATIC_REQUIRE(std::is_copy_constructible<dlx::TokenStream>::value);
-        STATIC_REQUIRE(std::is_move_constructible<dlx::TokenStream>::value);
-        STATIC_REQUIRE(std::is_copy_assignable<dlx::TokenStream>::value);
-        STATIC_REQUIRE(std::is_move_assignable<dlx::TokenStream>::value);
+        STATIC_REQUIRE(phi::is_nothrow_default_constructible<dlx::TokenStream>::value);
+        STATIC_REQUIRE(phi::is_nothrow_destructible<dlx::TokenStream>::value);
+        STATIC_REQUIRE(phi::is_copy_constructible<dlx::TokenStream>::value);
+        STATIC_REQUIRE(phi::is_move_constructible<dlx::TokenStream>::value);
+        STATIC_REQUIRE(phi::is_copy_assignable<dlx::TokenStream>::value);
+        STATIC_REQUIRE(phi::is_move_assignable<dlx::TokenStream>::value);
     }
 
     SECTION("emplace_back")

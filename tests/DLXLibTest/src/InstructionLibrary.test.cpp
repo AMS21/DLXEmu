@@ -1,11 +1,11 @@
-#include "DLX/EnumName.hpp"
+#include <phi/test/test_macros.hpp>
+
+#include <DLX/EnumName.hpp>
 #include <DLX/InstructionInfo.hpp>
 #include <DLX/InstructionLibrary.hpp>
 #include <DLX/OpCode.hpp>
 #include <phi/core/types.hpp>
-#include <phi/test/test_macros.hpp>
-#include <algorithm>
-#include <array>
+#include <phi/algorithm/is_sorted.hpp>
 
 using namespace phi::literals;
 
@@ -13,7 +13,7 @@ TEST_CASE("InstructionLibrary")
 {
     dlx::InstructionTableT table = dlx::GenerateInstructionTable();
 
-    CHECK(std::is_sorted(table.begin(), table.end(),
+    CHECK(phi::is_sorted(table.begin(), table.end(),
                          [](dlx::InstructionInfo& lhs, dlx::InstructionInfo& rhs) {
                              return lhs.GetOpCode() < rhs.GetOpCode();
                          }));

@@ -49,6 +49,10 @@ SOFTWARE.
 #include <phi/text/is_control.hpp>
 #include <phi/text/is_space.hpp>
 #include <phi/type_traits/to_underlying.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_PUSH()
+PHI_MSVC_SUPPRESS_WARNING(5262)
+
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -64,6 +68,7 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
 #include <fmt/core.h>
 
+PHI_MSVC_SUPPRESS_WARNING_POP()
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
@@ -3570,7 +3575,11 @@ namespace dlxemu
                         const ImVec2 p3(x2 - font_size * 0.2f, y - font_size * 0.2f);
                         const ImVec2 p4(x2 - font_size * 0.2f, y + font_size * 0.2f);
 
+                        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused const variable
+
                         static constexpr const ImU32 whitespace_color{0x90909090};
+
+                        PHI_MSVC_SUPPRESS_WARNING_POP()
 
                         draw_list->AddLine(p1, p2, whitespace_color);
                         draw_list->AddLine(p2, p3, whitespace_color);

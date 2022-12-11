@@ -1,10 +1,12 @@
 #include "DLX/Instruction.hpp"
 
 #include "DLX/InstructionArgument.hpp"
-
-#include <fmt/format.h>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
+#include <fmt/format.h>
+PHI_MSVC_SUPPRESS_WARNING_POP()
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 

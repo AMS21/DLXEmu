@@ -13,14 +13,14 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
 #include <phi/type_traits/to_underlying.hpp>
-#include <type_traits>
-#include <utility>
 
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
 
 #include <fmt/core.h>
 #include <fmt/format.h>
 
+PHI_MSVC_SUPPRESS_WARNING_POP()
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_GCC_SUPPRESS_WARNING("-Wconversion")

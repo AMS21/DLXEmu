@@ -5,7 +5,12 @@
 #include <DLXEmu/Emulator.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
+
 #include <limits>
+
+PHI_MSVC_SUPPRESS_WARNING_POP()
 
 using namespace phi::literals;
 
@@ -490,6 +495,8 @@ TEST_CASE("Render")
     editor.VerifyInternalState();
     EndImgui();
 
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused variable
+
     // With float max
     BeginImGui();
     static constexpr const float max_float = std::numeric_limits<float>::max();
@@ -548,6 +555,8 @@ TEST_CASE("Render")
     editor.Render(ImVec2{float_inf, float_inf});
     editor.VerifyInternalState();
     EndImgui();
+
+    PHI_MSVC_SUPPRESS_WARNING_POP()
 
     // With Infinity and border
     BeginImGui();

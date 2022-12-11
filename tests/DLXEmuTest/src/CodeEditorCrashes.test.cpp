@@ -3,10 +3,15 @@
 #include "SetupImGui.hpp"
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
+#include <phi/compiler_support/warning.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
+
 #include <fmt/format.h>
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <phi/compiler_support/warning.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_POP()
 
 using namespace phi::literals;
 

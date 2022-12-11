@@ -6,9 +6,8 @@
 #include <phi/container/array.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/size_t.hpp>
-#include <cctype>
+#include <phi/text/to_upper_case.hpp>
 #include <cmath>
-#include <iostream>
 
 void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
 {
@@ -22,11 +21,11 @@ void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
         {
             if (i & static_cast<phi::size_t>(std::pow(2u, j)))
             {
-                test_str += static_cast<char>(std::toupper(str[j]));
+                test_str += static_cast<char>(phi::to_upper_case(str[j]));
             }
             else
             {
-                test_str += static_cast<char>(std::tolower(str[j]));
+                test_str += static_cast<char>(phi::to_upper_case(str[j]));
             }
         }
 

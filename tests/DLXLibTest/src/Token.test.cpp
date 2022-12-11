@@ -1,8 +1,7 @@
-#include "DLX/OpCode.hpp"
-#include "DLX/RegisterNames.hpp"
 #include <phi/test/test_macros.hpp>
 
 #include <DLX/Token.hpp>
+#include <DLX/RegisterNames.hpp>
 
 TEST_CASE("Token")
 {
