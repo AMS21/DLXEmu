@@ -5,6 +5,12 @@ name: ClusterFuzzLite cron tasks
 on:
   schedule:
     - cron: '0 0 * * *'  # Once a day at midnight.
+  push:
+    paths:
+      # Workflow file itself
+      - '.github/workflows/ClusterFuzzLite-Cron.yml'
+      # .clusterfuzzlite
+      - '.clusterfuzzlite/**'
   workflow_dispatch:
 
 permissions: read-all

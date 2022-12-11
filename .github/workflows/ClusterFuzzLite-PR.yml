@@ -3,9 +3,13 @@ name: ClusterFuzzLite PR fuzzing
 # https://google.github.io/clusterfuzzlite/running-clusterfuzzlite/github-actions/
 
 on:
-  pull_request:
+  push:
     paths:
-      - '**'
+      # Workflow file itself
+      - '.github/workflows/ClusterFuzzLite-PR.yml'
+      # .clusterfuzzlite
+      - '.clusterfuzzlite/**'
+  pull_request:
   workflow_dispatch:
 
 permissions: read-all
