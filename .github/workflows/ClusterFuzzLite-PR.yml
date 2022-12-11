@@ -57,3 +57,4 @@ jobs:
           storage-repo: https://${{ secrets.CORPUS_PAT }}@github.com/AMS21/DLXEmu-Corpus.git
           storage-repo-branch: main   # Optional. Defaults to "main"
           storage-repo-branch-coverage: gh-pages  # Optional. Defaults to "gh-pages".
+          minimize-crashes: true
