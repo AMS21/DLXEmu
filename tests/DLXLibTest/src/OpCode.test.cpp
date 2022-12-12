@@ -6,6 +6,7 @@
 #include <phi/container/array.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/size_t.hpp>
+#include <phi/text/to_lower_case.hpp>
 #include <phi/text/to_upper_case.hpp>
 #include <cmath>
 
@@ -25,7 +26,7 @@ void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
             }
             else
             {
-                test_str += static_cast<char>(phi::to_upper_case(str[j]));
+                test_str += static_cast<char>(phi::to_lower_case(str[j]));
             }
         }
 
