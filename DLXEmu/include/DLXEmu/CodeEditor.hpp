@@ -45,6 +45,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
 // TODO: Fully upgrade the lines and columns to 64 bit numbers
 
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
 namespace dlxemu
 {
     class Emulator;
@@ -395,6 +397,8 @@ namespace dlxemu
         friend int ::LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size);
     };
 } // namespace dlxemu
+
+PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wreturn-type")

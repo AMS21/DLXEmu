@@ -588,6 +588,8 @@ namespace dlx
         m_MaxNumberOfSteps = new_max;
     }
 
+    PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
     std::string Processor::GetRegisterDump() const noexcept
     {
         std::string text{"Int registers:\n"};
@@ -669,4 +671,6 @@ namespace dlx
 
         return "No Program";
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 } // namespace dlx

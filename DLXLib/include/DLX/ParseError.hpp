@@ -2,6 +2,7 @@
 
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/Token.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/sized_types.hpp>
 #include <string>
 
@@ -79,7 +80,11 @@ namespace dlx
 
         [[nodiscard]] phi::uint64_t GetColumn() const noexcept;
 
+        PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
         [[nodiscard]] std::string ConstructMessage() const noexcept;
+
+        PHI_GCC_SUPPRESS_WARNING_POP()
 
         [[nodiscard]] const UnexpectedArgumentType& GetUnexpectedArgumentType() const noexcept;
 

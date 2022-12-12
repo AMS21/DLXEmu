@@ -159,6 +159,8 @@ namespace dlx
 
         // Dumping
 
+        PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
         [[nodiscard]] std::string GetRegisterDump() const noexcept;
 
         [[nodiscard]] std::string GetMemoryDump() const noexcept;
@@ -166,6 +168,8 @@ namespace dlx
         [[nodiscard]] std::string GetProcessorDump() const noexcept;
 
         [[nodiscard]] std::string GetCurrentProgrammDump() const noexcept;
+
+        PHI_GCC_SUPPRESS_WARNING_POP()
 
     private:
         phi::observer_ptr<ParsedProgram> m_CurrentProgram;

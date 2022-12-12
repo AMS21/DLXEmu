@@ -77,6 +77,8 @@ PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
 PHI_GCC_SUPPRESS_WARNING("-Wfloat-equal")
 
+PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
+
 //#define DLXEMU_VERIFY_UNDO_REDO
 //#define DLXEMU_VERIFY_COLUMN
 

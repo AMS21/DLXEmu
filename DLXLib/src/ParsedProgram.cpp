@@ -24,6 +24,8 @@ namespace dlx
         return m_ParseErrors.empty() && !m_Instructions.empty();
     }
 
+    PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
     std::string ParsedProgram::GetDump() const noexcept
     {
         std::string text;
@@ -93,4 +95,6 @@ namespace dlx
 
         return text;
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 } // namespace dlx

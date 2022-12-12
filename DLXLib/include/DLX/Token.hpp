@@ -56,6 +56,8 @@ namespace dlx
 
         [[nodiscard]] std::string_view GetText() const noexcept;
 
+        PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
         [[nodiscard]] std::string GetTextString() const noexcept;
 
         [[nodiscard]] phi::boolean HasHint() const noexcept;
@@ -63,6 +65,8 @@ namespace dlx
         [[nodiscard]] std::uint32_t GetHint() const noexcept;
 
         [[nodiscard]] std::string DebugInfo() const noexcept;
+
+        PHI_GCC_SUPPRESS_WARNING_POP()
 
     private:
         Type             m_Type;

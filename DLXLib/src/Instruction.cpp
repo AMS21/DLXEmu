@@ -45,6 +45,7 @@ namespace dlx
 
     PHI_GCC_SUPPRESS_WARNING_PUSH()
     PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
 
     PHI_ATTRIBUTE_CONST std::string Instruction::DebugInfo() const noexcept
     {

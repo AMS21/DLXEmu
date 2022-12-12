@@ -2,6 +2,7 @@
 
 #include "InstructionLibrary.hpp"
 #include "RegisterNames.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/scope_ptr.hpp>
 #include <string_view>
 
@@ -51,7 +52,11 @@ namespace dlx
 
         [[nodiscard]] ArgumentType GetType() const noexcept;
 
+        PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
         [[nodiscard]] std::string DebugInfo() const noexcept;
+
+        PHI_GCC_SUPPRESS_WARNING_POP()
 
         [[nodiscard]] const RegisterInt&         AsRegisterInt() const noexcept;
         [[nodiscard]] const RegisterFloat&       AsRegisterFloat() const noexcept;

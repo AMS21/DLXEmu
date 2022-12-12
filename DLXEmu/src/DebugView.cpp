@@ -74,6 +74,8 @@ namespace dlxemu
 #endif
     }
 
+    PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
     [[nodiscard]] std::string generate_random_code_string(std::mt19937& engine,
                                                           std::size_t   max_length) noexcept
     {
@@ -125,6 +127,8 @@ namespace dlxemu
 
         return ret;
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 
     void execute_random_editor_function(std::mt19937& engine, CodeEditor& editor) noexcept
     {

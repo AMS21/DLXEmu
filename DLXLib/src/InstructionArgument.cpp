@@ -30,6 +30,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
 
     std::string InstructionArgument::DebugInfo() const noexcept
     {
