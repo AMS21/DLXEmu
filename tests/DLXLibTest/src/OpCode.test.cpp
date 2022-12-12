@@ -22,11 +22,11 @@ void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
         {
             if (i & static_cast<phi::size_t>(std::pow(2u, j)))
             {
-                test_str += static_cast<char>(phi::to_upper_case(str[j]));
+                test_str += phi::to_upper_case(str[j]);
             }
             else
             {
-                test_str += static_cast<char>(phi::to_lower_case(str[j]));
+                test_str += phi::to_lower_case(str[j]);
             }
         }
 
