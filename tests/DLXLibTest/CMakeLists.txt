@@ -28,18 +28,19 @@ file(
   "src/TokenStream.test.cpp")
 file(GLOB DLXLIB_TEST_HEADERS "include/StringHelper.hpp" "include/Unary.hpp")
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${DLXLIB_TEST_SOURCES} ${DLXLIB_TEST_HEADERS})
+phi_add_executable(
+  NAME
+  ${PROJECT_NAME}
+  FOLDER
+  "Tests"
+  SOURCES
+  ${DLXLIB_TEST_SOURCES}
+  HEADERS
+  ${DLXLIB_TEST_HEADERS}
+  PRIVATE_LINK_LIBRARIES
+  DLXLib
+  Phi::Test
+  PRIVATE_INCLUDE_DIRS
+  "include")
 
-add_executable("DLXLibUnittest" ${DLXLIB_TEST_SOURCES} ${DLXLIB_TEST_HEADERS})
-
-target_link_libraries("DLXLibUnittest" PRIVATE DLXLib Phi::Test)
-
-target_include_directories("DLXLibUnittest" PRIVATE "include")
-
-# target_compile_definitions("DLXLibUnittest" PRIVATE
-# "_GLIBCXX_DEBUG;_LIBCPP_DEBUG=1;_ITERATOR_DEBUG_LEVEL=2")
-
-set_target_properties("DLXLibUnittest" PROPERTIES FOLDER "Tests")
-set_target_properties("DLXLibUnittest" PROPERTIES CXX_STANDARD 20)
-
-phi_add_test(TARGET DLXLibUnittest)
+phi_add_test(TARGET ${PROJECT_NAME})
