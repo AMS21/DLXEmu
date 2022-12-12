@@ -18,6 +18,8 @@ add_subdirectory(glad/cmake)
 glad_add_library(glad STATIC LANGUAGE C++ API gl:core=3.3)
 add_library(glad::glad ALIAS glad)
 
+set_target_properties(glad PROPERTIES LINKER_LANGUAGE "C")
+
 # glfw
 if(NOT PHI_PLATFORM_EMSCRIPTEN)
   set(GLFW_BUILD_EXAMPLES
@@ -34,6 +36,8 @@ if(NOT PHI_PLATFORM_EMSCRIPTEN)
       CACHE INTERNAL "")
 
   add_subdirectory(glfw)
+
+  set_target_properties(glfw PROPERTIES LINKER_LANGUAGE "C")
 else()
   message(STATUS "Using system glfw")
 endif()
