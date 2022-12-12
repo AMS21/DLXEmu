@@ -139,6 +139,7 @@ add_subdirectory(DLXEmu)
 
 # Tests
 if(${DLXEMU_BUILD_TESTS})
+  enable_testing()
   include(Testing)
 
   add_subdirectory(tests)
