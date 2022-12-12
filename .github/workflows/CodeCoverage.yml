@@ -32,12 +32,7 @@ jobs:
   linux:
     runs-on: ubuntu-22.04
     env:
-      LLVM_VERSION: "14"
       LLVM_PROFILE_FILE: "profile-%p.profraw"
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
-      CTEST_PARALLEL_LEVEL: "2"
-      CTEST_OUTPUT_ON_FAILURE: "ON"
-      FUZZ_TIME: 300 # 5 Minutes
 
     strategy:
       fail-fast: false
