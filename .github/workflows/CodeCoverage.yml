@@ -85,7 +85,7 @@ jobs:
         with:
           repository: "AMS21/DLXEmu-Corpus"
           path: DLXEmu-Corpus
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.CORPUS_PAT }}
 
       - name: Run fuzzers
         run: |
