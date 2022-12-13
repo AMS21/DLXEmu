@@ -14,7 +14,7 @@ cmake .. -G Ninja \
 ninja tests/Fuzzing/all
 
 # Remove helper targets
-rm -f bin/generate_dictionary_app bin/convert_structured_text
+rm -f bin/generate_dictionary_app bin/convert_structured_text bin/fuzz_code_editor_verbose
 
 # Copy fuzzers to out
 cp bin/* "${OUT}/"
