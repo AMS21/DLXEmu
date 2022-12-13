@@ -189,6 +189,11 @@ if(DLXEMU_COVERAGE_BUILD)
   set(configure_options ${configure_options} COVERAGE)
 endif()
 
+# Fuzz build
+if(DLXEMU_FUZZ_BUILD)
+  set(configure_options ${configure_options} FUZZING_BUILD)
+endif()
+
 if(san_options)
   set(configure_options ${configure_options} SANITIZER ${san_options})
 
