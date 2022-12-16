@@ -246,6 +246,10 @@ template <typename T>
             return "\\v";
         case '"':
             return "\\\"";
+        case '\b':
+            return "\\b";
+        case '\f':
+            return "\\f";
 
         default:
             return {1u, static_cast<const char>(c)};
