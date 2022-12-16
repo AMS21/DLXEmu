@@ -104,9 +104,6 @@ define_fuzzer(
 define_fuzzer(NAME fuzz_structured_syntax_highlighting SOURCE
               "src/StructuredSyntaxHighlighting.fuzz.cpp" LIBRARIES DLXEmuLib)
 
-# Regression Test
-define_fuzzer(NAME fuzz_regression SOURCE "src/RegressionTest.fuzz.cpp" LIBRARIES DLXLib)
-
 # CodeEditor
 define_fuzzer(NAME fuzz_code_editor SOURCE "src/CodeEditor.fuzz.cpp" LIBRARIES DLXEmuLib)
 
