@@ -11,8 +11,10 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/scope_guard.hpp>
+#include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
 #include <phi/math/abs.hpp>
+#include <phi/math/is_nan.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
 #include <phi/type_traits/make_unsigned.hpp>
 #include <cmath>
@@ -37,6 +39,7 @@ PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 // Limits
 static constexpr const phi::size_t MaxVectorSize{8u};
 static constexpr const phi::size_t MaxStringLength{16u};
+static constexpr const float       MaxSaneFloatValue{1024.0f};
 
 struct Cache
 {
@@ -1138,9 +1141,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 {
                     return 0;
                 }
-                float x = x_opt.value();
+                const float x = x_opt.value();
 
-                if (phi::abs(x) >= 1024.0f)
+                if (phi::abs(x) >= MaxSaneFloatValue)
                 {
                     return 0;
                 }
@@ -1150,9 +1153,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 {
                     return 0;
                 }
-                float y = y_opt.value();
+                const float y = y_opt.value();
 
-                if (phi::abs(y) >= 1024.0f)
+                if (phi::abs(y) >= MaxSaneFloatValue)
                 {
                     return 0;
                 }
@@ -1197,14 +1200,24 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 {
                     return 0;
                 }
-                float wh_x = wh_x_opt.value();
+                const float wh_x = wh_x_opt.value();
+
+                if (phi::abs(wh_x) >= MaxSaneFloatValue)
+                {
+                    return 0;
+                }
 
                 auto wh_y_opt = consume_t<float>(data, size, index);
                 if (!wh_y_opt)
                 {
                     return 0;
                 }
-                float wh_y = wh_y_opt.value();
+                const float wh_y = wh_y_opt.value();
+
+                if (phi::abs(wh_y) >= MaxSaneFloatValue)
+                {
+                    return 0;
+                }
 
                 FUZZ_LOG("ImGui::GetIO().AddMouseWheelEvent({:f}, {:f})", wh_x, wh_y);
                 ImGui::GetIO().AddMouseWheelEvent(wh_x, wh_y);

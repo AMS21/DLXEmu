@@ -735,26 +735,6 @@ TEST_CASE("crash-a4ac408fb9d6def070ad3a76312ca092863048e5")
     editor.VerifyInternalState();
 }
 
-TEST_CASE("crash-d119db6a8c3f6f94864cf29ff9b426e53bf315c7")
-{
-    static constexpr const phi::usize runs = 10u;
-    for (phi::usize index{0u}; index < runs; ++index)
-    {
-        BeginImGui();
-
-        dlxemu::Emulator   emu;
-        dlxemu::CodeEditor editor{&emu};
-
-        editor.EnterCharacter(0xFE0B, true);
-        editor.VerifyInternalState();
-
-        editor.Render(ImVec2{0.0f, 8795850276864.000000f}, true);
-        editor.VerifyInternalState();
-
-        EndImgui();
-    }
-}
-
 TEST_CASE("crash-dd60a4533d7fd2e1f6a974f2d7bb139335aa739c")
 {
     dlxemu::CodeEditor editor{&emulator};
@@ -862,21 +842,6 @@ TEST_CASE("crash-fb51886e58a0f6657347eadf6e435a5253946875")
         editor.ClearText();
         editor.VerifyInternalState();
     }
-}
-
-TEST_CASE("crash-749abb6be89c8e168059ab62c631ccb0a3c12f07")
-{
-    BeginImGui();
-
-    dlxemu::CodeEditor editor{&emulator};
-
-    ImGui::GetIO().AddInputCharacterUTF16(57339);
-    editor.VerifyInternalState();
-
-    editor.Render({0.000000, -605108545849894421659648.000000});
-    editor.VerifyInternalState();
-
-    EndImgui();
 }
 
 TEST_CASE("crash-b50b36a0abacb8343855b0e477e235df9844f2f6")

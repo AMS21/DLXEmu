@@ -43,6 +43,7 @@ SOFTWARE.
 #include <phi/core/size_t.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
+#include <phi/math/is_infinity.hpp>
 #include <phi/math/is_nan.hpp>
 #include <phi/text/is_alpha_numeric.hpp>
 #include <phi/text/is_blank.hpp>
@@ -433,33 +434,16 @@ namespace dlxemu
                                                         PaletteIndex::Background)));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-        static constexpr const float min_size = 0.0f;
-        static constexpr const float max_size =
-                static_cast<float>(std::numeric_limits<int>::max()) * 0.95f;
+        // Assert size is properly sanitzed
+        PHI_ASSERT(size.x >= 0.0f);
+        PHI_ASSERT(!(phi::is_nan(size.x) || phi::is_infinity(size.x)));
 
-        // Properly sanitize size
-        ImVec2 sanitized_size;
-        if (phi::is_nan(size.x) || std::isinf(size.x))
-        {
-            sanitized_size.x = min_size;
-        }
-        else
-        {
-            sanitized_size.x = phi::clamp(size.x, min_size, max_size);
-        }
-
-        if (phi::is_nan(size.y) || std::isinf(size.y))
-        {
-            sanitized_size.y = min_size;
-        }
-        else
-        {
-            sanitized_size.y = phi::clamp(size.y, min_size, max_size);
-        }
+        PHI_ASSERT(size.y >= 0.0f);
+        PHI_ASSERT(!(phi::is_nan(size.y) || phi::is_infinity(size.y)));
 
         if (ImGui::Begin("Code Editor"))
         {
-            ImGui::BeginChild("Code Editor", sanitized_size, border.unsafe(),
+            ImGui::BeginChild("Code Editor", size, border.unsafe(),
                               ImGuiWindowFlags_HorizontalScrollbar |
                                       ImGuiWindowFlags_AlwaysHorizontalScrollbar |
                                       ImGuiWindowFlags_NoMove);
