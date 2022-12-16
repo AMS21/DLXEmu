@@ -110,15 +110,10 @@ namespace dlx
             return imm_value.signed_value;
         }
 
-        if (argument.GetType() == ArgumentType::AddressDisplacement)
-        {
-            const auto& adr_displacement = argument.AsAddressDisplacement();
-            return CalculateDisplacementAddress(processor, adr_displacement);
-        }
+        PHI_ASSERT(argument.GetType() == ArgumentType::AddressDisplacement);
 
-#if !defined(DLXEMU_COVERAGE_BUILD)
-        PHI_ASSERT_NOT_REACHED();
-#endif
+        const auto& adr_displacement = argument.AsAddressDisplacement();
+        return CalculateDisplacementAddress(processor, adr_displacement);
     }
 
     PHI_MSVC_SUPPRESS_WARNING_POP()
