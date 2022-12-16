@@ -1189,8 +1189,7 @@ namespace dlxemu
         }
 
         const char* clip_text = ImGui::GetClipboardText();
-        PHI_ASSERT(clip_text);
-        if (phi::string_length(clip_text) == 0u)
+        if (phi::safe_string_length(clip_text) == 0u)
         {
             return;
         }
