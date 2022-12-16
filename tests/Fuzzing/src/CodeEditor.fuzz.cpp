@@ -1272,6 +1272,90 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 break;
             }
 
+            // Copy
+            case 46: {
+                FUZZ_LOG("Copy()");
+                editor.Copy();
+
+                break;
+            }
+
+            // Cut
+            case 47: {
+                FUZZ_LOG("Cut()");
+                editor.Cut();
+
+                break;
+            }
+
+            // Paste
+            case 48: {
+                FUZZ_LOG("Paste()");
+                editor.Paste();
+
+                break;
+            }
+
+            // SetOverwrite
+            case 49: {
+                auto overwrite_opt = consume_t<bool>(data, size, index);
+                if (!overwrite_opt)
+                {
+                    return 0;
+                }
+                const phi::boolean overwrite = overwrite_opt.value();
+
+                FUZZ_LOG("SetOverwrite({:s})", print_bool(overwrite));
+                editor.SetOverwrite(overwrite);
+
+                break;
+            }
+
+            // SetColorizerEnable
+            case 50: {
+                auto colorizer_opt = consume_t<bool>(data, size, index);
+                if (!colorizer_opt)
+                {
+                    return 0;
+                }
+                const phi::boolean colorizer = colorizer_opt.value();
+
+                FUZZ_LOG("SetColorizerEnable({:s})", print_bool(colorizer));
+                editor.SetColorizerEnable(colorizer);
+
+                break;
+            }
+
+            // RemoveBreakpoint
+            case 51: {
+                auto line_number_opt = consume_t<phi::u32>(data, size, index);
+                if (!line_number_opt)
+                {
+                    return 0;
+                }
+                const phi::u32 line_number = line_number_opt.value();
+
+                FUZZ_LOG("RemoveBreakpoint({:s})", print_int(line_number.unsafe()));
+                editor.RemoveBreakpoint(line_number);
+
+                break;
+            }
+
+            // ToggleBreakpoint
+            case 52: {
+                auto line_number_opt = consume_t<phi::u32>(data, size, index);
+                if (!line_number_opt)
+                {
+                    return 0;
+                }
+                const phi::u32 line_number = line_number_opt.value();
+
+                FUZZ_LOG("ToggleBreakpoint({:s})", print_int(line_number.unsafe()));
+                editor.ToggleBreakpoint(line_number);
+
+                break;
+            }
+
             default: {
                 return 0;
             }
