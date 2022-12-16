@@ -97,40 +97,18 @@ template <typename T>
 
     PHI_ASSUME(index % sizeof(void*) == 0);
 
-    T value = *reinterpret_cast<const T*>(data + index);
+    const phi::size_t old_index = index;
     index += aligned_size<T>();
 
-    return value;
-}
-
-[[nodiscard]] phi::optional<bool> consume_bool(const std::uint8_t* data, const std::size_t size,
-                                               std::size_t& index) noexcept
-{
-    if (!has_x_more(index, sizeof(bool), size))
+    if constexpr (phi::is_bool_v<T>)
     {
-        return {};
+        phi::int8_t value = *reinterpret_cast<const phi::int8_t*>(data + old_index);
+        return static_cast<bool>(value);
     }
-
-    PHI_ASSUME(index % sizeof(void*) == 0);
-
-    bool value = static_cast<bool>((data + index));
-    index += aligned_size<bool>();
-
-    return value;
-}
-
-[[nodiscard]] phi::optional<std::uint32_t> consume_uint32(const std::uint8_t* data,
-                                                          const std::size_t   size,
-                                                          std::size_t&        index) noexcept
-{
-    return consume_t<std::uint32_t>(data, size, index);
-}
-
-[[nodiscard]] phi::optional<std::size_t> consume_size_t(const std::uint8_t* data,
-                                                        const std::size_t   size,
-                                                        std::size_t&        index) noexcept
-{
-    return consume_t<std::size_t>(data, size, index);
+    else
+    {
+        return *reinterpret_cast<const T*>(data + old_index);
+    }
 }
 
 [[nodiscard]] bool consume_string(const std::uint8_t* data, const std::size_t size,
@@ -178,7 +156,7 @@ template <typename T>
                                                                const std::size_t   size,
                                                                std::size_t&        index) noexcept
 {
-    auto number_of_lines_opt = consume_size_t(data, size, index);
+    auto number_of_lines_opt = consume_t<phi::size_t>(data, size, index);
     if (!number_of_lines_opt)
     {
         return {};
@@ -327,9 +305,9 @@ template <typename T>
     return ret.substr(0, ret.size());
 }
 
-[[nodiscard]] const char* print_bool(const bool b) noexcept
+[[nodiscard]] const char* print_bool(const phi::boolean boolean) noexcept
 {
-    return b ? "true" : "false";
+    return boolean ? "true" : "false";
 }
 
 bool SetupImGui() noexcept
@@ -436,7 +414,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
         {
             // AddErrorMarker
             case 0: {
-                auto line_number_opt = consume_uint32(data, size, index);
+                auto line_number_opt = consume_t<phi::uint32_t>(data, size, index);
                 if (!line_number_opt)
                 {
                     return 0;
@@ -532,7 +510,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetReadOnly
             case 8: {
-                auto read_only_opt = consume_bool(data, size, index);
+                auto read_only_opt = consume_t<bool>(data, size, index);
                 if (!read_only_opt)
                 {
                     return 0;
@@ -573,7 +551,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetShowWhitespaces
             case 11: {
-                auto show_whitespace_opt = consume_bool(data, size, index);
+                auto show_whitespace_opt = consume_t<bool>(data, size, index);
                 if (!show_whitespace_opt)
                 {
                     return 0;
@@ -625,7 +603,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 std::uint32_t amount = amount_opt.value();
 
-                auto select_opt = consume_bool(data, size, index);
+                auto select_opt = consume_t<bool>(data, size, index);
                 if (!select_opt)
                 {
                     return 0;
@@ -647,7 +625,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 std::uint32_t amount = amount_opt.value();
 
-                auto select_opt = consume_bool(data, size, index);
+                auto select_opt = consume_t<bool>(data, size, index);
                 if (!select_opt)
                 {
                     return 0;
@@ -669,14 +647,14 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 std::uint32_t amount = amount_opt.value();
 
-                auto select_opt = consume_bool(data, size, index);
+                auto select_opt = consume_t<bool>(data, size, index);
                 if (!select_opt)
                 {
                     return 0;
                 }
                 bool select = select_opt.value();
 
-                auto word_mode_opt = consume_bool(data, size, index);
+                auto word_mode_opt = consume_t<bool>(data, size, index);
                 if (!word_mode_opt)
                 {
                     return 0;
@@ -699,14 +677,14 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 std::uint32_t amount = amount_opt.value();
 
-                auto select_opt = consume_bool(data, size, index);
+                auto select_opt = consume_t<bool>(data, size, index);
                 if (!select_opt)
                 {
                     return 0;
                 }
                 bool select = select_opt.value();
 
-                auto word_mode_opt = consume_bool(data, size, index);
+                auto word_mode_opt = consume_t<bool>(data, size, index);
                 if (!word_mode_opt)
                 {
                     return 0;
@@ -722,7 +700,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // MoveTop
             case 18: {
-                auto select_opt = consume_bool(data, size, index);
+                auto select_opt = consume_t<bool>(data, size, index);
                 if (!select_opt)
                 {
                     return 0;
@@ -737,7 +715,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // MoveBottom
             case 19: {
-                auto select_opt = consume_bool(data, size, index);
+                auto select_opt = consume_t<bool>(data, size, index);
                 if (!select_opt)
                 {
                     return 0;
@@ -752,7 +730,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // MoveHome
             case 20: {
-                auto select_opt = consume_bool(data, size, index);
+                auto select_opt = consume_t<bool>(data, size, index);
                 if (!select_opt)
                 {
                     return 0;
@@ -767,7 +745,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // MoveEnd
             case 21: {
-                auto select_opt = consume_bool(data, size, index);
+                auto select_opt = consume_t<bool>(data, size, index);
                 if (!select_opt)
                 {
                     return 0;
@@ -1000,23 +978,33 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 {
                     return 0;
                 }
-                float x = x_opt.value();
+                const float x = x_opt.value();
+
+                if (x >= MaxSaneFloatValue || x < 0.0f || phi::is_nan(x))
+                {
+                    return 0;
+                }
 
                 auto y_opt = consume_t<float>(data, size, index);
                 if (!y_opt)
                 {
                     return 0;
                 }
-                float y = y_opt.value();
+                const float y = y_opt.value();
+
+                if (y >= MaxSaneFloatValue || y < 0.0f || phi::is_nan(y))
+                {
+                    return 0;
+                }
 
                 ImVec2 size_vec(x, y);
 
-                auto border_opt = consume_bool(data, size, index);
+                auto border_opt = consume_t<bool>(data, size, index);
                 if (!border_opt)
                 {
                     return 0;
                 }
-                bool border = border_opt.value();
+                const bool border = border_opt.value();
 
                 FUZZ_LOG("Render(ImVec2({:f}, {:f}), {:s})", x, y, border ? "true" : "false");
 
@@ -1036,7 +1024,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 }
                 ImWchar character = character_opt.value();
 
-                auto shift_opt = consume_bool(data, size, index);
+                auto shift_opt = consume_t<bool>(data, size, index);
                 if (!shift_opt)
                 {
                     return 0;
@@ -1086,7 +1074,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                     return 0;
                 }
 
-                auto down_opt = consume_bool(data, size, index);
+                auto down_opt = consume_t<bool>(data, size, index);
                 if (!down_opt)
                 {
                     return 0;
@@ -1113,7 +1101,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                     return 0;
                 }
 
-                auto down_opt = consume_bool(data, size, index);
+                auto down_opt = consume_t<bool>(data, size, index);
                 if (!down_opt)
                 {
                     return 0;
@@ -1180,7 +1168,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                     return 0;
                 }
 
-                auto down_opt = consume_bool(data, size, index);
+                auto down_opt = consume_t<bool>(data, size, index);
                 if (!down_opt)
                 {
                     return 0;
@@ -1227,7 +1215,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddFocusEvent
             case 42: {
-                auto focused_opt = consume_bool(data, size, index);
+                auto focused_opt = consume_t<bool>(data, size, index);
                 if (!focused_opt)
                 {
                     return 0;
