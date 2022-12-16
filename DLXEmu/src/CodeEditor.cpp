@@ -1122,7 +1122,11 @@ namespace dlxemu
     {
         if (HasSelection())
         {
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+            m_FuzzingClipboardText = GetSelectedText();
+#else
             ImGui::SetClipboardText(GetSelectedText().c_str());
+#endif
         }
         else
         {
@@ -1136,7 +1140,11 @@ namespace dlxemu
                 str.push_back(static_cast<char>(glyph.m_Char));
             }
 
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+            m_FuzzingClipboardText = str;
+#else
             ImGui::SetClipboardText(str.c_str());
+#endif
         }
     }
 
@@ -1172,7 +1180,12 @@ namespace dlxemu
             return;
         }
 
-        const char* clip_text = ImGui::GetClipboardText();
+        const char* clip_text =
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+                m_FuzzingClipboardText.c_str();
+#else
+                ImGui::GetClipboardText();
+#endif
         if (phi::safe_string_length(clip_text) == 0u)
         {
             return;

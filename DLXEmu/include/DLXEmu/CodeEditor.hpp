@@ -387,6 +387,10 @@ namespace dlxemu
         Lines       m_Lines;
         std::string m_FullText;
 
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+        mutable std::string m_FuzzingClipboardText;
+#endif
+
         // Constants
         static const constexpr phi::u8_fast MinTabSize{static_cast<phi::uint_fast8_t>(1u)};
         static const constexpr phi::u8_fast MaxTabSize{static_cast<phi::uint_fast8_t>(32u)};
