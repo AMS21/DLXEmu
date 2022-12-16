@@ -261,12 +261,12 @@ template <typename T>
     std::string hex_str;
     std::string print_str;
 
-    for (char c : str)
+    for (char character : str)
     {
-        hex_str += fmt::format("\\0x{:02X}, ", static_cast<std::uint8_t>(c));
+        hex_str += fmt::format("\\0x{:02X}, ", static_cast<std::uint8_t>(character));
 
         // Make some special characters printable
-        print_str += pretty_char(c);
+        print_str += pretty_char(character);
     }
 
     return fmt::format("String(\"{:s}\" size: {:d} ({:s}))", print_str, str.size(),
