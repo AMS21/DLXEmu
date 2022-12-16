@@ -7,6 +7,7 @@
 #include <phi/compiler_support/assume.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
+#include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/scope_guard.hpp>
@@ -132,7 +133,13 @@ template <typename T>
 [[nodiscard]] bool consume_string(const std::uint8_t* data, const std::size_t size,
                                   std::size_t& index) noexcept
 {
-    const char* str_begin = reinterpret_cast<const char*>(data);
+    // Ensure we're not already past the available data
+    if (index >= size)
+    {
+        return false;
+    }
+
+    const char* str_begin = reinterpret_cast<const char*>(data + index);
     phi::size_t str_len   = 0u;
 
     while (index < size && data[index] != '\0')
@@ -142,11 +149,12 @@ template <typename T>
     }
 
     // Reject too long strings
-    if (str_len - 1u > MaxStringLength)
+    if (str_len > MaxStringLength)
     {
         return false;
     }
 
+    PHI_ASSERT(index <= size);
     // Reject strings that are not null terminated
     if (data[index - 1u] != '\0')
     {
