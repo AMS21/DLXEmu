@@ -121,3 +121,8 @@ define_fuzzer(
   RUN_ARGS
   "-close_fd_mask=1"
   ASCII)
+
+define_fuzzer(NAME fuzz_memory_block SOURCE "src/MemoryBlock.fuzz.cpp" LIBRARIES DLXLib)
+
+define_fuzzer(NAME fuzz_memory_block_verbose SOURCE "src/MemoryBlock.fuzz.cpp" LIBRARIES DLXLib)
+target_compile_definitions(fuzz_memory_block_verbose PRIVATE "FUZZ_VERBOSE_LOG")
