@@ -24,6 +24,7 @@ PHI_MSVC_SUPPRESS_WARNING_POP()
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_GCC_SUPPRESS_WARNING("-Wconversion")
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 // TODO: Fix strict aliasing problems
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-aliasing")

@@ -5,6 +5,7 @@
 #include <phi/core/boolean.hpp>
 #include <cstdint>
 
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
