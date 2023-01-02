@@ -1186,7 +1186,7 @@ namespace dlxemu
 #else
                 ImGui::GetClipboardText();
 #endif
-        if (phi::safe_string_length(clip_text) == 0u)
+        if (phi::string_length(clip_text) == 0u)
         {
             return;
         }
