@@ -83,27 +83,27 @@ namespace dlx
         m_Info.Execute(processor, m_Arg1, m_Arg2, m_Arg3);
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionInfo& Instruction::GetInfo() const noexcept
+    PHI_ATTRIBUTE_PURE const InstructionInfo& Instruction::GetInfo() const noexcept
     {
         return m_Info;
     }
 
-    PHI_ATTRIBUTE_CONST const phi::u64 Instruction::GetSourceLine() const noexcept
+    PHI_ATTRIBUTE_PURE const phi::u64 Instruction::GetSourceLine() const noexcept
     {
         return m_SourceLine;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg1() const noexcept
+    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg1() const noexcept
     {
         return m_Arg1;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg2() const noexcept
+    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg2() const noexcept
     {
         return m_Arg2;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg3() const noexcept
+    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg3() const noexcept
     {
         return m_Arg3;
     }

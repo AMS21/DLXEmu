@@ -22,17 +22,17 @@ namespace dlx
         m_ValueUnsigned = val;
     }
 
-    PHI_ATTRIBUTE_CONST phi::i32 IntRegister::GetSignedValue() const noexcept
+    PHI_ATTRIBUTE_PURE phi::i32 IntRegister::GetSignedValue() const noexcept
     {
         return m_ValueSigned;
     }
 
-    PHI_ATTRIBUTE_CONST phi::u32 IntRegister::GetUnsignedValue() const noexcept
+    PHI_ATTRIBUTE_PURE phi::u32 IntRegister::GetUnsignedValue() const noexcept
     {
         return m_ValueUnsigned;
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean IntRegister::IsReadOnly() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean IntRegister::IsReadOnly() const noexcept
     {
         return m_IsReadOnly;
     }

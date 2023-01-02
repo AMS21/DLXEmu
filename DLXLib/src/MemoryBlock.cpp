@@ -239,7 +239,8 @@ namespace dlx
         return true;
     }
 
-    phi::boolean MemoryBlock::IsAddressValid(phi::usize address, phi::usize size) const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean MemoryBlock::IsAddressValid(phi::usize address,
+                                                                phi::usize size) const noexcept
     {
         return address >= m_StartingAddress &&
                (address + size) <= (m_StartingAddress + m_Values.size());
@@ -259,7 +260,7 @@ namespace dlx
         }
     }
 
-    PHI_ATTRIBUTE_CONST phi::usize MemoryBlock::GetStartingAddress() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize MemoryBlock::GetStartingAddress() const noexcept
     {
         return m_StartingAddress;
     }
@@ -269,17 +270,17 @@ namespace dlx
         m_StartingAddress = new_starting_address;
     }
 
-    PHI_ATTRIBUTE_CONST phi::usize MemoryBlock::GetSize() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize MemoryBlock::GetSize() const noexcept
     {
         return m_Values.size();
     }
 
-    PHI_ATTRIBUTE_CONST std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() noexcept
+    PHI_ATTRIBUTE_PURE std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() noexcept
     {
         return m_Values;
     }
 
-    PHI_ATTRIBUTE_CONST const std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory()
+    PHI_ATTRIBUTE_PURE const std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory()
             const noexcept
     {
         return m_Values;

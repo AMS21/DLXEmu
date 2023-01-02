@@ -538,27 +538,27 @@ namespace dlx
     PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_CONST Exception Processor::GetLastRaisedException() const noexcept
+    PHI_ATTRIBUTE_PURE Exception Processor::GetLastRaisedException() const noexcept
     {
         return m_LastRaisedException;
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean Processor::IsHalted() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean Processor::IsHalted() const noexcept
     {
         return m_Halted;
     }
 
-    PHI_ATTRIBUTE_CONST const MemoryBlock& Processor::GetMemory() const noexcept
+    PHI_ATTRIBUTE_PURE const MemoryBlock& Processor::GetMemory() const noexcept
     {
         return m_MemoryBlock;
     }
 
-    PHI_ATTRIBUTE_CONST MemoryBlock& Processor::GetMemory() noexcept
+    PHI_ATTRIBUTE_PURE MemoryBlock& Processor::GetMemory() noexcept
     {
         return m_MemoryBlock;
     }
 
-    PHI_ATTRIBUTE_CONST phi::u32 Processor::GetProgramCounter() const noexcept
+    PHI_ATTRIBUTE_PURE phi::u32 Processor::GetProgramCounter() const noexcept
     {
         return m_ProgramCounter;
     }
@@ -568,7 +568,7 @@ namespace dlx
         m_ProgramCounter = new_pc;
     }
 
-    PHI_ATTRIBUTE_CONST phi::u32 Processor::GetNextProgramCounter() const noexcept
+    PHI_ATTRIBUTE_PURE phi::u32 Processor::GetNextProgramCounter() const noexcept
     {
         return m_NextProgramCounter;
     }
@@ -578,7 +578,7 @@ namespace dlx
         m_NextProgramCounter = new_npc;
     }
 
-    PHI_ATTRIBUTE_CONST phi::usize Processor::GetCurrentStepCount() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize Processor::GetCurrentStepCount() const noexcept
     {
         return m_CurrentStepCount;
     }

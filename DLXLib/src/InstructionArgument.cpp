@@ -22,7 +22,7 @@ namespace dlx
         , m_Type{ArgumentType::None}
     {}
 
-    PHI_ATTRIBUTE_CONST ArgumentType InstructionArgument::GetType() const noexcept
+    PHI_ATTRIBUTE_PURE ArgumentType InstructionArgument::GetType() const noexcept
     {
         return m_Type;
     }

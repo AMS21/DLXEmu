@@ -19,7 +19,7 @@ namespace dlx
         m_ParseErrors.emplace_back(phi::move(error));
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean ParsedProgram::IsValid() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean ParsedProgram::IsValid() const noexcept
     {
         return m_ParseErrors.empty() && !m_Instructions.empty();
     }
