@@ -245,7 +245,7 @@ TEST_CASE("crash-28853252177dc5b6be74f8247bde0d2a2b4f87b5")
     editor.Render({0.0f, 0.0f}, true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("crash-c567e237f4822cff4cab65198f9ea3b393e6f92c")
@@ -272,7 +272,7 @@ TEST_CASE("crash-c567e237f4822cff4cab65198f9ea3b393e6f92c")
     editor.Render({0.0f, 0.0f}, true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("crash-1e4a2c5c4b7bd8fe934c1eb3b5e0e98ed3474b72")
@@ -293,7 +293,7 @@ TEST_CASE("crash-1e4a2c5c4b7bd8fe934c1eb3b5e0e98ed3474b72")
     editor.Render({0.0f, 0.0f}, true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("Crash-b969d74f5fc10237a879950cd37541614ee459e4")
@@ -320,7 +320,7 @@ TEST_CASE("Crash-b969d74f5fc10237a879950cd37541614ee459e4")
     editor.AddErrorMarker(0u, "");
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
@@ -346,7 +346,7 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.MoveRight(0u, true, true);
         editor.VerifyInternalState();
 
-        EndImgui();
+        EndImGui();
     }
 
     // MoveLeft
@@ -370,7 +370,7 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.MoveLeft(0u, true, true);
         editor.VerifyInternalState();
 
-        EndImgui();
+        EndImGui();
     }
 
     // MoveUp
@@ -394,7 +394,7 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.MoveUp(0u, true);
         editor.VerifyInternalState();
 
-        EndImgui();
+        EndImGui();
     }
 
     // MoveDown
@@ -418,7 +418,7 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.MoveDown(0u, true);
         editor.VerifyInternalState();
 
-        EndImgui();
+        EndImGui();
     }
 }
 
@@ -877,7 +877,7 @@ TEST_CASE("crash-b50b36a0abacb8343855b0e477e235df9844f2f6")
     editor.EnterCharacter('\n', true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("crash-286340ec276cb402999df27b2bb407f5791230e5")
@@ -898,5 +898,5 @@ TEST_CASE("crash-286340ec276cb402999df27b2bb407f5791230e5")
     editor.Render({0.0, 0.0}, true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }

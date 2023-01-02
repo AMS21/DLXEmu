@@ -2,4 +2,4 @@
 
 void BeginImGui() noexcept;
 
-void EndImgui() noexcept;
+void EndImGui() noexcept;

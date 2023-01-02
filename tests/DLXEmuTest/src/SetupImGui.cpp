@@ -48,7 +48,7 @@ void BeginImGui() noexcept
     ImGui::NewFrame();
 }
 
-void EndImgui() noexcept
+void EndImGui() noexcept
 {
     // Render data
     ImGui::Render();

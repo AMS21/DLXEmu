@@ -306,7 +306,7 @@ TEST_CASE("Set/GetPalette")
         CHECK(current_palette[i] == retro_blue_palette[i]);
     }
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("ErrorMarkers")
@@ -463,25 +463,25 @@ TEST_CASE("Render")
     BeginImGui();
     editor.Render();
     editor.VerifyInternalState();
-    EndImgui();
+    EndImGui();
 
     // With size
     BeginImGui();
     editor.Render(ImVec2{1024.0f, 720.0f});
     editor.VerifyInternalState();
-    EndImgui();
+    EndImGui();
 
     // With border
     BeginImGui();
     editor.Render({}, true);
     editor.VerifyInternalState();
-    EndImgui();
+    EndImGui();
 
     // With size and border
     BeginImGui();
     editor.Render(ImVec2{1024.0f, 720.0f}, true);
     editor.VerifyInternalState();
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("Get/SetText")
@@ -939,7 +939,7 @@ TEST_CASE("IsTextChanged")
 
     CHECK_FALSE(editor.IsTextChanged());
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("IsCursorPositionChanged")
@@ -966,7 +966,7 @@ TEST_CASE("IsCursorPositionChanged")
 
     CHECK_FALSE(editor.IsCursorPositionChanged());
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("Colorizer")
@@ -1256,7 +1256,7 @@ TEST_CASE("ShowWhitespaces")
 
     CHECK_FALSE(editor.IsShowingWhitespaces());
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("TabSize")
