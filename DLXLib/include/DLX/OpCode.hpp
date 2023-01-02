@@ -188,7 +188,8 @@ namespace dlx
         NONE,
     };
 
-    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // C5264: 'dlx::NumberOfOpCodes': 'const' variable is not used
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(
+            5264) // C5264: 'dlx::NumberOfOpCodes': 'const' variable is not used
 
     static constexpr const phi::usize NumberOfOpCodes{
             static_cast<phi::size_t>(OpCode::NUMBER_OF_ELEMENTS)};

@@ -4,8 +4,8 @@
 #include <DLX/InstructionInfo.hpp>
 #include <DLX/InstructionLibrary.hpp>
 #include <DLX/OpCode.hpp>
-#include <phi/core/types.hpp>
 #include <phi/algorithm/is_sorted.hpp>
+#include <phi/core/types.hpp>
 
 using namespace phi::literals;
 

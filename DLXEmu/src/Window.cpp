@@ -95,7 +95,8 @@ namespace dlxemu
         glad_glPolygonMode = [](GLenum /*face*/, GLenum /*mode*/) -> void { return; };
 #endif
 
-        DLX_INFO("Successfully loaded OpenGL version {}.{}", GLAD_VERSION_MAJOR(glad_gl_version), GLAD_VERSION_MINOR(glad_gl_version));
+        DLX_INFO("Successfully loaded OpenGL version {}.{}", GLAD_VERSION_MAJOR(glad_gl_version),
+                 GLAD_VERSION_MINOR(glad_gl_version));
 
         InitializeImGui();
 

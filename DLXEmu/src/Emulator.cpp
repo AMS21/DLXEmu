@@ -499,11 +499,11 @@ namespace dlxemu
                     "Compiler:   {:s} ({:d}.{:d}.{:d}){}",
                     dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
                     dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
-                    GLAD_VERSION_MAJOR(glad_gl_version), GLAD_VERSION_MINOR(glad_gl_version), GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR,
-                    GLFW_VERSION_REVISION, IMGUI_VERSION, PHI_PLATFORM_NAME(), arch_flag,
-                    DLXEMU_UNAME, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
-                    PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH(),
-                    lsb_info);
+                    GLAD_VERSION_MAJOR(glad_gl_version), GLAD_VERSION_MINOR(glad_gl_version),
+                    GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION, IMGUI_VERSION,
+                    PHI_PLATFORM_NAME(), arch_flag, DLXEMU_UNAME, PHI_COMPILER_NAME(),
+                    PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),
+                    PHI_CURRENT_COMPILER_VERSION_PATCH(), lsb_info);
 
             PHI_CLANG_SUPPRESS_WARNING_POP()
 

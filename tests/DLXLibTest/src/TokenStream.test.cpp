@@ -2,12 +2,10 @@
 
 #include <DLX/Token.hpp>
 #include <DLX/TokenStream.hpp>
+#include <phi/type_traits/is_copy_assignable.hpp>
+#include <phi/type_traits/is_copy_constructible.hpp>
 #include <phi/type_traits/is_nothrow_default_constructible.hpp>
 #include <phi/type_traits/is_nothrow_destructible.hpp>
-#include <phi/type_traits/is_copy_constructible.hpp>
-#include <phi/type_traits/is_copy_assignable.hpp>
-#include <phi/type_traits/is_copy_assignable.hpp>
-#include <phi/type_traits/is_copy_constructible.hpp>
 
 TEST_CASE("TokenStream")
 {
