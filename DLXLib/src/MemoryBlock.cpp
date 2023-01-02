@@ -2,6 +2,7 @@
 
 #include "DLX/Logger.hpp"
 #include <phi/compiler_support/warning.hpp>
+#include <phi/core/integer.hpp>
 #include <phi/core/types.hpp>
 #include <cstdint>
 
@@ -265,10 +266,34 @@ namespace dlx
 
     phi::boolean MemoryBlock::IsAddressValid(phi::usize address, phi::usize size) const noexcept
     {
-        return address >= m_StartingAddress &&
-               !phi::detail::will_addition_error(phi::detail::arithmetic_tag_for<phi::size_t>{},
-                                                 address.unsafe(), size.unsafe()) &&
-               (address + size) <= (m_StartingAddress + m_Values.size());
+        // Cannot access anything before the starting address
+        if (address < m_StartingAddress)
+        {
+            return false;
+        }
+
+        // Check if addres + size will overflow
+        if (phi::detail::will_addition_error(phi::detail::arithmetic_tag_for<phi::size_t>{},
+                                             address.unsafe(), size.unsafe()))
+        {
+            return false;
+        }
+
+        // Check if m_StartingAddress + m_Values.size() will overflow
+        if (phi::detail::will_addition_error(phi::detail::arithmetic_tag_for<phi::size_t>{},
+                                             m_StartingAddress.unsafe(), m_Values.size()))
+        {
+            return false;
+        }
+
+        // Check if address is out of bounds
+        if ((address + size) > (m_StartingAddress + m_Values.size()))
+        {
+            return false;
+        }
+
+        // Otherwise this is a valid address
+        return true;
     }
 
     PHI_ATTRIBUTE_CONST phi::boolean MemoryBlock::IsAddressAlignedCorrectly(

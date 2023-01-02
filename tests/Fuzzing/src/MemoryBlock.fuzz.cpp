@@ -5,6 +5,7 @@
 #include <phi/core/types.hpp>
 #include <phi/preprocessor/glue.hpp>
 #include <phi/type_traits/make_unsigned.hpp>
+#include <phi/type_traits/to_unsafe.hpp>
 
 #define GET_T(type, name)                                                                          \
     auto PHI_GLUE(name, _opt) = consume_t<type>(data, size, index);                                \
@@ -65,7 +66,9 @@ template <typename T>
 template <typename T>
 [[nodiscard]] std::string print_int(const T val) noexcept
 {
-    return fmt::format("{0:d} 0x{1:02X}", val, static_cast<phi::make_unsigned_t<T>>(val));
+    return fmt::format(
+            "{0:d} 0x{1:02X}", phi::to_unsafe(val),
+            static_cast<phi::make_unsigned_t<phi::make_unsafe_t<T>>>(phi::to_unsafe(val)));
 }
 
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
