@@ -68,10 +68,10 @@ jobs:
 
           # Move minified html
           # See option reference here: https://github.com/kangax/html-minifier#options-quick-reference
-          html-minifier ../data/index.html --collapse-boolean-attributes --collapse-inline-tag-whitespace --collapse-whitespace --decode-entities --minify-css true --minify-js true --minify-urls true --remove-attribute-quotes --remove-comments --remove-empty-attributes --remove-empty-elements --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-style-link-type-attributes --sort-attributes --sort-class-name --use-short-doctype > bin/index.html
+          html-minifier ../data/index.html --collapse-boolean-attributes --collapse-inline-tag-whitespace --collapse-whitespace --decode-entities --minify-css true --minify-js true --minify-urls true --remove-attribute-quotes --remove-comments --remove-empty-attributes --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-style-link-type-attributes --sort-attributes --sort-class-name --use-short-doctype > bin/index.html
 
           # Minify all .js files
-          find bin -maxdepth 1 -type f -iname "*.js" -exec bash -c 'uglifyjs ${0} --compress drop_console,expression,hoist_funs,hoist_vars,passes=5,toplevel --no-annotations --mangle eval,toplevel --source-map --toplevel --output ${0}' {} \;
+          find bin -maxdepth 1 -type f -iname "*.js" -exec bash -c 'uglifyjs ${0} --compress drop_console,expression,hoist_funs,hoist_vars,passes=10,toplevel --no-annotations --mangle eval,reserved=['Module'] --mangle-props keep_quoted --source-map --toplevel --output ${0}' {} \;
 
           # Copy to output directory
           mkdir -p $GITHUB_WORKSPACE/output

@@ -49,63 +49,67 @@
     <canvas class="emscripten" oncontextmenu="event.preventDefault()" id="canvas" tabindex="-1"></canvas>
 
     <script type='text/javascript'>
-        var Module;
-        (async () => {
-            Module = {
-                preRun: [],
-                postRun: [],
+        var Module = {
+            preRun: [],
+            postRun: [],
 
-                print: (function () {
-                    return function (text) {
-                        text = Array.prototype.slice.call(arguments).join(' ');
-                        console.log(text);
-                    };
-                })(),
-
-                printErr: function (text) {
+            print: (function () {
+                return function (text) {
                     text = Array.prototype.slice.call(arguments).join(' ');
-                    console.error(text);
-                },
+                    console.log(text);
+                };
+            })(),
 
-                canvas: (function () {
-                    var canvas = document.getElementById('canvas');
+            printErr: function (text) {
+                text = Array.prototype.slice.call(arguments).join(' ');
+                console.error(text);
+            },
 
-                    // As a default initial behavior, pop up an alert when webgl context is lost. To make your
-                    // application robust, you may want to override this behavior before shipping!
-                    // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
-                    canvas.addEventListener("webglcontextlost", function (e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-
-                    return canvas;
-                })(),
-
-                setStatus: function (text) {
-                    console.log("status: " + text);
-                },
-
-                monitorRunDependencies: function (left) {
-                    // no run dependencies to log
-                }
-            };
-
-            window.onerror = function () {
-                console.log("onerror: " + event);
-            };
-
-            window.onresize = function () {
+            canvas: (function () {
                 var canvas = document.getElementById('canvas');
 
-                if (canvas) {
-                    Module.setCanvasSize(window.innerWidth, window.innerHeight);
-                }
-            };
+                // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+                // application robust, you may want to override this behavior before shipping!
+                // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+                canvas.addEventListener("webglcontextlost", function (e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
 
-            var canvas = document.getElementById('canvas')
-            if (canvas) {
-                canvas.onkeypress = function () {
-                    event.preventDefault();
-                };
+                return canvas;
+            })(),
+
+            setStatus: function (text) {
+                console.log("status: " + text);
+            },
+
+            monitorRunDependencies: function (left) {
+                // no run dependencies to log
+            },
+
+            onRuntimeInitialized: function () {
+                console.log('Module loaded');
+                setTimeout(function () {
+                    Module.setCanvasSize(window.innerWidth, window.innerHeight);
+                }, 250);
             }
-        })();
+        };
+
+        window.onerror = function () {
+            console.log("onerror: " + event);
+        };
+
+        window.onresize = function () {
+            var canvas = document.getElementById('canvas');
+
+            if (canvas) {
+                Module.setCanvasSize(window.innerWidth, window.innerHeight);
+            }
+        };
+
+        var canvas = document.getElementById('canvas')
+        if (canvas) {
+            canvas.onkeypress = function () {
+                event.preventDefault();
+            };
+        };
     </script>
     <script async type="text/javascript" src="DLXEmu.js"></script>
 </body>
