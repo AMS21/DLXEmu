@@ -19,7 +19,6 @@ file(
   "src/Processor.cpp"
   "src/RegisterNames.cpp"
   "src/Parser.cpp"
-  "src/StatusRegister.cpp"
   "src/Token.cpp"
   "src/Tokenize.cpp"
   "src/TokenStream.cpp")
