@@ -14,6 +14,7 @@ file(
   "src/InstructionInfo.test.cpp"
   "src/IntRegister.test.cpp"
   "src/MemoryBlock.test.cpp"
+  "src/MemoryBlockCrashes.test.cpp"
   "src/OpCode.test.cpp"
   "src/ParsedProgram.test.cpp"
   "src/ParseError.test.cpp"

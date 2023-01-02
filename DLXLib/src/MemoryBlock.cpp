@@ -2,7 +2,7 @@
 
 #include "DLX/Logger.hpp"
 #include <phi/compiler_support/warning.hpp>
-#include <phi/core/boolean.hpp>
+#include <phi/core/types.hpp>
 #include <cstdint>
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
@@ -24,8 +24,9 @@ namespace dlx
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
-        return m_Values[index].signed_value;
+        const phi::size_t raw_address = (address - m_StartingAddress).unsafe();
+
+        return m_Values[raw_address].signed_value;
     }
 
     phi::optional<phi::u8> MemoryBlock::LoadUnsignedByte(phi::usize address) const noexcept
@@ -36,8 +37,8 @@ namespace dlx
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
-        return m_Values[index].unsigned_value;
+        const phi::size_t raw_address = (address - m_StartingAddress).unsafe();
+        return m_Values[raw_address].unsigned_value;
     }
 
     phi::optional<phi::i16> MemoryBlock::LoadHalfWord(phi::usize address) const noexcept
@@ -47,14 +48,16 @@ namespace dlx
             DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
-        if (!IsAddressAlignedCorrectly(address, 2u))
+
+        const phi::size_t raw_address = (address - m_StartingAddress).unsafe();
+
+        if (!IsAddressAlignedCorrectly(raw_address, 2u))
         {
             DLX_ERROR("Address {} is misaligned", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
-        return *reinterpret_cast<const std::int16_t*>(&m_Values[index].signed_value);
+        return *reinterpret_cast<const std::int16_t*>(&m_Values[raw_address].signed_value);
     }
 
     phi::optional<phi::u16> MemoryBlock::LoadUnsignedHalfWord(phi::usize address) const noexcept
@@ -64,14 +67,16 @@ namespace dlx
             DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
-        if (!IsAddressAlignedCorrectly(address, 2u))
+
+        const phi::size_t raw_address = (address - m_StartingAddress).unsafe();
+
+        if (!IsAddressAlignedCorrectly(raw_address, 2u))
         {
             DLX_ERROR("Address {} is misaligned", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
-        return *reinterpret_cast<const std::uint16_t*>(&m_Values[index].unsigned_value);
+        return *reinterpret_cast<const std::uint16_t*>(&m_Values[raw_address].unsigned_value);
     }
 
     phi::optional<phi::i32> MemoryBlock::LoadWord(phi::usize address) const noexcept
@@ -81,14 +86,16 @@ namespace dlx
             DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
-        if (!IsAddressAlignedCorrectly(address, 4u))
+
+        const phi::size_t raw_address = (address - m_StartingAddress).unsafe();
+
+        if (!IsAddressAlignedCorrectly(raw_address, 4u))
         {
             DLX_ERROR("Address {} is misaligned", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
-        return *reinterpret_cast<const std::int32_t*>(&m_Values[index].signed_value);
+        return *reinterpret_cast<const std::int32_t*>(&m_Values[raw_address].signed_value);
     }
 
     phi::optional<phi::u32> MemoryBlock::LoadUnsignedWord(phi::usize address) const noexcept
@@ -98,14 +105,16 @@ namespace dlx
             DLX_ERROR("Address {} is out of bounds", address.unsafe());
             return {};
         }
-        if (!IsAddressAlignedCorrectly(address, 4u))
+
+        const phi::size_t raw_address = (address - m_StartingAddress).unsafe();
+
+        if (!IsAddressAlignedCorrectly(raw_address, 4u))
         {
             DLX_ERROR("Address {} is misaligned", address.unsafe());
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
-        return *reinterpret_cast<const std::uint32_t*>(&m_Values[index].unsigned_value);
+        return *reinterpret_cast<const std::uint32_t*>(&m_Values[raw_address].unsigned_value);
     }
 
     phi::optional<phi::f32> MemoryBlock::LoadFloat(phi::usize address) const noexcept
@@ -116,8 +125,15 @@ namespace dlx
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
-        return *reinterpret_cast<const float*>(&m_Values[index].signed_value);
+        const phi::size_t raw_address = (address - m_StartingAddress).unsafe();
+
+        if (!IsAddressAlignedCorrectly(raw_address, sizeof(phi::f32)))
+        {
+            DLX_ERROR("Address {} is misaligned", address.unsafe());
+            return {};
+        }
+
+        return *reinterpret_cast<const float*>(&m_Values[raw_address].signed_value);
     }
 
     phi::optional<phi::f64> MemoryBlock::LoadDouble(phi::usize address) const noexcept
@@ -128,8 +144,15 @@ namespace dlx
             return {};
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
-        return *reinterpret_cast<const double*>(&m_Values[(index)].signed_value);
+        const phi::size_t raw_address = (address - m_StartingAddress).unsafe();
+
+        if (!IsAddressAlignedCorrectly(raw_address, sizeof(phi::f64)))
+        {
+            DLX_ERROR("Address {} is misaligned", address.unsafe());
+            return {};
+        }
+
+        return *reinterpret_cast<const double*>(&m_Values[(raw_address)].signed_value);
     }
 
     phi::boolean MemoryBlock::StoreByte(phi::usize address, phi::i8 value) noexcept
@@ -164,7 +187,7 @@ namespace dlx
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
+        phi::size_t index = (address - m_StartingAddress).unsafe();
         *reinterpret_cast<std::int16_t*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
@@ -178,7 +201,7 @@ namespace dlx
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
+        phi::size_t index = (address - m_StartingAddress).unsafe();
         *reinterpret_cast<std::uint16_t*>(&m_Values[index].unsigned_value) = value.unsafe();
 
         return true;
@@ -192,7 +215,7 @@ namespace dlx
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
+        phi::size_t index = (address - m_StartingAddress).unsafe();
         *reinterpret_cast<std::int32_t*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
@@ -206,7 +229,7 @@ namespace dlx
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
+        phi::size_t index = (address - m_StartingAddress).unsafe();
         *reinterpret_cast<std::uint32_t*>(&m_Values[index].unsigned_value) = value.unsafe();
 
         return true;
@@ -220,7 +243,7 @@ namespace dlx
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
+        phi::size_t index = (address - m_StartingAddress).unsafe();
         *reinterpret_cast<float*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
@@ -234,23 +257,24 @@ namespace dlx
             return false;
         }
 
-        std::size_t index = (address - m_StartingAddress).unsafe();
+        phi::size_t index = (address - m_StartingAddress).unsafe();
         *reinterpret_cast<double*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean MemoryBlock::IsAddressValid(phi::usize address,
-                                                                phi::usize size) const noexcept
+    phi::boolean MemoryBlock::IsAddressValid(phi::usize address, phi::usize size) const noexcept
     {
         return address >= m_StartingAddress &&
+               !phi::detail::will_addition_error(phi::detail::arithmetic_tag_for<phi::size_t>{},
+                                                 address.unsafe(), size.unsafe()) &&
                (address + size) <= (m_StartingAddress + m_Values.size());
     }
 
     PHI_ATTRIBUTE_CONST phi::boolean MemoryBlock::IsAddressAlignedCorrectly(
             phi::usize address, phi::usize size) noexcept
     {
-        return (address % size) == 0u;
+        return size != 0u && (address % size) == 0u;
     }
 
     void MemoryBlock::Clear() noexcept
@@ -261,7 +285,7 @@ namespace dlx
         }
     }
 
-    PHI_ATTRIBUTE_PURE phi::usize MemoryBlock::GetStartingAddress() const noexcept
+    phi::usize MemoryBlock::GetStartingAddress() const noexcept
     {
         return m_StartingAddress;
     }
@@ -271,7 +295,7 @@ namespace dlx
         m_StartingAddress = new_starting_address;
     }
 
-    PHI_ATTRIBUTE_PURE phi::usize MemoryBlock::GetSize() const noexcept
+    phi::usize MemoryBlock::GetSize() const noexcept
     {
         return m_Values.size();
     }
@@ -286,8 +310,7 @@ namespace dlx
         return m_Values;
     }
 
-    PHI_ATTRIBUTE_PURE const std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory()
-            const noexcept
+    const std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() const noexcept
     {
         return m_Values;
     }
