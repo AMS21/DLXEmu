@@ -276,7 +276,12 @@ namespace dlx
         return m_Values.size();
     }
 
-    PHI_ATTRIBUTE_PURE std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() noexcept
+    void MemoryBlock::Resize(phi::usize new_size) noexcept
+    {
+        m_Values.resize(new_size.unsafe());
+    }
+
+    std::vector<MemoryBlock::MemoryByte>& MemoryBlock::GetRawMemory() noexcept
     {
         return m_Values;
     }

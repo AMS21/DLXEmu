@@ -32,3 +32,18 @@ TEST_CASE("GetRawMemory")
     CHECK_FALSE(const_vec.empty());
     CHECK(const_vec.size() == 10u);
 }
+
+TEST_CASE("Resize")
+{
+    dlx::MemoryBlock mem{1000u, 10u};
+    CHECK(mem.GetSize() == 10u);
+
+    mem.Resize(25u);
+    CHECK(mem.GetSize() == 25u);
+
+    mem.Resize(3u);
+    CHECK(mem.GetSize() == 3u);
+
+    mem.Resize(7u);
+    CHECK(mem.GetSize() == 7u);
+}
