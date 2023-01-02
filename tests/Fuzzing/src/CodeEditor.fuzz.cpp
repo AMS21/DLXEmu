@@ -17,6 +17,8 @@
 #include <phi/math/is_nan.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
 #include <phi/type_traits/make_unsigned.hpp>
+#include <phi/type_traits/to_unsafe.hpp>
+#include <phi/type_traits/underlying_type.hpp>
 #include <cmath>
 #include <cstdint>
 #include <string>
@@ -30,6 +32,22 @@
 #else
 #    define FUZZ_LOG(...) PHI_EMPTY_MACRO()
 #endif
+
+#define GET_T(type, name)                                                                          \
+    auto PHI_GLUE(name, _opt) = consume_t<type>(data, size, index);                                \
+    if (!PHI_GLUE(name, _opt))                                                                     \
+    {                                                                                              \
+        return {};                                                                                 \
+    }                                                                                              \
+    const type name = PHI_GLUE(name, _opt).value()
+
+#define GET_T_COND(type, name, cond)                                                               \
+    GET_T(type, name);                                                                             \
+    if (!(cond))                                                                                   \
+    {                                                                                              \
+        return {};                                                                                 \
+    }                                                                                              \
+    (void)(0)
 
 PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
 PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
@@ -111,6 +129,17 @@ template <typename T>
     }
 }
 
+template <>
+[[nodiscard]] phi::optional<dlxemu::CodeEditor::Coordinates> consume_t<
+        dlxemu::CodeEditor::Coordinates>(const std::uint8_t* data, const std::size_t size,
+                                         std::size_t& index) noexcept
+{
+    GET_T(phi::uint32_t, column);
+    GET_T(phi::uint32_t, line);
+
+    return dlxemu::CodeEditor::Coordinates{column, line};
+}
+
 [[nodiscard]] bool consume_string(const std::uint8_t* data, const std::size_t size,
                                   std::size_t& index) noexcept
 {
@@ -156,13 +185,8 @@ template <typename T>
                                                                const std::size_t   size,
                                                                std::size_t&        index) noexcept
 {
-    auto number_of_lines_opt = consume_t<phi::size_t>(data, size, index);
-    if (!number_of_lines_opt)
-    {
-        return {};
-    }
+    GET_T(phi::size_t, number_of_lines);
 
-    const std::size_t number_of_lines = number_of_lines_opt.value();
     if (number_of_lines >= MaxVectorSize)
     {
         return {};
@@ -182,30 +206,12 @@ template <typename T>
     return number_of_lines;
 }
 
-[[nodiscard]] phi::optional<dlxemu::CodeEditor::Coordinates> consume_coordinates(
-        const std::uint8_t* data, const std::size_t size, std::size_t& index) noexcept
-{
-    auto column_opt = consume_t<std::uint32_t>(data, size, index);
-    if (!column_opt)
-    {
-        return {};
-    }
-    std::uint32_t column = column_opt.value();
-
-    auto line_opt = consume_t<std::uint32_t>(data, size, index);
-    if (!line_opt)
-    {
-        return {};
-    }
-    std::uint32_t line = line_opt.value();
-
-    return dlxemu::CodeEditor::Coordinates{column, line};
-}
-
 template <typename T>
 [[nodiscard]] std::string print_int(const T val) noexcept
 {
-    return fmt::format("{0:d} 0x{1:02X}", val, static_cast<phi::make_unsigned_t<T>>(val));
+    return fmt::format(
+            "{0:d} 0x{1:02X}", phi::to_unsafe(val),
+            static_cast<phi::make_unsigned_t<phi::make_unsafe_t<T>>>(phi::to_unsafe(val)));
 }
 
 template <typename T>
@@ -296,7 +302,7 @@ template <typename T>
 
     for (const phi::u32 line_number : breakpoints)
     {
-        lines += fmt::format("{:s}, ", print_int(line_number.unsafe()));
+        lines += fmt::format("{:s}, ", print_int(line_number));
     }
 
     std::string ret = fmt::format("Breakpoints(size: {:d}: {:s})", breakpoints.size(),
@@ -402,24 +408,13 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
     for (std::size_t index{0u}; index < size;)
     {
-        auto function_index_opt = consume_t<std::uint32_t>(data, size, index);
-        if (!function_index_opt)
-        {
-            return 0;
-        }
-
-        const std::uint32_t function_index = function_index_opt.value();
+        GET_T(phi::uint32_t, function_index);
 
         switch (function_index)
         {
             // AddErrorMarker
             case 0: {
-                auto line_number_opt = consume_t<phi::uint32_t>(data, size, index);
-                if (!line_number_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t line_number = line_number_opt.value();
+                GET_T(phi::uint32_t, line_number);
 
                 if (!consume_string(data, size, index))
                 {
@@ -476,7 +471,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 const std::vector<std::string>& lines = cache.vector_string[lines_opt.value()];
 
                 FUZZ_LOG("SetTextLines({:s})", print_vector_string(lines));
-
                 editor.SetTextLines(lines);
                 break;
             }
@@ -510,15 +504,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetReadOnly
             case 8: {
-                auto read_only_opt = consume_t<bool>(data, size, index);
-                if (!read_only_opt)
-                {
-                    return 0;
-                }
-                bool read_only = read_only_opt.value();
+                GET_T(bool, read_only);
 
                 FUZZ_LOG("SetReadOnly({:s})", print_bool(read_only));
-
                 editor.SetReadOnly(read_only);
                 break;
             }
@@ -534,47 +522,28 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetCursorPosition
             case 10: {
-                auto coords_opt = consume_coordinates(data, size, index);
-                if (!coords_opt)
-                {
-                    return 0;
-                }
+                GET_T(dlxemu::CodeEditor::Coordinates, coords);
 
-                auto coords = coords_opt.value();
-
-                FUZZ_LOG("SetCursorPosition(Coordinates({:s}, {:s}))",
-                         print_int(coords.m_Line.unsafe()), print_int(coords.m_Column.unsafe()));
-
+                FUZZ_LOG("SetCursorPosition(Coordinates({:s}, {:s}))", print_int(coords.m_Line),
+                         print_int(coords.m_Column));
                 editor.SetCursorPosition(coords);
                 break;
             }
 
             // SetShowWhitespaces
             case 11: {
-                auto show_whitespace_opt = consume_t<bool>(data, size, index);
-                if (!show_whitespace_opt)
-                {
-                    return 0;
-                }
-                bool show_whitespaces = show_whitespace_opt.value();
+                GET_T(bool, show_whitespaces);
 
                 FUZZ_LOG("SetShowShitespaces({:s})", print_bool(show_whitespaces));
-
                 editor.SetShowWhitespaces(show_whitespaces);
                 break;
             }
 
             // SetTabSize
             case 12: {
-                auto tab_size_opt = consume_t<std::uint_fast8_t>(data, size, index);
-                if (!tab_size_opt)
-                {
-                    return 0;
-                }
-                std::uint_fast8_t tab_size = tab_size_opt.value();
+                GET_T(std::uint_fast8_t, tab_size);
 
                 FUZZ_LOG("SetTabSize({:s})", print_int(tab_size));
-
                 editor.SetTabSize(tab_size);
                 break;
             }
@@ -589,107 +558,47 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 std::string& message = cache.string;
 
                 FUZZ_LOG("InsertText({:s})", print_string(message));
-
                 editor.InsertText(message);
                 break;
             }
 
             // MoveUp
             case 14: {
-                auto amount_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!amount_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t amount = amount_opt.value();
-
-                auto select_opt = consume_t<bool>(data, size, index);
-                if (!select_opt)
-                {
-                    return 0;
-                }
-                bool select = select_opt.value();
+                GET_T(phi::uint32_t, amount);
+                GET_T(bool, select);
 
                 FUZZ_LOG("MoveUp({:s}, {:s})", print_int(amount), print_bool(select));
-
                 editor.MoveUp(amount, select);
                 break;
             }
 
             // MoveDown
             case 15: {
-                auto amount_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!amount_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t amount = amount_opt.value();
-
-                auto select_opt = consume_t<bool>(data, size, index);
-                if (!select_opt)
-                {
-                    return 0;
-                }
-                bool select = select_opt.value();
+                GET_T(phi::uint32_t, amount);
+                GET_T(bool, select);
 
                 FUZZ_LOG("MoveDown({:s}, {:s})", print_int(amount), print_bool(select));
-
                 editor.MoveDown(amount, select);
                 break;
             }
 
             // MoveLeft
             case 16: {
-                auto amount_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!amount_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t amount = amount_opt.value();
-
-                auto select_opt = consume_t<bool>(data, size, index);
-                if (!select_opt)
-                {
-                    return 0;
-                }
-                bool select = select_opt.value();
-
-                auto word_mode_opt = consume_t<bool>(data, size, index);
-                if (!word_mode_opt)
-                {
-                    return 0;
-                }
-                bool word_mode = word_mode_opt.value();
+                GET_T(phi::uint32_t, amount);
+                GET_T(bool, select);
+                GET_T(bool, word_mode);
 
                 FUZZ_LOG("MoveLeft({:s}, {:s}, {:s})", print_int(amount), print_bool(select),
                          print_bool(word_mode));
-
                 editor.MoveLeft(amount, select, word_mode);
                 break;
             }
 
             // MoveRight
             case 17: {
-                auto amount_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!amount_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t amount = amount_opt.value();
-
-                auto select_opt = consume_t<bool>(data, size, index);
-                if (!select_opt)
-                {
-                    return 0;
-                }
-                bool select = select_opt.value();
-
-                auto word_mode_opt = consume_t<bool>(data, size, index);
-                if (!word_mode_opt)
-                {
-                    return 0;
-                }
-                bool word_mode = word_mode_opt.value();
+                GET_T(phi::uint32_t, amount);
+                GET_T(bool, select);
+                GET_T(bool, word_mode);
 
                 FUZZ_LOG("MoveRight({:s}, {:s}, {:s})", print_int(amount), print_bool(select),
                          print_bool(word_mode));
@@ -700,155 +609,64 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // MoveTop
             case 18: {
-                auto select_opt = consume_t<bool>(data, size, index);
-                if (!select_opt)
-                {
-                    return 0;
-                }
-                bool select = select_opt.value();
+                GET_T(bool, select);
 
                 FUZZ_LOG("MoveTop({:s})", print_bool(select));
-
                 editor.MoveTop(select);
                 break;
             }
 
             // MoveBottom
             case 19: {
-                auto select_opt = consume_t<bool>(data, size, index);
-                if (!select_opt)
-                {
-                    return 0;
-                }
-                bool select = select_opt.value();
+                GET_T(bool, select);
 
                 FUZZ_LOG("MoveBottom({:s})", print_bool(select));
-
                 editor.MoveBottom(select);
                 break;
             }
 
             // MoveHome
             case 20: {
-                auto select_opt = consume_t<bool>(data, size, index);
-                if (!select_opt)
-                {
-                    return 0;
-                }
-                bool select = select_opt.value();
+                GET_T(bool, select);
 
                 FUZZ_LOG("MoveHome({:s})", print_bool(select));
-
                 editor.MoveHome(select);
                 break;
             }
 
             // MoveEnd
             case 21: {
-                auto select_opt = consume_t<bool>(data, size, index);
-                if (!select_opt)
-                {
-                    return 0;
-                }
-                bool select = select_opt.value();
+                GET_T(bool, select);
 
                 FUZZ_LOG("MoveEnd({:s})", print_bool(select));
-
                 editor.MoveEnd(select);
                 break;
             }
 
             // SetSelectionStart
             case 22: {
-                auto column_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!column_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t column = column_opt.value();
+                GET_T(dlxemu::CodeEditor::Coordinates, coords);
 
-                auto line_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!line_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t line = line_opt.value();
-
-                dlxemu::CodeEditor::Coordinates coord;
-                coord.m_Column = column;
-                coord.m_Line   = line;
-
-                FUZZ_LOG("SetSelectionStart(Coordinates({:s}, {:s}))", print_int(line),
-                         print_int(column));
-
-                editor.SetSelectionStart(coord);
+                FUZZ_LOG("SetSelectionStart(Coordinates({:s}, {:s}))", print_int(coords.m_Line),
+                         print_int(coords.m_Column));
+                editor.SetSelectionStart(coords);
                 break;
             }
 
             // SetSelectionEnd
             case 23: {
-                auto column_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!column_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t column = column_opt.value();
+                GET_T(dlxemu::CodeEditor::Coordinates, coords);
 
-                auto line_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!line_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t line = line_opt.value();
-
-                dlxemu::CodeEditor::Coordinates coord;
-                coord.m_Column = column;
-                coord.m_Line   = line;
-
-                FUZZ_LOG("SetSelectionEnd(Coordinates({:s}, {:s}))", print_int(line),
-                         print_int(column));
-
-                editor.SetSelectionEnd(coord);
+                FUZZ_LOG("SetSelectionEnd(Coordinates({:s}, {:s}))", print_int(coords.m_Line),
+                         print_int(coords.m_Column));
+                editor.SetSelectionEnd(coords);
                 break;
             }
 
             // SetSelection
             case 24: {
-                auto column_start_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!column_start_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t column_start = column_start_opt.value();
-
-                auto line_start_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!line_start_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t line_start = line_start_opt.value();
-
-                dlxemu::CodeEditor::Coordinates coord_start;
-                coord_start.m_Column = column_start;
-                coord_start.m_Line   = line_start;
-
-                auto column_end_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!column_end_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t column_end = column_end_opt.value();
-
-                auto line_end_opt = consume_t<std::uint32_t>(data, size, index);
-                if (!line_end_opt)
-                {
-                    return 0;
-                }
-                std::uint32_t line_end = line_end_opt.value();
-
-                dlxemu::CodeEditor::Coordinates coord_end;
-                coord_end.m_Column = column_end;
-                coord_end.m_Line   = line_end;
+                GET_T(dlxemu::CodeEditor::Coordinates, coords_start);
+                GET_T(dlxemu::CodeEditor::Coordinates, coords_end);
 
                 auto selection_mode_opt = consume_t<std::uint8_t>(data, size, index);
                 if (!selection_mode_opt || selection_mode_opt.value() > 2u)
@@ -860,10 +678,10 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
                 FUZZ_LOG("SetSelection(Coordinates({:s}, {:s}), Coordinates({:s}, "
                          "{:s}), {:s})",
-                         print_int(line_start), print_int(column_start), print_int(line_end),
-                         print_int(column_end), dlx::enum_name(selection_mode));
-
-                editor.SetSelection(coord_start, coord_end, selection_mode);
+                         print_int(coords_start.m_Line), print_int(coords_start.m_Column),
+                         print_int(coords_end.m_Line), print_int(coords_start.m_Column),
+                         dlx::enum_name(selection_mode));
+                editor.SetSelection(coords_start, coords_end, selection_mode);
                 break;
             }
 
@@ -909,22 +727,12 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetErrorMarkers
             case 30: {
-                auto count_opt = consume_t<std::size_t>(data, size, index);
-                if (!count_opt)
-                {
-                    return 0;
-                }
-                std::size_t count = std::min(count_opt.value(), MaxVectorSize);
+                GET_T_COND(phi::size_t, count, count <= MaxVectorSize);
 
                 dlxemu::CodeEditor::ErrorMarkers markers;
                 for (std::size_t i{0u}; i < count; ++i)
                 {
-                    auto line_number_opt = consume_t<std::uint32_t>(data, size, index);
-                    if (!line_number_opt)
-                    {
-                        return 0;
-                    }
-                    std::uint32_t line_number = line_number_opt.value();
+                    GET_T(phi::uint32_t, line_number);
 
                     if (!consume_string(data, size, index))
                     {
@@ -944,23 +752,12 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetBreakpoints
             case 31: {
-                auto count_opt = consume_t<std::size_t>(data, size, index);
-                if (!count_opt)
-                {
-                    return 0;
-                }
-                std::size_t count = std::min(count_opt.value(), MaxVectorSize);
+                GET_T_COND(phi::size_t, count, count <= MaxVectorSize);
 
                 dlxemu::CodeEditor::Breakpoints breakpoints;
-
                 for (std::size_t i{0u}; i < count; ++i)
                 {
-                    auto line_number_opt = consume_t<std::uint32_t>(data, size, index);
-                    if (!line_number_opt)
-                    {
-                        return 0;
-                    }
-                    std::uint32_t line_number = line_number_opt.value();
+                    GET_T(phi::uint32_t, line_number);
 
                     breakpoints.insert(line_number);
                 }
@@ -973,38 +770,12 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // Render
             case 32: {
-                auto x_opt = consume_t<float>(data, size, index);
-                if (!x_opt)
-                {
-                    return 0;
-                }
-                const float x = x_opt.value();
-
-                if (x >= MaxSaneFloatValue || x < 0.0f || phi::is_nan(x))
-                {
-                    return 0;
-                }
-
-                auto y_opt = consume_t<float>(data, size, index);
-                if (!y_opt)
-                {
-                    return 0;
-                }
-                const float y = y_opt.value();
-
-                if (y >= MaxSaneFloatValue || y < 0.0f || phi::is_nan(y))
-                {
-                    return 0;
-                }
+                GET_T_COND(float, x, x <= MaxSaneFloatValue && x >= 0.0f && !phi::is_nan(x));
+                GET_T_COND(float, y, y <= MaxSaneFloatValue && y >= 0.0f && !phi::is_nan(y));
 
                 ImVec2 size_vec(x, y);
 
-                auto border_opt = consume_t<bool>(data, size, index);
-                if (!border_opt)
-                {
-                    return 0;
-                }
-                const bool border = border_opt.value();
+                GET_T(bool, border);
 
                 FUZZ_LOG("Render(ImVec2({:f}, {:f}), {:s})", x, y, border ? "true" : "false");
 
@@ -1017,19 +788,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // EnterCharacter
             case 33: {
-                auto character_opt = consume_t<ImWchar>(data, size, index);
-                if (!character_opt)
-                {
-                    return 0;
-                }
-                ImWchar character = character_opt.value();
-
-                auto shift_opt = consume_t<bool>(data, size, index);
-                if (!shift_opt)
-                {
-                    return 0;
-                }
-                bool shift = shift_opt.value();
+                GET_T(ImWchar, character);
+                GET_T(bool, shift);
 
                 FUZZ_LOG("EnterCharacter({:s}, {:s})", print_char(character), print_bool(shift));
                 editor.EnterCharacter(character, shift);
@@ -1062,24 +822,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddKeyEvent
             case 37: {
-                auto key_opt = consume_t<ImGuiKey>(data, size, index);
-                if (!key_opt)
-                {
-                    return 0;
-                }
-                ImGuiKey key = key_opt.value();
-
-                if (!ImGui::IsNamedKey(key) || ImGui::IsAliasKey(key))
-                {
-                    return 0;
-                }
-
-                auto down_opt = consume_t<bool>(data, size, index);
-                if (!down_opt)
-                {
-                    return 0;
-                }
-                bool down = down_opt.value();
+                GET_T_COND(ImGuiKey, key, ImGui::IsNamedKey(key) && !ImGui::IsAliasKey(key));
+                GET_T(bool, down);
 
                 FUZZ_LOG("ImGui::GetIO().AddKeyEvent({}, {:s})", key, print_bool(down));
                 ImGui::GetIO().AddKeyEvent(key, down);
@@ -1089,31 +833,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddKeyAnalogEvent
             case 38: {
-                auto key_opt = consume_t<ImGuiKey>(data, size, index);
-                if (!key_opt)
-                {
-                    return 0;
-                }
-                ImGuiKey key = key_opt.value();
-
-                if (!ImGui::IsNamedKey(key) || ImGui::IsAliasKey(key))
-                {
-                    return 0;
-                }
-
-                auto down_opt = consume_t<bool>(data, size, index);
-                if (!down_opt)
-                {
-                    return 0;
-                }
-                bool down = down_opt.value();
-
-                auto value_opt = consume_t<float>(data, size, index);
-                if (!value_opt)
-                {
-                    return 0;
-                }
-                float value = value_opt.value();
+                GET_T_COND(ImGuiKey, key, ImGui::IsNamedKey(key) && !ImGui::IsAliasKey(key));
+                GET_T(bool, down);
+                GET_T_COND(float, value, phi::abs(value) <= MaxSaneFloatValue);
 
                 FUZZ_LOG("ImGui::GetIO().AddKeyAnalogEvent({}, {:s}, {:f})", key, print_bool(down),
                          value);
@@ -1124,29 +846,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddMousePosEvent
             case 39: {
-                auto x_opt = consume_t<float>(data, size, index);
-                if (!x_opt)
-                {
-                    return 0;
-                }
-                const float x = x_opt.value();
-
-                if (phi::abs(x) >= MaxSaneFloatValue)
-                {
-                    return 0;
-                }
-
-                auto y_opt = consume_t<float>(data, size, index);
-                if (!y_opt)
-                {
-                    return 0;
-                }
-                const float y = y_opt.value();
-
-                if (phi::abs(y) >= MaxSaneFloatValue)
-                {
-                    return 0;
-                }
+                GET_T_COND(float, x, phi::abs(x) <= MaxSaneFloatValue);
+                GET_T_COND(float, y, phi::abs(y) <= MaxSaneFloatValue);
 
                 FUZZ_LOG("ImGui::GetIO().AddMousePosEvent({:f}, {:f})", x, y);
                 ImGui::GetIO().AddMousePosEvent(x, y);
@@ -1156,24 +857,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddMouseButtonEvent
             case 40: {
-                auto button_opt = consume_t<int>(data, size, index);
-                if (!button_opt)
-                {
-                    return 0;
-                }
-                int button = button_opt.value();
-
-                if (button < 0 || button >= ImGuiMouseButton_COUNT)
-                {
-                    return 0;
-                }
-
-                auto down_opt = consume_t<bool>(data, size, index);
-                if (!down_opt)
-                {
-                    return 0;
-                }
-                bool down = down_opt.value();
+                GET_T_COND(int, button, button >= 0 && button < ImGuiMouseButton_COUNT);
+                GET_T(bool, down);
 
                 FUZZ_LOG("ImGui::GetIO().AddMouseButtonEvent({}, {:s})", button, print_bool(down));
                 ImGui::GetIO().AddMouseButtonEvent(button, down);
@@ -1183,29 +868,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddMouseWheelEvent
             case 41: {
-                auto wh_x_opt = consume_t<float>(data, size, index);
-                if (!wh_x_opt)
-                {
-                    return 0;
-                }
-                const float wh_x = wh_x_opt.value();
-
-                if (phi::abs(wh_x) >= MaxSaneFloatValue)
-                {
-                    return 0;
-                }
-
-                auto wh_y_opt = consume_t<float>(data, size, index);
-                if (!wh_y_opt)
-                {
-                    return 0;
-                }
-                const float wh_y = wh_y_opt.value();
-
-                if (phi::abs(wh_y) >= MaxSaneFloatValue)
-                {
-                    return 0;
-                }
+                GET_T_COND(float, wh_x, phi::abs(wh_x) <= MaxSaneFloatValue);
+                GET_T_COND(float, wh_y, phi::abs(wh_y) <= MaxSaneFloatValue);
 
                 FUZZ_LOG("ImGui::GetIO().AddMouseWheelEvent({:f}, {:f})", wh_x, wh_y);
                 ImGui::GetIO().AddMouseWheelEvent(wh_x, wh_y);
@@ -1215,12 +879,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddFocusEvent
             case 42: {
-                auto focused_opt = consume_t<bool>(data, size, index);
-                if (!focused_opt)
-                {
-                    return 0;
-                }
-                bool focused = focused_opt.value();
+                GET_T(bool, focused);
 
                 FUZZ_LOG("ImGui::GetIO().AddFocusEvent({:s})", print_bool(focused));
                 ImGui::GetIO().AddFocusEvent(focused);
@@ -1230,30 +889,20 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddInputCharacter
             case 43: {
-                auto c_opt = consume_t<unsigned int>(data, size, index);
-                if (!c_opt)
-                {
-                    return 0;
-                }
-                unsigned int c = c_opt.value();
+                GET_T(unsigned int, character);
 
-                FUZZ_LOG("ImGui::GetIO().AddInputCharacter({})", c);
-                ImGui::GetIO().AddInputCharacter(c);
+                FUZZ_LOG("ImGui::GetIO().AddInputCharacter({})", character);
+                ImGui::GetIO().AddInputCharacter(character);
 
                 break;
             }
 
             // ImGui::AddInputCharacterUTF16
             case 44: {
-                auto c_opt = consume_t<ImWchar16>(data, size, index);
-                if (!c_opt)
-                {
-                    return 0;
-                }
-                ImWchar16 c = c_opt.value();
+                GET_T(ImWchar16, character);
 
-                FUZZ_LOG("ImGui::GetIO().AddInputCharacterUTF16({})", c);
-                ImGui::GetIO().AddInputCharacterUTF16(c);
+                FUZZ_LOG("ImGui::GetIO().AddInputCharacterUTF16({})", character);
+                ImGui::GetIO().AddInputCharacterUTF16(character);
 
                 break;
             }
@@ -1298,12 +947,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetOverwrite
             case 49: {
-                auto overwrite_opt = consume_t<bool>(data, size, index);
-                if (!overwrite_opt)
-                {
-                    return 0;
-                }
-                const phi::boolean overwrite = overwrite_opt.value();
+                GET_T(bool, overwrite);
 
                 FUZZ_LOG("SetOverwrite({:s})", print_bool(overwrite));
                 editor.SetOverwrite(overwrite);
@@ -1313,12 +957,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetColorizerEnable
             case 50: {
-                auto colorizer_opt = consume_t<bool>(data, size, index);
-                if (!colorizer_opt)
-                {
-                    return 0;
-                }
-                const phi::boolean colorizer = colorizer_opt.value();
+                GET_T(bool, colorizer);
 
                 FUZZ_LOG("SetColorizerEnable({:s})", print_bool(colorizer));
                 editor.SetColorizerEnable(colorizer);
@@ -1328,14 +967,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // RemoveBreakpoint
             case 51: {
-                auto line_number_opt = consume_t<phi::u32>(data, size, index);
-                if (!line_number_opt)
-                {
-                    return 0;
-                }
-                const phi::u32 line_number = line_number_opt.value();
+                GET_T(phi::u32, line_number);
 
-                FUZZ_LOG("RemoveBreakpoint({:s})", print_int(line_number.unsafe()));
+                FUZZ_LOG("RemoveBreakpoint({:s})", print_int(line_number));
                 editor.RemoveBreakpoint(line_number);
 
                 break;
@@ -1343,21 +977,12 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ToggleBreakpoint
             case 52: {
-                auto line_number_opt = consume_t<phi::u32>(data, size, index);
-                if (!line_number_opt)
-                {
-                    return 0;
-                }
-                const phi::u32 line_number = line_number_opt.value();
+                GET_T(phi::u32, line_number);
 
-                FUZZ_LOG("ToggleBreakpoint({:s})", print_int(line_number.unsafe()));
+                FUZZ_LOG("ToggleBreakpoint({:s})", print_int(line_number));
                 editor.ToggleBreakpoint(line_number);
 
                 break;
-            }
-
-            default: {
-                return 0;
             }
         }
     }
