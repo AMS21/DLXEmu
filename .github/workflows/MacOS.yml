@@ -53,6 +53,7 @@ jobs:
           - "Release"
 
         dynamic_test:
+          - "none"
           - "asan"
           - "tsan"
           - "ubsan"
