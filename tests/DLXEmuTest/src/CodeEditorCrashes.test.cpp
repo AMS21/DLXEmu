@@ -4,6 +4,7 @@
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
 #include <phi/compiler_support/warning.hpp>
+#include <phi/core/types.hpp>
 
 PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
 
@@ -899,4 +900,31 @@ TEST_CASE("crash-286340ec276cb402999df27b2bb407f5791230e5")
     editor.VerifyInternalState();
 
     EndImGui();
+}
+
+TEST_CASE("crash-717c84590d8120d303480db66e875200e9d0ed55")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    for (phi::u32 runs{0u}; runs < 100u; ++runs)
+    {
+        BeginImGui();
+
+        ImGui::GetIO().AddKeyAnalogEvent(
+                ImGuiKey_DownArrow, true,
+                41538622456286478104298950458605568.000000); // ImGuiKey_DownArrow = 516
+        editor.VerifyInternalState();
+
+        ImGui::GetIO().AddKeyEvent(ImGuiKey_ReservedForModCtrl,
+                                   true); // ImGuiKey_ReservedForModCtrl = 648
+        editor.VerifyInternalState();
+
+        ImGui::GetIO().AddKeyEvent(ImGuiKey_Tab, true); // ImGuiKey_Tab = 512
+        editor.VerifyInternalState();
+
+        editor.Render(ImVec2(0.000000, 0.000000), true);
+        editor.VerifyInternalState();
+
+        EndImGui();
+    }
 }
