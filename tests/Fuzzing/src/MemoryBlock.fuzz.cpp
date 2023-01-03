@@ -304,9 +304,9 @@ extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size
 
             // GetRawMemory const
             case 23: {
-                const dlx::MemoryBlock const_memory_block = memory_block;
+                const dlx::MemoryBlock& const_memory_block = memory_block;
                 FUZZ_LOG("const GetRawMemory()");
-                (void)memory_block.GetRawMemory();
+                (void)const_memory_block.GetRawMemory();
                 break;
             }
         }
