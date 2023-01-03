@@ -436,6 +436,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install dependencies
+        run: pip install jinja2
+
       - name: Configure
         run: |
           # Create build directory

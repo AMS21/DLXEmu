@@ -95,6 +95,8 @@ jobs:
 
           scoop install ninja --global
 
+          pip install jinja2
+
       - name: Setup msvc dev
         if: matrix.cfg.compiler == 'cl'
         uses: ilammy/msvc-dev-cmd@v1.12.0
