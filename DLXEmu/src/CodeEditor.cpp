@@ -792,9 +792,9 @@ namespace dlxemu
             return;
         }
 
-        Coordinates pos         = GetActualCursorCoordinates();
-        Coordinates start       = phi::min(pos, m_State.m_SelectionStart);
-        phi::u32    total_lines = pos.m_Line - start.m_Line;
+        Coordinates       pos         = GetActualCursorCoordinates();
+        const Coordinates start       = HasSelection() ? m_State.m_SelectionStart : pos;
+        phi::u32          total_lines = pos.m_Line - start.m_Line;
 
         total_lines += InsertTextAt(pos, value);
 
