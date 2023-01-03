@@ -2717,9 +2717,9 @@ namespace dlxemu
                 (m_State.m_SelectionStart.m_Column == 0u ||
                  m_State.m_SelectionStart.m_Line != m_State.m_SelectionEnd.m_Line))
             {
-                Coordinates start        = m_State.m_SelectionStart;
-                Coordinates end          = m_State.m_SelectionEnd;
-                Coordinates original_end = end;
+                Coordinates       start        = m_State.m_SelectionStart;
+                Coordinates       end          = m_State.m_SelectionEnd;
+                const Coordinates original_end = end;
 
                 PHI_ASSERT(start < end);
                 start.m_Column = 0u;
@@ -2775,8 +2775,6 @@ namespace dlxemu
                     else
                     {
                         PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wnull-dereference")
-                        PHI_ASSERT(!line.empty());
-                        PHI_ASSERT(line.data() != nullptr);
 
                         // Add indention
                         line.insert(line.begin(), Glyph('\t', PaletteIndex::Background));
