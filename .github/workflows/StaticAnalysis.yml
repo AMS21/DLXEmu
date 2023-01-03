@@ -58,7 +58,7 @@ jobs:
 
       - name: Install
         env:
-          CPPCHECK_VERSION: "2.7"
+          CPPCHECK_VERSION: "2.9"
         run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} cppcheck-${{ env.CPPCHECK_VERSION }} ninja
 
       - name: Configure
