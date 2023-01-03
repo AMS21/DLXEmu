@@ -113,10 +113,6 @@ jobs:
         with:
           reviewdog_version: latest
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
       - name: Install dependencies
         run: sudo scripts/ci/InstallDependencies.sh
 
@@ -179,11 +175,6 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 2
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
 
       - name: Setup Reviewdog
         uses: reviewdog/action-setup@v1.0.3
