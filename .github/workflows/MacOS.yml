@@ -45,7 +45,7 @@ jobs:
       matrix:
         cfg:
           #- { compiler: gcc,   compiler_version: "12" }
-          - { compiler: clang, compiler_version: "13.4.1" }
+          - { compiler: clang, compiler_version: "14.2" }
 
         build_type:
           - "Debug"
