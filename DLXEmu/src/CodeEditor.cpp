@@ -1208,7 +1208,8 @@ namespace dlxemu
         InsertText(clip_text);
 
         undo.m_AddedEnd = GetActualCursorCoordinates();
-        undo.m_After    = m_State;
+        undo.StoreAfterState(this);
+
         AddUndo(undo);
     }
 
