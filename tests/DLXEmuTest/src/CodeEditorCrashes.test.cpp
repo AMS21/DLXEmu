@@ -942,3 +942,17 @@ TEST_CASE("crash-8e2963574a484b8a1724f44b9ea98f16bb99cb1e")
     editor.EnterCharacter('\t', false);
     editor.VerifyInternalState();
 }
+
+TEST_CASE("crash-ffcd6b3db7f397e6b348e7b226bee50c0beae35c")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter(0x1200, true);
+    editor.VerifyInternalState();
+
+    editor.Copy();
+    editor.VerifyInternalState();
+
+    editor.Paste();
+    editor.VerifyInternalState();
+}
