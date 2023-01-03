@@ -928,3 +928,17 @@ TEST_CASE("crash-717c84590d8120d303480db66e875200e9d0ed55")
         EndImGui();
     }
 }
+
+TEST_CASE("crash-8e2963574a484b8a1724f44b9ea98f16bb99cb1e")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    editor.MoveTop(true);
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\t', false);
+    editor.VerifyInternalState();
+}
