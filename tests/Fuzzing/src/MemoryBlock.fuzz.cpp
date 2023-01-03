@@ -309,6 +309,12 @@ extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size
                 (void)const_memory_block.GetRawMemory();
                 break;
             }
+
+            // Clear
+            case 24: {
+                FUZZ_LOG("Clear()");
+                memory_block.Clear();
+            }
         }
     }
 
