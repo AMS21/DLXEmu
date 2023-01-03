@@ -53,3 +53,4 @@ jobs:
         storage-repo-branch: main   # Optional. Defaults to "main"
         storage-repo-branch-coverage: gh-pages  # Optional. Defaults to "gh-pages".
         minimize-crashes: true
+        parallel-fuzzing: true
