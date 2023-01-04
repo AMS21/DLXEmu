@@ -2823,6 +2823,10 @@ namespace dlxemu
                 removed_selection = true;
             }
         } // HasSelection
+        {
+            // Reset selection
+            ClearSelection();
+        }
 
         const Coordinates coord = GetActualCursorCoordinates();
         undo.m_AddedStart       = coord;
@@ -2856,12 +2860,6 @@ namespace dlxemu
                     coord.m_Line + 1u,
                     GetCharacterColumn(coord.m_Line.unsafe() + 1u,
                                        static_cast<phi::uint32_t>(whitespace_size.unsafe()))));
-
-            // Fix selection
-            if (!HasSelection())
-            {
-                ClearSelection();
-            }
         }
         else
         {
