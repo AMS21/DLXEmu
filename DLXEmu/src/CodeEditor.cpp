@@ -1890,21 +1890,21 @@ namespace dlxemu
     PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::SanitizeCoordinates(
             const Coordinates& value) const noexcept
     {
+        PHI_ASSERT(!m_Lines.empty());
+
         phi::u32 line   = value.m_Line;
         phi::u32 column = value.m_Column;
 
         if (line >= m_Lines.size())
         {
-            PHI_ASSERT(!m_Lines.empty());
-
             line   = GetMaxLineNumber();
             column = GetLineMaxColumn(line);
 
+            PHI_ASSERT(line < m_Lines.size());
+            PHI_ASSERT(column <= GetLineMaxColumn(line));
+
             return {line, column};
         }
-
-        PHI_ASSERT(!m_Lines.empty());
-        PHI_ASSERT(line < m_Lines.size());
 
         // Sanitize column
         const Line& current_line = m_Lines[line.unsafe()];
@@ -1928,9 +1928,11 @@ namespace dlxemu
 
             char_index += UTF8CharLength(current_char);
         }
-        PHI_ASSERT(new_column <= GetLineMaxColumn(line));
 
         column = new_column;
+
+        PHI_ASSERT(line < m_Lines.size());
+        PHI_ASSERT(column <= GetLineMaxColumn(line));
 
         return {line, column};
     }
