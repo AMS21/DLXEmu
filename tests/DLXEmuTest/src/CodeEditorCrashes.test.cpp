@@ -947,6 +947,8 @@ TEST_CASE("crash-ffcd6b3db7f397e6b348e7b226bee50c0beae35c")
 {
     dlxemu::CodeEditor editor{&emulator};
 
+    BeginImGui();
+
     editor.EnterCharacter(0x1200, true);
     editor.VerifyInternalState();
 
@@ -955,6 +957,8 @@ TEST_CASE("crash-ffcd6b3db7f397e6b348e7b226bee50c0beae35c")
 
     editor.Paste();
     editor.VerifyInternalState();
+
+    EndImGui();
 }
 
 TEST_CASE("crash-ffeebdd586dabbeedc438fa03654867ed2b7058b")
