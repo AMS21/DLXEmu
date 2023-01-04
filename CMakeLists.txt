@@ -101,24 +101,6 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/Phi/CMakeLists.txt")
   )
 endif()
 
-# Sadly some of our dependencies rely on undefined behavior so we disable the checks here
-set(disable_checks
-    UNSIGNED_INTEGER_OVERFLOW
-    INTEGER
-    IMPLICIT_SIGNED_INTEGER_TRUNCATION
-    IMPLICIT_INTEGER_ARITHMETIC_VALUE_CHANGE
-    IMPLICIT_INTEGER_TRUNCATION
-    IMPLICIT_CONVERSION
-    IMPLICIT_INTEGER_SIGN_CHANGE
-    UNSIGNED_SHIFT_BASE
-    SHIFT_BASE
-    SHIFT)
-foreach(check ${disable_checks})
-  set("PHI_SUPPORTS_SANITIZER_${check}"
-      0
-      CACHE INTERNAL "Test PHI_SUPPORTS_SANITIZER_${check}")
-endforeach()
-
 # Dependencies
 add_subdirectory(external)
 
@@ -184,6 +166,13 @@ if(DLXEMU_ENABLE_TSAN)
 endif()
 if(DLXEMU_ENABLE_UBSAN)
   set(san_options ${san_options} "undefined")
+
+  # Sadly some of our dependencies rely on undefined behavior so we disable the checks here
+  if(PHI_COMPILER_CLANG OR PHI_COMPILER_GCC)
+    add_compile_options(
+      "-fno-sanitize=float-cast-overflow,implicit-conversion,implicit-intger-arithmetic-value-change,implicit-integer-truncation,implicit-signed-integer-truncation,integer,shift,shift-base,unsigned-integer-overflow,unsigned-shift-base"
+    )
+  endif()
 endif()
 if(DLXEMU_COVERAGE_BUILD)
   set(configure_options ${configure_options} COVERAGE)
