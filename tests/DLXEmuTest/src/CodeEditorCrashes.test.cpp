@@ -956,3 +956,20 @@ TEST_CASE("crash-ffcd6b3db7f397e6b348e7b226bee50c0beae35c")
     editor.Paste();
     editor.VerifyInternalState();
 }
+
+TEST_CASE("crash-ffeebdd586dabbeedc438fa03654867ed2b7058b")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter('\t', true);
+    editor.VerifyInternalState();
+
+    editor.SelectWordUnderCursor();
+    editor.VerifyInternalState();
+
+    editor.SetCursorPosition({0u, 0u});
+    editor.VerifyInternalState();
+
+    editor.Delete();
+    editor.VerifyInternalState();
+}
