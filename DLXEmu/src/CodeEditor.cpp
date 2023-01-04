@@ -40,6 +40,7 @@ SOFTWARE.
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/conversion.hpp>
+#include <phi/core/narrow_cast.hpp>
 #include <phi/core/size_t.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
@@ -2703,6 +2704,8 @@ namespace dlxemu
         UndoRecord undo;
         undo.StoreBeforeState(this);
 
+        phi::boolean removed_selection{false};
+
         if (HasSelection())
         {
             // Do indenting
@@ -2816,11 +2819,13 @@ namespace dlxemu
                 undo.m_RemovedStart = m_State.m_SelectionStart;
                 undo.m_RemovedEnd   = m_State.m_SelectionEnd;
                 DeleteSelection();
+
+                removed_selection = true;
             }
         } // HasSelection
 
-        Coordinates coord = GetActualCursorCoordinates();
-        undo.m_AddedStart = coord;
+        const Coordinates coord = GetActualCursorCoordinates();
+        undo.m_AddedStart       = coord;
 
         PHI_ASSERT(!m_Lines.empty());
 
@@ -2866,17 +2871,24 @@ namespace dlxemu
             // We require a valid ut8 sequence
             PHI_ASSERT(length > 0u);
 
-            PHI_ASSERT(coord.m_Line < m_Lines.size());
-            Line&    line   = m_Lines[static_cast<phi::size_t>(coord.m_Line.unsafe())];
+            Line&    line   = m_Lines[phi::narrow_cast<phi::size_t>(coord.m_Line)];
             phi::u32 cindex = GetCharacterIndex(coord);
 
             if (m_Overwrite && cindex < line.size())
             {
                 phi::u8_fast char_length = UTF8CharLength(line[cindex.unsafe()].m_Char);
 
-                undo.m_RemovedStart = m_State.m_CursorPosition;
-                undo.m_RemovedEnd   = Coordinates(
-                        coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + char_length));
+                // Only set the start if haven't removed something from deleting the selection beforehand
+                if (removed_selection)
+                {
+                    undo.m_RemovedEnd.m_Column += 1u;
+                }
+                else
+                {
+                    undo.m_RemovedStart = m_State.m_CursorPosition;
+                    undo.m_RemovedEnd   = Coordinates(
+                            coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + char_length));
+                }
 
                 for (; char_length > 0u && cindex < line.size(); --char_length)
                 {
