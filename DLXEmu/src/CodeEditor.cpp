@@ -1235,9 +1235,11 @@ namespace dlxemu
         }
         else
         {
-            Coordinates pos = GetActualCursorCoordinates();
-            SetCursorPosition(pos);
+            const Coordinates pos = GetActualCursorCoordinates();
             PHI_ASSERT(pos.m_Line < m_Lines.size());
+            PHI_ASSERT(pos.m_Column <= GetLineMaxColumn(pos.m_Line));
+
+            SetCursorPosition(pos);
             Line& line = m_Lines[pos.m_Line.unsafe()];
 
             if (pos.m_Column == GetLineMaxColumn(pos.m_Line))
@@ -1279,23 +1281,11 @@ namespace dlxemu
                 while (length > 0u && cindex < line.size())
                 {
                     line.erase(line.begin() + cindex.unsafe());
-
-                    // Correct selection state
-                    if (m_State.m_SelectionStart.m_Line == current_cursor_pos.m_Line &&
-                        m_State.m_SelectionStart.m_Column >= cindex &&
-                        m_State.m_SelectionStart.m_Column > 0u)
-                    {
-                        m_State.m_SelectionStart.m_Column -= 1u;
-                    }
-                    if (m_State.m_SelectionEnd.m_Line == current_cursor_pos.m_Line &&
-                        m_State.m_SelectionEnd.m_Column >= cindex &&
-                        m_State.m_SelectionEnd.m_Column > 0u)
-                    {
-                        m_State.m_SelectionEnd.m_Column -= 1u;
-                    }
-
                     length--;
                 }
+
+                // Remove any kind of selection if we had any
+                ClearSelection();
             }
 
             m_TextChanged = true;
