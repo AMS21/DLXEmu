@@ -1027,3 +1027,33 @@ TEST_CASE("crash-b00813c566113b05ea62375c1c8ececb3c3e0664")
         editor.VerifyInternalState();
     }
 }
+
+TEST_CASE("crash-e0cce121f9978ff1cab1d055f0ff8679df46c8fd")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    BeginImGui();
+
+    editor.EnterCharacter('\t', false);
+    editor.VerifyInternalState();
+
+    editor.Copy();
+    editor.VerifyInternalState();
+
+    editor.MoveHome(false);
+    editor.VerifyInternalState();
+
+    editor.Paste();
+    editor.VerifyInternalState();
+
+    editor.SetOverwrite(true);
+    editor.VerifyInternalState();
+
+    editor.Backspace();
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('$', true);
+    editor.VerifyInternalState();
+
+    EndImGui();
+}
