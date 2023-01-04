@@ -977,3 +977,53 @@ TEST_CASE("crash-ffeebdd586dabbeedc438fa03654867ed2b7058b")
     editor.Delete();
     editor.VerifyInternalState();
 }
+
+TEST_CASE("crash-b00813c566113b05ea62375c1c8ececb3c3e0664")
+{
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter(0xFC00, true);
+        editor.VerifyInternalState();
+
+        editor.MoveTop(false);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter(0x6100, false);
+        editor.VerifyInternalState();
+
+        editor.MoveTop(true);
+        editor.VerifyInternalState();
+
+        editor.SetOverwrite(true);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter(0x6100, true);
+        editor.VerifyInternalState();
+    }
+
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter(0xFC00, true);
+        editor.VerifyInternalState();
+
+        editor.MoveTop(false);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter('\n', false);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter('\n', false);
+        editor.VerifyInternalState();
+
+        editor.MoveTop(true);
+        editor.VerifyInternalState();
+
+        editor.SetOverwrite(true);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter(0x6100, true);
+        editor.VerifyInternalState();
+    }
+}
