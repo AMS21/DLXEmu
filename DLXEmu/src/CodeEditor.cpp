@@ -1044,8 +1044,8 @@ namespace dlxemu
     void CodeEditor::SetSelection(const Coordinates& start, const Coordinates& end,
                                   SelectionMode mode) noexcept
     {
-        Coordinates old_sel_start = m_State.m_SelectionStart;
-        Coordinates old_sel_end   = m_State.m_SelectionEnd;
+        const Coordinates old_sel_start = m_State.m_SelectionStart;
+        const Coordinates old_sel_end   = m_State.m_SelectionEnd;
 
         m_State.m_SelectionStart = SanitizeCoordinates(start);
         m_State.m_SelectionEnd   = SanitizeCoordinates(end);
@@ -1254,7 +1254,7 @@ namespace dlxemu
                 Advance(undo.m_RemovedEnd);
 
                 PHI_ASSERT(pos.m_Line + 1u < m_Lines.size());
-                Line& next_line = m_Lines[pos.m_Line.unsafe() + 1];
+                const Line& next_line = m_Lines[pos.m_Line.unsafe() + 1];
                 line.insert(line.end(), next_line.begin(), next_line.end());
 
                 PHI_ASSERT(pos.m_Line <= m_Lines.size());
