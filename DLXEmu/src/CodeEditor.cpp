@@ -1088,7 +1088,7 @@ namespace dlxemu
 
     void CodeEditor::SelectWordUnderCursor() noexcept
     {
-        Coordinates coords = GetCursorPosition();
+        const Coordinates coords = GetCursorPosition();
         SetSelection(FindWordStart(coords), FindWordEnd(coords));
     }
 
