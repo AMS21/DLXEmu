@@ -39,8 +39,8 @@ BENCHMARK(BM_TokzenizeRandom)->RangeMultiplier(2)->Range(8, 8 << 17)->Complexity
 
 static void BM_TokzenizeADD(benchmark::State& state)
 {
-    std::int64_t count         = state.range(0);
-    std::int64_t string_length = 4;
+    std::int64_t                        count         = state.range(0);
+    static constexpr const std::int64_t string_length = 4;
 
     // Prepare string
     std::string string;
