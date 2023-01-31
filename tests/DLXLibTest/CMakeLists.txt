@@ -27,7 +27,6 @@ file(
   "src/Token.test.cpp"
   "src/Tokenize.test.cpp"
   "src/TokenStream.test.cpp")
-file(GLOB DLXLIB_TEST_HEADERS "include/StringHelper.hpp" "include/Unary.hpp")
 
 phi_add_executable(
   NAME
@@ -36,12 +35,8 @@ phi_add_executable(
   "Tests"
   SOURCES
   ${DLXLIB_TEST_SOURCES}
-  HEADERS
-  ${DLXLIB_TEST_HEADERS}
   PRIVATE_LINK_LIBRARIES
   DLXLib
-  Phi::Test
-  PRIVATE_INCLUDE_DIRS
-  "include")
+  Phi::Test)
 
 phi_add_test(TARGET ${PROJECT_NAME})
