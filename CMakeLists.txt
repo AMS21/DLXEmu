@@ -165,12 +165,12 @@ if(DLXEMU_ENABLE_TSAN)
   set(san_options ${san_options} "thread")
 endif()
 if(DLXEMU_ENABLE_UBSAN)
-  set(san_options ${san_options} "undefined")
-
   # Sadly some of our dependencies rely on undefined behavior so we disable the checks here
   if(PHI_COMPILER_CLANG OR PHI_COMPILER_GCC)
     add_compile_options(
-      "-fno-sanitize=float-cast-overflow,implicit-conversion,implicit-intger-arithmetic-value-change,implicit-integer-truncation,implicit-signed-integer-truncation,integer,shift,shift-base,unsigned-integer-overflow,unsigned-shift-base"
+      "-fsanitize=undefined,float-divide-by-zero,local-bounds,nullability"
+      "-fno-sanitize=float-cast-overflow"
+      "-fno-common -fno-inline -fno-inline-functions -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-sanitize-recover=all"
     )
   endif()
 endif()
