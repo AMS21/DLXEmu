@@ -27,19 +27,19 @@ TEST_CASE("InstructionLibrary")
         const dlx::InstructionInfo& info = dlx::LookUpIntructionInfo(opcode);
         CHECK(info.GetOpCode() == opcode);
         CHECK(info.GetExecutor() != nullptr);
-        CHECK((info.GetNumberOfRequiredArguments() >= 0).unsafe());
+        CHECK((info.GetNumberOfRequiredArguments() >= 0u));
 
         const dlx::ArgumentType arg_type_0 = info.GetArgumentType(0_u8);
         const dlx::ArgumentType arg_type_1 = info.GetArgumentType(1_u8);
         const dlx::ArgumentType arg_type_2 = info.GetArgumentType(2_u8);
 
         CHECK(arg_type_0 != dlx::ArgumentType::Unknown);
-        CHECK_FALSE(dlx::enum_name(arg_type_0).empty());
+        CHECK_FALSE(dlx::enum_name(arg_type_0).is_empty());
 
         CHECK(arg_type_1 != dlx::ArgumentType::Unknown);
-        CHECK_FALSE(dlx::enum_name(arg_type_1).empty());
+        CHECK_FALSE(dlx::enum_name(arg_type_1).is_empty());
 
         CHECK(arg_type_2 != dlx::ArgumentType::Unknown);
-        CHECK_FALSE(dlx::enum_name(arg_type_2).empty());
+        CHECK_FALSE(dlx::enum_name(arg_type_2).is_empty());
     }
 }

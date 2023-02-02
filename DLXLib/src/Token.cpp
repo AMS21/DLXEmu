@@ -17,7 +17,7 @@ PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
-    Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column) noexcept
+    Token::Token(Type type, phi::string_view text, phi::u64 line_number, phi::u64 column) noexcept
         : m_Type{type}
         , m_Text{text}
         , m_LineNumber{line_number}
@@ -26,7 +26,7 @@ namespace dlx
         , m_HasHint{false}
     {}
 
-    Token::Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
+    Token::Token(Type type, phi::string_view text, phi::u64 line_number, phi::u64 column,
                  std::uint32_t hint) noexcept
         : m_Type{type}
         , m_Text{text}
@@ -41,7 +41,7 @@ namespace dlx
         return m_Type;
     }
 
-    PHI_ATTRIBUTE_CONST std::string_view Token::GetTypeName() const noexcept
+    PHI_ATTRIBUTE_CONST phi::string_view Token::GetTypeName() const noexcept
     {
         return dlx::enum_name(m_Type);
     }
@@ -61,7 +61,7 @@ namespace dlx
         return m_Text.length();
     }
 
-    PHI_ATTRIBUTE_CONST std::string_view Token::GetText() const noexcept
+    PHI_ATTRIBUTE_CONST phi::string_view Token::GetText() const noexcept
     {
         return m_Text;
     }
@@ -70,7 +70,7 @@ namespace dlx
 
     PHI_ATTRIBUTE_CONST std::string Token::GetTextString() const noexcept
     {
-        return std::string(m_Text.data(), m_Text.length());
+        return std::string(m_Text.data(), m_Text.length().unsafe());
     }
 
     PHI_GCC_SUPPRESS_WARNING_POP()

@@ -1354,7 +1354,7 @@ namespace dlxemu
         str += fmt::format("Overwrite: {:s}\n", IsOverwrite() ? "true" : "false");
         str += fmt::format("Read only: {:s}\n", IsReadOnly() ? "true" : "false");
         str += fmt::format("Show whitespaces: {:s}\n", IsShowingWhitespaces() ? "true" : "false");
-        str += fmt::format("Selection mode: {:s}\n", dlx::enum_name(m_SelectionMode));
+        str += fmt::format("Selection mode: {:s}\n", dlx::enum_name(m_SelectionMode).data());
 
         const std::string              full_text = GetText();
         const std::vector<std::string> lines     = GetTextLines();
@@ -2900,7 +2900,7 @@ namespace dlxemu
                 line.insert(line.begin() + cindex.unsafe(),
                             Glyph(static_cast<phi::uint8_t>(*pointer), PaletteIndex::Default));
             }
-            undo.m_Added = std::string_view{buffer.data(), length.unsafe()};
+            undo.m_Added = phi::string_view{buffer.data(), length.unsafe()};
 
             SetCursorPosition(Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex)));
         }

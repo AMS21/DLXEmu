@@ -64,8 +64,8 @@ TEST_CASE("InstructionArgument")
         CHECK_FALSE(arg.DebugInfo().empty());
 
         const dlx::InstructionArgument::ImmediateValue& detail = arg.AsImmediateValue();
-        CHECK(detail.signed_value.unsafe() == 42);
-        CHECK(detail.unsigned_value.unsafe() == 42);
+        CHECK(detail.signed_value == 42);
+        CHECK(detail.unsigned_value == 42);
     }
 
     SECTION("AddressDisplacement")
@@ -78,7 +78,7 @@ TEST_CASE("InstructionArgument")
 
         const dlx::InstructionArgument::AddressDisplacement& detail = arg.AsAddressDisplacement();
         CHECK(detail.register_id == dlx::IntRegisterID::R0);
-        CHECK(detail.displacement.unsafe() == 42);
+        CHECK(detail.displacement == 42);
     }
 
     SECTION("Label")

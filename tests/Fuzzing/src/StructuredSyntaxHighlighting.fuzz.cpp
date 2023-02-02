@@ -3,7 +3,6 @@
 #include <phi/compiler_support/warning.hpp>
 #include <cstddef>
 #include <cstdint>
-#include <string_view>
 
 PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
 

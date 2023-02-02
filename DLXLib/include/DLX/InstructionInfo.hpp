@@ -61,7 +61,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<ArgumentType>(ArgumentType value) noexcept
+    [[nodiscard]] constexpr phi::string_view enum_name<ArgumentType>(ArgumentType value) noexcept
     {
         switch (phi::to_underlying(value))
         {
@@ -108,7 +108,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<RegisterAccessType>(
+    [[nodiscard]] constexpr phi::string_view enum_name<RegisterAccessType>(
             RegisterAccessType value) noexcept
     {
         switch (value)

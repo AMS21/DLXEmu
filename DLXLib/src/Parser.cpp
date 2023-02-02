@@ -21,7 +21,6 @@
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
-#include <string_view>
 
 using namespace phi::literals;
 
@@ -221,8 +220,8 @@ namespace dlx
                         break;
                     }
 
-                    std::string_view label_name = current_token.GetText();
-                    label_name.remove_suffix(1);
+                    phi::string_view label_name = current_token.GetText();
+                    label_name.remove_suffix(1u);
 
                     if (IsReservedIdentifier(label_name))
                     {
@@ -247,8 +246,8 @@ namespace dlx
                                 tokens.find_first_token_if([&](const Token& t) {
                                     if (t.GetType() == Token::Type::LabelIdentifier)
                                     {
-                                        std::string_view token_label_name = t.GetText();
-                                        token_label_name.remove_suffix(1);
+                                        phi::string_view token_label_name = t.GetText();
+                                        token_label_name.remove_suffix(1u);
 
                                         if (token_label_name == label_name)
                                         {
@@ -401,7 +400,7 @@ namespace dlx
         return program;
     }
 
-    ParsedProgram Parser::Parse(std::string_view source) noexcept
+    ParsedProgram Parser::Parse(phi::string_view source) noexcept
     {
         TokenStream tokens = Tokenize(source);
         return Parse(tokens);

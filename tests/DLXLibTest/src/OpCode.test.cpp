@@ -10,12 +10,12 @@
 #include <phi/text/to_upper_case.hpp>
 #include <cmath>
 
-void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
+void test_all_variants(phi::string_view str, dlx::OpCode opcode) noexcept
 {
-    for (phi::size_t i{0}; i < static_cast<phi::size_t>(std::pow(2u, str.length())); ++i)
+    for (phi::size_t i{0u}; i < static_cast<phi::size_t>(std::pow(2u, str.length().unsafe())); ++i)
     {
         std::string test_str;
-        test_str.reserve(str.length());
+        test_str.reserve(str.length().unsafe());
 
         // Construct string
         for (phi::size_t j{0}; j < str.length(); ++j)

@@ -682,20 +682,15 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
             case 24: {
                 GET_T(dlxemu::CodeEditor::Coordinates, coords_start);
                 GET_T(dlxemu::CodeEditor::Coordinates, coords_end);
-
-                auto selection_mode_opt = consume_t<std::uint8_t>(data, size, index);
-                if (!selection_mode_opt || selection_mode_opt.value() > 2u)
-                {
-                    return 0;
-                }
-                dlxemu::CodeEditor::SelectionMode selection_mode =
-                        static_cast<dlxemu::CodeEditor::SelectionMode>(selection_mode_opt.value());
+                GET_T_COND(dlxemu::CodeEditor::SelectionMode, selection_mode,
+                           selection_mode >= dlxemu::CodeEditor::SelectionMode::Normal &&
+                                   selection_mode <= dlxemu::CodeEditor::SelectionMode::Line);
 
                 FUZZ_LOG("SetSelection(Coordinates({:s}, {:s}), Coordinates({:s}, "
                          "{:s}), {:s})",
                          print_int(coords_start.m_Line), print_int(coords_start.m_Column),
                          print_int(coords_end.m_Line), print_int(coords_start.m_Column),
-                         dlx::enum_name(selection_mode));
+                         dlx::enum_name(selection_mode).data());
                 editor.SetSelection(coords_start, coords_end, selection_mode);
                 break;
             }

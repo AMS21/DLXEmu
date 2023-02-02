@@ -54,7 +54,7 @@ namespace dlxemu
 
         [[nodiscard]] const dlx::ParsedProgram& GetProgram() const noexcept;
 
-        void ParseProgram(std::string_view source) noexcept;
+        void ParseProgram(phi::string_view source) noexcept;
 
         void ParseProgram(dlx::TokenStream& tokens) noexcept;
 

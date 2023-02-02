@@ -44,7 +44,7 @@ namespace dlx
     PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wreturn-type")
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<Exception>(Exception value) noexcept
+    [[nodiscard]] constexpr phi::string_view enum_name<Exception>(Exception value) noexcept
     {
         switch (value)
         {

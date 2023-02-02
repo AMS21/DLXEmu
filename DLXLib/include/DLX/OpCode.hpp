@@ -200,7 +200,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<OpCode>(OpCode value) noexcept
+    [[nodiscard]] constexpr phi::string_view enum_name<OpCode>(OpCode value) noexcept
     {
         switch (value)
         {
@@ -219,5 +219,5 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    OpCode StringToOpCode(std::string_view token) noexcept;
+    [[nodiscard]] OpCode StringToOpCode(phi::string_view token) noexcept;
 } // namespace dlx

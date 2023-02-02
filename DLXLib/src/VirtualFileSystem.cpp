@@ -16,7 +16,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wswitch")
     PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
 
-    std::string_view to_string_flags(const OpenModeFlags flags) noexcept
+    phi::string_view to_string_flags(const OpenModeFlags flags) noexcept
     {
         PHI_ASSERT(flags != OpenModeFlags::Invalid);
         PHI_ASSERT(phi::to_underlying(flags) > 0u &&
@@ -85,7 +85,7 @@ namespace dlx
         return open(to_string_flags(flags).data());
     }
 
-    NativeFileHandle::NativeFileHandle(std::string_view real_path) noexcept
+    NativeFileHandle::NativeFileHandle(phi::string_view real_path) noexcept
         : m_RealPath{real_path}
     {}
 
@@ -360,7 +360,7 @@ namespace dlx
         return count;
     }
 
-    phi::usize VirtualFileSystem::GetFileHandleLimit() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize VirtualFileSystem::GetFileHandleLimit() const noexcept
     {
         return m_FileHandleLimit;
     }

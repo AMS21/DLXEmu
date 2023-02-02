@@ -5,7 +5,6 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
 #include <string>
-#include <string_view>
 
 namespace dlx
 {
@@ -39,14 +38,14 @@ namespace dlx
         };
 
     public:
-        Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column) noexcept;
+        Token(Type type, phi::string_view text, phi::u64 line_number, phi::u64 column) noexcept;
 
-        Token(Type type, std::string_view text, phi::u64 line_number, phi::u64 column,
+        Token(Type type, phi::string_view text, phi::u64 line_number, phi::u64 column,
               std::uint32_t hint) noexcept;
 
         [[nodiscard]] Type GetType() const noexcept;
 
-        [[nodiscard]] std::string_view GetTypeName() const noexcept;
+        [[nodiscard]] phi::string_view GetTypeName() const noexcept;
 
         [[nodiscard]] phi::u64 GetLineNumber() const noexcept;
 
@@ -54,7 +53,7 @@ namespace dlx
 
         [[nodiscard]] phi::usize GetLength() const noexcept;
 
-        [[nodiscard]] std::string_view GetText() const noexcept;
+        [[nodiscard]] phi::string_view GetText() const noexcept;
 
         PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
 
@@ -70,7 +69,7 @@ namespace dlx
 
     private:
         Type             m_Type;
-        std::string_view m_Text;
+        phi::string_view m_Text;
         phi::u64         m_LineNumber;
         phi::u64         m_Column;
         std::uint32_t    m_Hint;
@@ -81,7 +80,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<Token::Type>(Token::Type value) noexcept
+    [[nodiscard]] constexpr phi::string_view enum_name<Token::Type>(Token::Type value) noexcept
     {
         switch (value)
         {

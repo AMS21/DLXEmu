@@ -2,9 +2,9 @@
 
 #include "DLX/EnumName.hpp"
 #include <phi/compiler_support/warning.hpp>
+#include <phi/container/string_view.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
-#include <string>
 
 namespace dlx
 {
@@ -91,7 +91,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<IntRegisterID>(IntRegisterID value) noexcept
+    [[nodiscard]] constexpr phi::string_view enum_name<IntRegisterID>(IntRegisterID value) noexcept
     {
         switch (value)
         {
@@ -110,7 +110,7 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    IntRegisterID StringToIntRegister(std::string_view token) noexcept;
+    IntRegisterID StringToIntRegister(phi::string_view token) noexcept;
 
     enum class FloatRegisterID : unsigned
     {
@@ -125,7 +125,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<FloatRegisterID>(
+    [[nodiscard]] constexpr phi::string_view enum_name<FloatRegisterID>(
             FloatRegisterID value) noexcept
     {
         switch (value)
@@ -145,7 +145,7 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    FloatRegisterID StringToFloatRegister(std::string_view token) noexcept;
+    FloatRegisterID StringToFloatRegister(phi::string_view token) noexcept;
 
-    [[nodiscard]] phi::boolean IsFPSR(std::string_view token) noexcept;
+    [[nodiscard]] phi::boolean IsFPSR(phi::string_view token) noexcept;
 } // namespace dlx

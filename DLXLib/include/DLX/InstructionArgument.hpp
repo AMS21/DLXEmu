@@ -4,7 +4,6 @@
 #include "RegisterNames.hpp"
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/scope_ptr.hpp>
-#include <string_view>
 
 namespace dlx
 {
@@ -38,7 +37,7 @@ namespace dlx
 
         struct Label
         {
-            std::string_view label_name;
+            phi::string_view label_name;
         };
 
     public:
@@ -77,7 +76,7 @@ namespace dlx
                 IntRegisterID id, phi::i32 displacement) noexcept;
 
         friend InstructionArgument ConstructInstructionArgumentLabel(
-                std::string_view label_name) noexcept;
+                phi::string_view label_name) noexcept;
 
     private:
         union
@@ -107,5 +106,5 @@ namespace dlx
     InstructionArgument ConstructInstructionArgumentAddressDisplacement(
             IntRegisterID id, phi::i32 displacement) noexcept;
 
-    InstructionArgument ConstructInstructionArgumentLabel(std::string_view label_name) noexcept;
+    InstructionArgument ConstructInstructionArgumentLabel(phi::string_view label_name) noexcept;
 } // namespace dlx

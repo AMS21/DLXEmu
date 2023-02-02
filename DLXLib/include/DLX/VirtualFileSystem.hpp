@@ -1,6 +1,8 @@
 #pragma once
 
+#include <phi/compiler_support/warning.hpp>
 #include <phi/container/dynamic_array.hpp>
+#include <phi/container/string_view.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/flat_ptr.hpp>
 #include <phi/core/observer_ptr.hpp>
@@ -10,7 +12,6 @@
 #include <phi/type_traits/to_underlying.hpp>
 #include <cstdio>
 #include <string>
-#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -18,6 +19,8 @@
 // TODO: Path validation
 // TODO: [Security] Option to disallow linking files with path traversal
 // TODO: Cleanup includes
+
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
 
 namespace dlx
 {
@@ -30,7 +33,11 @@ namespace dlx
         Append = 1 << 2,
 
         // Combinations
-        ReadWrite = Read | Write,
+        ReadWrite   = Read | Write,
+        ReadAppend  = Read | Append,
+        WriteAppend = Write | Append,
+
+        ReadWriteAppend = Read | Write | Append,
 
         MaxFlagValue = Read | Write | Append,
     };
@@ -57,7 +64,7 @@ namespace dlx
         return lhs = lhs & rhs;
     }
 
-    [[nodiscard]] std::string_view to_string_flags(const OpenModeFlags flags) noexcept;
+    [[nodiscard]] phi::string_view to_string_flags(const OpenModeFlags flags) noexcept;
 
     [[nodiscard]] OpenModeFlags parse_open_mode_flags(const char* string) noexcept;
 
@@ -90,7 +97,7 @@ namespace dlx
     public:
         using BasicFileHandle::open;
 
-        NativeFileHandle(std::string_view real_path) noexcept;
+        NativeFileHandle(phi::string_view real_path) noexcept;
 
         ~NativeFileHandle() noexcept override;
 
@@ -106,7 +113,7 @@ namespace dlx
 
     private:
         phi::observer_ptr<std::FILE> m_FileHandle;
-        std::string_view             m_RealPath;
+        phi::string_view             m_RealPath;
     };
 
     // File handle to a purely virtual file
@@ -175,4 +182,7 @@ namespace dlx
         // Limits
         phi::usize m_FileHandleLimit{DefaultFileHandleLimit};
     };
+
 } // namespace dlx
+
+PHI_GCC_SUPPRESS_WARNING_POP()

@@ -1263,24 +1263,24 @@ TEST_CASE("TabSize")
 {
     dlxemu::CodeEditor editor{&emulator};
 
-    CHECK(editor.GetTabSize().unsafe() == 4);
+    CHECK(editor.GetTabSize() == 4);
 
     editor.SetTabSize(1_u8);
     editor.VerifyInternalState();
-    CHECK(editor.GetTabSize().unsafe() == 1);
+    CHECK(editor.GetTabSize() == 1);
 
     editor.SetTabSize(5_u8);
     editor.VerifyInternalState();
-    CHECK(editor.GetTabSize().unsafe() == 5);
+    CHECK(editor.GetTabSize() == 5);
 
     // Clamped properly
     editor.SetTabSize(0_u8);
     editor.VerifyInternalState();
-    CHECK(editor.GetTabSize().unsafe() == 1);
+    CHECK(editor.GetTabSize() == 1);
 
     editor.SetTabSize(100_u8);
     editor.VerifyInternalState();
-    CHECK(editor.GetTabSize().unsafe() == 32);
+    CHECK(editor.GetTabSize() == 32);
 }
 
 TEST_CASE("EnterCharacter")

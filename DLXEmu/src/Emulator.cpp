@@ -17,7 +17,6 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
 #include <phi/text/to_lower_case.hpp>
-#include <string_view>
 
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
@@ -175,7 +174,7 @@ namespace dlxemu
         return m_DLXProgram;
     }
 
-    void Emulator::ParseProgram(std::string_view source) noexcept
+    void Emulator::ParseProgram(phi::string_view source) noexcept
     {
         m_DLXProgram = dlx::Parser::Parse(source);
 

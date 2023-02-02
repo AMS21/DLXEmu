@@ -11,16 +11,8 @@ file(
   "src/MemoryViewer.cpp"
   "src/RegisterViewer.cpp"
   "src/Window.cpp")
-file(
-  GLOB
-  DLXEMULIB_HEADERS
-  "${CMAKE_CURRENT_BINARY_DIR}/Generated/DLXEmu/BuildInfo.hpp"
-  "include/DLXEmu/CodeEditor.hpp"
-  "include/DLXEmu/DebugView.hpp"
-  "include/DLXEmu/Emulator.hpp"
-  "include/DLXEmu/MemoryViewer.hpp"
-  "include/DLXEmu/RegisterViewer.hpp"
-  "include/DLXEmu/Window.hpp")
+file(GLOB_RECURSE DLXEMULIB_HEADERS CONFIGURE_DEPENDS
+     "${CMAKE_CURRENT_BINARY_DIR}/Generated/DLXEmu/BuildInfo.hpp" "include/DLXEmu/*.hpp")
 
 # DLXEmuLib
 add_library("DLXEmuLib" STATIC ${DLXEMULIB_SOURCES} ${DLXEMULIB_HEADERS})

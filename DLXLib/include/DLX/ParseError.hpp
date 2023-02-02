@@ -36,7 +36,7 @@ namespace dlx
 
         struct InvalidNumber
         {
-            std::string_view text;
+            phi::string_view text;
         };
 
         struct UnexpectedToken
@@ -47,17 +47,17 @@ namespace dlx
 
         struct ReservedIdentifier
         {
-            std::string_view identifier;
+            phi::string_view identifier;
         };
 
         struct InvalidLabelIdentifier
         {
-            std::string_view identifer;
+            phi::string_view identifer;
         };
 
         struct LabelAlreadyDefined
         {
-            std::string_view label_name;
+            phi::string_view label_name;
             phi::uint64_t    at_line;
             phi::uint64_t    at_column;
         };
@@ -70,7 +70,7 @@ namespace dlx
 
         struct EmptyLabel
         {
-            std::string_view label_name;
+            phi::string_view label_name;
         };
 
     public:
@@ -127,7 +127,7 @@ namespace dlx
 
         friend ParseError ConstructInvalidNumberParseError(phi::uint64_t    line_number,
                                                            phi::uint64_t    column,
-                                                           std::string_view text) noexcept;
+                                                           phi::string_view text) noexcept;
 
         friend ParseError ConstructTooFewArgumentsAddressDisplacementParseError(
                 phi::uint64_t line_number, phi::uint64_t column) noexcept;
@@ -139,15 +139,15 @@ namespace dlx
 
         friend ParseError ConstructReservedIdentiferParseError(
                 phi::uint64_t line_number, phi::uint64_t column,
-                std::string_view identifier) noexcept;
+                phi::string_view identifier) noexcept;
 
         friend ParseError ConstructInvalidLabelIdentifierParseError(
                 phi::uint64_t line_number, phi::uint64_t column,
-                std::string_view identifier) noexcept;
+                phi::string_view identifier) noexcept;
 
         friend ParseError ConstructLabelAlreadyDefinedParseError(phi::uint64_t    line_number,
                                                                  phi::uint64_t    column,
-                                                                 std::string_view label_name,
+                                                                 phi::string_view label_name,
                                                                  phi::uint64_t    at_line,
                                                                  phi::uint64_t at_column) noexcept;
 
@@ -161,7 +161,7 @@ namespace dlx
 
         friend ParseError ConstructEmptyLabelParseError(phi::uint64_t    line_number,
                                                         phi::uint64_t    column,
-                                                        std::string_view label_name) noexcept;
+                                                        phi::string_view label_name) noexcept;
 
         friend ParseError ConstructTooManyCommaParseError(phi::uint64_t line_number,
                                                           phi::uint64_t column) noexcept;
@@ -177,7 +177,7 @@ namespace dlx
                                                          ArgumentType actual_type) noexcept;
 
     ParseError ConstructInvalidNumberParseError(phi::uint64_t line_number, phi::uint64_t column,
-                                                std::string_view text) noexcept;
+                                                phi::string_view text) noexcept;
 
     ParseError ConstructInvalidNumberParseError(const Token& token) noexcept;
 
@@ -194,19 +194,19 @@ namespace dlx
                                                   Token::Type  expected_type) noexcept;
 
     ParseError ConstructReservedIdentiferParseError(phi::uint64_t line_number, phi::uint64_t column,
-                                                    std::string_view identifier) noexcept;
+                                                    phi::string_view identifier) noexcept;
 
     ParseError ConstructReservedIdentiferParseError(const Token& token) noexcept;
 
     ParseError ConstructInvalidLabelIdentifierParseError(phi::uint64_t    line_number,
                                                          phi::uint64_t    column,
-                                                         std::string_view identifier) noexcept;
+                                                         phi::string_view identifier) noexcept;
 
     ParseError ConstructInvalidLabelIdentifierParseError(const Token& token) noexcept;
 
     ParseError ConstructLabelAlreadyDefinedParseError(phi::uint64_t    line_number,
                                                       phi::uint64_t    column,
-                                                      std::string_view label_name,
+                                                      phi::string_view label_name,
                                                       phi::uint64_t    at_line,
                                                       phi::uint64_t    at_column) noexcept;
 
@@ -226,7 +226,7 @@ namespace dlx
                                                   phi::uint8_t provided) noexcept;
 
     ParseError ConstructEmptyLabelParseError(phi::uint64_t line_number, phi::uint64_t column,
-                                             std::string_view label_name) noexcept;
+                                             phi::string_view label_name) noexcept;
 
     ParseError ConstructEmptyLabelParseError(const Token& token) noexcept;
 

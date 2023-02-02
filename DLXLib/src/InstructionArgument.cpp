@@ -43,20 +43,20 @@ namespace dlx
             case ArgumentType::AddressDisplacement: {
                 AddressDisplacement adr = AsAddressDisplacement();
                 return fmt::format("{:d}({:s})", adr.displacement.unsafe(),
-                                   dlx::enum_name(adr.register_id));
+                                   dlx::enum_name(adr.register_id).data());
             }
 
             case ArgumentType::FloatRegister:
-                return fmt::format("{:s}", dlx::enum_name(AsRegisterFloat().register_id));
+                return fmt::format("{:s}", dlx::enum_name(AsRegisterFloat().register_id).data());
 
             case ArgumentType::IntRegister:
-                return fmt::format("{:s}", dlx::enum_name(AsRegisterInt().register_id));
+                return fmt::format("{:s}", dlx::enum_name(AsRegisterInt().register_id).data());
 
             case ArgumentType::ImmediateInteger:
                 return fmt::format("#{:d}", AsImmediateValue().signed_value.unsafe());
 
             case ArgumentType::Label:
-                return fmt::format("{:s}", AsLabel().label_name);
+                return fmt::format("{:s}", AsLabel().label_name.data());
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
@@ -200,7 +200,7 @@ namespace dlx
         return arg;
     }
 
-    InstructionArgument ConstructInstructionArgumentLabel(std::string_view label_name) noexcept
+    InstructionArgument ConstructInstructionArgumentLabel(phi::string_view label_name) noexcept
     {
         InstructionArgument arg;
         arg.m_Type           = ArgumentType::Label;

@@ -2,52 +2,8 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project(DLXLib LANGUAGES CXX)
 
-file(
-  GLOB
-  DLXLIB_SOURCES
-  "src/FloatRegister.cpp"
-  "src/Instruction.cpp"
-  "src/InstructionArgument.cpp"
-  "src/InstructionImplementation.cpp"
-  "src/InstructionInfo.cpp"
-  "src/InstructionLibrary.cpp"
-  "src/IntRegister.cpp"
-  "src/MemoryBlock.cpp"
-  "src/OpCode.cpp"
-  "src/ParsedProgram.cpp"
-  "src/ParseError.cpp"
-  "src/Processor.cpp"
-  "src/RegisterNames.cpp"
-  "src/Parser.cpp"
-  "src/Token.cpp"
-  "src/Tokenize.cpp"
-  "src/TokenStream.cpp")
-
-file(
-  GLOB
-  DLXLIB_HEADERS
-  #
-  "include/DLX/EnumName.hpp"
-  "include/DLX/FloatRegister.hpp"
-  "include/DLX/Instruction.hpp"
-  "include/DLX/InstructionArgument.hpp"
-  "include/DLX/InstructionImplementation.hpp"
-  "include/DLX/InstructionInfo.hpp"
-  "include/DLX/InstructionLibrary.hpp"
-  "include/DLX/IntRegister.hpp"
-  "include/DLX/Logger.hpp"
-  "include/DLX/MemoryBlock.hpp"
-  "include/DLX/OpCode.hpp"
-  "include/DLX/ParsedProgram.hpp"
-  "include/DLX/ParseError.hpp"
-  "include/DLX/Parser.hpp"
-  "include/DLX/ParserUtils.hpp"
-  "include/DLX/Processor.hpp"
-  "include/DLX/RegisterNames.hpp"
-  "include/DLX/StatusRegister.hpp"
-  "include/DLX/Token.hpp"
-  "include/DLX/Tokenize.hpp"
-  "include/DLX/TokenStream.hpp")
+file(GLOB_RECURSE DLXLIB_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
+file(GLOB_RECURSE DLXLIB_HEADERS CONFIGURE_DEPENDS "include/DLX/*.hpp")
 
 add_library(${PROJECT_NAME} STATIC ${DLXLIB_SOURCES} ${DLXLIB_HEADERS})
 

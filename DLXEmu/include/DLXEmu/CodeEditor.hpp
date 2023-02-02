@@ -410,7 +410,7 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wreturn-type")
 namespace dlx
 {
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<dlxemu::CodeEditor::SelectionMode>(
+    [[nodiscard]] constexpr phi::string_view enum_name<dlxemu::CodeEditor::SelectionMode>(
             dlxemu::CodeEditor::SelectionMode value) noexcept
     {
         switch (value)

@@ -10,7 +10,6 @@
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
-#include <string_view>
 
 // TODO: Fix warnings
 PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wunused-parameter")
@@ -34,12 +33,12 @@ namespace dlx
 
     PHI_GCC_SUPPRESS_WARNING_POP()
 
-    static void JumpToLabel(Processor& processor, std::string_view label_name) noexcept
+    static void JumpToLabel(Processor& processor, phi::string_view label_name) noexcept
     {
         // Lookup the label
         const phi::observer_ptr<ParsedProgram> program = processor.GetCurrentProgramm();
         PHI_ASSERT(program != nullptr);
-        PHI_ASSERT(!label_name.empty(), "Can't jump to empty label");
+        PHI_ASSERT(!label_name.is_empty(), "Can't jump to empty label");
 
         if (program->m_JumpData.find(label_name) == program->m_JumpData.end())
         {

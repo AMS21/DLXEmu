@@ -641,7 +641,7 @@ namespace dlx
         if (m_CurrentProgram)
         {
             if (m_CurrentProgram->m_ParseErrors.empty() &&
-                m_ProgramCounter.unsafe() < m_CurrentProgram->m_Instructions.size())
+                m_ProgramCounter < m_CurrentProgram->m_Instructions.size())
             {
                 Instruction instr = m_CurrentProgram->m_Instructions.at(m_ProgramCounter.unsafe());
                 text.append(fmt::format("INSTR:\n{}\n", instr.DebugInfo()));
@@ -657,8 +657,8 @@ namespace dlx
             text.append("INSTR:\nNo program loaded\n");
         }
 
-        text.append(fmt::format("EX: {}\n", dlx::enum_name(m_LastRaisedException)));
-        text.append(fmt::format("IAT: {}", dlx::enum_name(m_CurrentInstructionAccessType)));
+        text.append(fmt::format("EX: {}\n", dlx::enum_name(m_LastRaisedException).data()));
+        text.append(fmt::format("IAT: {}", dlx::enum_name(m_CurrentInstructionAccessType).data()));
 
         return text;
     }
