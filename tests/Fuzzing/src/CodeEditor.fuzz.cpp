@@ -316,6 +316,21 @@ template <typename T>
     return boolean ? "true" : "false";
 }
 
+[[nodiscard]] phi::boolean IsReservedKey(ImGuiKey key) noexcept
+{
+    switch (key)
+    {
+        case ImGuiKey_ReservedForModCtrl:
+        case ImGuiKey_ReservedForModShift:
+        case ImGuiKey_ReservedForModAlt:
+        case ImGuiKey_ReservedForModSuper:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
 bool SetupImGui() noexcept
 {
     IMGUI_CHECKVERSION();
@@ -822,7 +837,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddKeyEvent
             case 37: {
-                GET_T_COND(ImGuiKey, key, ImGui::IsNamedKey(key) && !ImGui::IsAliasKey(key));
+                GET_T_COND(ImGuiKey, key,
+                           ImGui::IsNamedKey(key) && !ImGui::IsAliasKey(key) &&
+                                   !IsReservedKey(key));
                 GET_T(bool, down);
 
                 FUZZ_LOG("ImGui::GetIO().AddKeyEvent({}, {:s})", key, print_bool(down));
@@ -833,7 +850,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // ImGui::AddKeyAnalogEvent
             case 38: {
-                GET_T_COND(ImGuiKey, key, ImGui::IsNamedKey(key) && !ImGui::IsAliasKey(key));
+                GET_T_COND(ImGuiKey, key,
+                           ImGui::IsNamedKey(key) && !ImGui::IsAliasKey(key) &&
+                                   !IsReservedKey(key));
                 GET_T(bool, down);
                 GET_T_COND(float, value, phi::abs(value) <= MaxSaneFloatValue);
 
