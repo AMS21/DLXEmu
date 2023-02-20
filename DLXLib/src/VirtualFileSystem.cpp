@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "DLX/VirtualFileSystem.hpp"
 
 #include <phi/compiler_support/extended_attributes.hpp>

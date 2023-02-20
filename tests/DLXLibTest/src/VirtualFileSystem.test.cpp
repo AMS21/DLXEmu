@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <phi/test/test_macros.hpp>
 
 #include <DLX/VirtualFileSystem.hpp>
@@ -28,7 +30,7 @@ public:
 
     [[nodiscard]] static std::string get_file_path() noexcept
     {
-        return std::filesystem::temp_directory_path() / temp_file_name;
+        return std::filesystem::temp_directory_path().string() + temp_file_name;
     }
 };
 
