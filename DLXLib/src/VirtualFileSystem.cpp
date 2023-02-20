@@ -372,8 +372,8 @@ namespace dlx
         if (new_limit <= m_FileSystem.size())
         {
             // Delete elements until we've reached the required size
-            phi::usize n{m_FileSystem.size() - new_limit};
-            for (auto it = m_FileSystem.begin(); n > 0u; --n)
+            phi::usize count{m_FileSystem.size() - new_limit};
+            for (auto it = m_FileSystem.begin(); count > 0u; --count)
             {
                 PHI_ASSERT(it != m_FileSystem.end());
                 it = m_FileSystem.erase(it);
