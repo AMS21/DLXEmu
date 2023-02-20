@@ -81,6 +81,9 @@ jobs:
       - name: Install ninja
         run: brew install ninja
 
+      - name: Install dependencies
+        run: pip3 install wheel jinja2
+
       - name: Install
         run: |
           if [ "${{ matrix.cfg.compiler }}" = "gcc" ]; then
