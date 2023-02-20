@@ -74,6 +74,7 @@ PHI_MSVC_SUPPRESS_WARNING_POP()
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
+PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
 // TODO: Fix all the warnigns from gcc
 PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")

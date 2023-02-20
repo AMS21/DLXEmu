@@ -17,6 +17,8 @@ PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
 
 PHI_MSVC_SUPPRESS_WARNING_POP()
 
+PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
+
 namespace dlxemu
 {
     DebugView::DebugView(Emulator* emulator) noexcept

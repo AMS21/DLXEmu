@@ -3,6 +3,7 @@
 #include <DLX/OpCode.hpp>
 #include <DLX/ParserUtils.hpp>
 #include <DLX/RegisterNames.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/text/is_alpha_numeric.hpp>
 #include <algorithm>
 #include <cstdint>
@@ -13,6 +14,10 @@ namespace fuzz
     namespace detail
     {
         constexpr char ErrorString[] = "";
+
+        PHI_CLANG_SUPPRESS_WARNING_PUSH()
+        PHI_CLANG_SUPPRESS_WARNING("-Wunknown-warning-option")
+        PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
 
         inline bool AddSeperatorToken(std::string& text, const std::uint8_t* data, std::size_t size,
                                       std::size_t& index)
@@ -36,6 +41,8 @@ namespace fuzz
 
             return true;
         }
+
+        PHI_CLANG_SUPPRESS_WARNING_POP()
 
         inline char SanitizeForIdentifier(std::uint8_t c)
         {

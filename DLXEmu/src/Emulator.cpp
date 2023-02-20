@@ -43,6 +43,9 @@ namespace dlxemu
 
     PHI_MSVC_SUPPRESS_WARNING_POP()
 
+    PHI_CLANG_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
+
     Emulator::ShouldContinueInitilization Emulator::HandleCommandLineArguments(phi::i32 argc,
                                                                                char** argv) noexcept
     {
@@ -89,6 +92,8 @@ namespace dlxemu
 
         return ShouldContinueInitilization::Yes;
     }
+
+    PHI_CLANG_SUPPRESS_WARNING_POP()
 
     phi::boolean Emulator::Initialize() noexcept
     {

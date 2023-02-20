@@ -11,6 +11,8 @@
 #include <cstdio>
 #include <filesystem>
 
+PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
+
 namespace dlx
 {
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wswitch")
@@ -54,6 +56,8 @@ namespace dlx
 
     PHI_ATTRIBUTE_PURE OpenModeFlags parse_open_mode_flags(const char* string) noexcept
     {
+        PHI_ASSERT(string != nullptr, "Cannot parse nullptr");
+
         OpenModeFlags flags = OpenModeFlags::Invalid;
 
         for (; *string != '\0'; ++string)

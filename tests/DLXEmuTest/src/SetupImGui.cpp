@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <phi/compiler_support/unused.hpp>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/test/test_macros.hpp>
 
 void BeginImGui() noexcept
@@ -31,6 +32,10 @@ void BeginImGui() noexcept
     // Don't save any config
     io.IniFilename = nullptr;
 
+    PHI_CLANG_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_SUPPRESS_WARNING("-Wunknown-warning-option")
+    PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
+
     // SetStyle
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -38,6 +43,8 @@ void BeginImGui() noexcept
         style.WindowRounding              = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
+
+    PHI_CLANG_SUPPRESS_WARNING_POP()
 
     // Build atlas
     unsigned char* tex_pixels{nullptr};

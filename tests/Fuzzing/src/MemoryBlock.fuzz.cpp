@@ -1,11 +1,15 @@
 #include <DLX/MemoryBlock.hpp>
 #include <fmt/core.h>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/size_t.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
 #include <phi/preprocessor/glue.hpp>
 #include <phi/type_traits/make_unsigned.hpp>
 #include <phi/type_traits/to_unsafe.hpp>
+
+PHI_CLANG_SUPPRESS_WARNING("-Wunknown-warning-option")
+PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
 
 #define GET_T(type, name)                                                                          \
     auto PHI_GLUE(name, _opt) = consume_t<type>(data, size, index);                                \

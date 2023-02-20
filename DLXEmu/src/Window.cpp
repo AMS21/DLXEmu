@@ -5,6 +5,7 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <glad/gl.h>
 #include <imgui.h>
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/boolean.hpp>
 
 #if PHI_PLATFORM_IS(WEB)
@@ -260,6 +261,10 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1280,701 Split=X
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsClassic();
 
+        PHI_CLANG_SUPPRESS_WARNING_PUSH()
+        PHI_CLANG_SUPPRESS_WARNING("-Wunknown-warning-option")
+        PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
+
         // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
         ImGuiStyle& style = ImGui::GetStyle();
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -267,6 +272,8 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1280,701 Split=X
             style.WindowRounding              = 0.0f;
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
         }
+
+        PHI_CLANG_SUPPRESS_WARNING_POP()
 
         // Setup Platform/Renderer backends
 #if PHI_PLATFORM_IS(MACOS)
