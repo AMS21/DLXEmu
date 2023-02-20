@@ -105,7 +105,7 @@ namespace dlx
         }
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean NativeFileHandle::is_virtual() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean NativeFileHandle::is_virtual() const noexcept
     {
         return false;
     }
@@ -154,7 +154,7 @@ namespace dlx
         , m_OpenFlags{OpenModeFlags::Invalid}
     {}
 
-    PHI_ATTRIBUTE_PURE phi::boolean VirtualFileHandle::is_virtual() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean VirtualFileHandle::is_virtual() const noexcept
     {
         return true;
     }
