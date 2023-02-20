@@ -198,6 +198,7 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
     template <>
     [[nodiscard]] constexpr phi::string_view enum_name<OpCode>(OpCode value) noexcept
@@ -217,6 +218,7 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     [[nodiscard]] OpCode StringToOpCode(phi::string_view token) noexcept;

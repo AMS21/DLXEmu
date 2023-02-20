@@ -89,6 +89,7 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
     template <>
     [[nodiscard]] constexpr phi::string_view enum_name<IntRegisterID>(IntRegisterID value) noexcept
@@ -108,6 +109,7 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     IntRegisterID StringToIntRegister(phi::string_view token) noexcept;
@@ -123,6 +125,7 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
     template <>
     [[nodiscard]] constexpr phi::string_view enum_name<FloatRegisterID>(
@@ -143,6 +146,7 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     FloatRegisterID StringToFloatRegister(phi::string_view token) noexcept;
