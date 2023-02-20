@@ -16,7 +16,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wswitch")
     PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
 
-    phi::string_view to_string_flags(const OpenModeFlags flags) noexcept
+    PHI_ATTRIBUTE_CONST phi::string_view to_string_flags(const OpenModeFlags flags) noexcept
     {
         PHI_ASSERT(flags != OpenModeFlags::Invalid);
         PHI_ASSERT(phi::to_underlying(flags) > 0u &&
@@ -52,7 +52,7 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    OpenModeFlags parse_open_mode_flags(const char* string) noexcept
+    PHI_ATTRIBUTE_PURE OpenModeFlags parse_open_mode_flags(const char* string) noexcept
     {
         OpenModeFlags flags = OpenModeFlags::Invalid;
 
@@ -97,12 +97,12 @@ namespace dlx
         }
     }
 
-    phi::boolean NativeFileHandle::is_virtual() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean NativeFileHandle::is_virtual() const noexcept
     {
         return false;
     }
 
-    phi::boolean NativeFileHandle::is_open() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean NativeFileHandle::is_open() const noexcept
     {
         return m_FileHandle != nullptr;
     }
@@ -146,12 +146,12 @@ namespace dlx
         , m_OpenFlags{OpenModeFlags::Invalid}
     {}
 
-    phi::boolean VirtualFileHandle::is_virtual() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean VirtualFileHandle::is_virtual() const noexcept
     {
         return true;
     }
 
-    phi::boolean VirtualFileHandle::is_open() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean VirtualFileHandle::is_open() const noexcept
     {
         return m_OpenFlags != OpenModeFlags::Invalid;
     }
@@ -317,7 +317,7 @@ namespace dlx
         return count == 1u;
     }
 
-    phi::boolean VirtualFileSystem::IsEmpty() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean VirtualFileSystem::IsEmpty() const noexcept
     {
         return m_FileSystem.empty();
     }
@@ -327,7 +327,7 @@ namespace dlx
         m_FileSystem.clear();
     }
 
-    phi::usize VirtualFileSystem::GetNumberOfFileHandles() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize VirtualFileSystem::GetNumberOfFileHandles() const noexcept
     {
         return m_FileSystem.size();
     }

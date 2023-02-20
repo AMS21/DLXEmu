@@ -8,6 +8,7 @@
 #include <random>
 
 PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
+PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wdeprecated-declarations")
 
 static void BM_TokzenizeRandom(benchmark::State& state)
 {
