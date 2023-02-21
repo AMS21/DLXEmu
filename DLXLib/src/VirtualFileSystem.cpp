@@ -260,7 +260,10 @@ namespace dlx
     {
         if (FileExists(file_path))
         {
-            return m_FileSystem.find(file_path)->second;
+            auto res = m_FileSystem.find(file_path);
+            PHI_ASSERT(res != m_FileSystem.end(), "Coudln't find although it should exist");
+
+            return res->second;
         }
 
         return nullptr;
