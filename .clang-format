@@ -58,7 +58,6 @@ AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: false
-SpaceBeforeParens: ControlStatements
 #SpaceBeforeCpp11BracedList: true
 
 BreakBeforeBinaryOperators: false
