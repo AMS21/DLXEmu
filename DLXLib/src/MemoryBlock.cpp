@@ -272,7 +272,7 @@ namespace dlx
             return false;
         }
 
-        // Check if addres + size will overflow
+        // Check if address + size will overflow
         if (phi::detail::will_addition_error(phi::detail::arithmetic_tag_for<phi::size_t>{},
                                              address.unsafe(), size.unsafe()))
         {
