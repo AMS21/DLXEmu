@@ -31,7 +31,6 @@ AlignConsecutiveMacros: true
 SpaceAfterControlStatementKeyword: false
 SpaceAfterCStyleCast: false
 SpaceBeforeAssignmentOperators: true
-SpaceBeforeParens: Never
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
@@ -58,6 +57,7 @@ AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: false
+SpaceBeforeParens: ControlStatements
 #SpaceBeforeCpp11BracedList: true
 
 BreakBeforeBinaryOperators: false
