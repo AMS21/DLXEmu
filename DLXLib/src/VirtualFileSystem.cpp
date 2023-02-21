@@ -19,6 +19,7 @@ namespace dlx
 {
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wswitch")
     PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
+    PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
     PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
     PHI_ATTRIBUTE_CONST phi::string_view to_string_flags(const OpenModeFlags flags) noexcept
