@@ -82,7 +82,7 @@ jobs:
         run: brew install ninja
 
       - name: Install dependencies
-        run: pip3 install wheel jinja2
+        run: pip install wheel jinja2
 
       - name: Install
         run: |
