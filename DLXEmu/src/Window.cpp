@@ -187,8 +187,8 @@ namespace dlxemu
     {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
-        m_ImGuiContext = ImGui::CreateContext();
-        if (m_ImGuiContext == nullptr)
+
+        if (ImGui::CreateContext() == nullptr)
         {
             DLX_ERROR("Failed to create ImGuiContext");
             return;
