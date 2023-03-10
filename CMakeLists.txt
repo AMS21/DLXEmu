@@ -80,6 +80,11 @@ project(
   LANGUAGES CXX C
   VERSION ${DLXEMU_VERSION_MAJOR}.${DLXEMU_VERSION_MINOR}.${DLXEMU_VERSION_PATCH})
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external/Phi/scripts/cmake)
+
+include(internal/IncludeGuard)
+include(Environment)
+
 # Build js files when using emscripten
 if(PHI_PLATFORM_EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
@@ -103,10 +108,6 @@ endif()
 
 # Dependencies
 add_subdirectory(external)
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external/Phi/scripts/cmake)
-
-include(Environment)
 
 # Set output directories
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
