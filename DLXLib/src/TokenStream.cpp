@@ -2,6 +2,7 @@
 
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
+#include <phi/core/types.hpp>
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
@@ -31,7 +32,7 @@ namespace dlx
         PHI_ASSERT(!m_Finialized);
 #endif
 
-        m_Iterator = m_Tokens.begin();
+        m_Iterator = 0u;
 #if defined(PHI_DEBUG)
         m_Finialized = true;
 #endif
@@ -43,31 +44,22 @@ namespace dlx
         PHI_ASSERT(m_Finialized);
 #endif
 
-        m_Iterator = m_Tokens.begin();
+        m_Iterator = 0u;
     }
 
     phi::boolean TokenStream::has_x_more(phi::usize x) const noexcept
     {
-        auto it = m_Iterator;
-        for (; x > 0u; ++it, --x)
-        {
-            if (it == m_Tokens.end())
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return x + m_Iterator <= m_Tokens.size();
     }
 
     phi::boolean TokenStream::has_more() const noexcept
     {
-        return m_Iterator != m_Tokens.end();
+        return m_Iterator < m_Tokens.size();
     }
 
     phi::boolean TokenStream::reached_end() const noexcept
     {
-        return m_Iterator == m_Tokens.end();
+        return m_Iterator >= m_Tokens.size();
     }
 
     const Token& TokenStream::look_ahead() const noexcept
@@ -77,7 +69,7 @@ namespace dlx
         PHI_ASSERT(m_Finialized);
 #endif
 
-        return *m_Iterator;
+        return m_Tokens.at(m_Iterator.unsafe());
     }
 
     const Token& TokenStream::consume() noexcept
@@ -87,7 +79,7 @@ namespace dlx
         PHI_ASSERT(m_Finialized);
 #endif
 
-        return *m_Iterator++;
+        return m_Tokens.at(m_Iterator++.unsafe());
     }
 
     void TokenStream::skip(phi::usize n) noexcept
@@ -159,23 +151,18 @@ namespace dlx
         return m_Tokens.empty();
     }
 
-    PHI_ATTRIBUTE_CONST TokenStream::iterator TokenStream::current_position() noexcept
+    PHI_ATTRIBUTE_CONST phi::usize TokenStream::current_position() const noexcept
     {
         return m_Iterator;
     }
 
-    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::current_position() const noexcept
-    {
-        return m_Iterator;
-    }
-
-    void TokenStream::set_position(TokenStream::iterator it) noexcept
+    void TokenStream::set_position(phi::usize pos) noexcept
     {
 #if defined(PHI_DEBUG)
         PHI_ASSERT(m_Finialized);
 #endif
 
-        m_Iterator = it;
+        m_Iterator = pos;
     }
 
     PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::begin() const noexcept

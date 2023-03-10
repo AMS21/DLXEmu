@@ -97,11 +97,9 @@ namespace dlx
         [[nodiscard]] phi::boolean empty() const noexcept;
 
         // Iterator
-        [[nodiscard]] iterator current_position() noexcept;
+        [[nodiscard]] phi::usize current_position() const noexcept;
 
-        [[nodiscard]] const_iterator current_position() const noexcept;
-
-        void set_position(iterator it) noexcept;
+        void set_position(phi::usize pos) noexcept;
 
         [[nodiscard]] const_iterator begin() const noexcept;
 
@@ -121,7 +119,7 @@ namespace dlx
 
     private:
         storage_type m_Tokens;
-        iterator     m_Iterator = m_Tokens.begin();
+        phi::usize   m_Iterator{0u};
 #if defined(PHI_DEBUG)
         phi::boolean m_Finialized{false};
 #endif
