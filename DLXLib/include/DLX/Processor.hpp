@@ -42,9 +42,10 @@ namespace dlx
     };
 
     PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<Exception>(Exception value) noexcept
+    [[nodiscard]] constexpr phi::string_view enum_name<Exception>(Exception value) noexcept
     {
         switch (value)
         {
@@ -61,6 +62,7 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_GCC_SUPPRESS_WARNING_POP()
 
     enum class IntRegisterValueType
@@ -159,6 +161,8 @@ namespace dlx
 
         // Dumping
 
+        PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
         [[nodiscard]] std::string GetRegisterDump() const noexcept;
 
         [[nodiscard]] std::string GetMemoryDump() const noexcept;
@@ -166,6 +170,8 @@ namespace dlx
         [[nodiscard]] std::string GetProcessorDump() const noexcept;
 
         [[nodiscard]] std::string GetCurrentProgrammDump() const noexcept;
+
+        PHI_GCC_SUPPRESS_WARNING_POP()
 
     private:
         phi::observer_ptr<ParsedProgram> m_CurrentProgram;

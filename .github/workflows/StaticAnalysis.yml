@@ -30,7 +30,7 @@ on:
     - cron: '0 4 * * 1'
 
 concurrency:
-  group: ci-${{ github.head_ref || github.run_number }}-${{ github.ref }}-${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -51,14 +51,14 @@ jobs:
           reviewdog_version: latest
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.25.1
+        uses: lukka/get-cmake@v3.25.2
 
       - name: Install
         env:
-          CPPCHECK_VERSION: "2.7"
+          CPPCHECK_VERSION: "2.9"
         run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} cppcheck-${{ env.CPPCHECK_VERSION }} ninja
 
       - name: Configure
@@ -113,15 +113,11 @@ jobs:
         with:
           reviewdog_version: latest
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.25.1
+        uses: lukka/get-cmake@v3.25.2
 
       - name: Install
         run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} clang-tidy-${{ env.LLVM_VERSION }} ninja
@@ -180,11 +176,6 @@ jobs:
           submodules: recursive
           fetch-depth: 2
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
       - name: Setup Reviewdog
         uses: reviewdog/action-setup@v1.0.3
         with:
@@ -194,10 +185,10 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh iwyu-${{ env.LLVM_VERSION }} ninja
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.25.1
+        uses: lukka/get-cmake@v3.25.2
 
       - name: Run Include-What-You-Use
         run: |
@@ -288,7 +279,7 @@ jobs:
         run: external/Phi/scripts/ci/SetupEnvironment.sh
 
       - name: Setup Reviewdog
-        uses: reviewdog/action-setup@v1.0.2
+        uses: reviewdog/action-setup@v1.0.3
         with:
           reviewdog_version: latest
 
@@ -296,7 +287,7 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} pvs-studio ninja
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Configure build directory
         run: |
@@ -379,7 +370,7 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Configure build directory
         run: |
@@ -444,6 +435,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
+
+      - name: Install dependencies
+        run: pip install jinja2
 
       - name: Configure
         run: |

@@ -2,26 +2,29 @@
 
 #include "DLX/ParserUtils.hpp"
 #include "DLX/TokenStream.hpp"
-#include <string_view>
+#include <phi/core/narrow_cast.hpp>
+#include <phi/core/sized_types.hpp>
+#include <phi/forward/string_view.hpp>
+#include <phi/type_traits/is_array.hpp>
 
 namespace dlx
 {
-    static Token ParseToken(std::string_view token, phi::u64 line_number, phi::u64 column) noexcept
+    static Token ParseToken(phi::string_view token, phi::u64 line_number, phi::u64 column) noexcept
     {
-        if (token.at(0) == '#' && token.size() > 1)
+        if (token.at(0u) == '#' && token.length() > 1u)
         {
-            auto number = ParseNumber(token.substr(1u));
+            auto number = ParseNumber(token.substring_view(1u));
 
             if (number)
             {
                 return {Token::Type::ImmediateInteger, token, line_number, column,
-                        static_cast<std::uint32_t>(number.value().unsafe())};
+                        static_cast<phi::uint32_t>(number.value().unsafe())};
             }
 
             return {Token::Type::ImmediateInteger, token, line_number, column};
         }
 
-        if (token.at(0) == '/' || token.at(0) == ';')
+        if (token.at(0u) == '/' || token.at(0u) == ';')
         {
             return {Token::Type::Comment, token, line_number, column};
         }
@@ -29,7 +32,7 @@ namespace dlx
         if (phi::optional<phi::i16> number = ParseNumber(token); number.has_value())
         {
             return {Token::Type::IntegerLiteral, token, line_number, column,
-                    static_cast<std::uint32_t>(number->unsafe())};
+                    static_cast<phi::uint32_t>(number->unsafe())};
         }
 
         if (IsFPSR(token))
@@ -40,29 +43,29 @@ namespace dlx
         if (IntRegisterID id = StringToIntRegister(token); id != IntRegisterID::None)
         {
             return {Token::Type::RegisterInt, token, line_number, column,
-                    static_cast<std::uint32_t>(id)};
+                    static_cast<phi::uint32_t>(id)};
         }
 
         if (FloatRegisterID id = StringToFloatRegister(token); id != FloatRegisterID::None)
         {
             return {Token::Type::RegisterFloat, token, line_number, column,
-                    static_cast<std::uint32_t>(id)};
+                    static_cast<phi::uint32_t>(id)};
         }
 
         if (OpCode opcode = StringToOpCode(token); opcode != OpCode::NONE)
         {
             return {Token::Type::OpCode, token, line_number, column,
-                    static_cast<std::uint32_t>(opcode)};
+                    static_cast<phi::uint32_t>(opcode)};
         }
 
         return {Token::Type::LabelIdentifier, token, line_number, column};
     }
 
-    TokenStream Tokenize(std::string_view source) noexcept
+    TokenStream Tokenize(phi::string_view source) noexcept
     {
         TokenStream tokens;
 
-        std::string_view current_token;
+        phi::string_view current_token;
 
         phi::u64 current_line_number{1u};
         phi::u64 current_column{1u};
@@ -72,14 +75,14 @@ namespace dlx
 
         for (phi::usize i{0u}; i < source.length(); ++i)
         {
-            const char c{source.at(i.unsafe())};
+            const char c{source.at(i)};
 
             if (c == '\n')
             {
-                if (current_token.empty())
+                if (current_token.is_empty())
                 {
                     // Skip empty lines
-                    tokens.emplace_back(Token::Type::NewLine, source.substr(i.unsafe(), 1u),
+                    tokens.emplace_back(Token::Type::NewLine, source.substring_view(i, 1u),
                                         current_line_number, current_column);
 
                     parsing_comment = false;
@@ -89,14 +92,16 @@ namespace dlx
                 }
 
                 // Otherwise a new line separates tokens
-                tokens.emplace_back(
-                        ParseToken(source.substr(token_begin.unsafe(), current_token.length()),
-                                   current_line_number, current_column - current_token.length()));
+                tokens.emplace_back(ParseToken(
+                        source.substring_view(
+                                phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                                current_token.length()),
+                        current_line_number, current_column - current_token.length()));
 
-                tokens.emplace_back(Token::Type::NewLine, source.substr(i.unsafe(), 1),
+                tokens.emplace_back(Token::Type::NewLine, source.substring_view(i, 1u),
                                     current_line_number, current_column);
 
-                current_token   = std::string_view{};
+                current_token   = phi::string_view{};
                 parsing_comment = false;
                 current_line_number += 1u;
                 current_column = 0u;
@@ -104,26 +109,32 @@ namespace dlx
             // Comments begin with an '/' or ';' and after that the entire line is treated as part of the comment
             else if (c == '/' || c == ';')
             {
-                if (current_token.empty())
+                if (current_token.is_empty())
                 {
                     token_begin = i;
                 }
                 else if (!parsing_comment)
                 {
                     tokens.emplace_back(ParseToken(
-                            source.substr(token_begin.unsafe(), current_token.length()),
+                            source.substring_view(
+                                    phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                                    current_token.length()),
                             current_line_number, current_column - current_token.length()));
                     token_begin   = i;
-                    current_token = std::string_view{};
+                    current_token = phi::string_view{};
                 }
 
                 parsing_comment = true;
-                current_token   = source.substr(token_begin.unsafe(), current_token.length() + 1);
+                current_token   = source.substring_view(
+                        phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                        current_token.length() + 1u);
             }
             else if (parsing_comment)
             {
                 // simply append the character
-                current_token = source.substr(token_begin.unsafe(), current_token.length() + 1);
+                current_token = source.substring_view(
+                        phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                        current_token.length() + 1u);
             }
             else
             {
@@ -133,7 +144,7 @@ namespace dlx
                     case ' ':
                     case '\t':
                     case '\v':
-                        if (current_token.empty())
+                        if (current_token.is_empty())
                         {
                             current_column += 1u;
                             // We haven't found any usable character for the current token so just skip the whitespace.
@@ -142,43 +153,56 @@ namespace dlx
 
                         // Otherwise a whitespace separates tokens
                         tokens.emplace_back(ParseToken(
-                                source.substr(token_begin.unsafe(), current_token.length()),
+                                source.substring_view(
+                                        phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                                        current_token.length()),
                                 current_line_number, current_column - current_token.length()));
-                        current_token = std::string_view{};
+                        current_token = phi::string_view{};
                         break;
                     case ':':
                         // Need to parse label names together with their colon
-                        if (!current_token.empty())
+                        if (!current_token.is_empty())
                         {
-                            current_token =
-                                    source.substr(token_begin.unsafe(), current_token.length() + 1);
+                            current_token = source.substring_view(
+                                    phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                                    current_token.length() + 1u);
                             tokens.emplace_back(ParseToken(
-                                    source.substr(token_begin.unsafe(), current_token.length()),
+                                    source.substring_view(
+                                            phi::narrow_cast<phi::string_view::size_type>(
+                                                    token_begin),
+                                            current_token.length()),
                                     current_line_number,
                                     current_column + 1u - current_token.length()));
 
-                            current_token = std::string_view{};
+                            current_token = phi::string_view{};
                         }
                         else
                         {
                             // Orphan colon
                             token_begin = i;
 
-                            tokens.emplace_back(Token::Type::Colon,
-                                                source.substr(token_begin.unsafe(), 1),
-                                                current_line_number, current_column);
+                            tokens.emplace_back(
+                                    Token::Type::Colon,
+                                    source.substring_view(
+                                            phi::narrow_cast<phi::string_view::size_type>(
+                                                    token_begin),
+                                            1u),
+                                    current_line_number, current_column);
                         }
                         break;
                     case ',':
                     case '(':
                     case ')':
-                        if (!current_token.empty())
+                        if (!current_token.is_empty())
                         {
                             tokens.emplace_back(ParseToken(
-                                    source.substr(token_begin.unsafe(), current_token.length()),
+                                    source.substring_view(
+                                            phi::narrow_cast<phi::string_view::size_type>(
+                                                    token_begin),
+                                            current_token.length()),
                                     current_line_number, current_column - current_token.length()));
 
-                            current_token = std::string_view{};
+                            current_token = phi::string_view{};
                         }
 
                         Token::Type type;
@@ -202,19 +226,24 @@ namespace dlx
 
                         token_begin = i;
 
-                        tokens.emplace_back(type, source.substr(token_begin.unsafe(), 1),
-                                            current_line_number, current_column);
+                        tokens.emplace_back(
+                                type,
+                                source.substring_view(
+                                        phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                                        1u),
+                                current_line_number, current_column);
                         break;
 
                     default:
-                        if (current_token.empty())
+                        if (current_token.is_empty())
                         {
                             token_begin = i;
                         }
 
                         // simply append the character
-                        current_token =
-                                source.substr(token_begin.unsafe(), current_token.length() + 1);
+                        current_token = source.substring_view(
+                                phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                                current_token.length() + 1u);
                 }
             }
 
@@ -222,10 +251,12 @@ namespace dlx
         }
 
         // Checked the entire string. Parse whats left if anything
-        if (!current_token.empty())
+        if (!current_token.is_empty())
         {
             tokens.emplace_back(
-                    ParseToken(source.substr(token_begin.unsafe(), current_token.length()),
+                    ParseToken(source.substring_view(
+                                       phi::narrow_cast<phi::string_view::size_type>(token_begin),
+                                       current_token.length()),
                                current_line_number, current_column - current_token.length()));
         }
 

@@ -9,10 +9,10 @@ PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
 static void BM_ProcessorCountWithADDI(benchmark::State& state)
 {
-    static constexpr const char program_source[] = "ADDI R1 R1 #1\n";
+    static constexpr const char* program_source = "ADDI R1 R1 #1\n";
 
-    std::int64_t count         = state.range(0);
-    phi::usize   string_length = phi::string_length(program_source);
+    std::int64_t                      count         = state.range(0);
+    static constexpr const phi::usize string_length = phi::string_length(program_source);
 
     // Prepare source code
     std::string source;

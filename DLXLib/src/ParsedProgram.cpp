@@ -19,10 +19,12 @@ namespace dlx
         m_ParseErrors.emplace_back(phi::move(error));
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean ParsedProgram::IsValid() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean ParsedProgram::IsValid() const noexcept
     {
         return m_ParseErrors.empty() && !m_Instructions.empty();
     }
+
+    PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
 
     std::string ParsedProgram::GetDump() const noexcept
     {
@@ -93,4 +95,6 @@ namespace dlx
 
         return text;
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 } // namespace dlx

@@ -2,9 +2,10 @@
 
 #include <glad/gl.h>
 
-#include "DLXEmu/generated/BuildInfo.hpp"
 #include <DLX/Logger.hpp>
 #include <DLX/TokenStream.hpp>
+#include <DLXEmu/generated/BuildInfo.hpp>
+#include <DLXEmu/generated/ThirdPartyLicense.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <phi/algorithm/for_each.hpp>
@@ -17,7 +18,6 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
 #include <phi/text/to_lower_case.hpp>
-#include <string_view>
 
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
@@ -43,6 +43,9 @@ namespace dlxemu
     {}
 
     PHI_MSVC_SUPPRESS_WARNING_POP()
+
+    PHI_CLANG_SUPPRESS_WARNING_PUSH()
+    PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
 
     Emulator::ShouldContinueInitilization Emulator::HandleCommandLineArguments(phi::i32 argc,
                                                                                char** argv) noexcept
@@ -90,6 +93,8 @@ namespace dlxemu
 
         return ShouldContinueInitilization::Yes;
     }
+
+    PHI_CLANG_SUPPRESS_WARNING_POP()
 
     phi::boolean Emulator::Initialize() noexcept
     {
@@ -149,6 +154,10 @@ namespace dlxemu
         {
             RenderAbout();
         }
+        if (m_ShowThirdPartyLicense)
+        {
+            RenderThirdPartyLicense();
+        }
 
 #if defined(PHI_DEBUG)
         if (m_ShowDebugView)
@@ -175,7 +184,7 @@ namespace dlxemu
         return m_DLXProgram;
     }
 
-    void Emulator::ParseProgram(std::string_view source) noexcept
+    void Emulator::ParseProgram(phi::string_view source) noexcept
     {
         m_DLXProgram = dlx::Parser::Parse(source);
 
@@ -321,6 +330,11 @@ namespace dlxemu
 
             if (ImGui::BeginMenu("Help"))
             {
+                if (ImGui::MenuItem("Third-Party Licenses"))
+                {
+                    m_ShowThirdPartyLicense = true;
+                }
+
                 if (ImGui::MenuItem("About"))
                 {
                     m_ShowAbout = true;
@@ -471,10 +485,14 @@ namespace dlxemu
 
     void Emulator::RenderAbout() noexcept
     {
-        constexpr static ImGuiWindowFlags about_flags =
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused variable?
+
+        static constexpr const ImGuiWindowFlags about_flags =
                 ImGuiWindowFlags_AlwaysAutoResize + ImGuiWindowFlags_NoDocking +
                 ImGuiWindowFlags_NoResize + ImGuiWindowFlags_NoCollapse +
                 ImGuiWindowFlags_NoSavedSettings;
+
+        PHI_MSVC_SUPPRESS_WARNING_POP()
 
         if (ImGui::Begin("DLXEmu - About", &m_ShowAbout, about_flags))
         {
@@ -495,11 +513,11 @@ namespace dlxemu
                     "Compiler:   {:s} ({:d}.{:d}.{:d}){}",
                     dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
                     dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
-                    GLAD_VERSION_MAJOR(glad_gl_version), GLAD_VERSION_MINOR(glad_gl_version), GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR,
-                    GLFW_VERSION_REVISION, IMGUI_VERSION, PHI_PLATFORM_NAME(), arch_flag,
-                    DLXEMU_UNAME, PHI_COMPILER_NAME(), PHI_CURRENT_COMPILER_VERSION_MAJOR(),
-                    PHI_CURRENT_COMPILER_VERSION_MINOR(), PHI_CURRENT_COMPILER_VERSION_PATCH(),
-                    lsb_info);
+                    GLAD_VERSION_MAJOR(glad_gl_version), GLAD_VERSION_MINOR(glad_gl_version),
+                    GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION, IMGUI_VERSION,
+                    PHI_PLATFORM_NAME(), arch_flag, DLXEMU_UNAME, PHI_COMPILER_NAME(),
+                    PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),
+                    PHI_CURRENT_COMPILER_VERSION_PATCH(), lsb_info);
 
             PHI_CLANG_SUPPRESS_WARNING_POP()
 
@@ -525,8 +543,12 @@ namespace dlxemu
 
     void Emulator::RenderOptionsMenu() noexcept
     {
-        constexpr const static ImGuiWindowFlags options_flags =
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264)
+
+        static constexpr const ImGuiWindowFlags options_flags =
                 ImGuiWindowFlags_NoDocking + ImGuiWindowFlags_NoCollapse;
+
+        PHI_MSVC_SUPPRESS_WARNING_POP()
 
         if (ImGui::Begin("Options", &m_ShowOptionsMenu, options_flags))
         {
@@ -589,6 +611,45 @@ namespace dlxemu
 
     PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
     PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
+
+    void Emulator::RenderThirdPartyLicense() noexcept
+    {
+        static constexpr const ImGuiWindowFlags third_party_flags =
+                ImGuiWindowFlags_AlwaysAutoResize + ImGuiWindowFlags_NoDocking +
+                ImGuiWindowFlags_NoResize + ImGuiWindowFlags_NoCollapse +
+                ImGuiWindowFlags_NoSavedSettings;
+
+        if (ImGui::Begin("DLXEmu - Third-Party License", &m_ShowThirdPartyLicense,
+                         third_party_flags))
+        {
+            if (ImGui::CollapsingHeader("{fmt}"))
+            {
+                ImGui::TextUnformatted(fmt_license);
+            }
+
+            if (ImGui::CollapsingHeader("glad"))
+            {
+                ImGui::TextUnformatted(glad_license);
+            }
+
+            if (ImGui::CollapsingHeader("glfw"))
+            {
+                ImGui::TextUnformatted(glfw_license);
+            }
+
+            if (ImGui::CollapsingHeader("imgui"))
+            {
+                ImGui::TextUnformatted(imgui_license);
+            }
+
+            if (ImGui::CollapsingHeader("Phi"))
+            {
+                ImGui::TextUnformatted(phi_license);
+            }
+
+            ImGui::End();
+        }
+    }
 
     void Emulator::Update() noexcept
     {

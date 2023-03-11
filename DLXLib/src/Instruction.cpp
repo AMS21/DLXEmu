@@ -1,11 +1,14 @@
 #include "DLX/Instruction.hpp"
 
 #include "DLX/InstructionArgument.hpp"
-
-#include <fmt/format.h>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/assert.hpp>
 
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
+#include <fmt/format.h>
+PHI_MSVC_SUPPRESS_WARNING_POP()
+
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
@@ -43,21 +46,22 @@ namespace dlx
 
     PHI_GCC_SUPPRESS_WARNING_PUSH()
     PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
 
     PHI_ATTRIBUTE_CONST std::string Instruction::DebugInfo() const noexcept
     {
         switch (m_Info.GetNumberOfRequiredArguments().unsafe())
         {
             case 0:
-                return fmt::format("{}", dlx::enum_name(m_Info.GetOpCode()));
+                return fmt::format("{}", dlx::enum_name(m_Info.GetOpCode()).data());
             case 1:
-                return fmt::format("{}, {}", dlx::enum_name(m_Info.GetOpCode()),
+                return fmt::format("{}, {}", dlx::enum_name(m_Info.GetOpCode()).data(),
                                    m_Arg1.DebugInfo());
             case 2:
-                return fmt::format("{}, {}, {}", dlx::enum_name(m_Info.GetOpCode()),
+                return fmt::format("{}, {}, {}", dlx::enum_name(m_Info.GetOpCode()).data(),
                                    m_Arg1.DebugInfo(), m_Arg2.DebugInfo());
             case 3:
-                return fmt::format("{}, {}, {}, {}", dlx::enum_name(m_Info.GetOpCode()),
+                return fmt::format("{}, {}, {}, {}", dlx::enum_name(m_Info.GetOpCode()).data(),
                                    m_Arg1.DebugInfo(), m_Arg2.DebugInfo(), m_Arg3.DebugInfo());
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
@@ -80,27 +84,27 @@ namespace dlx
         m_Info.Execute(processor, m_Arg1, m_Arg2, m_Arg3);
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionInfo& Instruction::GetInfo() const noexcept
+    PHI_ATTRIBUTE_PURE const InstructionInfo& Instruction::GetInfo() const noexcept
     {
         return m_Info;
     }
 
-    PHI_ATTRIBUTE_CONST const phi::u64 Instruction::GetSourceLine() const noexcept
+    PHI_ATTRIBUTE_PURE const phi::u64 Instruction::GetSourceLine() const noexcept
     {
         return m_SourceLine;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg1() const noexcept
+    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg1() const noexcept
     {
         return m_Arg1;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg2() const noexcept
+    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg2() const noexcept
     {
         return m_Arg2;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument& Instruction::GetArg3() const noexcept
+    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg3() const noexcept
     {
         return m_Arg3;
     }

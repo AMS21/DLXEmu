@@ -4,5 +4,5 @@
 
 namespace dlx
 {
-    [[nodiscard]] TokenStream Tokenize(std::string_view source) noexcept;
+    [[nodiscard]] TokenStream Tokenize(phi::string_view source) noexcept;
 }

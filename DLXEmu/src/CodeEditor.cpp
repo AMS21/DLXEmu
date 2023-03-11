@@ -40,15 +40,21 @@ SOFTWARE.
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
 #include <phi/core/conversion.hpp>
+#include <phi/core/narrow_cast.hpp>
 #include <phi/core/size_t.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
+#include <phi/math/is_infinity.hpp>
 #include <phi/math/is_nan.hpp>
 #include <phi/text/is_alpha_numeric.hpp>
 #include <phi/text/is_blank.hpp>
 #include <phi/text/is_control.hpp>
 #include <phi/text/is_space.hpp>
 #include <phi/type_traits/to_underlying.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_PUSH()
+PHI_MSVC_SUPPRESS_WARNING(5262)
+
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -64,13 +70,17 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
 #include <fmt/core.h>
 
+PHI_MSVC_SUPPRESS_WARNING_POP()
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
+PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
 // TODO: Fix all the warnigns from gcc
 PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
 PHI_GCC_SUPPRESS_WARNING("-Wfloat-equal")
+
+PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
 
 //#define DLXEMU_VERIFY_UNDO_REDO
 //#define DLXEMU_VERIFY_COLUMN
@@ -426,33 +436,16 @@ namespace dlxemu
                                                         PaletteIndex::Background)));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-        static constexpr const float min_size = 0.0f;
-        static constexpr const float max_size =
-                static_cast<float>(std::numeric_limits<int>::max()) * 0.95f;
+        // Assert size is properly sanitzed
+        PHI_ASSERT(size.x >= 0.0f);
+        PHI_ASSERT(!(phi::is_nan(size.x) || phi::is_infinity(size.x)));
 
-        // Properly sanitize size
-        ImVec2 sanitized_size;
-        if (phi::is_nan(size.x) || std::isinf(size.x))
-        {
-            sanitized_size.x = min_size;
-        }
-        else
-        {
-            sanitized_size.x = phi::clamp(size.x, min_size, max_size);
-        }
-
-        if (phi::is_nan(size.y) || std::isinf(size.y))
-        {
-            sanitized_size.y = min_size;
-        }
-        else
-        {
-            sanitized_size.y = phi::clamp(size.y, min_size, max_size);
-        }
+        PHI_ASSERT(size.y >= 0.0f);
+        PHI_ASSERT(!(phi::is_nan(size.y) || phi::is_infinity(size.y)));
 
         if (ImGui::Begin("Code Editor"))
         {
-            ImGui::BeginChild("Code Editor", sanitized_size, border.unsafe(),
+            ImGui::BeginChild("Code Editor", size, border.unsafe(),
                               ImGuiWindowFlags_HorizontalScrollbar |
                                       ImGuiWindowFlags_AlwaysHorizontalScrollbar |
                                       ImGuiWindowFlags_NoMove);
@@ -801,9 +794,9 @@ namespace dlxemu
             return;
         }
 
-        Coordinates pos         = GetActualCursorCoordinates();
-        Coordinates start       = phi::min(pos, m_State.m_SelectionStart);
-        phi::u32    total_lines = pos.m_Line - start.m_Line;
+        Coordinates       pos         = GetActualCursorCoordinates();
+        const Coordinates start       = HasSelection() ? m_State.m_SelectionStart : pos;
+        phi::u32          total_lines = pos.m_Line - start.m_Line;
 
         total_lines += InsertTextAt(pos, value);
 
@@ -1053,8 +1046,8 @@ namespace dlxemu
     void CodeEditor::SetSelection(const Coordinates& start, const Coordinates& end,
                                   SelectionMode mode) noexcept
     {
-        Coordinates old_sel_start = m_State.m_SelectionStart;
-        Coordinates old_sel_end   = m_State.m_SelectionEnd;
+        const Coordinates old_sel_start = m_State.m_SelectionStart;
+        const Coordinates old_sel_end   = m_State.m_SelectionEnd;
 
         m_State.m_SelectionStart = SanitizeCoordinates(start);
         m_State.m_SelectionEnd   = SanitizeCoordinates(end);
@@ -1097,7 +1090,7 @@ namespace dlxemu
 
     void CodeEditor::SelectWordUnderCursor() noexcept
     {
-        Coordinates coords = GetCursorPosition();
+        const Coordinates coords = GetCursorPosition();
         SetSelection(FindWordStart(coords), FindWordEnd(coords));
     }
 
@@ -1131,7 +1124,11 @@ namespace dlxemu
     {
         if (HasSelection())
         {
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+            m_FuzzingClipboardText = GetSelectedText();
+#else
             ImGui::SetClipboardText(GetSelectedText().c_str());
+#endif
         }
         else
         {
@@ -1145,7 +1142,11 @@ namespace dlxemu
                 str.push_back(static_cast<char>(glyph.m_Char));
             }
 
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+            m_FuzzingClipboardText = str;
+#else
             ImGui::SetClipboardText(str.c_str());
+#endif
         }
     }
 
@@ -1181,8 +1182,12 @@ namespace dlxemu
             return;
         }
 
-        const char* clip_text = ImGui::GetClipboardText();
-        PHI_ASSERT(clip_text);
+        const char* clip_text =
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+                m_FuzzingClipboardText.c_str();
+#else
+                ImGui::GetClipboardText();
+#endif
         if (phi::string_length(clip_text) == 0u)
         {
             return;
@@ -1205,7 +1210,8 @@ namespace dlxemu
         InsertText(clip_text);
 
         undo.m_AddedEnd = GetActualCursorCoordinates();
-        undo.m_After    = m_State;
+        undo.StoreAfterState(this);
+
         AddUndo(undo);
     }
 
@@ -1231,9 +1237,11 @@ namespace dlxemu
         }
         else
         {
-            Coordinates pos = GetActualCursorCoordinates();
-            SetCursorPosition(pos);
+            const Coordinates pos = GetActualCursorCoordinates();
             PHI_ASSERT(pos.m_Line < m_Lines.size());
+            PHI_ASSERT(pos.m_Column <= GetLineMaxColumn(pos.m_Line));
+
+            SetCursorPosition(pos);
             Line& line = m_Lines[pos.m_Line.unsafe()];
 
             if (pos.m_Column == GetLineMaxColumn(pos.m_Line))
@@ -1248,7 +1256,7 @@ namespace dlxemu
                 Advance(undo.m_RemovedEnd);
 
                 PHI_ASSERT(pos.m_Line + 1u < m_Lines.size());
-                Line& next_line = m_Lines[pos.m_Line.unsafe() + 1];
+                const Line& next_line = m_Lines[pos.m_Line.unsafe() + 1];
                 line.insert(line.end(), next_line.begin(), next_line.end());
 
                 PHI_ASSERT(pos.m_Line <= m_Lines.size());
@@ -1275,23 +1283,11 @@ namespace dlxemu
                 while (length > 0u && cindex < line.size())
                 {
                     line.erase(line.begin() + cindex.unsafe());
-
-                    // Correct selection state
-                    if (m_State.m_SelectionStart.m_Line == current_cursor_pos.m_Line &&
-                        m_State.m_SelectionStart.m_Column >= cindex &&
-                        m_State.m_SelectionStart.m_Column > 0u)
-                    {
-                        m_State.m_SelectionStart.m_Column -= 1u;
-                    }
-                    if (m_State.m_SelectionEnd.m_Line == current_cursor_pos.m_Line &&
-                        m_State.m_SelectionEnd.m_Column >= cindex &&
-                        m_State.m_SelectionEnd.m_Column > 0u)
-                    {
-                        m_State.m_SelectionEnd.m_Column -= 1u;
-                    }
-
                     length--;
                 }
+
+                // Remove any kind of selection if we had any
+                ClearSelection();
             }
 
             m_TextChanged = true;
@@ -1359,7 +1355,7 @@ namespace dlxemu
         str += fmt::format("Overwrite: {:s}\n", IsOverwrite() ? "true" : "false");
         str += fmt::format("Read only: {:s}\n", IsReadOnly() ? "true" : "false");
         str += fmt::format("Show whitespaces: {:s}\n", IsShowingWhitespaces() ? "true" : "false");
-        str += fmt::format("Selection mode: {:s}\n", dlx::enum_name(m_SelectionMode));
+        str += fmt::format("Selection mode: {:s}\n", dlx::enum_name(m_SelectionMode).data());
 
         const std::string              full_text = GetText();
         const std::vector<std::string> lines     = GetTextLines();
@@ -1896,21 +1892,21 @@ namespace dlxemu
     PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::SanitizeCoordinates(
             const Coordinates& value) const noexcept
     {
+        PHI_ASSERT(!m_Lines.empty());
+
         phi::u32 line   = value.m_Line;
         phi::u32 column = value.m_Column;
 
         if (line >= m_Lines.size())
         {
-            PHI_ASSERT(!m_Lines.empty());
-
             line   = GetMaxLineNumber();
             column = GetLineMaxColumn(line);
 
+            PHI_ASSERT(line < m_Lines.size());
+            PHI_ASSERT(column <= GetLineMaxColumn(line));
+
             return {line, column};
         }
-
-        PHI_ASSERT(!m_Lines.empty());
-        PHI_ASSERT(line < m_Lines.size());
 
         // Sanitize column
         const Line& current_line = m_Lines[line.unsafe()];
@@ -1934,9 +1930,11 @@ namespace dlxemu
 
             char_index += UTF8CharLength(current_char);
         }
-        PHI_ASSERT(new_column <= GetLineMaxColumn(line));
 
         column = new_column;
+
+        PHI_ASSERT(line < m_Lines.size());
+        PHI_ASSERT(column <= GetLineMaxColumn(line));
 
         return {line, column};
     }
@@ -2707,6 +2705,8 @@ namespace dlxemu
         UndoRecord undo;
         undo.StoreBeforeState(this);
 
+        phi::boolean removed_selection{false};
+
         if (HasSelection())
         {
             // Do indenting
@@ -2714,9 +2714,9 @@ namespace dlxemu
                 (m_State.m_SelectionStart.m_Column == 0u ||
                  m_State.m_SelectionStart.m_Line != m_State.m_SelectionEnd.m_Line))
             {
-                Coordinates start        = m_State.m_SelectionStart;
-                Coordinates end          = m_State.m_SelectionEnd;
-                Coordinates original_end = end;
+                Coordinates       start        = m_State.m_SelectionStart;
+                Coordinates       end          = m_State.m_SelectionEnd;
+                const Coordinates original_end = end;
 
                 PHI_ASSERT(start < end);
                 start.m_Column = 0u;
@@ -2772,8 +2772,6 @@ namespace dlxemu
                     else
                     {
                         PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wnull-dereference")
-                        PHI_ASSERT(!line.empty());
-                        PHI_ASSERT(line.data() != nullptr);
 
                         // Add indention
                         line.insert(line.begin(), Glyph('\t', PaletteIndex::Background));
@@ -2822,11 +2820,17 @@ namespace dlxemu
                 undo.m_RemovedStart = m_State.m_SelectionStart;
                 undo.m_RemovedEnd   = m_State.m_SelectionEnd;
                 DeleteSelection();
+
+                removed_selection = true;
             }
         } // HasSelection
+        {
+            // Reset selection
+            ClearSelection();
+        }
 
-        Coordinates coord = GetActualCursorCoordinates();
-        undo.m_AddedStart = coord;
+        const Coordinates coord = GetActualCursorCoordinates();
+        undo.m_AddedStart       = coord;
 
         PHI_ASSERT(!m_Lines.empty());
 
@@ -2857,12 +2861,6 @@ namespace dlxemu
                     coord.m_Line + 1u,
                     GetCharacterColumn(coord.m_Line.unsafe() + 1u,
                                        static_cast<phi::uint32_t>(whitespace_size.unsafe()))));
-
-            // Fix selection
-            if (!HasSelection())
-            {
-                ClearSelection();
-            }
         }
         else
         {
@@ -2872,17 +2870,24 @@ namespace dlxemu
             // We require a valid ut8 sequence
             PHI_ASSERT(length > 0u);
 
-            PHI_ASSERT(coord.m_Line < m_Lines.size());
-            Line&    line   = m_Lines[static_cast<phi::size_t>(coord.m_Line.unsafe())];
+            Line&    line   = m_Lines[phi::narrow_cast<phi::size_t>(coord.m_Line)];
             phi::u32 cindex = GetCharacterIndex(coord);
 
             if (m_Overwrite && cindex < line.size())
             {
                 phi::u8_fast char_length = UTF8CharLength(line[cindex.unsafe()].m_Char);
 
-                undo.m_RemovedStart = m_State.m_CursorPosition;
-                undo.m_RemovedEnd   = Coordinates(
-                        coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + char_length));
+                // Only set the start if haven't removed something from deleting the selection beforehand
+                if (removed_selection)
+                {
+                    undo.m_RemovedEnd.m_Column += 1u;
+                }
+                else
+                {
+                    undo.m_RemovedStart = m_State.m_CursorPosition;
+                    undo.m_RemovedEnd   = Coordinates(
+                            coord.m_Line, GetCharacterColumn(coord.m_Line, cindex + char_length));
+                }
 
                 for (; char_length > 0u && cindex < line.size(); --char_length)
                 {
@@ -2896,7 +2901,7 @@ namespace dlxemu
                 line.insert(line.begin() + cindex.unsafe(),
                             Glyph(static_cast<phi::uint8_t>(*pointer), PaletteIndex::Default));
             }
-            undo.m_Added = std::string_view{buffer.data(), length.unsafe()};
+            undo.m_Added = phi::string_view{buffer.data(), length.unsafe()};
 
             SetCursorPosition(Coordinates(coord.m_Line, GetCharacterColumn(coord.m_Line, cindex)));
         }
@@ -3570,7 +3575,11 @@ namespace dlxemu
                         const ImVec2 p3(x2 - font_size * 0.2f, y - font_size * 0.2f);
                         const ImVec2 p4(x2 - font_size * 0.2f, y + font_size * 0.2f);
 
+                        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused const variable
+
                         static constexpr const ImU32 whitespace_color{0x90909090};
+
+                        PHI_MSVC_SUPPRESS_WARNING_POP()
 
                         draw_list->AddLine(p1, p2, whitespace_color);
                         draw_list->AddLine(p2, p3, whitespace_color);

@@ -1,0 +1,11 @@
+// ${CMAKE_AUTO_GENENERATED_WARNING}
+#pragma once
+
+namespace dlxemu
+{
+    static constexpr const char fmt_license[]{R"~~~(${FMT_LICENSE})~~~"};
+    static constexpr const char glad_license[]{R"~~~(${GLAD_LICENSE})~~~"};
+    static constexpr const char glfw_license[]{R"~~~(${GLFW_LICENSE})~~~"};
+    static constexpr const char imgui_license[]{R"~~~(${IMGUI_LICENSE})~~~"};
+    static constexpr const char phi_license[]{R"~~~(${PHI_LICENSE})~~~"};
+} // namespace dlxemu

@@ -10,8 +10,8 @@ PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
 static void BM_TokenizeAndParseADD(benchmark::State& state)
 {
-    std::int64_t count         = state.range(0);
-    std::int64_t string_length = 4;
+    std::int64_t                        count         = state.range(0);
+    static constexpr const std::int64_t string_length = 4;
 
     // Prepare string
     std::string string;
@@ -37,8 +37,8 @@ BENCHMARK(BM_TokenizeAndParseADD)->RangeMultiplier(2)->Range(8, 8 << 17)->Comple
 
 static void BM_ParseADD(benchmark::State& state)
 {
-    std::int64_t count         = state.range(0);
-    std::int64_t string_length = 4;
+    std::int64_t                        count         = state.range(0);
+    static constexpr const std::int64_t string_length = 4;
 
     // Prepare string
     std::string string;
@@ -67,9 +67,10 @@ BENCHMARK(BM_ParseADD)->RangeMultiplier(2)->Range(8, 8 << 17)->Complexity();
 
 static void BM_ParseADDR1R1R1(benchmark::State& state)
 {
-    std::int64_t                count         = state.range(0);
-    constexpr static const char test_string[] = "ADD, R1, R1, R1\n";
-    std::int64_t string_length = std::int64_t(phi::string_length(test_string).unsafe());
+    std::int64_t                        count       = state.range(0);
+    static constexpr const char*        test_string = "ADD, R1, R1, R1\n";
+    static constexpr const std::int64_t string_length =
+            std::int64_t(phi::string_length(test_string).unsafe());
 
     // Prepare string
     std::string string;

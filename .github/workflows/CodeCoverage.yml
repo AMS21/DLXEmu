@@ -25,19 +25,14 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.head_ref || github.run_number }}-${{ github.ref }}-${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   linux:
     runs-on: ubuntu-22.04
     env:
-      LLVM_VERSION: "14"
       LLVM_PROFILE_FILE: "profile-%p.profraw"
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
-      CTEST_PARALLEL_LEVEL: "2"
-      CTEST_OUTPUT_ON_FAILURE: "ON"
-      FUZZ_TIME: 300 # 5 Minutes
 
     strategy:
       fail-fast: false
@@ -45,7 +40,6 @@ jobs:
       matrix:
         compiler:
           - "gcc-12"
-          - "clang-15"
 
     steps:
       - name: Checkout
@@ -54,7 +48,7 @@ jobs:
           submodules: recursive
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.25.1
+        uses: lukka/get-cmake@v3.25.2
 
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -62,7 +56,7 @@ jobs:
           key: ${{ matrix.os }}-${{ matrix.compiler }}
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Setup Environment
         run: external/Phi/scripts/ci/SetupEnvironment.sh
@@ -90,7 +84,7 @@ jobs:
         with:
           repository: "AMS21/DLXEmu-Corpus"
           path: DLXEmu-Corpus
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.CORPUS_PAT }}
 
       - name: Run fuzzers
         run: |
@@ -105,7 +99,7 @@ jobs:
 
       - name: Process coverage data
         working-directory: ./build
-        run: gcovr -j $PROC_COUNT --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '$GCOV_EXECUTABLE'
+        run: gcovr -j $PROC_COUNT --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable "$GCOV_EXECUTABLE"
 
       - name: Upload coverage data
         uses: codecov/codecov-action@v3.1.1

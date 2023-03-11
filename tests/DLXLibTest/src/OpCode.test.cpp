@@ -6,27 +6,27 @@
 #include <phi/container/array.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/size_t.hpp>
-#include <cctype>
+#include <phi/text/to_lower_case.hpp>
+#include <phi/text/to_upper_case.hpp>
 #include <cmath>
-#include <iostream>
 
-void test_all_variants(std::string_view str, dlx::OpCode opcode) noexcept
+void test_all_variants(phi::string_view str, dlx::OpCode opcode) noexcept
 {
-    for (phi::size_t i{0}; i < static_cast<phi::size_t>(std::pow(2u, str.length())); ++i)
+    for (phi::size_t i{0u}; i < static_cast<phi::size_t>(std::pow(2u, str.length().unsafe())); ++i)
     {
         std::string test_str;
-        test_str.reserve(str.length());
+        test_str.reserve(str.length().unsafe());
 
         // Construct string
         for (phi::size_t j{0}; j < str.length(); ++j)
         {
             if (i & static_cast<phi::size_t>(std::pow(2u, j)))
             {
-                test_str += static_cast<char>(std::toupper(str[j]));
+                test_str += phi::to_upper_case(str[j]);
             }
             else
             {
-                test_str += static_cast<char>(std::tolower(str[j]));
+                test_str += phi::to_lower_case(str[j]);
             }
         }
 

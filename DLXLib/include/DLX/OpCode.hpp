@@ -188,14 +188,20 @@ namespace dlx
         NONE,
     };
 
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(
+            5264) // C5264: 'dlx::NumberOfOpCodes': 'const' variable is not used
+
     static constexpr const phi::usize NumberOfOpCodes{
             static_cast<phi::size_t>(OpCode::NUMBER_OF_ELEMENTS)};
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
+
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<OpCode>(OpCode value) noexcept
+    [[nodiscard]] constexpr phi::string_view enum_name<OpCode>(OpCode value) noexcept
     {
         switch (value)
         {
@@ -212,7 +218,8 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    OpCode StringToOpCode(std::string_view token) noexcept;
+    [[nodiscard]] OpCode StringToOpCode(phi::string_view token) noexcept;
 } // namespace dlx

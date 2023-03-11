@@ -11,6 +11,7 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
 PHI_GCC_SUPPRESS_WARNING_POP()
 
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 PHI_MSVC_SUPPRESS_WARNING(4582)
@@ -22,7 +23,7 @@ namespace dlx
         , m_Type{ArgumentType::None}
     {}
 
-    PHI_ATTRIBUTE_CONST ArgumentType InstructionArgument::GetType() const noexcept
+    PHI_ATTRIBUTE_PURE ArgumentType InstructionArgument::GetType() const noexcept
     {
         return m_Type;
     }
@@ -30,6 +31,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
 
     std::string InstructionArgument::DebugInfo() const noexcept
     {
@@ -41,20 +43,20 @@ namespace dlx
             case ArgumentType::AddressDisplacement: {
                 AddressDisplacement adr = AsAddressDisplacement();
                 return fmt::format("{:d}({:s})", adr.displacement.unsafe(),
-                                   dlx::enum_name(adr.register_id));
+                                   dlx::enum_name(adr.register_id).data());
             }
 
             case ArgumentType::FloatRegister:
-                return fmt::format("{:s}", dlx::enum_name(AsRegisterFloat().register_id));
+                return fmt::format("{:s}", dlx::enum_name(AsRegisterFloat().register_id).data());
 
             case ArgumentType::IntRegister:
-                return fmt::format("{:s}", dlx::enum_name(AsRegisterInt().register_id));
+                return fmt::format("{:s}", dlx::enum_name(AsRegisterInt().register_id).data());
 
             case ArgumentType::ImmediateInteger:
                 return fmt::format("#{:d}", AsImmediateValue().signed_value.unsafe());
 
             case ArgumentType::Label:
-                return fmt::format("{:s}", AsLabel().label_name);
+                return fmt::format("{:s}", AsLabel().label_name.data());
 
 #if !defined(DLXEMU_COVERAGE_BUILD)
             default:
@@ -71,40 +73,37 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument::RegisterInt& InstructionArgument::AsRegisterInt()
-            const noexcept
+    const InstructionArgument::RegisterInt& InstructionArgument::AsRegisterInt() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::IntRegister);
 
         return register_int;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument::RegisterFloat& InstructionArgument::
-            AsRegisterFloat() const noexcept
+    const InstructionArgument::RegisterFloat& InstructionArgument::AsRegisterFloat() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::FloatRegister);
 
         return register_float;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument::ImmediateValue& InstructionArgument::
-            AsImmediateValue() const noexcept
+    const InstructionArgument::ImmediateValue& InstructionArgument::AsImmediateValue()
+            const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::ImmediateInteger);
 
         return immediate_value;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument::AddressDisplacement& InstructionArgument::
-            AsAddressDisplacement() const noexcept
+    const InstructionArgument::AddressDisplacement& InstructionArgument::AsAddressDisplacement()
+            const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::AddressDisplacement);
 
         return address_displacement;
     }
 
-    PHI_ATTRIBUTE_CONST const InstructionArgument::Label& InstructionArgument::AsLabel()
-            const noexcept
+    const InstructionArgument::Label& InstructionArgument::AsLabel() const noexcept
     {
         PHI_ASSERT(m_Type == ArgumentType::Label);
 
@@ -114,9 +113,10 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
-    PHI_ATTRIBUTE_CONST phi::boolean operator==(const InstructionArgument& lhs,
-                                                const InstructionArgument& rhs) noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean operator==(const InstructionArgument& lhs,
+                                               const InstructionArgument& rhs) noexcept
     {
         if (lhs.GetType() != rhs.GetType())
         {
@@ -159,16 +159,16 @@ namespace dlx
 #endif
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_CONST phi::boolean operator!=(const InstructionArgument& lhs,
-                                                const InstructionArgument& rhs) noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean operator!=(const InstructionArgument& lhs,
+                                               const InstructionArgument& rhs) noexcept
     {
         return !(lhs == rhs);
     }
 
-    PHI_ATTRIBUTE_CONST InstructionArgument
-    ConstructInstructionArgumentRegisterInt(IntRegisterID id) noexcept
+    InstructionArgument ConstructInstructionArgumentRegisterInt(IntRegisterID id) noexcept
     {
         InstructionArgument arg;
         arg.m_Type                   = ArgumentType::IntRegister;
@@ -176,8 +176,7 @@ namespace dlx
         return arg;
     }
 
-    PHI_ATTRIBUTE_CONST InstructionArgument
-    ConstructInstructionArgumentRegisterFloat(FloatRegisterID id) noexcept
+    InstructionArgument ConstructInstructionArgumentRegisterFloat(FloatRegisterID id) noexcept
     {
         InstructionArgument arg;
         arg.m_Type                     = ArgumentType::FloatRegister;
@@ -185,8 +184,7 @@ namespace dlx
         return arg;
     }
 
-    PHI_ATTRIBUTE_CONST InstructionArgument
-    ConstructInstructionArgumentImmediateValue(std::int16_t value) noexcept
+    InstructionArgument ConstructInstructionArgumentImmediateValue(std::int16_t value) noexcept
     {
         InstructionArgument arg;
         arg.m_Type                       = ArgumentType::ImmediateInteger;
@@ -194,7 +192,7 @@ namespace dlx
         return arg;
     }
 
-    PHI_ATTRIBUTE_CONST InstructionArgument ConstructInstructionArgumentAddressDisplacement(
+    InstructionArgument ConstructInstructionArgumentAddressDisplacement(
             IntRegisterID id, phi::i32 displacement) noexcept
     {
         InstructionArgument arg;
@@ -204,8 +202,7 @@ namespace dlx
         return arg;
     }
 
-    PHI_ATTRIBUTE_CONST InstructionArgument
-    ConstructInstructionArgumentLabel(std::string_view label_name) noexcept
+    InstructionArgument ConstructInstructionArgumentLabel(phi::string_view label_name) noexcept
     {
         InstructionArgument arg;
         arg.m_Type           = ArgumentType::Label;

@@ -5,22 +5,6 @@ add_subdirectory(Phi)
 
 include(Phi/scripts/cmake/Environment.cmake)
 
-# Use latest standard available but at least C++-11
-if(DEFINED CMAKE_CXX23_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX23_EXTENSION_COMPILE_OPTION)
-  set(LatestCXXStandard 23)
-elseif(DEFINED CMAKE_CXX20_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX20_EXTENSION_COMPILE_OPTION)
-  set(LatestCXXStandard 20)
-elseif(DEFINED CMAKE_CXX17_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX17_EXTENSION_COMPILE_OPTION)
-  set(LatestCXXStandard 17)
-elseif(DEFINED CMAKE_CXX14_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX14_EXTENSION_COMPILE_OPTION)
-  set(LatestCXXStandard 14)
-else()
-  set(LatestCXXStandard 11)
-endif()
-
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_STANDARD ${LatestCXXStandard})
-
 # fmt
 add_subdirectory(fmt)
 
@@ -33,6 +17,8 @@ add_subdirectory(glad/cmake)
 # Add target
 glad_add_library(glad STATIC LANGUAGE C++ API gl:core=3.3)
 add_library(glad::glad ALIAS glad)
+
+set_target_properties(glad PROPERTIES LINKER_LANGUAGE "C")
 
 # glfw
 if(NOT PHI_PLATFORM_EMSCRIPTEN)
@@ -50,6 +36,8 @@ if(NOT PHI_PLATFORM_EMSCRIPTEN)
       CACHE INTERNAL "")
 
   add_subdirectory(glfw)
+
+  set_target_properties(glfw PROPERTIES LINKER_LANGUAGE "C")
 else()
   message(STATUS "Using system glfw")
 endif()

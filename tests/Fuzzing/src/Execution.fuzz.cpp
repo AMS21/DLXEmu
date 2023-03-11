@@ -3,7 +3,6 @@
 #include <phi/compiler_support/warning.hpp>
 #include <cstddef>
 #include <cstdint>
-#include <string_view>
 
 PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
 
@@ -12,7 +11,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 {
     static dlx::Processor processor;
 
-    std::string_view source = std::string_view(reinterpret_cast<const char*>(data), size);
+    phi::string_view source = phi::string_view(reinterpret_cast<const char*>(data), size);
 
     // Parse it
     dlx::ParsedProgram program = dlx::Parser::Parse(source);

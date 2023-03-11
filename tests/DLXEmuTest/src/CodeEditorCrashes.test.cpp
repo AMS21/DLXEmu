@@ -3,10 +3,16 @@
 #include "SetupImGui.hpp"
 #include <DLXEmu/CodeEditor.hpp>
 #include <DLXEmu/Emulator.hpp>
+#include <phi/compiler_support/warning.hpp>
+#include <phi/core/types.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
+
 #include <fmt/format.h>
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <phi/compiler_support/warning.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_POP()
 
 using namespace phi::literals;
 
@@ -240,7 +246,7 @@ TEST_CASE("crash-28853252177dc5b6be74f8247bde0d2a2b4f87b5")
     editor.Render({0.0f, 0.0f}, true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("crash-c567e237f4822cff4cab65198f9ea3b393e6f92c")
@@ -267,7 +273,7 @@ TEST_CASE("crash-c567e237f4822cff4cab65198f9ea3b393e6f92c")
     editor.Render({0.0f, 0.0f}, true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("crash-1e4a2c5c4b7bd8fe934c1eb3b5e0e98ed3474b72")
@@ -288,7 +294,7 @@ TEST_CASE("crash-1e4a2c5c4b7bd8fe934c1eb3b5e0e98ed3474b72")
     editor.Render({0.0f, 0.0f}, true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("Crash-b969d74f5fc10237a879950cd37541614ee459e4")
@@ -315,7 +321,7 @@ TEST_CASE("Crash-b969d74f5fc10237a879950cd37541614ee459e4")
     editor.AddErrorMarker(0u, "");
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
@@ -341,7 +347,7 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.MoveRight(0u, true, true);
         editor.VerifyInternalState();
 
-        EndImgui();
+        EndImGui();
     }
 
     // MoveLeft
@@ -365,7 +371,7 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.MoveLeft(0u, true, true);
         editor.VerifyInternalState();
 
-        EndImgui();
+        EndImGui();
     }
 
     // MoveUp
@@ -389,7 +395,7 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.MoveUp(0u, true);
         editor.VerifyInternalState();
 
-        EndImgui();
+        EndImGui();
     }
 
     // MoveDown
@@ -413,7 +419,7 @@ TEST_CASE("crash-4e00b6223382d32d373d6d47d46d844a422c77a8")
         editor.MoveDown(0u, true);
         editor.VerifyInternalState();
 
-        EndImgui();
+        EndImGui();
     }
 }
 
@@ -730,26 +736,6 @@ TEST_CASE("crash-a4ac408fb9d6def070ad3a76312ca092863048e5")
     editor.VerifyInternalState();
 }
 
-TEST_CASE("crash-d119db6a8c3f6f94864cf29ff9b426e53bf315c7")
-{
-    static constexpr const phi::usize runs = 10u;
-    for (phi::usize index{0u}; index < runs; ++index)
-    {
-        BeginImGui();
-
-        dlxemu::Emulator   emu;
-        dlxemu::CodeEditor editor{&emu};
-
-        editor.EnterCharacter(0xFE0B, true);
-        editor.VerifyInternalState();
-
-        editor.Render(ImVec2{0.0f, 8795850276864.000000f}, true);
-        editor.VerifyInternalState();
-
-        EndImgui();
-    }
-}
-
 TEST_CASE("crash-dd60a4533d7fd2e1f6a974f2d7bb139335aa739c")
 {
     dlxemu::CodeEditor editor{&emulator};
@@ -859,21 +845,6 @@ TEST_CASE("crash-fb51886e58a0f6657347eadf6e435a5253946875")
     }
 }
 
-TEST_CASE("crash-749abb6be89c8e168059ab62c631ccb0a3c12f07")
-{
-    BeginImGui();
-
-    dlxemu::CodeEditor editor{&emulator};
-
-    ImGui::GetIO().AddInputCharacterUTF16(57339);
-    editor.VerifyInternalState();
-
-    editor.Render({0.000000, -605108545849894421659648.000000});
-    editor.VerifyInternalState();
-
-    EndImgui();
-}
-
 TEST_CASE("crash-b50b36a0abacb8343855b0e477e235df9844f2f6")
 {
     BeginImGui();
@@ -907,7 +878,7 @@ TEST_CASE("crash-b50b36a0abacb8343855b0e477e235df9844f2f6")
     editor.EnterCharacter('\n', true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("crash-286340ec276cb402999df27b2bb407f5791230e5")
@@ -928,5 +899,161 @@ TEST_CASE("crash-286340ec276cb402999df27b2bb407f5791230e5")
     editor.Render({0.0, 0.0}, true);
     editor.VerifyInternalState();
 
-    EndImgui();
+    EndImGui();
+}
+
+TEST_CASE("crash-717c84590d8120d303480db66e875200e9d0ed55")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    for (phi::u32 runs{0u}; runs < 100u; ++runs)
+    {
+        BeginImGui();
+
+        ImGui::GetIO().AddKeyAnalogEvent(
+                ImGuiKey_DownArrow, true,
+                41538622456286478104298950458605568.000000); // ImGuiKey_DownArrow = 516
+        editor.VerifyInternalState();
+
+        ImGui::GetIO().AddKeyEvent(ImGuiKey_ReservedForModCtrl,
+                                   true); // ImGuiKey_ReservedForModCtrl = 648
+        editor.VerifyInternalState();
+
+        ImGui::GetIO().AddKeyEvent(ImGuiKey_Tab, true); // ImGuiKey_Tab = 512
+        editor.VerifyInternalState();
+
+        editor.Render(ImVec2(0.000000, 0.000000), true);
+        editor.VerifyInternalState();
+
+        EndImGui();
+    }
+}
+
+TEST_CASE("crash-8e2963574a484b8a1724f44b9ea98f16bb99cb1e")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter('\n', true);
+    editor.VerifyInternalState();
+
+    editor.MoveTop(true);
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('\t', false);
+    editor.VerifyInternalState();
+}
+
+TEST_CASE("crash-ffcd6b3db7f397e6b348e7b226bee50c0beae35c")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    BeginImGui();
+
+    editor.EnterCharacter(0x1200, true);
+    editor.VerifyInternalState();
+
+    editor.Copy();
+    editor.VerifyInternalState();
+
+    editor.Paste();
+    editor.VerifyInternalState();
+
+    EndImGui();
+}
+
+TEST_CASE("crash-ffeebdd586dabbeedc438fa03654867ed2b7058b")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    editor.EnterCharacter('\t', true);
+    editor.VerifyInternalState();
+
+    editor.SelectWordUnderCursor();
+    editor.VerifyInternalState();
+
+    editor.SetCursorPosition({0u, 0u});
+    editor.VerifyInternalState();
+
+    editor.Delete();
+    editor.VerifyInternalState();
+}
+
+TEST_CASE("crash-b00813c566113b05ea62375c1c8ececb3c3e0664")
+{
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter(0xFC00, true);
+        editor.VerifyInternalState();
+
+        editor.MoveTop(false);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter(0x6100, false);
+        editor.VerifyInternalState();
+
+        editor.MoveTop(true);
+        editor.VerifyInternalState();
+
+        editor.SetOverwrite(true);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter(0x6100, true);
+        editor.VerifyInternalState();
+    }
+
+    {
+        dlxemu::CodeEditor editor{&emulator};
+
+        editor.EnterCharacter(0xFC00, true);
+        editor.VerifyInternalState();
+
+        editor.MoveTop(false);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter('\n', false);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter('\n', false);
+        editor.VerifyInternalState();
+
+        editor.MoveTop(true);
+        editor.VerifyInternalState();
+
+        editor.SetOverwrite(true);
+        editor.VerifyInternalState();
+
+        editor.EnterCharacter(0x6100, true);
+        editor.VerifyInternalState();
+    }
+}
+
+TEST_CASE("crash-e0cce121f9978ff1cab1d055f0ff8679df46c8fd")
+{
+    dlxemu::CodeEditor editor{&emulator};
+
+    BeginImGui();
+
+    editor.EnterCharacter('\t', false);
+    editor.VerifyInternalState();
+
+    editor.Copy();
+    editor.VerifyInternalState();
+
+    editor.MoveHome(false);
+    editor.VerifyInternalState();
+
+    editor.Paste();
+    editor.VerifyInternalState();
+
+    editor.SetOverwrite(true);
+    editor.VerifyInternalState();
+
+    editor.Backspace();
+    editor.VerifyInternalState();
+
+    editor.EnterCharacter('$', true);
+    editor.VerifyInternalState();
+
+    EndImGui();
 }

@@ -37,6 +37,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
     PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
 
     std::string ParseError::ConstructMessage() const noexcept
@@ -47,14 +48,14 @@ namespace dlx
                 const UnexpectedArgumentType& detail = GetUnexpectedArgumentType();
 
                 return fmt::format("Expected {:s} but got {:s}",
-                                   dlx::enum_name(detail.expected_type),
-                                   dlx::enum_name(detail.actual_type));
+                                   dlx::enum_name(detail.expected_type).data(),
+                                   dlx::enum_name(detail.actual_type).data());
             }
 
             case Type::InvalidNumber: {
                 const InvalidNumber& detail = GetInvalidNumber();
 
-                return fmt::format("'{:s}' is not a valid number", detail.text);
+                return fmt::format("'{:s}' is not a valid number", detail.text.data());
             }
 
             case Type::TooFewArgumentsAddressDisplacement: {
@@ -65,27 +66,28 @@ namespace dlx
                 const UnexpectedToken& detail = GetUnexpectedToken();
 
                 return fmt::format("Expected token of type {:s} but got {:s}",
-                                   dlx::enum_name(detail.expected_type),
-                                   dlx::enum_name(detail.actual_type));
+                                   dlx::enum_name(detail.expected_type).data(),
+                                   dlx::enum_name(detail.actual_type).data());
             }
 
             case Type::ReserverdIdentifier: {
                 const ReservedIdentifier& detail = GetReserverIdentifier();
 
-                return fmt::format("'{:s}' is a reserved identifier", detail.identifier);
+                return fmt::format("'{:s}' is a reserved identifier", detail.identifier.data());
             }
 
             case Type::InvalidLabelIdentifier: {
                 const InvalidLabelIdentifier& detail = GetInvalidLabelIdentifier();
 
-                return fmt::format("'{:s}' is not a valid label identifier", detail.identifer);
+                return fmt::format("'{:s}' is not a valid label identifier",
+                                   detail.identifer.data());
             }
 
             case Type::LabelAlreadyDefined: {
                 const LabelAlreadyDefined& detail = GetLabelAlreadyDefined();
 
                 return fmt::format("Label '{:s}' was already defined at {:d}:{:d}",
-                                   detail.label_name, detail.at_line, detail.at_column);
+                                   detail.label_name.data(), detail.at_line, detail.at_column);
             }
 
             case Type::OneInstructionPerLine: {
@@ -103,7 +105,8 @@ namespace dlx
             case Type::EmptyLabel: {
                 const EmptyLabel& detail = GetEmptyLabel();
 
-                return fmt::format("Label '{:s}' does not have any instruction", detail.label_name);
+                return fmt::format("Label '{:s}' does not have any instruction",
+                                   detail.label_name.data());
             }
 
             case Type::TooManyComma: {
@@ -210,7 +213,7 @@ namespace dlx
 
     PHI_ATTRIBUTE_CONST ParseError ConstructInvalidNumberParseError(phi::uint64_t    line_number,
                                                                     phi::uint64_t    column,
-                                                                    std::string_view text) noexcept
+                                                                    phi::string_view text) noexcept
     {
         ParseError err;
 
@@ -271,7 +274,7 @@ namespace dlx
     }
 
     PHI_ATTRIBUTE_CONST ParseError ConstructReservedIdentiferParseError(
-            phi::uint64_t line_number, phi::uint64_t column, std::string_view identifier) noexcept
+            phi::uint64_t line_number, phi::uint64_t column, phi::string_view identifier) noexcept
     {
         ParseError err;
 
@@ -290,7 +293,7 @@ namespace dlx
     }
 
     PHI_ATTRIBUTE_CONST ParseError ConstructInvalidLabelIdentifierParseError(
-            phi::uint64_t line_number, phi::uint64_t column, std::string_view identifier) noexcept
+            phi::uint64_t line_number, phi::uint64_t column, phi::string_view identifier) noexcept
     {
         ParseError err;
 
@@ -310,7 +313,7 @@ namespace dlx
     }
 
     PHI_ATTRIBUTE_CONST ParseError ConstructLabelAlreadyDefinedParseError(
-            phi::uint64_t line_number, phi::uint64_t column, std::string_view label_name,
+            phi::uint64_t line_number, phi::uint64_t column, phi::string_view label_name,
             phi::uint64_t at_line, phi::uint64_t at_column) noexcept
     {
         ParseError err;
@@ -375,7 +378,7 @@ namespace dlx
     }
 
     PHI_ATTRIBUTE_CONST ParseError ConstructEmptyLabelParseError(
-            phi::uint64_t line_number, phi::uint64_t column, std::string_view label_name) noexcept
+            phi::uint64_t line_number, phi::uint64_t column, phi::string_view label_name) noexcept
     {
         ParseError err;
 
@@ -392,7 +395,7 @@ namespace dlx
         return ConstructEmptyLabelParseError(
                 token.GetLineNumber().unsafe(), token.GetColumn().unsafe(),
                 (token.GetText().back() == ':') ?
-                        token.GetText().substr(0, token.GetText().size() - 1) :
+                        token.GetText().substring_view(0u, token.GetText().length() - 1u) :
                         token.GetText());
     }
 

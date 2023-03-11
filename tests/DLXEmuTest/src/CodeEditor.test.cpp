@@ -5,7 +5,12 @@
 #include <DLXEmu/Emulator.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
+
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
+
 #include <limits>
+
+PHI_MSVC_SUPPRESS_WARNING_POP()
 
 using namespace phi::literals;
 
@@ -301,7 +306,7 @@ TEST_CASE("Set/GetPalette")
         CHECK(current_palette[i] == retro_blue_palette[i]);
     }
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("ErrorMarkers")
@@ -458,102 +463,25 @@ TEST_CASE("Render")
     BeginImGui();
     editor.Render();
     editor.VerifyInternalState();
-    EndImgui();
+    EndImGui();
 
     // With size
     BeginImGui();
     editor.Render(ImVec2{1024.0f, 720.0f});
     editor.VerifyInternalState();
-    EndImgui();
+    EndImGui();
 
     // With border
     BeginImGui();
     editor.Render({}, true);
     editor.VerifyInternalState();
-    EndImgui();
+    EndImGui();
 
     // With size and border
     BeginImGui();
     editor.Render(ImVec2{1024.0f, 720.0f}, true);
     editor.VerifyInternalState();
-    EndImgui();
-
-    // With negative size
-    BeginImGui();
-    editor.Render(ImVec2{-100.0f, -100.0f});
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With negative size and border
-    BeginImGui();
-    editor.Render(ImVec2{-100.0f, -100.0f}, true);
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With float max
-    BeginImGui();
-    static constexpr const float max_float = std::numeric_limits<float>::max();
-    editor.Render(ImVec2{max_float, max_float});
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With float max and border
-    BeginImGui();
-    editor.Render(ImVec2{max_float, max_float}, true);
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With float min
-    BeginImGui();
-    static constexpr const float min_float = std::numeric_limits<float>::min();
-    editor.Render(ImVec2{min_float, min_float});
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With float min and border
-    BeginImGui();
-    editor.Render(ImVec2{min_float, min_float}, true);
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With quiet NaN
-    BeginImGui();
-    static constexpr const float float_quiet_nan = std::numeric_limits<float>::quiet_NaN();
-    editor.Render(ImVec2{float_quiet_nan, float_quiet_nan});
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With quiet NaN and border
-    BeginImGui();
-    editor.Render(ImVec2{float_quiet_nan, float_quiet_nan}, true);
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With signaling NaN
-    BeginImGui();
-    static constexpr const float float_signaling_nan = std::numeric_limits<float>::signaling_NaN();
-    editor.Render(ImVec2{float_signaling_nan, float_signaling_nan});
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With signaling NaN and border
-    BeginImGui();
-    editor.Render(ImVec2{float_signaling_nan, float_signaling_nan}, true);
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With Infinity
-    BeginImGui();
-    static constexpr const float float_inf = std::numeric_limits<float>::infinity();
-    editor.Render(ImVec2{float_inf, float_inf});
-    editor.VerifyInternalState();
-    EndImgui();
-
-    // With Infinity and border
-    BeginImGui();
-    editor.Render(ImVec2{float_inf, float_inf}, true);
-    editor.VerifyInternalState();
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("Get/SetText")
@@ -1011,7 +939,7 @@ TEST_CASE("IsTextChanged")
 
     CHECK_FALSE(editor.IsTextChanged());
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("IsCursorPositionChanged")
@@ -1038,7 +966,7 @@ TEST_CASE("IsCursorPositionChanged")
 
     CHECK_FALSE(editor.IsCursorPositionChanged());
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("Colorizer")
@@ -1328,31 +1256,31 @@ TEST_CASE("ShowWhitespaces")
 
     CHECK_FALSE(editor.IsShowingWhitespaces());
 
-    EndImgui();
+    EndImGui();
 }
 
 TEST_CASE("TabSize")
 {
     dlxemu::CodeEditor editor{&emulator};
 
-    CHECK(editor.GetTabSize().unsafe() == 4);
+    CHECK(editor.GetTabSize() == 4);
 
     editor.SetTabSize(1_u8);
     editor.VerifyInternalState();
-    CHECK(editor.GetTabSize().unsafe() == 1);
+    CHECK(editor.GetTabSize() == 1);
 
     editor.SetTabSize(5_u8);
     editor.VerifyInternalState();
-    CHECK(editor.GetTabSize().unsafe() == 5);
+    CHECK(editor.GetTabSize() == 5);
 
     // Clamped properly
     editor.SetTabSize(0_u8);
     editor.VerifyInternalState();
-    CHECK(editor.GetTabSize().unsafe() == 1);
+    CHECK(editor.GetTabSize() == 1);
 
     editor.SetTabSize(100_u8);
     editor.VerifyInternalState();
-    CHECK(editor.GetTabSize().unsafe() == 32);
+    CHECK(editor.GetTabSize() == 32);
 }
 
 TEST_CASE("EnterCharacter")

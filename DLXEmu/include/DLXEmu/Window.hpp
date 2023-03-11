@@ -31,7 +31,6 @@ namespace dlxemu
 
         static void ShutdownImGui() noexcept;
 
-        GLFWwindow*   m_Window{nullptr};
-        ImGuiContext* m_ImGuiContext{nullptr};
+        GLFWwindow* m_Window{nullptr};
     };
 } // namespace dlxemu

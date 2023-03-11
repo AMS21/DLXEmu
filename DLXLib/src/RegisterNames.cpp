@@ -3,33 +3,32 @@
 #include <phi/compiler_support/extended_attributes.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/boolean.hpp>
-#include <string_view>
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
-    PHI_ATTRIBUTE_CONST IntRegisterID StringToIntRegister(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST IntRegisterID StringToIntRegister(phi::string_view token) noexcept
     {
-        if (token.length() == 2)
+        if (token.length() == 2u)
         {
-            char first_char = token[0];
+            const char first_char = token[0u];
             if (first_char == 'R' || first_char == 'r')
             {
-                char second_char = token[1];
+                const char second_char = token[1u];
                 if (second_char >= '0' && second_char <= '9')
                 {
                     return static_cast<IntRegisterID>(second_char - '0');
                 }
             }
         }
-        else if (token.length() == 3)
+        else if (token.length() == 3u)
         {
-            char first_char = token[0];
+            const char first_char = token[0u];
             if (first_char == 'R' || first_char == 'r')
             {
-                char second_char = token[1];
-                char third_char  = token[2];
+                const char second_char = token[1u];
+                const char third_char  = token[2u];
 
                 switch (second_char)
                 {
@@ -64,27 +63,27 @@ namespace dlx
         return IntRegisterID::None;
     }
 
-    PHI_ATTRIBUTE_CONST FloatRegisterID StringToFloatRegister(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST FloatRegisterID StringToFloatRegister(phi::string_view token) noexcept
     {
-        if (token.length() == 2)
+        if (token.length() == 2u)
         {
-            char first_char = token[0];
+            const char first_char = token[0u];
             if (first_char == 'F' || first_char == 'f')
             {
-                char second_char = token[1];
+                const char second_char = token[1u];
                 if (second_char >= '0' && second_char <= '9')
                 {
                     return static_cast<FloatRegisterID>(second_char - '0');
                 }
             }
         }
-        else if (token.length() == 3)
+        else if (token.length() == 3u)
         {
-            char first_char = token[0];
+            const char first_char = token[0u];
             if (first_char == 'F' || first_char == 'f')
             {
-                char second_char = token[1];
-                char third_char  = token[2];
+                const char second_char = token[1u];
+                const char third_char  = token[2u];
 
                 switch (second_char)
                 {
@@ -119,14 +118,14 @@ namespace dlx
         return FloatRegisterID::None;
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean IsFPSR(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean IsFPSR(phi::string_view token) noexcept
     {
-        if (token.length() == 4)
+        if (token.length() == 4u)
         {
-            char c1 = token[0];
-            char c2 = token[1];
-            char c3 = token[2];
-            char c4 = token[3];
+            const char c1 = token[0u];
+            const char c2 = token[1u];
+            const char c3 = token[2u];
+            const char c4 = token[3u];
 
             return (c1 == 'F' || c1 == 'f') && (c2 == 'P' || c2 == 'p') &&
                    (c3 == 'S' || c3 == 's') && (c4 == 'R' || c4 == 'r');

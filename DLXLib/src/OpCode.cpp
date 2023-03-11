@@ -19,13 +19,14 @@ namespace dlx
         return (c == t) || (c == t + diff);
     }
 
-    PHI_ATTRIBUTE_CONST OpCode StringToOpCode(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST OpCode StringToOpCode(phi::string_view token) noexcept
     {
-        switch (token.length())
+        switch (token.length().unsafe())
         {
             // 1 character OpCodes
             case 1: {
-                char c1 = token[0];
+                const char c1 = token[0u];
+
                 if (ice(c1, 'J'))
                 {
                     return OpCode::J;
@@ -35,8 +36,8 @@ namespace dlx
 
             // 2 character OpCodes
             case 2: {
-                char c1 = token[0];
-                char c2 = token[1];
+                const char c1 = token[0u];
+                const char c2 = token[1u];
 
                 switch (c1)
                 {
@@ -103,9 +104,9 @@ namespace dlx
 
             // 3 character OpCodes
             case 3: {
-                char c1 = token[0];
-                char c2 = token[1];
-                char c3 = token[2];
+                const char c1 = token[0u];
+                const char c2 = token[1u];
+                const char c3 = token[2u];
 
                 switch (c1)
                 {
@@ -376,10 +377,10 @@ namespace dlx
 
             // 4 character OpCodes
             case 4: {
-                char c1 = token[0];
-                char c2 = token[1];
-                char c3 = token[2];
-                char c4 = token[3];
+                const char c1 = token[0u];
+                const char c2 = token[1u];
+                const char c3 = token[2u];
+                const char c4 = token[3u];
 
                 switch (c1)
                 {
@@ -683,11 +684,11 @@ namespace dlx
 
             // 5 character OpCodes
             case 5: {
-                char c1 = token[0];
-                char c2 = token[1];
-                char c3 = token[2];
-                char c4 = token[3];
-                char c5 = token[4];
+                const char c1 = token[0u];
+                const char c2 = token[1u];
+                const char c3 = token[2u];
+                const char c4 = token[3u];
+                const char c5 = token[4u];
 
                 switch (c1)
                 {
@@ -793,12 +794,12 @@ namespace dlx
 
             // 6 character OpCodes
             case 6: {
-                char c1 = token[0];
-                char c2 = token[1];
-                char c3 = token[2];
-                char c4 = token[3];
-                char c5 = token[4];
-                char c6 = token[5];
+                const char c1 = token[0u];
+                const char c2 = token[1u];
+                const char c3 = token[2u];
+                const char c4 = token[3u];
+                const char c5 = token[4u];
+                const char c6 = token[5u];
 
                 if (ice(c1, 'C') && ice(c2, 'V') && ice(c3, 'T'))
                 {
@@ -859,13 +860,13 @@ namespace dlx
 
             // 7 character OpCodes
             case 7: {
-                char c1 = token[0];
-                char c2 = token[1];
-                char c3 = token[2];
-                char c4 = token[3];
-                char c5 = token[4];
-                char c6 = token[5];
-                char c7 = token[6];
+                const char c1 = token[0u];
+                const char c2 = token[1u];
+                const char c3 = token[2u];
+                const char c4 = token[3u];
+                const char c5 = token[4u];
+                const char c6 = token[5u];
+                const char c7 = token[6u];
 
                 if (ice(c1, 'M') && ice(c2, 'O') && ice(c3, 'V'))
                 {
@@ -873,7 +874,7 @@ namespace dlx
                     {
                         return OpCode::MOVI2FP;
                     }
-                    else if (ice(c4, 'F') && ice(c5, 'P') && c6 == '2' && ice(c7, 'I'))
+                    if (ice(c4, 'F') && ice(c5, 'P') && c6 == '2' && ice(c7, 'I'))
                     {
                         return OpCode::MOVFP2I;
                     }

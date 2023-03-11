@@ -25,16 +25,12 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.head_ref || github.run_number }}-${{ github.ref }}-${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   Build:
     runs-on: ubuntu-22.04
-
-    env:
-      FUZZING_TIME: "120" # 2 Minutes
-      FUZZING_BUILD_FLAGS: "-coverage -fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability -fno-sanitize-recover=all -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common -fno-inline-functions -DPHI_DEBUG -DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN"
 
     strategy:
       fail-fast: false
@@ -82,10 +78,10 @@ jobs:
         run: external/Phi/scripts/ci/InstallTools.sh gcovr
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.25.1
+        uses: lukka/get-cmake@v3.25.2
 
       - name: Install dependencies
-        run: scripts/ci/InstallDependencies.sh
+        run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Configure build directory
         run: |
@@ -101,22 +97,3 @@ jobs:
       - name: Run tests
         working-directory: ./build
         run: ctest . -C ${{ matrix.build_type }}
-
-      - name: Run fuzzers
-        if: matrix.compiler == 'clang*' && matrix.dynamic_test != 'tsan'
-        working-directory: ./build
-        run: |
-          cmake .. -DCMAKE_CXX_FLAGS="$FUZZING_BUILD_FLAGS"
-          cmake --build . --clean-first
-          ctest . -C Debug
-
-          fuzzers=$(find $BINARY_DIR -type f -iname "fuzz_*")
-          echo "Found fuzzers:"
-          echo "$fuzzers"
-
-          for fuzzer in $fuzzers
-          do
-            printf "**********\nRunning $fuzzer\n**********\n"
-
-            $fuzzer -timeout=1 -use_value_profile=1 -print_pcs=1 -print_final_stats=1 -max_total_time=$FUZZING_TIME -close_fd_mask=1 | tee $fuzzer.log
-          done

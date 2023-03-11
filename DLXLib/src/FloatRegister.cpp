@@ -11,7 +11,7 @@ namespace dlx
         m_Value = val;
     }
 
-    PHI_ATTRIBUTE_CONST phi::f32 FloatRegister::GetValue() const noexcept
+    PHI_ATTRIBUTE_PURE phi::f32 FloatRegister::GetValue() const noexcept
     {
         return m_Value;
     }

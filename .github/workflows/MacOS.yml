@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.head_ref || github.run_number }}-${{ github.ref }}-${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -45,7 +45,7 @@ jobs:
       matrix:
         cfg:
           #- { compiler: gcc,   compiler_version: "12" }
-          - { compiler: clang, compiler_version: "13.4.1" }
+          - { compiler: clang, compiler_version: "14.2" }
 
         build_type:
           - "Debug"
@@ -53,6 +53,7 @@ jobs:
           - "Release"
 
         dynamic_test:
+          - "none"
           - "asan"
           - "tsan"
           - "ubsan"
@@ -69,7 +70,7 @@ jobs:
           key: ${{ matrix.os }}-${{ matrix.cfg.compiler }}-${{ matrix.cfg.compiler_version }}
 
       - name: Install cmake
-        uses: lukka/get-cmake@v3.25.1
+        uses: lukka/get-cmake@v3.25.2
 
       - name: Setup XCode
         if: matrix.cfg.compiler == 'clang'
@@ -79,6 +80,9 @@ jobs:
 
       - name: Install ninja
         run: brew install ninja
+
+      - name: Install dependencies
+        run: pip install wheel jinja2
 
       - name: Install
         run: |

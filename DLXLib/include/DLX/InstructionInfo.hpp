@@ -59,9 +59,10 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<ArgumentType>(ArgumentType value) noexcept
+    [[nodiscard]] constexpr phi::string_view enum_name<ArgumentType>(ArgumentType value) noexcept
     {
         switch (phi::to_underlying(value))
         {
@@ -83,6 +84,7 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
 #define DLX_ENUM_REGISTER_ACCESS_TYPE                                                              \
@@ -106,9 +108,10 @@ namespace dlx
 
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<RegisterAccessType>(
+    [[nodiscard]] constexpr phi::string_view enum_name<RegisterAccessType>(
             RegisterAccessType value) noexcept
     {
         switch (value)
@@ -125,6 +128,7 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
     using InstructionExecutor = std::add_pointer_t<void(

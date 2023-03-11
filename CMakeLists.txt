@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.10.2)
 
 # Policy
-if(${CMAKE_VERSION} VERSION_LESS 3.24)
+if(${CMAKE_VERSION} VERSION_LESS 3.25)
   cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 else()
-  cmake_policy(VERSION 3.24)
+  cmake_policy(VERSION 3.25)
 endif()
 
 # Settings
@@ -80,6 +80,11 @@ project(
   LANGUAGES CXX C
   VERSION ${DLXEMU_VERSION_MAJOR}.${DLXEMU_VERSION_MINOR}.${DLXEMU_VERSION_PATCH})
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external/Phi/scripts/cmake)
+
+include(internal/IncludeGuard)
+include(Environment)
+
 # Build js files when using emscripten
 if(PHI_PLATFORM_EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
@@ -101,30 +106,8 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/Phi/CMakeLists.txt")
   )
 endif()
 
-# Sadly some of our dependencies rely on undefined behavior so we disable the checks here
-set(disable_checks
-    UNSIGNED_INTEGER_OVERFLOW
-    INTEGER
-    IMPLICIT_SIGNED_INTEGER_TRUNCATION
-    IMPLICIT_INTEGER_ARITHMETIC_VALUE_CHANGE
-    IMPLICIT_INTEGER_TRUNCATION
-    IMPLICIT_CONVERSION
-    IMPLICIT_INTEGER_SIGN_CHANGE
-    UNSIGNED_SHIFT_BASE
-    SHIFT_BASE
-    SHIFT)
-foreach(check ${disable_checks})
-  set("PHI_SUPPORTS_SANITIZER_${check}"
-      0
-      CACHE INTERNAL "Test PHI_SUPPORTS_SANITIZER_${check}")
-endforeach()
-
 # Dependencies
 add_subdirectory(external)
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external/Phi/scripts/cmake)
-
-include(Environment)
 
 # Set output directories
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -139,6 +122,7 @@ add_subdirectory(DLXEmu)
 
 # Tests
 if(${DLXEMU_BUILD_TESTS})
+  enable_testing()
   include(Testing)
 
   add_subdirectory(tests)
@@ -159,6 +143,7 @@ set(configure_options
     PEDANTIC
     FPM_PRECISE
     NO_EXCEPTIONS
+    LTO
     STANDARD
     "latest"
     EXTERNAL
@@ -181,10 +166,22 @@ if(DLXEMU_ENABLE_TSAN)
   set(san_options ${san_options} "thread")
 endif()
 if(DLXEMU_ENABLE_UBSAN)
-  set(san_options ${san_options} "undefined")
+  # Sadly some of our dependencies rely on undefined behavior so we disable the checks here
+  if(PHI_COMPILER_CLANG OR PHI_COMPILER_GCC)
+    add_compile_options(
+      "-fsanitize=undefined,float-divide-by-zero,local-bounds,nullability"
+      "-fno-sanitize=float-cast-overflow"
+      "-fno-common -fno-inline -fno-inline-functions -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-sanitize-recover=all"
+    )
+  endif()
 endif()
 if(DLXEMU_COVERAGE_BUILD)
   set(configure_options ${configure_options} COVERAGE)
+endif()
+
+# Fuzz build
+if(DLXEMU_FUZZ_BUILD)
+  set(configure_options ${configure_options} FUZZING_BUILD)
 endif()
 
 if(san_options)

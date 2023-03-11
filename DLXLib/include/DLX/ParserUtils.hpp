@@ -14,7 +14,6 @@
 #include <phi/text/is_hex_digit.hpp>
 #include <phi/text/is_octal_digit.hpp>
 #include <limits>
-#include <string_view>
 
 namespace dlx
 {
@@ -27,7 +26,7 @@ namespace dlx
 
     /* String functions */
 
-    [[nodiscard]] inline phi::boolean IsReservedIdentifier(std::string_view token) noexcept
+    [[nodiscard]] inline phi::boolean IsReservedIdentifier(phi::string_view token) noexcept
     {
         if (StringToIntRegister(token) != IntRegisterID::None)
         {
@@ -52,14 +51,14 @@ namespace dlx
         return false;
     }
 
-    PHI_ATTRIBUTE_CONST constexpr phi::boolean IsValidIdentifier(std::string_view token) noexcept
+    PHI_ATTRIBUTE_CONST constexpr phi::boolean IsValidIdentifier(phi::string_view token) noexcept
     {
-        if (token.empty())
+        if (token.is_empty())
         {
             return false;
         }
 
-        const char first_char = token.at(0);
+        const char first_char = token.at(0u);
 
         if (token.length() == 1u)
         {
@@ -67,7 +66,7 @@ namespace dlx
         }
 
         phi::boolean just_under_scores = (first_char == '_');
-        if (!(phi::is_alpha(first_char) || (first_char == '_')))
+        if (!phi::is_alpha(first_char) && (first_char != '_'))
         {
             return false;
         }
@@ -96,25 +95,25 @@ namespace dlx
     /* Parsing functions */
 
     PHI_ATTRIBUTE_CONST constexpr phi::optional<phi::i16> ParseNumber(
-            std::string_view token) noexcept
+            phi::string_view token) noexcept
     {
-        if (token.empty())
+        if (token.is_empty())
         {
             return {};
         }
 
-        if (token.length() == 1)
+        if (token.length() == 1u)
         {
-            if (phi::is_digit(token.at(0)))
+            if (phi::is_digit(token.at(0u)))
             {
-                return static_cast<std::int16_t>(token.at(0) - '0');
+                return static_cast<std::int16_t>(token.at(0u) - '0');
             }
 
             return {};
         }
 
         // Disallow trailing seperators
-        if (token.at(token.size() - 1) == '\'')
+        if (token.at(token.length() - 1u) == '\'')
         {
             return {};
         }

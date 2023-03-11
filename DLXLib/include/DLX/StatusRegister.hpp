@@ -7,9 +7,15 @@ namespace dlx
     class StatusRegister
     {
     public:
-        void SetStatus(phi::boolean value) noexcept;
+        constexpr void SetStatus(phi::boolean value) noexcept
+        {
+            m_Value = value;
+        }
 
-        [[nodiscard]] phi::boolean Get() const noexcept;
+        [[nodiscard]] constexpr phi::boolean Get() const noexcept
+        {
+            return m_Value;
+        }
 
     private:
         phi::boolean m_Value{false};

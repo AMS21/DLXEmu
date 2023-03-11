@@ -6,20 +6,21 @@ project("DLXEmuTest" CXX)
 # Files
 file(GLOB DLXEMU_TEST_SOURCES "src/CodeEditor.test.cpp" "src/CodeEditorCrashes.test.cpp"
      "src/SetupImGui.cpp")
-file(GLOB DLXEMU_TEST_HEADERS "include/SetupImGui.hpp" "include/Unary.hpp")
+file(GLOB DLXEMU_TEST_HEADERS "include/SetupImGui.hpp")
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${DLXEMU_TEST_SOURCES} ${DLXEMU_TEST_HEADERS})
+phi_add_executable(
+  NAME
+  "${PROJECT_NAME}"
+  FOLDER
+  "Tests"
+  SOURCES
+  ${DLXEMU_TEST_SOURCES}
+  HEADERS
+  ${DLXEMU_TEST_HEADERS}
+  PRIVATE_LINK_LIBRARIES
+  DLXEmuLib
+  Phi::Test
+  PRIVATE_INCLUDE_DIRS
+  "include")
 
-add_executable("DLXEmuUnittest" ${DLXEMU_TEST_SOURCES} ${DLXEMU_TEST_HEADERS})
-
-target_link_libraries("DLXEmuUnittest" PRIVATE DLXEmuLib Phi::Test)
-
-target_include_directories("DLXEmuUnittest" PRIVATE "include")
-
-# target_compile_definitions("DLXEmuUnittest" PRIVATE
-# "_GLIBCXX_DEBUG;_LIBCPP_DEBUG=1;_ITERATOR_DEBUG_LEVEL=2")
-
-set_target_properties("DLXEmuUnittest" PROPERTIES FOLDER "Tests")
-set_target_properties("DLXEmuUnittest" PROPERTIES CXX_STANDARD 20)
-
-phi_add_test(TARGET DLXEmuUnittest)
+phi_add_test(TARGET ${PROJECT_NAME})

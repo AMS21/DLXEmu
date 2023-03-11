@@ -45,6 +45,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
 // TODO: Fully upgrade the lines and columns to 64 bit numbers
 
+PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
 namespace dlxemu
 {
     class Emulator;
@@ -385,6 +387,10 @@ namespace dlxemu
         Lines       m_Lines;
         std::string m_FullText;
 
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+        mutable std::string m_FuzzingClipboardText;
+#endif
+
         // Constants
         static const constexpr phi::u8_fast MinTabSize{static_cast<phi::uint_fast8_t>(1u)};
         static const constexpr phi::u8_fast MaxTabSize{static_cast<phi::uint_fast8_t>(32u)};
@@ -396,13 +402,16 @@ namespace dlxemu
     };
 } // namespace dlxemu
 
+PHI_GCC_SUPPRESS_WARNING_POP()
+
 PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wreturn-type")
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
 namespace dlx
 {
     template <>
-    [[nodiscard]] constexpr std::string_view enum_name<dlxemu::CodeEditor::SelectionMode>(
+    [[nodiscard]] constexpr phi::string_view enum_name<dlxemu::CodeEditor::SelectionMode>(
             dlxemu::CodeEditor::SelectionMode value) noexcept
     {
         switch (value)
@@ -420,5 +429,6 @@ namespace dlx
     }
 } // namespace dlx
 
+PHI_MSVC_SUPPRESS_WARNING_POP()
 PHI_GCC_SUPPRESS_WARNING_POP()
 PHI_CLANG_SUPPRESS_WARNING_POP()

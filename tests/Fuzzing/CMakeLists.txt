@@ -104,9 +104,6 @@ define_fuzzer(
 define_fuzzer(NAME fuzz_structured_syntax_highlighting SOURCE
               "src/StructuredSyntaxHighlighting.fuzz.cpp" LIBRARIES DLXEmuLib)
 
-# Regression Test
-define_fuzzer(NAME fuzz_regression SOURCE "src/RegressionTest.fuzz.cpp" LIBRARIES DLXLib)
-
 # CodeEditor
 define_fuzzer(NAME fuzz_code_editor SOURCE "src/CodeEditor.fuzz.cpp" LIBRARIES DLXEmuLib)
 
@@ -124,3 +121,8 @@ define_fuzzer(
   RUN_ARGS
   "-close_fd_mask=1"
   ASCII)
+
+define_fuzzer(NAME fuzz_memory_block SOURCE "src/MemoryBlock.fuzz.cpp" LIBRARIES DLXLib)
+
+define_fuzzer(NAME fuzz_memory_block_verbose SOURCE "src/MemoryBlock.fuzz.cpp" LIBRARIES DLXLib)
+target_compile_definitions(fuzz_memory_block_verbose PRIVATE "FUZZ_VERBOSE_LOG")

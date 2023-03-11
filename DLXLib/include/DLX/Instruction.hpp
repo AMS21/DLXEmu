@@ -3,6 +3,7 @@
 #include "DLX/InstructionArgument.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/OpCode.hpp"
+#include <phi/compiler_support/warning.hpp>
 
 // Class represents a single fully parsed dlx assembler instruction
 namespace dlx
@@ -14,7 +15,11 @@ namespace dlx
 
         void SetArgument(phi::u8 argument_number, InstructionArgument argument) noexcept;
 
+        PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
         [[nodiscard]] std::string DebugInfo() const noexcept;
+
+        PHI_GCC_SUPPRESS_WARNING_POP()
 
         void Execute(Processor& processor) const noexcept;
 

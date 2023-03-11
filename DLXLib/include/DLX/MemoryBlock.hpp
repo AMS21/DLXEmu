@@ -60,6 +60,8 @@ namespace dlx
 
         [[nodiscard]] phi::usize GetSize() const noexcept;
 
+        void Resize(phi::usize new_size) noexcept;
+
         [[nodiscard]] std::vector<MemoryByte>& GetRawMemory() noexcept;
 
         [[nodiscard]] const std::vector<MemoryByte>& GetRawMemory() const noexcept;

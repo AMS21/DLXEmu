@@ -13,17 +13,18 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/types.hpp>
 #include <phi/type_traits/to_underlying.hpp>
-#include <type_traits>
-#include <utility>
 
 PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
+PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
 
 #include <fmt/core.h>
 #include <fmt/format.h>
 
+PHI_MSVC_SUPPRESS_WARNING_POP()
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_GCC_SUPPRESS_WARNING("-Wconversion")
+PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 // TODO: Fix strict aliasing problems
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-aliasing")
@@ -538,27 +539,27 @@ namespace dlx
     PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_CONST Exception Processor::GetLastRaisedException() const noexcept
+    PHI_ATTRIBUTE_PURE Exception Processor::GetLastRaisedException() const noexcept
     {
         return m_LastRaisedException;
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean Processor::IsHalted() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean Processor::IsHalted() const noexcept
     {
         return m_Halted;
     }
 
-    PHI_ATTRIBUTE_CONST const MemoryBlock& Processor::GetMemory() const noexcept
+    PHI_ATTRIBUTE_PURE const MemoryBlock& Processor::GetMemory() const noexcept
     {
         return m_MemoryBlock;
     }
 
-    PHI_ATTRIBUTE_CONST MemoryBlock& Processor::GetMemory() noexcept
+    PHI_ATTRIBUTE_PURE MemoryBlock& Processor::GetMemory() noexcept
     {
         return m_MemoryBlock;
     }
 
-    PHI_ATTRIBUTE_CONST phi::u32 Processor::GetProgramCounter() const noexcept
+    PHI_ATTRIBUTE_PURE phi::u32 Processor::GetProgramCounter() const noexcept
     {
         return m_ProgramCounter;
     }
@@ -568,7 +569,7 @@ namespace dlx
         m_ProgramCounter = new_pc;
     }
 
-    PHI_ATTRIBUTE_CONST phi::u32 Processor::GetNextProgramCounter() const noexcept
+    PHI_ATTRIBUTE_PURE phi::u32 Processor::GetNextProgramCounter() const noexcept
     {
         return m_NextProgramCounter;
     }
@@ -578,7 +579,7 @@ namespace dlx
         m_NextProgramCounter = new_npc;
     }
 
-    PHI_ATTRIBUTE_CONST phi::usize Processor::GetCurrentStepCount() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize Processor::GetCurrentStepCount() const noexcept
     {
         return m_CurrentStepCount;
     }
@@ -587,6 +588,8 @@ namespace dlx
     {
         m_MaxNumberOfSteps = new_max;
     }
+
+    PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
 
     std::string Processor::GetRegisterDump() const noexcept
     {
@@ -638,7 +641,7 @@ namespace dlx
         if (m_CurrentProgram)
         {
             if (m_CurrentProgram->m_ParseErrors.empty() &&
-                m_ProgramCounter.unsafe() < m_CurrentProgram->m_Instructions.size())
+                m_ProgramCounter < m_CurrentProgram->m_Instructions.size())
             {
                 Instruction instr = m_CurrentProgram->m_Instructions.at(m_ProgramCounter.unsafe());
                 text.append(fmt::format("INSTR:\n{}\n", instr.DebugInfo()));
@@ -654,8 +657,8 @@ namespace dlx
             text.append("INSTR:\nNo program loaded\n");
         }
 
-        text.append(fmt::format("EX: {}\n", dlx::enum_name(m_LastRaisedException)));
-        text.append(fmt::format("IAT: {}", dlx::enum_name(m_CurrentInstructionAccessType)));
+        text.append(fmt::format("EX: {}\n", dlx::enum_name(m_LastRaisedException).data()));
+        text.append(fmt::format("IAT: {}", dlx::enum_name(m_CurrentInstructionAccessType).data()));
 
         return text;
     }
@@ -669,4 +672,6 @@ namespace dlx
 
         return "No Program";
     }
+
+    PHI_GCC_SUPPRESS_WARNING_POP()
 } // namespace dlx

@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "DLX/VirtualFileSystem.hpp"
 
 #include <phi/compiler_support/extended_attributes.hpp>
@@ -11,12 +13,16 @@
 #include <cstdio>
 #include <filesystem>
 
+PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
+
 namespace dlx
 {
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wswitch")
     PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
+    PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
+    PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
-    std::string_view to_string_flags(const OpenModeFlags flags) noexcept
+    PHI_ATTRIBUTE_CONST phi::string_view to_string_flags(const OpenModeFlags flags) noexcept
     {
         PHI_ASSERT(flags != OpenModeFlags::Invalid);
         PHI_ASSERT(phi::to_underlying(flags) > 0u &&
@@ -50,10 +56,13 @@ namespace dlx
         }
     }
 
+    PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    OpenModeFlags parse_open_mode_flags(const char* string) noexcept
+    PHI_ATTRIBUTE_PURE OpenModeFlags parse_open_mode_flags(const char* string) noexcept
     {
+        PHI_ASSERT(string != nullptr, "Cannot parse nullptr");
+
         OpenModeFlags flags = OpenModeFlags::Invalid;
 
         for (; *string != '\0'; ++string)
@@ -85,7 +94,7 @@ namespace dlx
         return open(to_string_flags(flags).data());
     }
 
-    NativeFileHandle::NativeFileHandle(std::string_view real_path) noexcept
+    NativeFileHandle::NativeFileHandle(phi::string_view real_path) noexcept
         : m_RealPath{real_path}
     {}
 
@@ -97,12 +106,12 @@ namespace dlx
         }
     }
 
-    phi::boolean NativeFileHandle::is_virtual() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean NativeFileHandle::is_virtual() const noexcept
     {
         return false;
     }
 
-    phi::boolean NativeFileHandle::is_open() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean NativeFileHandle::is_open() const noexcept
     {
         return m_FileHandle != nullptr;
     }
@@ -146,12 +155,12 @@ namespace dlx
         , m_OpenFlags{OpenModeFlags::Invalid}
     {}
 
-    phi::boolean VirtualFileHandle::is_virtual() const noexcept
+    PHI_ATTRIBUTE_CONST phi::boolean VirtualFileHandle::is_virtual() const noexcept
     {
         return true;
     }
 
-    phi::boolean VirtualFileHandle::is_open() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean VirtualFileHandle::is_open() const noexcept
     {
         return m_OpenFlags != OpenModeFlags::Invalid;
     }
@@ -251,7 +260,10 @@ namespace dlx
     {
         if (FileExists(file_path))
         {
-            return m_FileSystem.find(file_path)->second;
+            auto res = m_FileSystem.find(file_path);
+            PHI_ASSERT(res != m_FileSystem.end(), "Coudln't find although it should exist");
+
+            return res->second;
         }
 
         return nullptr;
@@ -317,7 +329,7 @@ namespace dlx
         return count == 1u;
     }
 
-    phi::boolean VirtualFileSystem::IsEmpty() const noexcept
+    PHI_ATTRIBUTE_PURE phi::boolean VirtualFileSystem::IsEmpty() const noexcept
     {
         return m_FileSystem.empty();
     }
@@ -327,7 +339,7 @@ namespace dlx
         m_FileSystem.clear();
     }
 
-    phi::usize VirtualFileSystem::GetNumberOfFileHandles() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize VirtualFileSystem::GetNumberOfFileHandles() const noexcept
     {
         return m_FileSystem.size();
     }
@@ -360,7 +372,7 @@ namespace dlx
         return count;
     }
 
-    phi::usize VirtualFileSystem::GetFileHandleLimit() const noexcept
+    PHI_ATTRIBUTE_PURE phi::usize VirtualFileSystem::GetFileHandleLimit() const noexcept
     {
         return m_FileHandleLimit;
     }
@@ -372,8 +384,8 @@ namespace dlx
         if (new_limit <= m_FileSystem.size())
         {
             // Delete elements until we've reached the required size
-            phi::usize n{m_FileSystem.size() - new_limit};
-            for (auto it = m_FileSystem.begin(); n > 0u; --n)
+            phi::usize count{m_FileSystem.size() - new_limit};
+            for (auto it = m_FileSystem.begin(); count > 0u; --count)
             {
                 PHI_ASSERT(it != m_FileSystem.end());
                 it = m_FileSystem.erase(it);

@@ -54,7 +54,7 @@ namespace dlxemu
 
         [[nodiscard]] const dlx::ParsedProgram& GetProgram() const noexcept;
 
-        void ParseProgram(std::string_view source) noexcept;
+        void ParseProgram(phi::string_view source) noexcept;
 
         void ParseProgram(dlx::TokenStream& tokens) noexcept;
 
@@ -75,6 +75,8 @@ namespace dlxemu
         void RenderAbout() noexcept;
 
         void RenderOptionsMenu() noexcept;
+
+        void RenderThirdPartyLicense() noexcept;
 
         void Update() noexcept;
 
@@ -106,6 +108,7 @@ namespace dlxemu
         bool m_ShowMemoryViewer{true};
         bool m_ShowRegisterViewer{true};
         bool m_ShowAbout{false};
+        bool m_ShowThirdPartyLicense{false};
         bool m_ShowOptionsMenu{false};
 
         // Declare fuzzer function as a friend so it can access all members and functions

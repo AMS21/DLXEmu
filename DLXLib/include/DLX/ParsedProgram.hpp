@@ -4,6 +4,7 @@
 #include "DLX/TokenStream.hpp"
 #include "Instruction.hpp"
 #include "Token.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/boolean.hpp>
 #include <string>
 #include <unordered_map>
@@ -22,6 +23,10 @@ namespace dlx
 
         [[nodiscard]] phi::boolean IsValid() const noexcept;
 
+        PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
+
         [[nodiscard]] std::string GetDump() const noexcept;
+
+        PHI_GCC_SUPPRESS_WARNING_POP()
     };
 } // namespace dlx

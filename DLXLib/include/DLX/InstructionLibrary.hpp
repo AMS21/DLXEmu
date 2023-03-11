@@ -2,11 +2,11 @@
 
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/OpCode.hpp"
+#include <phi/container/array.hpp>
 
 namespace dlx
 {
-    using InstructionTableT =
-            std::array<InstructionInfo, static_cast<std::size_t>(OpCode::NUMBER_OF_ELEMENTS)>;
+    using InstructionTableT = phi::array<InstructionInfo, NumberOfOpCodes.unsafe()>;
 
     [[nodiscard]] InstructionTableT GenerateInstructionTable() noexcept;
 
