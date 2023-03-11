@@ -41,7 +41,7 @@ jobs:
 
       matrix:
         em_version:
-          - "3.1.28"
+          - "3.1.33"
           - "2.0.31"
 
         build_type:
