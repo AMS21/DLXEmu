@@ -40,7 +40,6 @@ jobs:
       matrix:
         compiler:
           - "gcc-12"
-          - "clang-15"
 
     steps:
       - name: Checkout
@@ -100,7 +99,7 @@ jobs:
 
       - name: Process coverage data
         working-directory: ./build
-        run: gcovr -j $PROC_COUNT --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '$GCOV_EXECUTABLE'
+        run: gcovr -j $PROC_COUNT --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable "$GCOV_EXECUTABLE"
 
       - name: Upload coverage data
         uses: codecov/codecov-action@v3.1.1
