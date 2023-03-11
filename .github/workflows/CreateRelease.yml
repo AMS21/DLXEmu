@@ -18,6 +18,9 @@ on:
 
 jobs:
   create_release:
+    permissions:
+      contents: write
+
     runs-on: ubuntu-22.04
 
     steps:
@@ -26,12 +29,10 @@ jobs:
         with:
           ref: develop
 
-      - name: Create a Release
-        uses: elgohr/Github-Release-Action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
-          title: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
+          tag_name: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
 
   merge_develop_into_main:
     runs-on: ubuntu-22.04
