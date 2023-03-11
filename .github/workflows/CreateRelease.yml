@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      major_version:
+        description: 'New major version'
+        required: true
+        default: '0'
+      minor_version:
+        description: 'New minor version'
+        required: true
+        default: '0'
+      patch_version:
+        description: 'New patch version'
+        required: true
+        default: '0'
+
+jobs:
+  create_release:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+
+      - name: Create a Release
+        uses: elgohr/Github-Release-Action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+        with:
+          title: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
+
+  merge_develop_into_main:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Merge develop branch
+        run: |
+          git merge develop
+          git push origin main
