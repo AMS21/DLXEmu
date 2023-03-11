@@ -2,9 +2,10 @@
 
 #include <glad/gl.h>
 
-#include "DLXEmu/generated/BuildInfo.hpp"
 #include <DLX/Logger.hpp>
 #include <DLX/TokenStream.hpp>
+#include <DLXEmu/generated/BuildInfo.hpp>
+#include <DLXEmu/generated/ThirdPartyLicense.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <phi/algorithm/for_each.hpp>
@@ -152,6 +153,10 @@ namespace dlxemu
         if (m_ShowAbout)
         {
             RenderAbout();
+        }
+        if (m_ShowThirdPartyLicense)
+        {
+            RenderThirdPartyLicense();
         }
 
 #if defined(PHI_DEBUG)
@@ -325,6 +330,11 @@ namespace dlxemu
 
             if (ImGui::BeginMenu("Help"))
             {
+                if (ImGui::MenuItem("Third-Party Licenses"))
+                {
+                    m_ShowThirdPartyLicense = true;
+                }
+
                 if (ImGui::MenuItem("About"))
                 {
                     m_ShowAbout = true;
@@ -601,6 +611,45 @@ namespace dlxemu
 
     PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wcovered-switch-default")
     PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
+
+    void Emulator::RenderThirdPartyLicense() noexcept
+    {
+        static constexpr const ImGuiWindowFlags third_party_flags =
+                ImGuiWindowFlags_AlwaysAutoResize + ImGuiWindowFlags_NoDocking +
+                ImGuiWindowFlags_NoResize + ImGuiWindowFlags_NoCollapse +
+                ImGuiWindowFlags_NoSavedSettings;
+
+        if (ImGui::Begin("DLXEmu - Third-Party License", &m_ShowThirdPartyLicense,
+                         third_party_flags))
+        {
+            if (ImGui::CollapsingHeader("{fmt}"))
+            {
+                ImGui::TextUnformatted(fmt_license);
+            }
+
+            if (ImGui::CollapsingHeader("glad"))
+            {
+                ImGui::TextUnformatted(glad_license);
+            }
+
+            if (ImGui::CollapsingHeader("glfw"))
+            {
+                ImGui::TextUnformatted(glfw_license);
+            }
+
+            if (ImGui::CollapsingHeader("imgui"))
+            {
+                ImGui::TextUnformatted(imgui_license);
+            }
+
+            if (ImGui::CollapsingHeader("Phi"))
+            {
+                ImGui::TextUnformatted(phi_license);
+            }
+
+            ImGui::End();
+        }
+    }
 
     void Emulator::Update() noexcept
     {

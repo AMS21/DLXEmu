@@ -76,6 +76,8 @@ namespace dlxemu
 
         void RenderOptionsMenu() noexcept;
 
+        void RenderThirdPartyLicense() noexcept;
+
         void Update() noexcept;
 
         void SetExecutionMode(ExecutionMode mode) noexcept;
@@ -106,6 +108,7 @@ namespace dlxemu
         bool m_ShowMemoryViewer{true};
         bool m_ShowRegisterViewer{true};
         bool m_ShowAbout{false};
+        bool m_ShowThirdPartyLicense{false};
         bool m_ShowOptionsMenu{false};
 
         // Declare fuzzer function as a friend so it can access all members and functions
