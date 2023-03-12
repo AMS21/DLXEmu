@@ -34,16 +34,78 @@ jobs:
         with:
           tag_name: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
 
-  merge_develop_into_main:
+      - name: Merge develop -> main
+        uses: devmasx/merge-branch@v1.4.0
+        with:
+          type: now
+          from_branch: develop
+          target_branch: main
+          github_token: ${{ github.token }}
+
+  deploy_assets_linux:
     runs-on: ubuntu-22.04
+    needs: create_release
+
+    strategy:
+      matrix:
+        cfg:
+          - { compiler: gcc-12, flags: "-m32", arch_name: "x86-32" }
+          - { compiler: gcc-12, flags: "-m64", arch_name: "x86-64" }
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           ref: main
+          submodules: recursive
 
-      - name: Merge develop branch
+      - name: Setup Environment
+        run: external/Phi/scripts/ci/SetupEnvironment.sh
+
+      - name: Install dependencies
+        run: sudo scripts/ci/InstallDependencies.sh
+
+      - name: Install cmake
+        uses: lukka/get-cmake@v3.25.2
+
+      - name: Install compiler
+        run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.cfg.compiler }} ninja
+
+      - name: Configure build directory
         run: |
-          git merge develop
-          git push origin main
+          mkdir build -p
+          cd build
+
+          flags="-D_FORTIFY_SOURCE=2 -D_GLIBCXX_ASSERTIONS -fstack-clash-protection -fstack-protector-strong -fcf-protection -Wl,-z,defs -Wl,-z,now -Wl,-z,relro ${{ matrix.cfg.flags }}"
+
+          cmake -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_FLAGS:STRING="$flags" -DCMAKE_CXX_FLAGS:STRING="$flags" -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON ..
+
+      - name: Build
+        working-directory: ./build
+        run: cmake --build . --config Release --target "DLXEmu"
+
+      - name: Strip binary
+        working-directory: ./build/bin
+        run: strip DLXEmu
+
+      - name: Determine asset name
+        run: echo "RELEASE_NAME=dlxemu-${{ github.event.release.name }}-linux-${{ matrix.cfg.arch_name }}" >> "$GITHUB_ENV"
+
+      - name: Package build artifacts
+        working-directory: ./build
+        run: |
+          zip       ${{ env.RELEASE_NAME }}.zip bin/DLXEmu
+          sha256sum ${{ env.RELEASE_NAME }}.zip > ${{ env.RELEASE_NAME }}.zip.sha256
+
+          tar -czvf ${{ env.RELEASE_NAME }}.tar.gz bin/DLXEmu
+          sha256sum ${{ env.RELEASE_NAME }}.tar.gz > ${{ env.RELEASE_NAME }}.tar.gz.sha256
+
+      - name: Upload Release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
+          files: |
+            build/${{ env.RELEASE_NAME }}.zip
+            build/${{ env.RELEASE_NAME }}.zip.sha256
+            build/${{ env.RELEASE_NAME }}.tar.gz
+            build/${{ env.RELEASE_NAME }}.tar.gz.sha256
