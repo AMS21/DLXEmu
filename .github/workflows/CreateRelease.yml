@@ -34,19 +34,13 @@ jobs:
         with:
           tag_name: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
 
-  merge_develop_into_main:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Merge develop -> main
+        uses: devmasx/merge-branch@v1.4.0
         with:
-          ref: main
-
-      - name: Merge develop branch
-        run: |
-          git merge develop
-          git push origin main
+          type: now
+          from_branch: develop
+          target_branch: main
+          github_token: ${{ github.token }}
 
   deploy_assets_linux:
     runs-on: ubuntu-22.04
