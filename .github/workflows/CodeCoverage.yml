@@ -90,7 +90,7 @@ jobs:
         run: |
           cd build
 
-          all_input_corpus=$(find ../DLXEmu-Corpus -type d -iname "Corpus" -or -iname "Seed" -printf "%p ")
+          all_input_corpus=$(find ../DLXEmu-Corpus/corpus -type d -printf "%p ")
           echo "Input Corpora: $all_input_corpus"
 
           mkdir -p TempCorpus
