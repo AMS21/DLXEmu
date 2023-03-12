@@ -28,6 +28,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: develop
+          fetch-depth: 0
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -35,12 +36,9 @@ jobs:
           tag_name: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
 
       - name: Merge develop -> main
-        uses: devmasx/merge-branch@v1.4.0
-        with:
-          type: now
-          from_branch: develop
-          target_branch: main
-          github_token: ${{ github.token }}
+        run: |
+          git checkout main
+          git merge develop
 
   deploy_assets_linux:
     runs-on: ubuntu-22.04
