@@ -58,9 +58,6 @@ jobs:
           sudo npm install html-minifier -g
           sudo npm install uglify-js -g
 
-      - name: Install cmake
-        uses: lukka/get-cmake@v3.25.2
-
       - name: Build main
         run: |
           mkdir -p build

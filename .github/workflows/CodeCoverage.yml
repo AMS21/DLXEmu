@@ -47,9 +47,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install cmake
-        uses: lukka/get-cmake@v3.25.2
-
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:

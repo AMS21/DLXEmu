@@ -72,9 +72,6 @@ jobs:
       - name: Install dependencies
         run: sudo scripts/ci/InstallDependencies.sh
 
-      - name: Install cmake
-        uses: lukka/get-cmake@v3.25.2
-
       - name: Configure build directory
         run: |
           mkdir build -p

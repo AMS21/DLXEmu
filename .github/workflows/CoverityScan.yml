@@ -33,9 +33,6 @@ jobs:
       - name: Install compiler
         run: external/Phi/scripts/ci/InstallTools.sh gcc-${{ env.GCC_VERSION }} ninja
 
-      - name: Install cmake
-        uses: lukka/get-cmake@v3.25.2
-
       - name: Install dependencies
         run: sudo scripts/ci/InstallDependencies.sh
 

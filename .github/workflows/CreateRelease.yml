@@ -63,9 +63,6 @@ jobs:
       - name: Install dependencies
         run: sudo scripts/ci/InstallDependencies.sh
 
-      - name: Install cmake
-        uses: lukka/get-cmake@v3.25.2
-
       - name: Install compiler
         run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.cfg.compiler }} ninja
 
