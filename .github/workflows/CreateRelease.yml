@@ -82,7 +82,7 @@ jobs:
 
       - name: Build
         working-directory: ./build
-        run: cmake --build . --config Release --targer "DLXEmu"
+        run: cmake --build . --config Release --target "DLXEmu"
 
       - name: Strip binary
         working-directory: ./build/bin
