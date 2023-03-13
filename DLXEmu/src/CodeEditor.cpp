@@ -62,7 +62,6 @@ PHI_MSVC_SUPPRESS_WARNING(5262)
 #include <string>
 #include <vector>
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h> // for imGui::GetCurrentWindow()
 #include <imgui_internal.h>
 
@@ -454,7 +453,7 @@ namespace dlxemu
             ComputeCharAdvance();
 
             HandleKeyboardInputs();
-            ImGui::PushAllowKeyboardFocus(true);
+            ImGui::PushTabStop(true);
 
             HandleMouseInputs();
 
@@ -480,7 +479,7 @@ namespace dlxemu
 
             InternalRender();
 
-            ImGui::PopAllowKeyboardFocus();
+            ImGui::PopTabStop();
 
             ImGui::EndChild();
         }
