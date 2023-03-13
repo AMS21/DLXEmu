@@ -8296,6 +8296,12 @@ function dbg(text) {
 
   function _glIsEnabled(x0) { return GLctx['isEnabled'](x0) }
 
+  function _glIsProgram(program) {
+      program = GL.programs[program];
+      if (!program) return 0;
+      return GLctx.isProgram(program);
+    }
+
   function _glLinkProgram(program) {
       program = GL.programs[program];
       GLctx.linkProgram(program);
@@ -10374,6 +10380,7 @@ var wasmImports = {
   "glGetShaderiv": _glGetShaderiv,
   "glGetUniformLocation": _glGetUniformLocation,
   "glIsEnabled": _glIsEnabled,
+  "glIsProgram": _glIsProgram,
   "glLinkProgram": _glLinkProgram,
   "glScissor": _glScissor,
   "glShaderSource": _glShaderSource,
