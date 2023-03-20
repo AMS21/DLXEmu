@@ -9221,12 +9221,6 @@ function dbg(text) {
       GLFW.getCursorPos(winid, x, y);
     }
 
-  /** @type {function(...*):?} */
-  function _glfwGetError(
-  ) {
-  err('missing function: glfwGetError'); abort(-1);
-  }
-
   function _glfwGetFramebufferSize(winid, width, height) {
       var ww = 0;
       var wh = 0;
@@ -9246,12 +9240,6 @@ function dbg(text) {
       }
     }
 
-  /** @type {function(...*):?} */
-  function _glfwGetGamepadState(
-  ) {
-  err('missing function: glfwGetGamepadState'); abort(-1);
-  }
-
   function _glfwGetInputMode(winid, mode) {
       var win = GLFW.WindowFromId(winid);
       if (!win) return;
@@ -9267,6 +9255,32 @@ function dbg(text) {
       }
   
       return win.inputModes[mode];
+    }
+
+  function _glfwGetJoystickAxes(joy, count) {
+      GLFW.refreshJoysticks();
+  
+      var state = GLFW.joys[joy];
+      if (!state || !state.axes) {
+        HEAP32[((count)>>2)] = 0;
+        return;
+      }
+  
+      HEAP32[((count)>>2)] = state.axesCount;
+      return state.axes;
+    }
+
+  function _glfwGetJoystickButtons(joy, count) {
+      GLFW.refreshJoysticks();
+  
+      var state = GLFW.joys[joy];
+      if (!state || !state.buttons) {
+        HEAP32[((count)>>2)] = 0;
+        return;
+      }
+  
+      HEAP32[((count)>>2)] = state.buttonsCount;
+      return state.buttons;
     }
 
   function _glfwGetKey(winid, key) {
@@ -10400,10 +10414,10 @@ var wasmImports = {
   "glfwGetClipboardString": _glfwGetClipboardString,
   "glfwGetCurrentContext": _glfwGetCurrentContext,
   "glfwGetCursorPos": _glfwGetCursorPos,
-  "glfwGetError": _glfwGetError,
   "glfwGetFramebufferSize": _glfwGetFramebufferSize,
-  "glfwGetGamepadState": _glfwGetGamepadState,
   "glfwGetInputMode": _glfwGetInputMode,
+  "glfwGetJoystickAxes": _glfwGetJoystickAxes,
+  "glfwGetJoystickButtons": _glfwGetJoystickButtons,
   "glfwGetKey": _glfwGetKey,
   "glfwGetMonitorContentScale": _glfwGetMonitorContentScale,
   "glfwGetMonitorPos": _glfwGetMonitorPos,
