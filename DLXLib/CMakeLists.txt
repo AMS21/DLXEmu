@@ -8,7 +8,7 @@ file(GLOB_RECURSE DLXLIB_HEADERS CONFIGURE_DEPENDS "include/DLX/*.hpp")
 add_library(${PROJECT_NAME} STATIC ${DLXLIB_SOURCES} ${DLXLIB_HEADERS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include")
-target_link_libraries(${PROJECT_NAME} PUBLIC Phi::Core fmt::fmt)
+target_link_libraries(${PROJECT_NAME} PUBLIC Phi::Core fmt::fmt magic_enum::magic_enum)
 target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELWITHDBGINFO>:PHI_DEBUG>")
 # We don't want a default logger
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)

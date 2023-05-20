@@ -7,7 +7,7 @@
 
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
 
-#include "DLX/EnumName.hpp"
+#include "EnumName.hpp"
 #include <phi/core/assert.hpp>
 #include <phi/core/types.hpp>
 #include <phi/type_traits/underlying_type.hpp>

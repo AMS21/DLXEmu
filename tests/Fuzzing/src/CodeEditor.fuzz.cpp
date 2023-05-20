@@ -4,6 +4,7 @@
 #include <fmt/core.h>
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <magic_enum.hpp>
 #include <phi/compiler_support/assume.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
@@ -838,7 +839,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                                    !IsReservedKey(key));
                 GET_T(bool, down);
 
-                FUZZ_LOG("ImGui::GetIO().AddKeyEvent({}, {:s})", key, print_bool(down));
+                FUZZ_LOG("ImGui::GetIO().AddKeyEvent({:s}, {:s})", magic_enum::enum_name(key),
+                         print_bool(down));
                 ImGui::GetIO().AddKeyEvent(key, down);
 
                 break;
@@ -852,8 +854,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 GET_T(bool, down);
                 GET_T_COND(float, value, phi::abs(value) <= MaxSaneFloatValue);
 
-                FUZZ_LOG("ImGui::GetIO().AddKeyAnalogEvent({}, {:s}, {:f})", key, print_bool(down),
-                         value);
+                FUZZ_LOG("ImGui::GetIO().AddKeyAnalogEvent({:s}, {:s}, {:f})",
+                         magic_enum::enum_name(key), print_bool(down), value);
                 ImGui::GetIO().AddKeyAnalogEvent(key, down, value);
 
                 break;

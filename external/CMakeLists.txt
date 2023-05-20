@@ -85,3 +85,6 @@ if(DLXEMU_BUILD_BENCHMARKS)
       CACHE INTERNAL "")
   add_subdirectory(benchmark EXCLUDE_FROM_ALL)
 endif()
+
+# magic_enum
+add_subdirectory(magic_enum EXCLUDE_FROM_ALL)
