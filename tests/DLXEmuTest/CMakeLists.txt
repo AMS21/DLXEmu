@@ -5,7 +5,7 @@ project("DLXEmuTest" CXX)
 
 # Files
 file(GLOB DLXEMU_TEST_SOURCES "src/CodeEditor.test.cpp" "src/CodeEditorCrashes.test.cpp"
-     "src/SetupImGui.cpp")
+     "src/SetupImGui.cpp" "SetupImGui.test.cpp")
 file(GLOB DLXEMU_TEST_HEADERS "include/SetupImGui.hpp")
 
 phi_add_executable(
