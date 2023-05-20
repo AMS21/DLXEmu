@@ -42,7 +42,7 @@ namespace dlxemu
         Emulator() noexcept;
 
         [[nodiscard]] ShouldContinueInitialization HandleCommandLineArguments(phi::i32 argc,
-                                                                             char** argv) noexcept;
+                                                                              char** argv) noexcept;
 
         phi::boolean Initialize() noexcept;
 

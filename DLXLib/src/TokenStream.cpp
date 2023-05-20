@@ -92,7 +92,8 @@ namespace dlx
         PHI_ASSERT(n != 0u);
 
         for (; n > 0u; --n, ++m_Iterator)
-        {}
+        {
+        }
     }
 
     const Token* TokenStream::find_first_token_of_type(Token::Type type) const noexcept
