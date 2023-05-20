@@ -9,8 +9,6 @@
 
 static constexpr const char temp_file_name[]{"dlxlib_native_test_file_ignore_me"};
 
-PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
-
 class temp_file
 {
 public:

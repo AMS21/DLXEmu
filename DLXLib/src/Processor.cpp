@@ -24,8 +24,6 @@ PHI_MSVC_SUPPRESS_WARNING_POP()
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_GCC_SUPPRESS_WARNING("-Wconversion")
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 // TODO: Fix strict aliasing problems
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-aliasing")
 
@@ -66,7 +64,7 @@ namespace dlx
         m_IntRegisters[0].SetReadOnly(true);
     }
 
-    PHI_ATTRIBUTE_CONST IntRegister& Processor::GetIntRegister(IntRegisterID id) noexcept
+    IntRegister& Processor::GetIntRegister(IntRegisterID id) noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
         phi::size_t id_value = phi::to_underlying(id);
@@ -76,8 +74,7 @@ namespace dlx
         return m_IntRegisters[id_value];
     }
 
-    PHI_ATTRIBUTE_CONST const IntRegister& Processor::GetIntRegister(
-            IntRegisterID id) const noexcept
+    const IntRegister& Processor::GetIntRegister(IntRegisterID id) const noexcept
     {
         PHI_ASSERT(id != IntRegisterID::None);
         phi::size_t id_value = phi::to_underlying(id);
@@ -167,7 +164,7 @@ namespace dlx
         m_IntRegistersValueTypes[id_value] = IntRegisterValueType::Unsigned;
     }
 
-    PHI_ATTRIBUTE_CONST FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) noexcept
+    FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) noexcept
     {
         PHI_ASSERT(id != FloatRegisterID::None);
         const phi::size_t id_value = phi::to_underlying(id);
@@ -177,8 +174,7 @@ namespace dlx
         return m_FloatRegisters[id_value];
     }
 
-    PHI_ATTRIBUTE_CONST const FloatRegister& Processor::GetFloatRegister(
-            FloatRegisterID id) const noexcept
+    const FloatRegister& Processor::GetFloatRegister(FloatRegisterID id) const noexcept
     {
         PHI_ASSERT(id != FloatRegisterID::None);
         const phi::size_t id_value = phi::to_underlying(id);
@@ -318,12 +314,12 @@ namespace dlx
         m_FloatRegistersValueTypes[id_value + 1u] = FloatRegisterValueType::DoubleHigh;
     }
 
-    PHI_ATTRIBUTE_CONST StatusRegister& Processor::GetFPSR() noexcept
+    StatusRegister& Processor::GetFPSR() noexcept
     {
         return m_FPSR;
     }
 
-    PHI_ATTRIBUTE_CONST const StatusRegister& Processor::GetFPSR() const noexcept
+    const StatusRegister& Processor::GetFPSR() const noexcept
     {
         return m_FPSR;
     }
@@ -368,8 +364,7 @@ namespace dlx
         return true;
     }
 
-    PHI_ATTRIBUTE_CONST phi::observer_ptr<ParsedProgram> Processor::GetCurrentProgram()
-            const noexcept
+    phi::observer_ptr<ParsedProgram> Processor::GetCurrentProgram() const noexcept
     {
         return m_CurrentProgram;
     }
@@ -539,27 +534,27 @@ namespace dlx
     PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_PURE Exception Processor::GetLastRaisedException() const noexcept
+    Exception Processor::GetLastRaisedException() const noexcept
     {
         return m_LastRaisedException;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean Processor::IsHalted() const noexcept
+    phi::boolean Processor::IsHalted() const noexcept
     {
         return m_Halted;
     }
 
-    PHI_ATTRIBUTE_PURE const MemoryBlock& Processor::GetMemory() const noexcept
+    const MemoryBlock& Processor::GetMemory() const noexcept
     {
         return m_MemoryBlock;
     }
 
-    PHI_ATTRIBUTE_PURE MemoryBlock& Processor::GetMemory() noexcept
+    MemoryBlock& Processor::GetMemory() noexcept
     {
         return m_MemoryBlock;
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 Processor::GetProgramCounter() const noexcept
+    phi::u32 Processor::GetProgramCounter() const noexcept
     {
         return m_ProgramCounter;
     }
@@ -569,7 +564,7 @@ namespace dlx
         m_ProgramCounter = new_pc;
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 Processor::GetNextProgramCounter() const noexcept
+    phi::u32 Processor::GetNextProgramCounter() const noexcept
     {
         return m_NextProgramCounter;
     }
@@ -579,7 +574,7 @@ namespace dlx
         m_NextProgramCounter = new_npc;
     }
 
-    PHI_ATTRIBUTE_PURE phi::usize Processor::GetCurrentStepCount() const noexcept
+    phi::usize Processor::GetCurrentStepCount() const noexcept
     {
         return m_CurrentStepCount;
     }

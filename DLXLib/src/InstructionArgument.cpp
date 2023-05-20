@@ -11,9 +11,6 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
 PHI_GCC_SUPPRESS_WARNING_POP()
 
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
-
 PHI_MSVC_SUPPRESS_WARNING(4582)
 
 namespace dlx
@@ -23,7 +20,7 @@ namespace dlx
         , m_Type{ArgumentType::None}
     {}
 
-    PHI_ATTRIBUTE_PURE ArgumentType InstructionArgument::GetType() const noexcept
+    ArgumentType InstructionArgument::GetType() const noexcept
     {
         return m_Type;
     }
@@ -31,7 +28,6 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
-    PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
 
     std::string InstructionArgument::DebugInfo() const noexcept
     {
@@ -115,8 +111,7 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
     PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
-    PHI_ATTRIBUTE_PURE phi::boolean operator==(const InstructionArgument& lhs,
-                                               const InstructionArgument& rhs) noexcept
+    phi::boolean operator==(const InstructionArgument& lhs, const InstructionArgument& rhs) noexcept
     {
         if (lhs.GetType() != rhs.GetType())
         {
@@ -162,8 +157,7 @@ namespace dlx
     PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_PURE phi::boolean operator!=(const InstructionArgument& lhs,
-                                               const InstructionArgument& rhs) noexcept
+    phi::boolean operator!=(const InstructionArgument& lhs, const InstructionArgument& rhs) noexcept
     {
         return !(lhs == rhs);
     }

@@ -4,11 +4,9 @@
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/boolean.hpp>
 
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
-
 namespace dlx
 {
-    PHI_ATTRIBUTE_CONST IntRegisterID StringToIntRegister(phi::string_view token) noexcept
+    IntRegisterID StringToIntRegister(phi::string_view token) noexcept
     {
         if (token.length() == 2u)
         {
@@ -63,7 +61,7 @@ namespace dlx
         return IntRegisterID::None;
     }
 
-    PHI_ATTRIBUTE_CONST FloatRegisterID StringToFloatRegister(phi::string_view token) noexcept
+    FloatRegisterID StringToFloatRegister(phi::string_view token) noexcept
     {
         if (token.length() == 2u)
         {
@@ -118,7 +116,7 @@ namespace dlx
         return FloatRegisterID::None;
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean IsFPSR(phi::string_view token) noexcept
+    phi::boolean IsFPSR(phi::string_view token) noexcept
     {
         if (token.length() == 4u)
         {

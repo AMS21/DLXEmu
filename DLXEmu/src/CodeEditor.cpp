@@ -79,8 +79,6 @@ PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
 PHI_GCC_SUPPRESS_WARNING("-Wfloat-equal")
 
-PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
-
 //#define DLXEMU_VERIFY_UNDO_REDO
 //#define DLXEMU_VERIFY_COLUMN
 
@@ -200,20 +198,17 @@ namespace dlxemu
         , m_Column(column)
     {}
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::Coordinates::operator==(
-            const Coordinates& other) const noexcept
+    phi::boolean CodeEditor::Coordinates::operator==(const Coordinates& other) const noexcept
     {
         return (m_Line == other.m_Line) && (m_Column == other.m_Column);
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::Coordinates::operator!=(
-            const Coordinates& other) const noexcept
+    phi::boolean CodeEditor::Coordinates::operator!=(const Coordinates& other) const noexcept
     {
         return (m_Line != other.m_Line) || (m_Column != other.m_Column);
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::Coordinates::operator<(
-            const Coordinates& other) const noexcept
+    phi::boolean CodeEditor::Coordinates::operator<(const Coordinates& other) const noexcept
     {
         if (m_Line != other.m_Line)
         {
@@ -223,8 +218,7 @@ namespace dlxemu
         return m_Column < other.m_Column;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::Coordinates::operator>(
-            const Coordinates& other) const noexcept
+    phi::boolean CodeEditor::Coordinates::operator>(const Coordinates& other) const noexcept
     {
         if (m_Line != other.m_Line)
         {
@@ -234,8 +228,7 @@ namespace dlxemu
         return m_Column > other.m_Column;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::Coordinates::operator<=(
-            const Coordinates& other) const noexcept
+    phi::boolean CodeEditor::Coordinates::operator<=(const Coordinates& other) const noexcept
     {
         if (m_Line != other.m_Line)
         {
@@ -245,8 +238,7 @@ namespace dlxemu
         return m_Column <= other.m_Column;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::Coordinates::operator>=(
-            const Coordinates& other) const noexcept
+    phi::boolean CodeEditor::Coordinates::operator>=(const Coordinates& other) const noexcept
     {
         if (m_Line != other.m_Line)
         {
@@ -299,7 +291,7 @@ namespace dlxemu
         VerifyInternalState();
     }
 
-    PHI_ATTRIBUTE_CONST const CodeEditor::Palette& CodeEditor::GetPalette() const noexcept
+    const CodeEditor::Palette& CodeEditor::GetPalette() const noexcept
     {
         return m_PaletteBase;
     }
@@ -349,12 +341,12 @@ namespace dlxemu
         m_ErrorMarkers.clear();
     }
 
-    PHI_ATTRIBUTE_CONST CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() noexcept
+    CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() noexcept
     {
         return m_ErrorMarkers;
     }
 
-    PHI_ATTRIBUTE_CONST const CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() const noexcept
+    const CodeEditor::ErrorMarkers& CodeEditor::GetErrorMarkers() const noexcept
     {
         return m_ErrorMarkers;
     }
@@ -414,12 +406,12 @@ namespace dlxemu
         m_Breakpoints.clear();
     }
 
-    PHI_ATTRIBUTE_CONST CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() noexcept
+    CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() noexcept
     {
         return m_Breakpoints;
     }
 
-    PHI_ATTRIBUTE_CONST const CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() const noexcept
+    const CodeEditor::Breakpoints& CodeEditor::GetBreakpoints() const noexcept
     {
         return m_Breakpoints;
     }
@@ -521,7 +513,7 @@ namespace dlxemu
         Colorize();
     }
 
-    PHI_ATTRIBUTE_PURE std::string CodeEditor::GetText() const noexcept
+    std::string CodeEditor::GetText() const noexcept
     {
         const phi::u32 max_line = GetMaxLineNumber();
 
@@ -629,12 +621,12 @@ namespace dlxemu
         return result;
     }
 
-    PHI_ATTRIBUTE_PURE std::string CodeEditor::GetSelectedText() const noexcept
+    std::string CodeEditor::GetSelectedText() const noexcept
     {
         return GetText(m_State.m_SelectionStart, m_State.m_SelectionEnd);
     }
 
-    PHI_ATTRIBUTE_PURE std::string CodeEditor::GetCurrentLineText() const noexcept
+    std::string CodeEditor::GetCurrentLineText() const noexcept
     {
         const phi::u32 line_length = GetLineMaxColumn(m_State.m_CursorPosition.m_Line);
 
@@ -642,7 +634,7 @@ namespace dlxemu
                        Coordinates(m_State.m_CursorPosition.m_Line, line_length));
     }
 
-    PHI_ATTRIBUTE_PURE phi::usize CodeEditor::GetTotalLines() const noexcept
+    phi::usize CodeEditor::GetTotalLines() const noexcept
     {
         return m_Lines.size();
     }
@@ -657,7 +649,7 @@ namespace dlxemu
         m_Overwrite = !m_Overwrite;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::IsOverwrite() const noexcept
+    phi::boolean CodeEditor::IsOverwrite() const noexcept
     {
         return m_Overwrite;
     }
@@ -672,17 +664,17 @@ namespace dlxemu
         m_ReadOnly = !m_ReadOnly;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::IsReadOnly() const noexcept
+    phi::boolean CodeEditor::IsReadOnly() const noexcept
     {
         return m_ReadOnly;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::IsTextChanged() const noexcept
+    phi::boolean CodeEditor::IsTextChanged() const noexcept
     {
         return m_TextChanged;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::IsCursorPositionChanged() const noexcept
+    phi::boolean CodeEditor::IsCursorPositionChanged() const noexcept
     {
         return m_CursorPositionChanged;
     }
@@ -697,12 +689,12 @@ namespace dlxemu
         m_ColorizerEnabled = !m_ColorizerEnabled;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::IsColorizerEnabled() const noexcept
+    phi::boolean CodeEditor::IsColorizerEnabled() const noexcept
     {
         return m_ColorizerEnabled;
     }
 
-    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::GetCursorPosition() const noexcept
+    CodeEditor::Coordinates CodeEditor::GetCursorPosition() const noexcept
     {
         return GetActualCursorCoordinates();
     }
@@ -730,7 +722,7 @@ namespace dlxemu
         m_ShowWhitespaces = !m_ShowWhitespaces;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::IsShowingWhitespaces() const noexcept
+    phi::boolean CodeEditor::IsShowingWhitespaces() const noexcept
     {
         return m_ShowWhitespaces;
     }
@@ -759,7 +751,7 @@ namespace dlxemu
         }
     }
 
-    PHI_ATTRIBUTE_PURE phi::u8_fast CodeEditor::GetTabSize() const noexcept
+    phi::u8_fast CodeEditor::GetTabSize() const noexcept
     {
         return m_TabSize;
     }
@@ -1103,17 +1095,17 @@ namespace dlxemu
         SetSelection(Coordinates(0u, 0u), Coordinates(0u, 0u));
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::HasSelection() const noexcept
+    phi::boolean CodeEditor::HasSelection() const noexcept
     {
         return m_State.m_SelectionEnd > m_State.m_SelectionStart;
     }
 
-    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::GetSelectionStart() const noexcept
+    CodeEditor::Coordinates CodeEditor::GetSelectionStart() const noexcept
     {
         return m_State.m_SelectionStart;
     }
 
-    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::GetSelectionEnd() const noexcept
+    CodeEditor::Coordinates CodeEditor::GetSelectionEnd() const noexcept
     {
         return m_State.m_SelectionEnd;
     }
@@ -1297,7 +1289,7 @@ namespace dlxemu
         AddUndo(undo);
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::CanUndo() const noexcept
+    phi::boolean CodeEditor::CanUndo() const noexcept
     {
         return !m_ReadOnly && m_UndoIndex != 0u;
     }
@@ -1312,7 +1304,7 @@ namespace dlxemu
         }
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::CanRedo() const noexcept
+    phi::boolean CodeEditor::CanRedo() const noexcept
     {
         return !m_ReadOnly && m_UndoIndex < m_UndoBuffer.size();
     }
@@ -1530,7 +1522,7 @@ namespace dlxemu
         }
     }
 
-    PHI_ATTRIBUTE_CONST const CodeEditor::Palette& CodeEditor::GetDarkPalette() noexcept
+    const CodeEditor::Palette& CodeEditor::GetDarkPalette() noexcept
     {
         constexpr const static Palette palette = {{
                 0xff7f7f7f, // Default
@@ -1552,7 +1544,7 @@ namespace dlxemu
         return palette;
     }
 
-    PHI_ATTRIBUTE_CONST const CodeEditor::Palette& CodeEditor::GetLightPalette() noexcept
+    const CodeEditor::Palette& CodeEditor::GetLightPalette() noexcept
     {
         constexpr const static Palette palette = {{
                 0xff7f7f7f, // Default
@@ -1574,7 +1566,7 @@ namespace dlxemu
         return palette;
     }
 
-    PHI_ATTRIBUTE_CONST const CodeEditor::Palette& CodeEditor::GetRetroBluePalette() noexcept
+    const CodeEditor::Palette& CodeEditor::GetRetroBluePalette() noexcept
     {
         constexpr const static Palette palette = {{
                 0xff00ffff, // Default
@@ -1597,15 +1589,13 @@ namespace dlxemu
     }
 
     // EditorState
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::EditorState::operator==(
-            const EditorState& other) const noexcept
+    phi::boolean CodeEditor::EditorState::operator==(const EditorState& other) const noexcept
     {
         return other.m_CursorPosition == m_CursorPosition &&
                other.m_SelectionStart == m_SelectionStart && other.m_SelectionEnd == m_SelectionEnd;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::EditorState::operator!=(
-            const EditorState& other) const noexcept
+    phi::boolean CodeEditor::EditorState::operator!=(const EditorState& other) const noexcept
     {
         return other.m_CursorPosition != m_CursorPosition ||
                other.m_SelectionStart != m_SelectionStart || other.m_SelectionEnd != m_SelectionEnd;
@@ -1822,7 +1812,7 @@ namespace dlxemu
         }
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 CodeEditor::GetPageSize() const noexcept
+    phi::u32 CodeEditor::GetPageSize() const noexcept
     {
         const float height = ImGui::GetWindowHeight() - 20.0f;
 
@@ -1832,8 +1822,7 @@ namespace dlxemu
         return static_cast<phi::uint32_t>(phi::max(page_size, 5.0f));
     }
 
-    PHI_ATTRIBUTE_PURE std::string CodeEditor::GetText(const Coordinates& start,
-                                                       const Coordinates& end) const noexcept
+    std::string CodeEditor::GetText(const Coordinates& start, const Coordinates& end) const noexcept
     {
         PHI_ASSERT(start.m_Line < m_Lines.size());
         PHI_ASSERT(end.m_Line < m_Lines.size());
@@ -1881,14 +1870,12 @@ namespace dlxemu
         return result;
     }
 
-    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::GetActualCursorCoordinates()
-            const noexcept
+    CodeEditor::Coordinates CodeEditor::GetActualCursorCoordinates() const noexcept
     {
         return SanitizeCoordinates(m_State.m_CursorPosition);
     }
 
-    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::SanitizeCoordinates(
-            const Coordinates& value) const noexcept
+    CodeEditor::Coordinates CodeEditor::SanitizeCoordinates(const Coordinates& value) const noexcept
     {
         PHI_ASSERT(!m_Lines.empty());
 
@@ -2235,8 +2222,7 @@ namespace dlxemu
         return SanitizeCoordinates(Coordinates(line_no, column_coord));
     }
 
-    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::FindWordStart(
-            const Coordinates& from) const noexcept
+    CodeEditor::Coordinates CodeEditor::FindWordStart(const Coordinates& from) const noexcept
     {
         if (from.m_Line >= m_Lines.size())
         {
@@ -2280,8 +2266,7 @@ namespace dlxemu
         return {from.m_Line, GetCharacterColumn(from.m_Line, cindex)};
     }
 
-    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::FindWordEnd(
-            const Coordinates& from) const noexcept
+    CodeEditor::Coordinates CodeEditor::FindWordEnd(const Coordinates& from) const noexcept
     {
         Coordinates at = from;
         if (at.m_Line >= m_Lines.size())
@@ -2328,8 +2313,7 @@ namespace dlxemu
         return {from.m_Line, GetCharacterColumn(from.m_Line, cindex)};
     }
 
-    PHI_ATTRIBUTE_PURE CodeEditor::Coordinates CodeEditor::FindNextWord(
-            const Coordinates& from) const noexcept
+    CodeEditor::Coordinates CodeEditor::FindNextWord(const Coordinates& from) const noexcept
     {
         Coordinates at = from;
         if (at.m_Line >= m_Lines.size())
@@ -2386,13 +2370,13 @@ namespace dlxemu
         return at;
     }
 
-    PHI_ATTRIBUTE_PURE std::string CodeEditor::GetWordUnderCursor() const noexcept
+    std::string CodeEditor::GetWordUnderCursor() const noexcept
     {
         const Coordinates coordinates = GetCursorPosition();
         return GetWordAt(coordinates);
     }
 
-    PHI_ATTRIBUTE_PURE std::string CodeEditor::GetWordAt(const Coordinates& coords) const noexcept
+    std::string CodeEditor::GetWordAt(const Coordinates& coords) const noexcept
     {
         PHI_ASSERT(coords.m_Line < m_Lines.size());
 
@@ -2415,8 +2399,7 @@ namespace dlxemu
         return result;
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 CodeEditor::GetCharacterIndex(
-            const Coordinates& coordinates) const noexcept
+    phi::u32 CodeEditor::GetCharacterIndex(const Coordinates& coordinates) const noexcept
     {
         PHI_ASSERT(coordinates.m_Line < m_Lines.size());
 
@@ -2442,8 +2425,7 @@ namespace dlxemu
         return index;
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 CodeEditor::GetCharacterColumn(phi::u32 line_number,
-                                                               phi::u32 index) const noexcept
+    phi::u32 CodeEditor::GetCharacterColumn(phi::u32 line_number, phi::u32 index) const noexcept
     {
         PHI_ASSERT(line_number < m_Lines.size());
 
@@ -2469,8 +2451,7 @@ namespace dlxemu
         return column;
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 CodeEditor::GetLineCharacterCount(
-            phi::u32 line_number) const noexcept
+    phi::u32 CodeEditor::GetLineCharacterCount(phi::u32 line_number) const noexcept
     {
         if (line_number >= m_Lines.size())
         {
@@ -2488,7 +2469,7 @@ namespace dlxemu
         return count;
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 CodeEditor::GetLineMaxColumn(phi::u32 line_number) const noexcept
+    phi::u32 CodeEditor::GetLineMaxColumn(phi::u32 line_number) const noexcept
     {
         if (line_number >= m_Lines.size())
         {
@@ -2516,15 +2497,14 @@ namespace dlxemu
         return col;
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 CodeEditor::GetMaxLineNumber() const noexcept
+    phi::u32 CodeEditor::GetMaxLineNumber() const noexcept
     {
         PHI_ASSERT(!m_Lines.empty());
 
         return static_cast<phi::uint32_t>(m_Lines.size() - 1u);
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean CodeEditor::IsOnWordBoundary(
-            const Coordinates& at) const noexcept
+    phi::boolean CodeEditor::IsOnWordBoundary(const Coordinates& at) const noexcept
     {
         if (at.m_Line >= m_Lines.size() || at.m_Column == 0u)
         {
@@ -3038,7 +3018,7 @@ namespace dlxemu
         m_TextChanged = true;
     }
 
-    PHI_ATTRIBUTE_PURE ImU32 CodeEditor::GetGlyphColor(const Glyph& glyph) const noexcept
+    ImU32 CodeEditor::GetGlyphColor(const Glyph& glyph) const noexcept
     {
         if (!m_ColorizerEnabled)
         {
@@ -3742,13 +3722,13 @@ namespace dlxemu
         EnsureCursorVisible();
     }
 
-    PHI_ATTRIBUTE_PURE phi::u8_fast CodeEditor::GetTabSizeAt(phi::u32 column) const noexcept
+    phi::u8_fast CodeEditor::GetTabSizeAt(phi::u32 column) const noexcept
     {
         return static_cast<phi::uint_fast8_t>(m_TabSize.unsafe() -
                                               (column.unsafe() % m_TabSize.unsafe()));
     }
 
-    PHI_ATTRIBUTE_PURE ImU32 CodeEditor::GetPaletteForIndex(PaletteIndex index) const noexcept
+    ImU32 CodeEditor::GetPaletteForIndex(PaletteIndex index) const noexcept
     {
         PHI_ASSERT(index != PaletteIndex::Max);
 

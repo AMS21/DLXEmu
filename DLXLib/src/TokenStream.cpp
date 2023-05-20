@@ -4,8 +4,6 @@
 #include <phi/core/assert.hpp>
 #include <phi/core/types.hpp>
 
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
-
 namespace dlx
 {
     void TokenStream::push_back(const Token& value) noexcept
@@ -147,12 +145,12 @@ namespace dlx
         return count;
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean TokenStream::empty() const noexcept
+    phi::boolean TokenStream::empty() const noexcept
     {
         return m_Tokens.empty();
     }
 
-    PHI_ATTRIBUTE_CONST phi::usize TokenStream::current_position() const noexcept
+    phi::usize TokenStream::current_position() const noexcept
     {
         return m_Iterator;
     }
@@ -166,7 +164,7 @@ namespace dlx
         m_Iterator = pos;
     }
 
-    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::begin() const noexcept
+    TokenStream::const_iterator TokenStream::begin() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finalized);
@@ -175,7 +173,7 @@ namespace dlx
         return m_Tokens.begin();
     }
 
-    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::cbegin() const noexcept
+    TokenStream::const_iterator TokenStream::cbegin() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finalized);
@@ -184,7 +182,7 @@ namespace dlx
         return m_Tokens.cbegin();
     }
 
-    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::end() const noexcept
+    TokenStream::const_iterator TokenStream::end() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finalized);
@@ -193,7 +191,7 @@ namespace dlx
         return m_Tokens.end();
     }
 
-    PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::cend() const noexcept
+    TokenStream::const_iterator TokenStream::cend() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finalized);
@@ -202,7 +200,7 @@ namespace dlx
         return m_Tokens.cend();
     }
 
-    PHI_ATTRIBUTE_CONST TokenStream::const_reverse_iterator TokenStream::rbegin() const noexcept
+    TokenStream::const_reverse_iterator TokenStream::rbegin() const noexcept
     {
 #if defined(PHI_DEBUG)
         //PHI_ASSERT(m_Finalized);
@@ -220,12 +218,12 @@ namespace dlx
         return m_Tokens.rend();
     }
 
-    PHI_ATTRIBUTE_CONST const Token& TokenStream::front() const noexcept
+    const Token& TokenStream::front() const noexcept
     {
         return m_Tokens.front();
     }
 
-    PHI_ATTRIBUTE_CONST const Token& TokenStream::back() const noexcept
+    const Token& TokenStream::back() const noexcept
     {
         return m_Tokens.back();
     }

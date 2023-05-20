@@ -193,8 +193,9 @@ namespace dlx
     ParseError ConstructUnexpectedTokenParseError(const Token& token,
                                                   Token::Type  expected_type) noexcept;
 
-    ParseError ConstructReservedIdentifierParseError(phi::uint64_t line_number, phi::uint64_t column,
-                                                    phi::string_view identifier) noexcept;
+    ParseError ConstructReservedIdentifierParseError(phi::uint64_t    line_number,
+                                                     phi::uint64_t    column,
+                                                     phi::string_view identifier) noexcept;
 
     ParseError ConstructReservedIdentifierParseError(const Token& token) noexcept;
 

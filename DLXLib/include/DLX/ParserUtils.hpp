@@ -51,7 +51,7 @@ namespace dlx
         return false;
     }
 
-    PHI_ATTRIBUTE_CONST constexpr phi::boolean IsValidIdentifier(phi::string_view token) noexcept
+    constexpr phi::boolean IsValidIdentifier(phi::string_view token) noexcept
     {
         if (token.is_empty())
         {
@@ -94,8 +94,7 @@ namespace dlx
 
     /* Parsing functions */
 
-    PHI_ATTRIBUTE_CONST constexpr phi::optional<phi::i16> ParseNumber(
-            phi::string_view token) noexcept
+    constexpr phi::optional<phi::i16> ParseNumber(phi::string_view token) noexcept
     {
         if (token.is_empty())
         {

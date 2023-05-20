@@ -7,19 +7,17 @@
 #include <algorithm>
 
 PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wimplicit-fallthrough")
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
     // Test if char c is equal to uppercase t or lowercase t
-    [[nodiscard]] PHI_ATTRIBUTE_CONST PHI_ALWAYS_INLINE constexpr phi::boolean ice(char c,
-                                                                                   char t) noexcept
+    [[nodiscard]] PHI_ALWAYS_INLINE constexpr phi::boolean ice(char c, char t) noexcept
     {
         constexpr const char diff = 'a' - 'A';
         return (c == t) || (c == t + diff);
     }
 
-    PHI_ATTRIBUTE_CONST OpCode StringToOpCode(phi::string_view token) noexcept
+    OpCode StringToOpCode(phi::string_view token) noexcept
     {
         switch (token.length().unsafe())
         {

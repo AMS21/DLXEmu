@@ -13,7 +13,6 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
@@ -36,51 +35,51 @@ namespace dlx
         , m_HasHint{true}
     {}
 
-    PHI_ATTRIBUTE_CONST Token::Type Token::GetType() const noexcept
+    Token::Type Token::GetType() const noexcept
     {
         return m_Type;
     }
 
-    PHI_ATTRIBUTE_CONST phi::string_view Token::GetTypeName() const noexcept
+    phi::string_view Token::GetTypeName() const noexcept
     {
         return dlx::enum_name(m_Type);
     }
 
-    PHI_ATTRIBUTE_CONST phi::u64 Token::GetLineNumber() const noexcept
+    phi::u64 Token::GetLineNumber() const noexcept
     {
         return m_LineNumber;
     }
 
-    PHI_ATTRIBUTE_CONST phi::u64 Token::GetColumn() const noexcept
+    phi::u64 Token::GetColumn() const noexcept
     {
         return m_Column;
     }
 
-    PHI_ATTRIBUTE_CONST phi::usize Token::GetLength() const noexcept
+    phi::usize Token::GetLength() const noexcept
     {
         return m_Text.length();
     }
 
-    PHI_ATTRIBUTE_CONST phi::string_view Token::GetText() const noexcept
+    phi::string_view Token::GetText() const noexcept
     {
         return m_Text;
     }
 
     PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
 
-    PHI_ATTRIBUTE_CONST std::string Token::GetTextString() const noexcept
+    std::string Token::GetTextString() const noexcept
     {
         return std::string(m_Text.data(), m_Text.length().unsafe());
     }
 
     PHI_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_CONST phi::boolean Token::HasHint() const noexcept
+    phi::boolean Token::HasHint() const noexcept
     {
         return m_HasHint;
     }
 
-    PHI_ATTRIBUTE_CONST phi::uint32_t Token::GetHint() const noexcept
+    phi::uint32_t Token::GetHint() const noexcept
     {
         PHI_ASSERT(m_Type == Type::RegisterInt || m_Type == Type::RegisterFloat ||
                    m_Type == Type::IntegerLiteral || m_Type == Type::OpCode ||
@@ -93,7 +92,6 @@ namespace dlx
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wswitch")
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
-    PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
 
     std::string Token::DebugInfo() const noexcept
     {

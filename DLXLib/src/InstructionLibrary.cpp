@@ -4,12 +4,9 @@
 #include "DLX/InstructionImplementation.hpp"
 #include "DLX/InstructionInfo.hpp"
 #include "DLX/OpCode.hpp"
-
 #include <phi/compiler_support/warning.hpp>
 #include <algorithm>
 #include <array>
-
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 
 namespace dlx
 {
@@ -441,14 +438,14 @@ namespace dlx
         return table;
     }
 
-    PHI_ATTRIBUTE_CONST InstructionTableT GenerateInstructionTable() noexcept
+    InstructionTableT GenerateInstructionTable() noexcept
     {
         return InitializeInstructionTable();
     }
 
     constexpr const static InstructionTableT instruction_table = InitializeInstructionTable();
 
-    PHI_ATTRIBUTE_CONST const InstructionInfo& LookUpInstructionInfo(OpCode instruction) noexcept
+    const InstructionInfo& LookUpInstructionInfo(OpCode instruction) noexcept
     {
         return instruction_table.at(static_cast<phi::size_t>(instruction));
     }

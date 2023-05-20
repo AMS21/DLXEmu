@@ -5,9 +5,6 @@
 #include <phi/core/integer.hpp>
 #include <phi/core/types.hpp>
 
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
-
 namespace dlx
 {
     MemoryBlock::MemoryBlock(phi::usize start_address, phi::usize starting_size) noexcept
@@ -295,8 +292,8 @@ namespace dlx
         return true;
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean MemoryBlock::IsAddressAlignedCorrectly(
-            phi::usize address, phi::usize size) noexcept
+    phi::boolean MemoryBlock::IsAddressAlignedCorrectly(phi::usize address,
+                                                        phi::usize size) noexcept
     {
         return size != 0u && (address % size) == 0u;
     }

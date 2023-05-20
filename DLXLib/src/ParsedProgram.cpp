@@ -10,8 +10,6 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 
 PHI_GCC_SUPPRESS_WARNING_POP()
 
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
-
 namespace dlx
 {
     void ParsedProgram::AddParseError(ParseError&& error) noexcept
@@ -19,7 +17,7 @@ namespace dlx
         m_ParseErrors.emplace_back(phi::move(error));
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean ParsedProgram::IsValid() const noexcept
+    phi::boolean ParsedProgram::IsValid() const noexcept
     {
         return m_ParseErrors.empty() && !m_Instructions.empty();
     }

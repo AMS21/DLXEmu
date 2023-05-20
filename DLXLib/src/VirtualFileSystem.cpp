@@ -22,7 +22,7 @@ namespace dlx
     PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
     PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702)
 
-    PHI_ATTRIBUTE_CONST phi::string_view to_string_flags(const OpenModeFlags flags) noexcept
+    phi::string_view to_string_flags(const OpenModeFlags flags) noexcept
     {
         PHI_ASSERT(flags != OpenModeFlags::Invalid);
         PHI_ASSERT(phi::to_underlying(flags) > 0u &&
@@ -59,7 +59,7 @@ namespace dlx
     PHI_MSVC_SUPPRESS_WARNING_POP()
     PHI_CLANG_AND_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_PURE OpenModeFlags parse_open_mode_flags(const char* string) noexcept
+    OpenModeFlags parse_open_mode_flags(const char* string) noexcept
     {
         PHI_ASSERT(string != nullptr, "Cannot parse nullptr");
 
@@ -106,12 +106,12 @@ namespace dlx
         }
     }
 
-    PHI_ATTRIBUTE_CONST phi::boolean NativeFileHandle::is_virtual() const noexcept
+    phi::boolean NativeFileHandle::is_virtual() const noexcept
     {
         return false;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean NativeFileHandle::is_open() const noexcept
+    phi::boolean NativeFileHandle::is_open() const noexcept
     {
         return m_FileHandle != nullptr;
     }
@@ -155,12 +155,12 @@ namespace dlx
         , m_OpenFlags{OpenModeFlags::Invalid}
     {}
 
-    PHI_ATTRIBUTE_CONST phi::boolean VirtualFileHandle::is_virtual() const noexcept
+    phi::boolean VirtualFileHandle::is_virtual() const noexcept
     {
         return true;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean VirtualFileHandle::is_open() const noexcept
+    phi::boolean VirtualFileHandle::is_open() const noexcept
     {
         return m_OpenFlags != OpenModeFlags::Invalid;
     }
@@ -329,7 +329,7 @@ namespace dlx
         return count == 1u;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean VirtualFileSystem::IsEmpty() const noexcept
+    phi::boolean VirtualFileSystem::IsEmpty() const noexcept
     {
         return m_FileSystem.empty();
     }
@@ -339,7 +339,7 @@ namespace dlx
         m_FileSystem.clear();
     }
 
-    PHI_ATTRIBUTE_PURE phi::usize VirtualFileSystem::GetNumberOfFileHandles() const noexcept
+    phi::usize VirtualFileSystem::GetNumberOfFileHandles() const noexcept
     {
         return m_FileSystem.size();
     }
@@ -372,7 +372,7 @@ namespace dlx
         return count;
     }
 
-    PHI_ATTRIBUTE_PURE phi::usize VirtualFileSystem::GetFileHandleLimit() const noexcept
+    phi::usize VirtualFileSystem::GetFileHandleLimit() const noexcept
     {
         return m_FileHandleLimit;
     }

@@ -2,7 +2,6 @@
 
 #include <phi/compiler_support/warning.hpp>
 
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
 PHI_MSVC_SUPPRESS_WARNING(4582)
 
 namespace dlx
@@ -22,17 +21,17 @@ namespace dlx
         m_ValueUnsigned = val;
     }
 
-    PHI_ATTRIBUTE_PURE phi::i32 IntRegister::GetSignedValue() const noexcept
+    phi::i32 IntRegister::GetSignedValue() const noexcept
     {
         return m_ValueSigned;
     }
 
-    PHI_ATTRIBUTE_PURE phi::u32 IntRegister::GetUnsignedValue() const noexcept
+    phi::u32 IntRegister::GetUnsignedValue() const noexcept
     {
         return m_ValueUnsigned;
     }
 
-    PHI_ATTRIBUTE_PURE phi::boolean IntRegister::IsReadOnly() const noexcept
+    phi::boolean IntRegister::IsReadOnly() const noexcept
     {
         return m_IsReadOnly;
     }

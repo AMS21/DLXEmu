@@ -174,12 +174,12 @@ namespace dlxemu
         m_Window.EndFrame();
     }
 
-    PHI_ATTRIBUTE_CONST dlx::Processor& Emulator::GetProcessor() noexcept
+    dlx::Processor& Emulator::GetProcessor() noexcept
     {
         return m_Processor;
     }
 
-    PHI_ATTRIBUTE_CONST const dlx::ParsedProgram& Emulator::GetProgram() const noexcept
+    const dlx::ParsedProgram& Emulator::GetProgram() const noexcept
     {
         return m_DLXProgram;
     }
@@ -204,26 +204,26 @@ namespace dlxemu
         }
     }
 
-    PHI_ATTRIBUTE_CONST CodeEditor& Emulator::GetEditor() noexcept
+    CodeEditor& Emulator::GetEditor() noexcept
     {
         return m_CodeEditor;
     }
 
-    PHI_ATTRIBUTE_CONST const CodeEditor& Emulator::GetEditor() const noexcept
+    const CodeEditor& Emulator::GetEditor() const noexcept
     {
         return m_CodeEditor;
     }
 
     PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wsuggest-attribute=pure")
 
-    PHI_ATTRIBUTE_CONST Emulator::ExecutionMode Emulator::GetExecutionMode() const noexcept
+    Emulator::ExecutionMode Emulator::GetExecutionMode() const noexcept
     {
         return m_CurrentExecutionMode;
     }
 
     PHI_GCC_SUPPRESS_WARNING_POP()
 
-    PHI_ATTRIBUTE_CONST phi::u64 Emulator::GetExecutingLineNumber() const noexcept
+    phi::u64 Emulator::GetExecutingLineNumber() const noexcept
     {
         if (m_DLXProgram.IsValid() && !m_Processor.IsHalted() &&
             m_CurrentExecutionMode != ExecutionMode::None)

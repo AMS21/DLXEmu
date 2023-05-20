@@ -8,9 +8,6 @@ PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
 #include <fmt/format.h>
 PHI_MSVC_SUPPRESS_WARNING_POP()
 
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
-PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
-
 namespace dlx
 {
     Instruction::Instruction(const InstructionInfo& info, const phi::u64 source_line) noexcept
@@ -46,9 +43,8 @@ namespace dlx
 
     PHI_GCC_SUPPRESS_WARNING_PUSH()
     PHI_GCC_SUPPRESS_WARNING("-Wreturn-type")
-    PHI_GCC_SUPPRESS_WARNING("-Wabi-tag")
 
-    PHI_ATTRIBUTE_CONST std::string Instruction::DebugInfo() const noexcept
+    std::string Instruction::DebugInfo() const noexcept
     {
         switch (m_Info.GetNumberOfRequiredArguments().unsafe())
         {
@@ -84,27 +80,27 @@ namespace dlx
         m_Info.Execute(processor, m_Arg1, m_Arg2, m_Arg3);
     }
 
-    PHI_ATTRIBUTE_PURE const InstructionInfo& Instruction::GetInfo() const noexcept
+    const InstructionInfo& Instruction::GetInfo() const noexcept
     {
         return m_Info;
     }
 
-    PHI_ATTRIBUTE_PURE const phi::u64 Instruction::GetSourceLine() const noexcept
+    const phi::u64 Instruction::GetSourceLine() const noexcept
     {
         return m_SourceLine;
     }
 
-    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg1() const noexcept
+    const InstructionArgument& Instruction::GetArg1() const noexcept
     {
         return m_Arg1;
     }
 
-    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg2() const noexcept
+    const InstructionArgument& Instruction::GetArg2() const noexcept
     {
         return m_Arg2;
     }
 
-    PHI_ATTRIBUTE_PURE const InstructionArgument& Instruction::GetArg3() const noexcept
+    const InstructionArgument& Instruction::GetArg3() const noexcept
     {
         return m_Arg3;
     }
