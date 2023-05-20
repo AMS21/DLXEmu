@@ -37,8 +37,8 @@ jobs:
 
       matrix:
         compiler:
-          - "gcc-12"
-          - "clang-15"
+          - "gcc-13"
+          - "clang-16"
 
         build_type:
           - "Debug"

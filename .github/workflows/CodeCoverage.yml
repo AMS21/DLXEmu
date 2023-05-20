@@ -39,7 +39,7 @@ jobs:
 
       matrix:
         compiler:
-          - "gcc-12"
+          - "gcc-13"
 
     steps:
       - name: Checkout
