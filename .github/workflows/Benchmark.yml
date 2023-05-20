@@ -36,7 +36,7 @@ jobs:
       matrix:
         compiler:
           - "clang-16"
-          - "gcc-16"
+          - "gcc-13"
 
     steps:
       - name: Checkout
