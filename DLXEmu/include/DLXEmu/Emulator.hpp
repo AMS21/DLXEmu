@@ -25,7 +25,7 @@ namespace dlxemu
         friend DebugView;
 
     public:
-        enum class ShouldContinueInitilization : bool
+        enum class ShouldContinueInitialization : bool
         {
             No,
             Yes,
@@ -41,7 +41,7 @@ namespace dlxemu
 
         Emulator() noexcept;
 
-        [[nodiscard]] ShouldContinueInitilization HandleCommandLineArguments(phi::i32 argc,
+        [[nodiscard]] ShouldContinueInitialization HandleCommandLineArguments(phi::i32 argc,
                                                                              char** argv) noexcept;
 
         phi::boolean Initialize() noexcept;

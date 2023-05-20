@@ -47,13 +47,13 @@ namespace dlxemu
     PHI_CLANG_SUPPRESS_WARNING_PUSH()
     PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
 
-    Emulator::ShouldContinueInitilization Emulator::HandleCommandLineArguments(phi::i32 argc,
-                                                                               char** argv) noexcept
+    Emulator::ShouldContinueInitialization Emulator::HandleCommandLineArguments(
+            phi::i32 argc, char** argv) noexcept
     {
         // No args
         if (argc <= 1)
         {
-            return ShouldContinueInitilization::Yes;
+            return ShouldContinueInitialization::Yes;
         }
 
         for (phi::i32 arg_num{1}; arg_num < argc; ++arg_num)
@@ -73,14 +73,14 @@ namespace dlxemu
                     arg_value == "--help")
                 {
                     DLX_INFO("Help");
-                    return ShouldContinueInitilization::No;
+                    return ShouldContinueInitialization::No;
                 }
                 // Display version
                 if (arg_value == "-v" || arg_value == "--value")
                 {
                     fmt::print("DLXEmu version {:d}.{:d}.{:d} {:s}-{:s}\n", VersionMajor,
                                VersionMinor, VersionPatch, GitBranch, GitShaFull);
-                    return ShouldContinueInitilization::No;
+                    return ShouldContinueInitialization::No;
                 }
 
                 // Unknown option
@@ -91,7 +91,7 @@ namespace dlxemu
             DLX_WARN("Ignore command line argument '{:s}'", arg_value);
         }
 
-        return ShouldContinueInitilization::Yes;
+        return ShouldContinueInitialization::Yes;
     }
 
     PHI_CLANG_SUPPRESS_WARNING_POP()
@@ -252,15 +252,18 @@ namespace dlxemu
                 }
 
                 if (ImGui::MenuItem("Open", "Ctrl+O"))
-                {}
+                {
+                }
 
 #if PHI_PLATFORM_IS_NOT(WEB)
                 if (ImGui::MenuItem("Save", "Ctrl+S"))
-                {}
+                {
+                }
 #endif
 
                 if (ImGui::MenuItem("Save As..", "Ctrl+Shift+S"))
-                {}
+                {
+                }
 
                 ImGui::Separator();
                 if (ImGui::MenuItem("Options"))
