@@ -26,7 +26,7 @@ void BeginImGui() noexcept
     io.DisplaySize.x = 1024.0f;
     io.DisplaySize.y = 768.0f;
 
-    // Enfore valid DeltaTime
+    // Enforce valid DeltaTime
     io.DeltaTime = 1.0f / 60.0f;
 
     // Don't save any config

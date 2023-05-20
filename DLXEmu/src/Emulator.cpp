@@ -581,10 +581,10 @@ namespace dlxemu
                         }
                     }
 
-                    static int palete_idx = 0;
-                    if (ImGui::Combo("Palete", &palete_idx, "Dark\0Light\0Retro\0"))
+                    static int palette_idx = 0;
+                    if (ImGui::Combo("Palette", &palette_idx, "Dark\0Light\0Retro\0"))
                     {
-                        switch (palete_idx)
+                        switch (palette_idx)
                         {
                             case 0:
                                 m_CodeEditor.SetPalette(dlxemu::CodeEditor::GetDarkPalette());

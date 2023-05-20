@@ -11,7 +11,7 @@ namespace dlx
     void TokenStream::push_back(const Token& value) noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(!m_Finialized);
+        PHI_ASSERT(!m_Finalized);
 #endif
 
         m_Tokens.push_back(value);
@@ -20,7 +20,7 @@ namespace dlx
     void TokenStream::push_back(Token&& value) noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(!m_Finialized);
+        PHI_ASSERT(!m_Finalized);
 #endif
 
         m_Tokens.push_back(value);
@@ -29,19 +29,19 @@ namespace dlx
     void TokenStream::finalize() noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(!m_Finialized);
+        PHI_ASSERT(!m_Finalized);
 #endif
 
         m_Iterator = 0u;
 #if defined(PHI_DEBUG)
-        m_Finialized = true;
+        m_Finalized = true;
 #endif
     }
 
     void TokenStream::reset() noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_ASSERT(m_Finalized);
 #endif
 
         m_Iterator = 0u;
@@ -66,7 +66,7 @@ namespace dlx
     {
         PHI_ASSERT(!reached_end());
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_ASSERT(m_Finalized);
 #endif
 
         return m_Tokens.at(m_Iterator.unsafe());
@@ -76,7 +76,7 @@ namespace dlx
     {
         PHI_ASSERT(!reached_end());
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_ASSERT(m_Finalized);
 #endif
 
         return m_Tokens.at(m_Iterator++.unsafe());
@@ -86,7 +86,7 @@ namespace dlx
     {
         PHI_ASSERT(!reached_end());
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_ASSERT(m_Finalized);
 #endif
         PHI_ASSERT(has_x_more(n));
         PHI_ASSERT(n != 0u);
@@ -99,7 +99,7 @@ namespace dlx
     const Token* TokenStream::find_first_token_of_type(Token::Type type) const noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_ASSERT(m_Finalized);
 #endif
 
         for (const Token& token : m_Tokens)
@@ -116,7 +116,7 @@ namespace dlx
     const Token* TokenStream::find_last_token_of_type(Token::Type type) const noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_ASSERT(m_Finalized);
 #endif
 
         const Token* last = nullptr;
@@ -135,7 +135,7 @@ namespace dlx
     phi::usize TokenStream::size() const noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_ASSERT(m_Finalized);
 #endif
         phi::usize count{0u};
 
@@ -160,7 +160,7 @@ namespace dlx
     void TokenStream::set_position(phi::usize pos) noexcept
     {
 #if defined(PHI_DEBUG)
-        PHI_ASSERT(m_Finialized);
+        PHI_ASSERT(m_Finalized);
 #endif
 
         m_Iterator = pos;
@@ -169,7 +169,7 @@ namespace dlx
     PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::begin() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_ASSERT(m_Finalized);
 #endif
 
         return m_Tokens.begin();
@@ -178,7 +178,7 @@ namespace dlx
     PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::cbegin() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_ASSERT(m_Finalized);
 #endif
 
         return m_Tokens.cbegin();
@@ -187,7 +187,7 @@ namespace dlx
     PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::end() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_ASSERT(m_Finalized);
 #endif
 
         return m_Tokens.end();
@@ -196,7 +196,7 @@ namespace dlx
     PHI_ATTRIBUTE_CONST TokenStream::const_iterator TokenStream::cend() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_ASSERT(m_Finalized);
 #endif
 
         return m_Tokens.cend();
@@ -205,7 +205,7 @@ namespace dlx
     PHI_ATTRIBUTE_CONST TokenStream::const_reverse_iterator TokenStream::rbegin() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_ASSERT(m_Finalized);
 #endif
 
         return m_Tokens.rbegin();
@@ -214,7 +214,7 @@ namespace dlx
     TokenStream::const_reverse_iterator TokenStream::rend() const noexcept
     {
 #if defined(PHI_DEBUG)
-        //PHI_ASSERT(m_Finialized);
+        //PHI_ASSERT(m_Finalized);
 #endif
 
         return m_Tokens.rend();

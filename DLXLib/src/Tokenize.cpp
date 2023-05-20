@@ -260,7 +260,7 @@ namespace dlx
                                current_line_number, current_column - current_token.length()));
         }
 
-        // Finialize token stream
+        // Finalize token stream
         tokens.finalize();
 
         return tokens;

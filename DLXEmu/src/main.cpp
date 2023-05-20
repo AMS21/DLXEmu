@@ -8,13 +8,13 @@
 
 #    include <emscripten.h>
 
-static phi::boolean inited{false};
+static phi::boolean initialized{false};
 
 extern "C" void main_loop(void* /*data*/) noexcept
 {
     static dlxemu::Emulator emulator;
 
-    if (!inited)
+    if (!initialized)
     {
         if (!emulator.Initialize())
         {
@@ -22,7 +22,7 @@ extern "C" void main_loop(void* /*data*/) noexcept
             std::exit(1);
         }
 
-        inited = true;
+        initialized = true;
         DLX_INFO("Successfully initialized Emulator");
         return;
     }

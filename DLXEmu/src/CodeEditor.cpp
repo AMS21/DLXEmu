@@ -100,29 +100,29 @@ using namespace phi::literals;
 
 // https://en.wikipedia.org/wiki/UTF-8
 // We assume that the char is a standalone character (<128) or a leading byte of an UTF-8 code sequence (non-10xxxxxx code)
-[[nodiscard]] static constexpr phi::u8_fast UTF8CharLength(const char characater) noexcept
+[[nodiscard]] static constexpr phi::u8_fast UTF8CharLength(const char character) noexcept
 {
-    if ((characater & 0xFE) == 0xFC)
+    if ((character & 0xFE) == 0xFC)
     {
         return 6_u8;
     }
 
-    if ((characater & 0xFC) == 0xF8)
+    if ((character & 0xFC) == 0xF8)
     {
         return 5_u8;
     }
 
-    if ((characater & 0xF8) == 0xF0)
+    if ((character & 0xF8) == 0xF0)
     {
         return 4_u8;
     }
 
-    if ((characater & 0xF0) == 0xE0)
+    if ((character & 0xF0) == 0xE0)
     {
         return 3_u8;
     }
 
-    if ((characater & 0xE0) == 0xC0)
+    if ((character & 0xE0) == 0xC0)
     {
         return 2_u8;
     }
@@ -130,9 +130,9 @@ using namespace phi::literals;
     return 1_u8;
 }
 
-[[nodiscard]] static constexpr phi::u8_fast UTF8CharLength(const unsigned char characater) noexcept
+[[nodiscard]] static constexpr phi::u8_fast UTF8CharLength(const unsigned char character) noexcept
 {
-    return UTF8CharLength(static_cast<char>(characater));
+    return UTF8CharLength(static_cast<char>(character));
 }
 
 // "Borrowed" from ImGui source
@@ -291,7 +291,7 @@ namespace dlxemu
         , m_Emulator(emulator)
     {
         Colorize();
-        m_Lines.push_back(Line());
+        m_Lines.emplace_back();
     }
 
     CodeEditor::~CodeEditor() noexcept
@@ -313,7 +313,7 @@ namespace dlxemu
 
     void CodeEditor::SetErrorMarkers(const ErrorMarkers& markers) noexcept
     {
-        // Reject if any marker are invalid
+        // Reject if any markers are invalid
         for (auto&& marker : markers)
         {
             const phi::u32 line_number = marker.first;
@@ -361,7 +361,7 @@ namespace dlxemu
 
     void CodeEditor::SetBreakpoints(const Breakpoints& markers) noexcept
     {
-        // Reject aif any lines are invalid
+        // Reject if any lines are invalid
         for (phi::u32 line_number : markers)
         {
             if (line_number == 0u || line_number > m_Lines.size())
@@ -426,7 +426,7 @@ namespace dlxemu
 
     void CodeEditor::Render(const ImVec2& size, phi::boolean border) noexcept
     {
-        // Verify that ImGui is correctly initialzied
+        // Verify that ImGui is correctly initialized
         PHI_ASSERT(GImGui && GImGui->Initialized, "ImGui was not initialized!");
 
         m_CursorPositionChanged = false;
@@ -435,7 +435,7 @@ namespace dlxemu
                                                         PaletteIndex::Background)));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-        // Assert size is properly sanitzed
+        // Assert size is properly sanitized
         PHI_ASSERT(size.x >= 0.0f);
         PHI_ASSERT(!(phi::is_nan(size.x) || phi::is_infinity(size.x)));
 
@@ -493,7 +493,7 @@ namespace dlxemu
     {
         m_Lines.clear();
         ResetState();
-        m_Lines.emplace_back(Line());
+        m_Lines.emplace_back();
 
         for (const char character : text)
         {
@@ -504,12 +504,11 @@ namespace dlxemu
             }
             else if (character == '\n')
             {
-                m_Lines.emplace_back(Line());
+                m_Lines.emplace_back();
             }
             else
             {
-                m_Lines.back().emplace_back(
-                        Glyph(static_cast<Char>(character), PaletteIndex::Default));
+                m_Lines.back().emplace_back(static_cast<Char>(character), PaletteIndex::Default);
             }
         }
 
@@ -553,7 +552,7 @@ namespace dlxemu
         undo.m_RemovedEnd   = Coordinates(max_line, GetLineMaxColumn(max_line));
 
         m_Lines.clear();
-        m_Lines.emplace_back(Line{});
+        m_Lines.emplace_back();
         ResetState();
 
         undo.StoreAfterState(this);
@@ -567,7 +566,7 @@ namespace dlxemu
 
         if (lines.empty())
         {
-            m_Lines.emplace_back(Line());
+            m_Lines.emplace_back();
         }
         else
         {
@@ -584,15 +583,15 @@ namespace dlxemu
                     if (character == '\n')
                     {
                         // Hang on an extra line at the end
-                        m_Lines.emplace_back(Line{});
+                        m_Lines.emplace_back();
 
                         // Increase line number
                         line_number += 1u;
                     }
                     else
                     {
-                        m_Lines[line_number.unsafe()].emplace_back(
-                                Glyph(static_cast<Char>(character), PaletteIndex::Default));
+                        m_Lines[line_number.unsafe()].emplace_back(static_cast<Char>(character),
+                                                                   PaletteIndex::Default);
                     }
                 }
             }
@@ -1583,7 +1582,7 @@ namespace dlxemu
                 0xff00ff00, // Register
                 0xff808000, // IntegerLiteral
                 0xff808080, // Comment
-                0xff800000, // Backgroung
+                0xff800000, // Background
                 0xff0080ff, // Cursor
                 0x80ffff00, // Selection
                 0xa00000ff, // ErrorMarker
@@ -2397,11 +2396,11 @@ namespace dlxemu
     {
         PHI_ASSERT(coords.m_Line < m_Lines.size());
 
-        Coordinates start = FindWordStart(coords);
-        Coordinates end   = FindWordEnd(coords);
+        const Coordinates start = FindWordStart(coords);
+        const Coordinates end   = FindWordEnd(coords);
 
-        phi::u32 istart = GetCharacterIndex(start);
-        phi::u32 iend   = GetCharacterIndex(end);
+        const phi::u32 istart = GetCharacterIndex(start);
+        const phi::u32 iend   = GetCharacterIndex(end);
 
         std::string result;
 

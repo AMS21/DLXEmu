@@ -36,7 +36,7 @@ namespace dlx
     static void JumpToLabel(Processor& processor, phi::string_view label_name) noexcept
     {
         // Lookup the label
-        const phi::observer_ptr<ParsedProgram> program = processor.GetCurrentProgramm();
+        const phi::observer_ptr<ParsedProgram> program = processor.GetCurrentProgram();
         PHI_ASSERT(program != nullptr);
         PHI_ASSERT(!label_name.is_empty(), "Can't jump to empty label");
 
@@ -59,7 +59,7 @@ namespace dlx
         phi::u32 address = processor.IntRegisterGetUnsignedValue(reg_id);
 
         phi::u32 max_address =
-                static_cast<phi::uint32_t>(processor.GetCurrentProgramm()->m_Instructions.size());
+                static_cast<phi::uint32_t>(processor.GetCurrentProgram()->m_Instructions.size());
         if (address >= max_address)
         {
             processor.Raise(Exception::AddressOutOfBounds);

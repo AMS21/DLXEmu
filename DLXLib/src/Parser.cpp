@@ -122,7 +122,7 @@ namespace dlx
                         static_cast<FloatRegisterID>(token.GetHint()));
             }
             case Token::Type::RegisterStatus: {
-                program.AddParseError(ConstructReservedIdentiferParseError(token));
+                program.AddParseError(ConstructReservedIdentifierParseError(token));
 
                 return {};
             }
@@ -137,7 +137,7 @@ namespace dlx
 
                 if (IsReservedIdentifier(token.GetText()))
                 {
-                    program.AddParseError(ConstructReservedIdentiferParseError(token));
+                    program.AddParseError(ConstructReservedIdentifierParseError(token));
                     return {};
                 }
 
@@ -225,7 +225,7 @@ namespace dlx
 
                     if (IsReservedIdentifier(label_name))
                     {
-                        program.AddParseError(ConstructReservedIdentiferParseError(
+                        program.AddParseError(ConstructReservedIdentifierParseError(
                                 current_token.GetLineNumber().unsafe(),
                                 current_token.GetColumn().unsafe(), label_name));
                         break;
@@ -291,7 +291,7 @@ namespace dlx
 
                     //DLX_INFO("Instruction opcode: {}", dlx::enum_name(opcode));
 
-                    const InstructionInfo& info = LookUpIntructionInfo(opcode);
+                    const InstructionInfo& info = LookUpInstructionInfo(opcode);
 
                     // Make sure we got no problems here
                     PHI_ASSERT(info.GetArgumentType(0_u8) != ArgumentType::Unknown);

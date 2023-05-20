@@ -70,7 +70,7 @@ namespace dlx
                                    dlx::enum_name(detail.actual_type).data());
             }
 
-            case Type::ReserverdIdentifier: {
+            case Type::ReservedIdentifier: {
                 const ReservedIdentifier& detail = GetReserverIdentifier();
 
                 return fmt::format("'{:s}' is a reserved identifier", detail.identifier.data());
@@ -80,7 +80,7 @@ namespace dlx
                 const InvalidLabelIdentifier& detail = GetInvalidLabelIdentifier();
 
                 return fmt::format("'{:s}' is not a valid label identifier",
-                                   detail.identifer.data());
+                                   detail.identifier.data());
             }
 
             case Type::LabelAlreadyDefined: {
@@ -150,7 +150,7 @@ namespace dlx
     PHI_ATTRIBUTE_CONST const ParseError::ReservedIdentifier& ParseError::ParseError::
             GetReserverIdentifier() const noexcept
     {
-        PHI_ASSERT(m_Type == Type::ReserverdIdentifier);
+        PHI_ASSERT(m_Type == Type::ReservedIdentifier);
 
         return reserved_identifier;
     }
@@ -273,12 +273,12 @@ namespace dlx
                                                   token.GetType());
     }
 
-    PHI_ATTRIBUTE_CONST ParseError ConstructReservedIdentiferParseError(
+    PHI_ATTRIBUTE_CONST ParseError ConstructReservedIdentifierParseError(
             phi::uint64_t line_number, phi::uint64_t column, phi::string_view identifier) noexcept
     {
         ParseError err;
 
-        err.m_Type                         = ParseError::Type::ReserverdIdentifier;
+        err.m_Type                         = ParseError::Type::ReservedIdentifier;
         err.m_LineNumber                   = line_number;
         err.m_Column                       = column;
         err.reserved_identifier.identifier = identifier;
@@ -286,10 +286,11 @@ namespace dlx
         return err;
     }
 
-    PHI_ATTRIBUTE_CONST ParseError ConstructReservedIdentiferParseError(const Token& token) noexcept
+    PHI_ATTRIBUTE_CONST ParseError
+    ConstructReservedIdentifierParseError(const Token& token) noexcept
     {
-        return ConstructReservedIdentiferParseError(token.GetLineNumber().unsafe(),
-                                                    token.GetColumn().unsafe(), token.GetText());
+        return ConstructReservedIdentifierParseError(token.GetLineNumber().unsafe(),
+                                                     token.GetColumn().unsafe(), token.GetText());
     }
 
     PHI_ATTRIBUTE_CONST ParseError ConstructInvalidLabelIdentifierParseError(
@@ -297,10 +298,10 @@ namespace dlx
     {
         ParseError err;
 
-        err.m_Type                             = ParseError::Type::InvalidLabelIdentifier;
-        err.m_LineNumber                       = line_number;
-        err.m_Column                           = column;
-        err.invalid_label_identifier.identifer = identifier;
+        err.m_Type                              = ParseError::Type::InvalidLabelIdentifier;
+        err.m_LineNumber                        = line_number;
+        err.m_Column                            = column;
+        err.invalid_label_identifier.identifier = identifier;
 
         return err;
     }

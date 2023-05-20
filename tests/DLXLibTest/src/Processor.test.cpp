@@ -4709,7 +4709,7 @@ TEST_CASE("Dump functions")
     CHECK_FALSE(processor.GetRegisterDump().empty());
     CHECK_FALSE(processor.GetMemoryDump().empty());
     CHECK_FALSE(processor.GetProcessorDump().empty());
-    CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
+    CHECK_FALSE(processor.GetCurrentProgramDump().empty());
 
     // Single instruction
     res = dlx::Parser::Parse("ADD R1 R1 R1");
@@ -4721,7 +4721,7 @@ TEST_CASE("Dump functions")
     CHECK_FALSE(processor.GetRegisterDump().empty());
     CHECK_FALSE(processor.GetMemoryDump().empty());
     CHECK_FALSE(processor.GetProcessorDump().empty());
-    CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
+    CHECK_FALSE(processor.GetCurrentProgramDump().empty());
 
     // Jump labels
     res = dlx::Parser::Parse("a: ADD R1 R1 R1\nb: NOP\nJ a");
@@ -4733,7 +4733,7 @@ TEST_CASE("Dump functions")
     CHECK_FALSE(processor.GetRegisterDump().empty());
     CHECK_FALSE(processor.GetMemoryDump().empty());
     CHECK_FALSE(processor.GetProcessorDump().empty());
-    CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
+    CHECK_FALSE(processor.GetCurrentProgramDump().empty());
 
     // Parse error
     res = dlx::Parser::Parse("DLX with Parse error");
@@ -4745,5 +4745,5 @@ TEST_CASE("Dump functions")
     CHECK_FALSE(processor.GetRegisterDump().empty());
     CHECK_FALSE(processor.GetMemoryDump().empty());
     CHECK_FALSE(processor.GetProcessorDump().empty());
-    CHECK_FALSE(processor.GetCurrentProgrammDump().empty());
+    CHECK_FALSE(processor.GetCurrentProgramDump().empty());
 }

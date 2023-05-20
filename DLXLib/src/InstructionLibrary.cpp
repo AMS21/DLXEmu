@@ -25,7 +25,7 @@ namespace dlx
                 InstructionInfo(opcode, arg1, arg2, arg3, register_access_type, executor);
     }
 
-    constexpr InstructionTableT InitializeIntructionTable() noexcept
+    constexpr InstructionTableT InitializeInstructionTable() noexcept
     {
         InstructionTableT table;
 
@@ -443,12 +443,12 @@ namespace dlx
 
     PHI_ATTRIBUTE_CONST InstructionTableT GenerateInstructionTable() noexcept
     {
-        return InitializeIntructionTable();
+        return InitializeInstructionTable();
     }
 
-    constexpr const static InstructionTableT instruction_table = InitializeIntructionTable();
+    constexpr const static InstructionTableT instruction_table = InitializeInstructionTable();
 
-    PHI_ATTRIBUTE_CONST const InstructionInfo& LookUpIntructionInfo(OpCode instruction) noexcept
+    PHI_ATTRIBUTE_CONST const InstructionInfo& LookUpInstructionInfo(OpCode instruction) noexcept
     {
         return instruction_table.at(static_cast<phi::size_t>(instruction));
     }

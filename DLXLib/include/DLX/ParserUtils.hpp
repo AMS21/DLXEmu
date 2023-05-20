@@ -19,9 +19,9 @@ namespace dlx
 {
     /* Character functions */
 
-    constexpr phi::boolean IsBeginCommentCharacter(const char c) noexcept
+    constexpr phi::boolean IsBeginCommentCharacter(const char character) noexcept
     {
-        return (c == ';') || (c == '/');
+        return (character == ';') || (character == '/');
     }
 
     /* String functions */
@@ -112,7 +112,7 @@ namespace dlx
             return {};
         }
 
-        // Disallow trailing seperators
+        // Disallow trailing separators
         if (token.at(token.length() - 1u) == '\'')
         {
             return {};
@@ -183,7 +183,7 @@ namespace dlx
                 }
             }
 
-            // Handle seperators
+            // Handle separators
             if (c == '\'')
             {
                 if (parsed_separator)

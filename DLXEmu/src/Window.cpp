@@ -16,7 +16,7 @@ extern "C" void*     emscripten_GetProcAddress(const char* name_);
 extern ImGuiContext* GImGui;
 #endif
 
-// GLFW needs to be included after opengl
+// GLFW needs to be included after OpenGL
 #include <GLFW/glfw3.h>
 
 static phi::boolean glfw_initialized{false};
@@ -83,7 +83,7 @@ namespace dlxemu
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(1); // Enable vsync
 
-        // Initilaize OpenGL using glad
+        // Initialize OpenGL using glad
         glad_gl_version = gladLoadGL(glfwGetProcAddress);
         if (glad_gl_version == 0)
         {

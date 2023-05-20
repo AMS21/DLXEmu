@@ -368,7 +368,7 @@ namespace dlx
         return true;
     }
 
-    PHI_ATTRIBUTE_CONST phi::observer_ptr<ParsedProgram> Processor::GetCurrentProgramm()
+    PHI_ATTRIBUTE_CONST phi::observer_ptr<ParsedProgram> Processor::GetCurrentProgram()
             const noexcept
     {
         return m_CurrentProgram;
@@ -663,7 +663,7 @@ namespace dlx
         return text;
     }
 
-    std::string Processor::GetCurrentProgrammDump() const noexcept
+    std::string Processor::GetCurrentProgramDump() const noexcept
     {
         if (m_CurrentProgram)
         {

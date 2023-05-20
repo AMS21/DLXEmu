@@ -24,7 +24,7 @@ TEST_CASE("InstructionLibrary")
         const dlx::OpCode opcode = static_cast<dlx::OpCode>(i);
         CHECK(table.at(i).GetOpCode() == opcode);
 
-        const dlx::InstructionInfo& info = dlx::LookUpIntructionInfo(opcode);
+        const dlx::InstructionInfo& info = dlx::LookUpInstructionInfo(opcode);
         CHECK(info.GetOpCode() == opcode);
         CHECK(info.GetExecutor() != nullptr);
         CHECK((info.GetNumberOfRequiredArguments() >= 0u));

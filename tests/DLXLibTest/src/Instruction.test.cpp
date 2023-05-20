@@ -12,7 +12,7 @@ using namespace phi::literals;
 
 TEST_CASE("Instruction")
 {
-    const dlx::InstructionInfo& add_info = dlx::LookUpIntructionInfo(dlx::OpCode::ADD);
+    const dlx::InstructionInfo& add_info = dlx::LookUpInstructionInfo(dlx::OpCode::ADD);
 
     dlx::Instruction instr{add_info, 0u};
 
@@ -33,18 +33,18 @@ TEST_CASE("Instruction")
 TEST_CASE("Instruction DebugInfo")
 {
     // 0 args
-    dlx::Instruction nop{dlx::LookUpIntructionInfo(dlx::OpCode::NOP), 0u};
+    dlx::Instruction nop{dlx::LookUpInstructionInfo(dlx::OpCode::NOP), 0u};
     CHECK_FALSE(nop.DebugInfo().empty());
 
     // 1 arg
-    dlx::Instruction trap{dlx::LookUpIntructionInfo(dlx::OpCode::TRAP), 0u};
+    dlx::Instruction trap{dlx::LookUpInstructionInfo(dlx::OpCode::TRAP), 0u};
     CHECK_FALSE(trap.DebugInfo().empty());
 
     // 2 args
-    dlx::Instruction lb{dlx::LookUpIntructionInfo(dlx::OpCode::LB), 0u};
+    dlx::Instruction lb{dlx::LookUpInstructionInfo(dlx::OpCode::LB), 0u};
     CHECK_FALSE(lb.DebugInfo().empty());
 
     // 3 args
-    dlx::Instruction add{dlx::LookUpIntructionInfo(dlx::OpCode::ADD), 0u};
+    dlx::Instruction add{dlx::LookUpInstructionInfo(dlx::OpCode::ADD), 0u};
     CHECK_FALSE(add.DebugInfo().empty());
 }

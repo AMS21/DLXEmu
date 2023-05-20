@@ -122,9 +122,9 @@ TEST_CASE("ParseError")
     SECTION("ReservedIdentifier")
     {
         {
-            dlx::ParseError err = dlx::ConstructReservedIdentiferParseError(1, 2, "J");
+            dlx::ParseError err = dlx::ConstructReservedIdentifierParseError(1, 2, "J");
 
-            CHECK(err.GetType() == dlx::ParseError::Type::ReserverdIdentifier);
+            CHECK(err.GetType() == dlx::ParseError::Type::ReservedIdentifier);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
             CHECK_FALSE(err.ConstructMessage().empty());
@@ -135,9 +135,9 @@ TEST_CASE("ParseError")
 
         {
             dlx::Token      token{dlx::Token::Type::OpCode, "J", 1u, 2u};
-            dlx::ParseError err = dlx::ConstructReservedIdentiferParseError(token);
+            dlx::ParseError err = dlx::ConstructReservedIdentifierParseError(token);
 
-            CHECK(err.GetType() == dlx::ParseError::Type::ReserverdIdentifier);
+            CHECK(err.GetType() == dlx::ParseError::Type::ReservedIdentifier);
             CHECK(err.GetLineNumber() == 1);
             CHECK(err.GetColumn() == 2);
             CHECK_FALSE(err.ConstructMessage().empty());
@@ -158,7 +158,7 @@ TEST_CASE("ParseError")
             CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::InvalidLabelIdentifier& detail = err.GetInvalidLabelIdentifier();
-            CHECK(detail.identifer == "123_");
+            CHECK(detail.identifier == "123_");
         }
 
         {
@@ -171,7 +171,7 @@ TEST_CASE("ParseError")
             CHECK_FALSE(err.ConstructMessage().empty());
 
             const dlx::ParseError::InvalidLabelIdentifier& detail = err.GetInvalidLabelIdentifier();
-            CHECK(detail.identifer == "123_");
+            CHECK(detail.identifier == "123_");
         }
     }
 

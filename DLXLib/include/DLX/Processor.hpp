@@ -123,9 +123,9 @@ namespace dlx
 
         void ExecuteInstruction(const Instruction& inst) noexcept;
 
-        phi::boolean LoadProgram(ParsedProgram& programm) noexcept;
+        phi::boolean LoadProgram(ParsedProgram& program) noexcept;
 
-        [[nodiscard]] phi::observer_ptr<ParsedProgram> GetCurrentProgramm() const noexcept;
+        [[nodiscard]] phi::observer_ptr<ParsedProgram> GetCurrentProgram() const noexcept;
 
         void ExecuteStep() noexcept;
 
@@ -169,7 +169,7 @@ namespace dlx
 
         [[nodiscard]] std::string GetProcessorDump() const noexcept;
 
-        [[nodiscard]] std::string GetCurrentProgrammDump() const noexcept;
+        [[nodiscard]] std::string GetCurrentProgramDump() const noexcept;
 
         PHI_GCC_SUPPRESS_WARNING_POP()
 

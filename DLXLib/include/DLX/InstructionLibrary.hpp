@@ -10,5 +10,5 @@ namespace dlx
 
     [[nodiscard]] InstructionTableT GenerateInstructionTable() noexcept;
 
-    [[nodiscard]] const InstructionInfo& LookUpIntructionInfo(OpCode instruction) noexcept;
+    [[nodiscard]] const InstructionInfo& LookUpInstructionInfo(OpCode instruction) noexcept;
 } // namespace dlx

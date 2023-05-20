@@ -17,7 +17,7 @@ namespace dlx
             InvalidNumber,
             TooFewArgumentsAddressDisplacement,
             UnexpectedToken,
-            ReserverdIdentifier,
+            ReservedIdentifier,
             InvalidLabelIdentifier,
             LabelAlreadyDefined,
             OneInstructionPerLine,
@@ -52,7 +52,7 @@ namespace dlx
 
         struct InvalidLabelIdentifier
         {
-            phi::string_view identifer;
+            phi::string_view identifier;
         };
 
         struct LabelAlreadyDefined
@@ -137,7 +137,7 @@ namespace dlx
                                                              Token::Type   expected_type,
                                                              Token::Type   actual_type) noexcept;
 
-        friend ParseError ConstructReservedIdentiferParseError(
+        friend ParseError ConstructReservedIdentifierParseError(
                 phi::uint64_t line_number, phi::uint64_t column,
                 phi::string_view identifier) noexcept;
 
@@ -193,10 +193,10 @@ namespace dlx
     ParseError ConstructUnexpectedTokenParseError(const Token& token,
                                                   Token::Type  expected_type) noexcept;
 
-    ParseError ConstructReservedIdentiferParseError(phi::uint64_t line_number, phi::uint64_t column,
+    ParseError ConstructReservedIdentifierParseError(phi::uint64_t line_number, phi::uint64_t column,
                                                     phi::string_view identifier) noexcept;
 
-    ParseError ConstructReservedIdentiferParseError(const Token& token) noexcept;
+    ParseError ConstructReservedIdentifierParseError(const Token& token) noexcept;
 
     ParseError ConstructInvalidLabelIdentifierParseError(phi::uint64_t    line_number,
                                                          phi::uint64_t    column,
