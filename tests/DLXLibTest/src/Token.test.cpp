@@ -38,7 +38,7 @@ TEST_CASE("Token")
     SECTION("OpCode with hint")
     {
         dlx::Token token{dlx::Token::Type::OpCode, "ADD", 1u, 2u,
-                         static_cast<std::uint32_t>(dlx::OpCode::ADD)};
+                         static_cast<phi::uint32_t>(dlx::OpCode::ADD)};
 
         CHECK(token.GetType() == dlx::Token::Type::OpCode);
         CHECK(token.GetTypeName() == "OpCode");
@@ -48,7 +48,7 @@ TEST_CASE("Token")
         CHECK(token.GetText() == "ADD");
         CHECK(token.GetTextString() == "ADD");
         REQUIRE(token.HasHint());
-        CHECK(token.GetHint() == static_cast<std::uint32_t>(dlx::OpCode::ADD));
+        CHECK(token.GetHint() == static_cast<phi::uint32_t>(dlx::OpCode::ADD));
         CHECK_FALSE(token.DebugInfo().empty());
     }
 
@@ -85,7 +85,7 @@ TEST_CASE("Token")
     SECTION("RegisterInt with hint")
     {
         dlx::Token token{dlx::Token::Type::RegisterInt, "R0", 1u, 2u,
-                         static_cast<std::uint32_t>(dlx::IntRegisterID::R0)};
+                         static_cast<phi::uint32_t>(dlx::IntRegisterID::R0)};
 
         CHECK(token.GetType() == dlx::Token::Type::RegisterInt);
         CHECK(token.GetTypeName() == "RegisterInt");
@@ -95,7 +95,7 @@ TEST_CASE("Token")
         CHECK(token.GetText() == "R0");
         CHECK(token.GetTextString() == "R0");
         REQUIRE(token.HasHint());
-        CHECK(token.GetHint() == static_cast<std::uint32_t>(dlx::IntRegisterID::R0));
+        CHECK(token.GetHint() == static_cast<phi::uint32_t>(dlx::IntRegisterID::R0));
         CHECK_FALSE(token.DebugInfo().empty());
     }
 
@@ -117,7 +117,7 @@ TEST_CASE("Token")
     SECTION("RegisterFloat with hint")
     {
         dlx::Token token{dlx::Token::Type::RegisterFloat, "F0", 1u, 2u,
-                         static_cast<std::uint32_t>(dlx::FloatRegisterID::F0)};
+                         static_cast<phi::uint32_t>(dlx::FloatRegisterID::F0)};
 
         CHECK(token.GetType() == dlx::Token::Type::RegisterFloat);
         CHECK(token.GetTypeName() == "RegisterFloat");
@@ -127,7 +127,7 @@ TEST_CASE("Token")
         CHECK(token.GetText() == "F0");
         CHECK(token.GetTextString() == "F0");
         REQUIRE(token.HasHint());
-        CHECK(token.GetHint() == static_cast<std::uint32_t>(dlx::FloatRegisterID::F0));
+        CHECK(token.GetHint() == static_cast<phi::uint32_t>(dlx::FloatRegisterID::F0));
         CHECK_FALSE(token.DebugInfo().empty());
     }
 

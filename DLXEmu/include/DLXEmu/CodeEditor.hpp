@@ -41,7 +41,7 @@ SOFTWARE.
 #include <unordered_set>
 #include <vector>
 
-extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size);
+extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size);
 
 // TODO: Fully upgrade the lines and columns to 64 bit numbers
 
@@ -121,7 +121,7 @@ namespace dlxemu
         using ErrorMarkers = std::map<phi::uint32_t, std::string>;
         using Breakpoints  = std::unordered_set<phi::uint32_t>;
         using Palette      = phi::array<ImU32, static_cast<phi::size_t>(PaletteIndex::Max)>;
-        using Char         = uint8_t;
+        using Char         = phi::uint8_t;
 
         class Glyph
         {
@@ -372,13 +372,13 @@ namespace dlxemu
         Palette m_PaletteBase;
         Palette m_Palette;
 
-        Breakpoints  m_Breakpoints;
-        ErrorMarkers m_ErrorMarkers;
-        ImVec2       m_CharAdvance;
-        Coordinates  m_InteractiveStart;
-        Coordinates  m_InteractiveEnd;
-        std::string  m_LineBuffer;
-        uint64_t     m_StartTime;
+        Breakpoints   m_Breakpoints;
+        ErrorMarkers  m_ErrorMarkers;
+        ImVec2        m_CharAdvance;
+        Coordinates   m_InteractiveStart;
+        Coordinates   m_InteractiveEnd;
+        std::string   m_LineBuffer;
+        phi::uint64_t m_StartTime;
 
         // TODO: Where saving a float but ImGui returns a double
         float m_LastClick;
@@ -398,7 +398,7 @@ namespace dlxemu
         static const constexpr float LeftMargin{10.0f};
 
         // Declare fuzzer function as a friend so it can access all members and functions
-        friend int ::LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size);
+        friend int ::LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size);
     };
 } // namespace dlxemu
 

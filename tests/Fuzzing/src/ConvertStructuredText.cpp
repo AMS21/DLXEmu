@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 
     // Convert it
     std::string converted = fuzz::ParseAsStrucutedDLXCode(
-            reinterpret_cast<std::uint8_t*>(content.data()), content.size());
+            reinterpret_cast<phi::uint8_t*>(content.data()), content.size());
 
     std::cout << converted;
 

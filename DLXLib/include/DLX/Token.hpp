@@ -41,7 +41,7 @@ namespace dlx
         Token(Type type, phi::string_view text, phi::u64 line_number, phi::u64 column) noexcept;
 
         Token(Type type, phi::string_view text, phi::u64 line_number, phi::u64 column,
-              std::uint32_t hint) noexcept;
+              phi::uint32_t hint) noexcept;
 
         [[nodiscard]] Type GetType() const noexcept;
 
@@ -61,7 +61,7 @@ namespace dlx
 
         [[nodiscard]] phi::boolean HasHint() const noexcept;
 
-        [[nodiscard]] std::uint32_t GetHint() const noexcept;
+        [[nodiscard]] phi::uint32_t GetHint() const noexcept;
 
         [[nodiscard]] std::string DebugInfo() const noexcept;
 
@@ -72,7 +72,7 @@ namespace dlx
         phi::string_view m_Text;
         phi::u64         m_LineNumber;
         phi::u64         m_Column;
-        std::uint32_t    m_Hint;
+        phi::uint32_t    m_Hint;
         phi::boolean     m_HasHint;
     };
 

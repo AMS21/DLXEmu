@@ -1,7 +1,6 @@
 #include <cstddef>
-#include <cstdint>
 
-extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
+extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size)
 {
     if (size > 4)
     {

@@ -18,10 +18,10 @@ namespace dlx
                                    RegisterAccessType  register_access_type,
                                    InstructionExecutor executor) noexcept
     {
-        PHI_ASSERT(table.at(static_cast<std::size_t>(opcode)).GetExecutor() == nullptr,
+        PHI_ASSERT(table.at(static_cast<phi::size_t>(opcode)).GetExecutor() == nullptr,
                    "Already registered instruction {}", dlx::enum_name(opcode));
 
-        table.at(static_cast<std::size_t>(opcode)) =
+        table.at(static_cast<phi::size_t>(opcode)) =
                 InstructionInfo(opcode, arg1, arg2, arg3, register_access_type, executor);
     }
 
@@ -450,6 +450,6 @@ namespace dlx
 
     PHI_ATTRIBUTE_CONST const InstructionInfo& LookUpIntructionInfo(OpCode instruction) noexcept
     {
-        return instruction_table.at(static_cast<std::size_t>(instruction));
+        return instruction_table.at(static_cast<phi::size_t>(instruction));
     }
 } // namespace dlx

@@ -7,8 +7,8 @@
 #include <DLX/Tokenize.hpp>
 
 void TokenMatches(const dlx::Token& token, const phi::string_view expected_text,
-                  dlx::Token::Type expected_type, std::size_t expected_line_number,
-                  std::size_t expected_column)
+                  dlx::Token::Type expected_type, phi::size_t expected_line_number,
+                  phi::size_t expected_column)
 {
     CHECK(token.GetText() == expected_text);
     CHECK(token.GetType() == expected_type);

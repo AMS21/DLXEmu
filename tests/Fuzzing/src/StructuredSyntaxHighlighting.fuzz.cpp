@@ -2,12 +2,11 @@
 #include <DLXEmu/Emulator.hpp>
 #include <phi/compiler_support/warning.hpp>
 #include <cstddef>
-#include <cstdint>
 
 PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
 
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
-extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
+extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size)
 {
     static dlxemu::Emulator emu;
 

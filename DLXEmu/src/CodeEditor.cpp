@@ -283,7 +283,7 @@ namespace dlxemu
         , m_ShowWhitespaces(false)
         , m_PaletteBase(GetDarkPalette())
         , m_Palette()
-        , m_StartTime(static_cast<std::uint64_t>(
+        , m_StartTime(static_cast<phi::uint64_t>(
                   std::chrono::duration_cast<std::chrono::milliseconds>(
                           std::chrono::system_clock::now().time_since_epoch())
                           .count()))

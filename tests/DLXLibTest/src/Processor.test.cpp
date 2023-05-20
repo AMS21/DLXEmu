@@ -20,9 +20,9 @@ PHI_GCC_SUPPRESS_WARNING("-Wuseless-cast")
 static dlx::Processor     proc;
 static dlx::ParsedProgram res;
 
-constexpr std::int32_t  signed_min   = phi::i32::limits_type::min();
-constexpr std::int32_t  signed_max   = phi::i32::limits_type::max();
-constexpr std::uint32_t unsigned_max = phi::u32::limits_type::max();
+constexpr phi::int32_t  signed_min   = phi::i32::limits_type::min();
+constexpr phi::int32_t  signed_max   = phi::i32::limits_type::max();
+constexpr phi::uint32_t unsigned_max = phi::u32::limits_type::max();
 
 // Correct Implementation
 TEST_CASE("ADD")
@@ -2156,7 +2156,7 @@ TEST_CASE("LB")
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
     proc.ClearMemory();
-    proc.GetMemory().StoreByte(1000u, static_cast<std::int8_t>(21));
+    proc.GetMemory().StoreByte(1000u, static_cast<phi::int8_t>(21));
 
     proc.ExecuteCurrentProgram();
 
@@ -2170,7 +2170,7 @@ TEST_CASE("LB")
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
     proc.ClearMemory();
-    proc.GetMemory().StoreByte(1000u, static_cast<std::int8_t>(21));
+    proc.GetMemory().StoreByte(1000u, static_cast<phi::int8_t>(21));
 
     proc.ExecuteCurrentProgram();
 
@@ -2187,7 +2187,7 @@ TEST_CASE("LBU")
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
     proc.ClearMemory();
-    proc.GetMemory().StoreUnsignedByte(1000u, static_cast<std::uint8_t>(21));
+    proc.GetMemory().StoreUnsignedByte(1000u, static_cast<phi::uint8_t>(21));
 
     proc.ExecuteCurrentProgram();
 
@@ -2201,7 +2201,7 @@ TEST_CASE("LBU")
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
     proc.ClearMemory();
-    proc.GetMemory().StoreUnsignedByte(1000u, static_cast<std::uint8_t>(21));
+    proc.GetMemory().StoreUnsignedByte(1000u, static_cast<phi::uint8_t>(21));
 
     proc.ExecuteCurrentProgram();
 
@@ -2218,7 +2218,7 @@ TEST_CASE("LH")
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
     proc.ClearMemory();
-    proc.GetMemory().StoreHalfWord(1000u, static_cast<std::int16_t>(21));
+    proc.GetMemory().StoreHalfWord(1000u, static_cast<phi::int16_t>(21));
 
     proc.ExecuteCurrentProgram();
 
@@ -2232,7 +2232,7 @@ TEST_CASE("LH")
     proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R1, 9999999);
 
     proc.ClearMemory();
-    proc.GetMemory().StoreHalfWord(1000u, static_cast<std::int16_t>(21));
+    proc.GetMemory().StoreHalfWord(1000u, static_cast<phi::int16_t>(21));
 
     proc.ExecuteCurrentProgram();
 
@@ -2249,7 +2249,7 @@ TEST_CASE("LHU")
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
     proc.ClearMemory();
-    proc.GetMemory().StoreUnsignedHalfWord(1000u, static_cast<std::uint16_t>(21));
+    proc.GetMemory().StoreUnsignedHalfWord(1000u, static_cast<phi::uint16_t>(21));
 
     proc.ExecuteCurrentProgram();
 
@@ -2263,7 +2263,7 @@ TEST_CASE("LHU")
     proc.IntRegisterSetUnsignedValue(dlx::IntRegisterID::R1, 9999999u);
 
     proc.ClearMemory();
-    proc.GetMemory().StoreUnsignedHalfWord(1000u, static_cast<std::uint16_t>(21));
+    proc.GetMemory().StoreUnsignedHalfWord(1000u, static_cast<phi::uint16_t>(21));
 
     proc.ExecuteCurrentProgram();
 

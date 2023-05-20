@@ -15,7 +15,7 @@ namespace dlx
     struct ParsedProgram
     {
         std::vector<Instruction>                            m_Instructions;
-        std::unordered_map<std::string_view, std::uint32_t> m_JumpData;
+        std::unordered_map<std::string_view, phi::uint32_t> m_JumpData;
         std::vector<ParseError>                             m_ParseErrors;
         TokenStream                                         m_Tokens;
 

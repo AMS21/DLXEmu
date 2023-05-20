@@ -263,7 +263,7 @@ TEST_CASE("Set/GetPalette")
     dlxemu::CodeEditor::Palette dark_palette    = dlxemu::CodeEditor::GetDarkPalette();
     dlxemu::CodeEditor::Palette current_palette = editor.GetPalette();
 
-    for (std::size_t i{0}; i < static_cast<std::size_t>(dlxemu::CodeEditor::PaletteIndex::Max); ++i)
+    for (phi::size_t i{0}; i < static_cast<phi::size_t>(dlxemu::CodeEditor::PaletteIndex::Max); ++i)
     {
         CHECK(current_palette[i] == dark_palette[i]);
     }
@@ -274,7 +274,7 @@ TEST_CASE("Set/GetPalette")
 
     current_palette = editor.GetPalette();
 
-    for (std::size_t i{0u}; i < static_cast<std::size_t>(dlxemu::CodeEditor::PaletteIndex::Max);
+    for (phi::size_t i{0u}; i < static_cast<phi::size_t>(dlxemu::CodeEditor::PaletteIndex::Max);
          ++i)
     {
         CHECK(current_palette[i] == dark_palette[i]);
@@ -287,7 +287,7 @@ TEST_CASE("Set/GetPalette")
     dlxemu::CodeEditor::Palette light_palette = dlxemu::CodeEditor::GetLightPalette();
     current_palette                           = editor.GetPalette();
 
-    for (std::size_t i{0u}; i < static_cast<std::size_t>(dlxemu::CodeEditor::PaletteIndex::Max);
+    for (phi::size_t i{0u}; i < static_cast<phi::size_t>(dlxemu::CodeEditor::PaletteIndex::Max);
          ++i)
     {
         CHECK(current_palette[i] == light_palette[i]);
@@ -300,7 +300,7 @@ TEST_CASE("Set/GetPalette")
     dlxemu::CodeEditor::Palette retro_blue_palette = dlxemu::CodeEditor::GetRetroBluePalette();
     current_palette                                = editor.GetPalette();
 
-    for (std::size_t i{0u}; i < static_cast<std::size_t>(dlxemu::CodeEditor::PaletteIndex::Max);
+    for (phi::size_t i{0u}; i < static_cast<phi::size_t>(dlxemu::CodeEditor::PaletteIndex::Max);
          ++i)
     {
         CHECK(current_palette[i] == retro_blue_palette[i]);

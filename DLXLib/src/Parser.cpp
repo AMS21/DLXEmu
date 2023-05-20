@@ -48,7 +48,7 @@ namespace dlx
                 // Get address displacement
                 PHI_ASSERT(token.HasHint());
 
-                std::int16_t value = static_cast<std::int16_t>(token.GetHint());
+                phi::int16_t value = static_cast<phi::int16_t>(token.GetHint());
 
                 if (!tokens.has_x_more(3u))
                 {
@@ -162,7 +162,7 @@ namespace dlx
                 if (token.HasHint())
                 {
                     return ConstructInstructionArgumentImmediateValue(
-                            static_cast<std::int16_t>(token.GetHint()));
+                            static_cast<phi::int16_t>(token.GetHint()));
                 }
 
                 program.AddParseError(ConstructInvalidNumberParseError(token));
@@ -266,7 +266,7 @@ namespace dlx
                     }
 
                     program.m_JumpData[label_name] =
-                            static_cast<std::uint32_t>(program.m_Instructions.size());
+                            static_cast<phi::uint32_t>(program.m_Instructions.size());
                     label_count += 1u;
 
                     //DLX_INFO("Added jump label {} -> {}", label_name,

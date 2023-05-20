@@ -79,7 +79,7 @@ namespace dlxemu
     PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wabi-tag")
 
     [[nodiscard]] std::string generate_random_code_string(std::mt19937& engine,
-                                                          std::size_t   max_length) noexcept
+                                                          phi::size_t   max_length) noexcept
     {
         PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused variable?
 
@@ -95,7 +95,7 @@ namespace dlxemu
         std::string ret;
         ret.reserve(max_length);
 
-        for (std::size_t i{0}; i < max_length; ++i)
+        for (phi::size_t i{0}; i < max_length; ++i)
         {
             const phi::size_t random_index = dist(engine);
             ret += possible_characters[random_index];
@@ -105,7 +105,7 @@ namespace dlxemu
     }
 
     [[nodiscard]] std::string generate_random_line(std::mt19937& engine,
-                                                   std::size_t   max_length) noexcept
+                                                   phi::size_t   max_length) noexcept
     {
         PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5264) // Unused variable?
 
@@ -121,7 +121,7 @@ namespace dlxemu
         std::string ret;
         ret.reserve(max_length);
 
-        for (std::size_t i{0}; i < max_length; ++i)
+        for (phi::size_t i{0}; i < max_length; ++i)
         {
             const phi::size_t random_index = dist(engine);
             ret += possible_characters[random_index];
@@ -137,23 +137,23 @@ namespace dlxemu
         std::uniform_int_distribution<> function_distrib(0, 36);
         const int                       function_index = function_distrib(engine);
 
-        std::uniform_int_distribution<std::size_t>   message_length_distrib(0, 20);
-        std::uniform_int_distribution<std::uint16_t> bool_distrib(0, 1);
+        std::uniform_int_distribution<phi::size_t>   message_length_distrib(0, 20);
+        std::uniform_int_distribution<phi::uint16_t> bool_distrib(0, 1);
 
-        std::uniform_int_distribution<std::uint32_t> coord_distrib(
-                0, std::numeric_limits<std::uint32_t>::max());
-        std::uniform_int_distribution<std::size_t> size_t_distrib(
-                std::numeric_limits<std::size_t>::min(), std::numeric_limits<std::size_t>::max());
-        std::uniform_int_distribution<std::int32_t> int32_t_distrib(
-                std::numeric_limits<std::int32_t>::min(), std::numeric_limits<std::int32_t>::max());
-        std::uniform_int_distribution<std::uint32_t> uint32_t_distrib(
-                std::numeric_limits<std::uint32_t>::min(),
-                std::numeric_limits<std::uint32_t>::max());
-        std::uniform_int_distribution<std::int16_t> int16_t_distrib(
-                std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::int16_t>::max());
-        std::uniform_int_distribution<std::uint16_t> uint16_t_distrib(
-                std::numeric_limits<std::uint16_t>::min(),
-                std::numeric_limits<std::uint16_t>::max());
+        std::uniform_int_distribution<phi::uint32_t> coord_distrib(
+                0, std::numeric_limits<phi::uint32_t>::max());
+        std::uniform_int_distribution<phi::size_t> size_t_distrib(
+                std::numeric_limits<phi::size_t>::min(), std::numeric_limits<phi::size_t>::max());
+        std::uniform_int_distribution<phi::int32_t> int32_t_distrib(
+                std::numeric_limits<phi::int32_t>::min(), std::numeric_limits<phi::int32_t>::max());
+        std::uniform_int_distribution<phi::uint32_t> uint32_t_distrib(
+                std::numeric_limits<phi::uint32_t>::min(),
+                std::numeric_limits<phi::uint32_t>::max());
+        std::uniform_int_distribution<phi::int16_t> int16_t_distrib(
+                std::numeric_limits<phi::int16_t>::min(), std::numeric_limits<phi::int16_t>::max());
+        std::uniform_int_distribution<phi::uint16_t> uint16_t_distrib(
+                std::numeric_limits<phi::uint16_t>::min(),
+                std::numeric_limits<phi::uint16_t>::max());
         std::uniform_int_distribution<ImWchar> imwchar_distrib(std::numeric_limits<ImWchar>::min(),
                                                                std::numeric_limits<ImWchar>::max());
 
@@ -161,11 +161,11 @@ namespace dlxemu
         {
             // AddErrorMarker
             case 0: {
-                std::uniform_int_distribution<std::uint32_t> line_number_distrib(
-                        0, std::numeric_limits<std::uint32_t>::max());
+                std::uniform_int_distribution<phi::uint32_t> line_number_distrib(
+                        0, std::numeric_limits<phi::uint32_t>::max());
 
-                std::uint32_t line_number    = line_number_distrib(engine);
-                std::size_t   message_length = message_length_distrib(engine);
+                phi::uint32_t line_number    = line_number_distrib(engine);
+                phi::size_t   message_length = message_length_distrib(engine);
                 std::string   message        = generate_random_line(engine, message_length);
 
                 DLX_DEBUG("AddErrorMarker: {:d}, '{:s}'", line_number, message);
@@ -204,21 +204,21 @@ namespace dlxemu
 
             // SetTextLines
             case 4: {
-                std::uniform_int_distribution<std::size_t> number_of_lines_distrib(0, 10);
+                std::uniform_int_distribution<phi::size_t> number_of_lines_distrib(0, 10);
 
-                std::size_t number_of_lines = number_of_lines_distrib(engine);
+                phi::size_t number_of_lines = number_of_lines_distrib(engine);
 
                 std::vector<std::string> lines;
                 lines.reserve(number_of_lines);
-                for (std::size_t i{0}; i < number_of_lines; ++i)
+                for (phi::size_t i{0}; i < number_of_lines; ++i)
                 {
-                    std::size_t message_length = message_length_distrib(engine);
+                    phi::size_t message_length = message_length_distrib(engine);
                     lines.emplace_back(generate_random_line(engine, message_length));
                 }
 
                 /*
                 DLX_DEBUG("SetTextLines: {:d}", number_of_lines);
-                for (std::size_t i{0}; i < lines.size(); ++i)
+                for (phi::size_t i{0}; i < lines.size(); ++i)
                 {
                     DLX_DEBUG("[{:02d}]: {:s}", i, lines.at(i));
                 }
@@ -285,15 +285,15 @@ namespace dlxemu
 
             // SetTabSize
             case 12: {
-                std::int16_t tab_size = int16_t_distrib(engine);
+                phi::int16_t tab_size = int16_t_distrib(engine);
 
-                editor.SetTabSize(static_cast<std::uint8_t>(tab_size));
+                editor.SetTabSize(static_cast<phi::uint8_t>(tab_size));
                 break;
             }
 
             // InsertText
             case 13: {
-                std::size_t message_length = message_length_distrib(engine);
+                phi::size_t message_length = message_length_distrib(engine);
                 std::string text           = generate_random_code_string(engine, message_length);
 
                 DLX_DEBUG("InsertText: {:s}", text);
@@ -304,7 +304,7 @@ namespace dlxemu
 
             // MoveUp
             case 14: {
-                std::uint32_t amount = uint32_t_distrib(engine);
+                phi::uint32_t amount = uint32_t_distrib(engine);
                 bool          select = bool_distrib(engine) == 1;
 
                 DLX_DEBUG("MoveUp: {:d} {:s}", amount, select ? "True" : "False");
@@ -315,7 +315,7 @@ namespace dlxemu
 
             // MoveDown
             case 15: {
-                std::uint32_t amount = uint32_t_distrib(engine);
+                phi::uint32_t amount = uint32_t_distrib(engine);
                 bool          select = bool_distrib(engine) == 1;
 
                 DLX_DEBUG("MoveDown: {:d} {:s}", amount, select ? "True" : "False");
@@ -326,7 +326,7 @@ namespace dlxemu
 
             // MoveLeft
             case 16: {
-                std::uint32_t amount    = uint32_t_distrib(engine);
+                phi::uint32_t amount    = uint32_t_distrib(engine);
                 bool          select    = bool_distrib(engine) == 1;
                 bool          word_mode = bool_distrib(engine) == 1;
 
@@ -339,7 +339,7 @@ namespace dlxemu
 
             // MoveRight
             case 17: {
-                std::uint32_t amount    = uint32_t_distrib(engine);
+                phi::uint32_t amount    = uint32_t_distrib(engine);
                 bool          select    = bool_distrib(engine) == 1;
                 bool          word_mode = bool_distrib(engine) == 1;
 
@@ -392,8 +392,8 @@ namespace dlxemu
 
             // SetSelectionStart
             case 22: {
-                std::uint32_t column = coord_distrib(engine);
-                std::uint32_t line   = coord_distrib(engine);
+                phi::uint32_t column = coord_distrib(engine);
+                phi::uint32_t line   = coord_distrib(engine);
 
                 CodeEditor::Coordinates coord;
                 coord.m_Column = column;
@@ -405,8 +405,8 @@ namespace dlxemu
 
             // SetSelectionEnd
             case 23: {
-                std::uint32_t column = coord_distrib(engine);
-                std::uint32_t line   = coord_distrib(engine);
+                phi::uint32_t column = coord_distrib(engine);
+                phi::uint32_t line   = coord_distrib(engine);
 
                 CodeEditor::Coordinates coord;
                 coord.m_Column = column;
@@ -418,13 +418,13 @@ namespace dlxemu
 
             // SetSelection
             case 24: {
-                std::uniform_int_distribution<std::uint16_t> selection_mode_distrib(0, 2);
+                std::uniform_int_distribution<phi::uint16_t> selection_mode_distrib(0, 2);
 
-                std::uint32_t column_start = coord_distrib(engine);
-                std::uint32_t line_start   = coord_distrib(engine);
+                phi::uint32_t column_start = coord_distrib(engine);
+                phi::uint32_t line_start   = coord_distrib(engine);
 
-                std::uint32_t column_end = coord_distrib(engine);
-                std::uint32_t line_end   = coord_distrib(engine);
+                phi::uint32_t column_end = coord_distrib(engine);
+                phi::uint32_t line_end   = coord_distrib(engine);
 
                 CodeEditor::Coordinates coord_start;
                 coord_start.m_Column = column_start;
@@ -483,11 +483,11 @@ namespace dlxemu
 
             // SetErrorMarkers
             case 30: {
-                const std::uint32_t      amount = uint32_t_distrib(engine);
+                const phi::uint32_t      amount = uint32_t_distrib(engine);
                 CodeEditor::ErrorMarkers markers;
-                for (std::size_t i{0u}; i < amount; ++i)
+                for (phi::size_t i{0u}; i < amount; ++i)
                 {
-                    std::uint32_t line_number = uint32_t_distrib(engine);
+                    phi::uint32_t line_number = uint32_t_distrib(engine);
                     std::string   message     = generate_random_line(engine, 100u);
 
                     markers[line_number] = message;
@@ -501,12 +501,12 @@ namespace dlxemu
 
             // SetBreakpoints
             case 31: {
-                const std::uint32_t     amount = uint32_t_distrib(engine);
+                const phi::uint32_t     amount = uint32_t_distrib(engine);
                 CodeEditor::Breakpoints breakpoints;
 
-                for (std::size_t i{0u}; i < amount; ++i)
+                for (phi::size_t i{0u}; i < amount; ++i)
                 {
-                    std::uint32_t line_number = uint32_t_distrib(engine);
+                    phi::uint32_t line_number = uint32_t_distrib(engine);
 
                     breakpoints.insert(line_number);
                 }
@@ -528,7 +528,7 @@ namespace dlxemu
                 const bool    shift     = bool_distrib(engine) == 1;
 
                 DLX_DEBUG("EnterCharacter({} (\0x{:02X}) {:s})", static_cast<char>(character),
-                          static_cast<std::uint32_t>(character), shift ? "True" : "False");
+                          static_cast<phi::uint32_t>(character), shift ? "True" : "False");
                 editor.EnterCharacter(character, shift);
                 break;
             }

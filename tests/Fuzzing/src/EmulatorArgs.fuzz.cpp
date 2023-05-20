@@ -6,7 +6,7 @@
 PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
 
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
-extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
+extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size)
 {
     // Only accept properly null terminated strings
     if (size < 1 || data[size - 1] != '\0')
@@ -20,8 +20,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     std::vector<char*> argv;
     argv.reserve(10);
 
-    std::size_t begin{0u};
-    for (std::size_t index{0}; index < size; ++index)
+    phi::size_t begin{0u};
+    for (phi::size_t index{0}; index < size; ++index)
     {
         char c = static_cast<char>(data[index]);
 
@@ -40,12 +40,12 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     }
 
     // Can't eccept too large buffers
-    if (argv.size() > std::numeric_limits<std::int32_t>::max())
+    if (argv.size() > std::numeric_limits<phi::int32_t>::max())
     {
         return 1;
     }
 
-    (void)emulator.HandleCommandLineArguments(static_cast<std::int32_t>(argv.size()), argv.data());
+    (void)emulator.HandleCommandLineArguments(static_cast<phi::int32_t>(argv.size()), argv.data());
 
     return 0;
 }

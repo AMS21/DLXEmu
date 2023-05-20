@@ -2,7 +2,6 @@
 
 #include <DLX/Tokenize.hpp>
 #include <phi/compiler_support/warning.hpp>
-#include <cstdint>
 #include <cstdlib>
 #include <limits>
 #include <random>
@@ -12,7 +11,7 @@ PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wdeprecated-declarations")
 
 static void BM_TokzenizeRandom(benchmark::State& state)
 {
-    std::int64_t length = state.range(0);
+    phi::int64_t length = state.range(0);
 
     // Prepare randomness
     std::random_device                  random_device;
@@ -22,7 +21,7 @@ static void BM_TokzenizeRandom(benchmark::State& state)
     std::string string;
     string.resize(static_cast<phi::size_t>(length));
 
-    for (std::size_t i{0u}; i < static_cast<std::size_t>(length); ++i)
+    for (phi::size_t i{0u}; i < static_cast<phi::size_t>(length); ++i)
     {
         string[i] = dist(random_device);
     }
@@ -40,14 +39,14 @@ BENCHMARK(BM_TokzenizeRandom)->RangeMultiplier(2)->Range(8, 8 << 17)->Complexity
 
 static void BM_TokzenizeADD(benchmark::State& state)
 {
-    std::int64_t                        count         = state.range(0);
-    static constexpr const std::int64_t string_length = 4;
+    phi::int64_t                        count         = state.range(0);
+    static constexpr const phi::int64_t string_length = 4;
 
     // Prepare string
     std::string string;
     string.reserve(static_cast<phi::size_t>(count * string_length));
 
-    for (std::int64_t i{0u}; i < count; ++i)
+    for (phi::int64_t i{0u}; i < count; ++i)
     {
         string += "ADD\n";
     }

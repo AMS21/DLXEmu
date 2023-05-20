@@ -234,12 +234,12 @@ namespace dlx
             return -1;
         }
 
-        std::uint8_t* buffer_ptr = reinterpret_cast<std::uint8_t*>(buffer.get());
+        phi::uint8_t* buffer_ptr = reinterpret_cast<phi::uint8_t*>(buffer.get());
         phi::usize    bytes_read = 0u;
         for (; bytes_read < number_of_bytes && bytes_read < m_Content.size(); ++buffer_ptr)
         {
             // Copy one byte to the target buffer
-            *buffer_ptr = static_cast<std::uint8_t>(m_Content[bytes_read.unsafe()]);
+            *buffer_ptr = static_cast<phi::uint8_t>(m_Content[bytes_read.unsafe()]);
         }
 
         return static_cast<phi::isize::value_type>(bytes_read.unsafe());

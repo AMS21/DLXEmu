@@ -71,7 +71,7 @@ namespace dlx
             return false;
         }
 
-        for (std::size_t index{1u}; index < token.length(); ++index)
+        for (phi::size_t index{1u}; index < token.length(); ++index)
         {
             const char c{token.at(index)};
 
@@ -106,7 +106,7 @@ namespace dlx
         {
             if (phi::is_digit(token.at(0u)))
             {
-                return static_cast<std::int16_t>(token.at(0u) - '0');
+                return static_cast<phi::int16_t>(token.at(0u) - '0');
             }
 
             return {};
@@ -118,7 +118,7 @@ namespace dlx
             return {};
         }
 
-        std::int32_t number{0};
+        phi::int32_t number{0};
         phi::boolean is_negative{false};
         phi::boolean starts_with_zero{false};
         phi::boolean parsing_binary{false};
@@ -129,7 +129,7 @@ namespace dlx
 
         // TODO: Move x'th character checks out of the for loop
 
-        for (std::size_t index{0u}; index < token.length(); ++index)
+        for (phi::size_t index{0u}; index < token.length(); ++index)
         {
             const char c{token.at(index)};
 
@@ -196,12 +196,12 @@ namespace dlx
             }
 
             // Check for over/underflow
-            if (is_negative && (-number < std::numeric_limits<std::int16_t>::min()))
+            if (is_negative && (-number < std::numeric_limits<phi::int16_t>::min()))
             {
                 // Would underflow
                 return {};
             }
-            if (!is_negative && (number > std::numeric_limits<std::int16_t>::max()))
+            if (!is_negative && (number > std::numeric_limits<phi::int16_t>::max()))
             {
                 // Would overflow
                 return {};
@@ -261,12 +261,12 @@ namespace dlx
         if (parsed_something)
         {
             // Check for over/underflow
-            if (is_negative && (-number < std::numeric_limits<std::int16_t>::min()))
+            if (is_negative && (-number < std::numeric_limits<phi::int16_t>::min()))
             {
                 // Would underflow
                 return {};
             }
-            if (!is_negative && (number > std::numeric_limits<std::int16_t>::max()))
+            if (!is_negative && (number > std::numeric_limits<phi::int16_t>::max()))
             {
                 // Would overflow
                 return {};
@@ -274,10 +274,10 @@ namespace dlx
 
             if (is_negative)
             {
-                return static_cast<std::int16_t>(-number);
+                return static_cast<phi::int16_t>(-number);
             }
 
-            return static_cast<std::int16_t>(number);
+            return static_cast<phi::int16_t>(number);
         }
 
         return {};

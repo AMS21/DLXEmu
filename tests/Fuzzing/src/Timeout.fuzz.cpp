@@ -1,7 +1,7 @@
-#include <cstddef>
-#include <cstdint>
+#include <phi/core/size_t.hpp>
+#include <phi/core/sized_types.hpp>
 
-extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
+extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size)
 {
     if (size > 4)
     {
@@ -16,7 +16,8 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                         if (data[4] == 'A')
                         {
                             while (true)
-                            {}
+                            {
+                            }
                         }
                     }
                 }

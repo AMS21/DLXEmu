@@ -21,7 +21,6 @@
 #include <phi/type_traits/to_unsafe.hpp>
 #include <phi/type_traits/underlying_type.hpp>
 #include <cmath>
-#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -94,21 +93,21 @@ struct Cache
 
 static Cache cache = Cache::Initialize();
 
-[[nodiscard]] constexpr bool has_x_more(const std::size_t index, const std::size_t x,
-                                        const std::size_t size) noexcept
+[[nodiscard]] constexpr bool has_x_more(const phi::size_t index, const phi::size_t x,
+                                        const phi::size_t size) noexcept
 {
     return index + x < size;
 }
 
 template <typename T>
-[[nodiscard]] constexpr std::size_t aligned_size() noexcept
+[[nodiscard]] constexpr phi::size_t aligned_size() noexcept
 {
     return sizeof(T) + (sizeof(void*) - sizeof(T));
 }
 
 template <typename T>
-[[nodiscard]] phi::optional<T> consume_t(const std::uint8_t* data, const std::size_t size,
-                                         std::size_t& index) noexcept
+[[nodiscard]] phi::optional<T> consume_t(const phi::uint8_t* data, const phi::size_t size,
+                                         phi::size_t& index) noexcept
 {
     if (!has_x_more(index, sizeof(T), size))
     {
@@ -133,8 +132,8 @@ template <typename T>
 
 template <>
 [[nodiscard]] phi::optional<dlxemu::CodeEditor::Coordinates> consume_t<
-        dlxemu::CodeEditor::Coordinates>(const std::uint8_t* data, const std::size_t size,
-                                         std::size_t& index) noexcept
+        dlxemu::CodeEditor::Coordinates>(const phi::uint8_t* data, const phi::size_t size,
+                                         phi::size_t& index) noexcept
 {
     GET_T(phi::uint32_t, column);
     GET_T(phi::uint32_t, line);
@@ -142,8 +141,8 @@ template <>
     return dlxemu::CodeEditor::Coordinates{column, line};
 }
 
-[[nodiscard]] bool consume_string(const std::uint8_t* data, const std::size_t size,
-                                  std::size_t& index) noexcept
+[[nodiscard]] bool consume_string(const phi::uint8_t* data, const phi::size_t size,
+                                  phi::size_t& index) noexcept
 {
     // Ensure we're not already past the available data
     if (index >= size)
@@ -183,9 +182,9 @@ template <>
 }
 
 // Returns an index into cache.vector_string
-[[nodiscard]] phi::optional<phi::size_t> consume_vector_string(const std::uint8_t* data,
-                                                               const std::size_t   size,
-                                                               std::size_t&        index) noexcept
+[[nodiscard]] phi::optional<phi::size_t> consume_vector_string(const phi::uint8_t* data,
+                                                               const phi::size_t   size,
+                                                               phi::size_t&        index) noexcept
 {
     GET_T(phi::size_t, number_of_lines);
 
@@ -195,7 +194,7 @@ template <>
     }
 
     std::vector<std::string>& res = cache.vector_string[number_of_lines];
-    for (std::size_t i{0u}; i < number_of_lines; ++i)
+    for (phi::size_t i{0u}; i < number_of_lines; ++i)
     {
         if (!consume_string(data, size, index))
         {
@@ -252,7 +251,7 @@ template <typename T>
 
     for (char character : str)
     {
-        hex_str += fmt::format("\\0x{:02X}, ", static_cast<std::uint8_t>(character));
+        hex_str += fmt::format("\\0x{:02X}, ", static_cast<phi::uint8_t>(character));
 
         // Make some special characters printable
         print_str += pretty_char(character);
@@ -265,7 +264,7 @@ template <typename T>
 [[nodiscard]] std::string print_char(const ImWchar character) noexcept
 {
     return fmt::format(R"(ImWchar("{:s}" (\0x{:02X})))", pretty_char(character),
-                       static_cast<std::uint32_t>(character));
+                       static_cast<phi::uint32_t>(character));
 }
 
 [[nodiscard]] std::string print_vector_string(const std::vector<std::string>& vec) noexcept
@@ -404,7 +403,7 @@ void EndImGui() noexcept
 }
 
 // cppcheck-suppress unusedFunction symbolName=LLVMFuzzerTestOneInput
-extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size)
+extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size)
 {
     static bool imgui_init = SetupImGui();
     (void)imgui_init;
@@ -423,7 +422,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
     FUZZ_LOG("Beginning execution");
 
-    for (std::size_t index{0u}; index < size;)
+    for (phi::size_t index{0u}; index < size;)
     {
         GET_T(phi::uint32_t, function_index);
 
@@ -558,7 +557,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
             // SetTabSize
             case 12: {
-                GET_T(std::uint_fast8_t, tab_size);
+                GET_T(phi::uint_fast8_t, tab_size);
 
                 FUZZ_LOG("SetTabSize({:s})", print_int(tab_size));
                 editor.SetTabSize(tab_size);
@@ -742,7 +741,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 GET_T_COND(phi::size_t, count, count <= MaxVectorSize);
 
                 dlxemu::CodeEditor::ErrorMarkers markers;
-                for (std::size_t i{0u}; i < count; ++i)
+                for (phi::size_t i{0u}; i < count; ++i)
                 {
                     GET_T(phi::uint32_t, line_number);
 
@@ -767,7 +766,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
                 GET_T_COND(phi::size_t, count, count <= MaxVectorSize);
 
                 dlxemu::CodeEditor::Breakpoints breakpoints;
-                for (std::size_t i{0u}; i < count; ++i)
+                for (phi::size_t i{0u}; i < count; ++i)
                 {
                     GET_T(phi::uint32_t, line_number);
 

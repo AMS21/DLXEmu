@@ -371,7 +371,7 @@ namespace dlx
     }
 
     PHI_ATTRIBUTE_CONST ParseError ConstructTooFewArgumentsParseError(
-            const Token& token, std::uint8_t required, std::uint8_t provided) noexcept
+            const Token& token, phi::uint8_t required, phi::uint8_t provided) noexcept
     {
         return ConstructTooFewArgumentsParseError(token.GetLineNumber().unsafe(),
                                                   token.GetColumn().unsafe(), required, provided);

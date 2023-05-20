@@ -184,7 +184,7 @@ namespace dlx
         return arg;
     }
 
-    InstructionArgument ConstructInstructionArgumentImmediateValue(std::int16_t value) noexcept
+    InstructionArgument ConstructInstructionArgumentImmediateValue(phi::int16_t value) noexcept
     {
         InstructionArgument arg;
         arg.m_Type                       = ArgumentType::ImmediateInteger;

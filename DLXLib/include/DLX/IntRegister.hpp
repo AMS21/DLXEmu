@@ -1,7 +1,6 @@
 #pragma once
 
 #include <phi/core/types.hpp>
-#include <cstdint>
 #include <string>
 
 namespace dlx

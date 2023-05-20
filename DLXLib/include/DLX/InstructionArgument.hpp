@@ -24,7 +24,7 @@ namespace dlx
         {
             union
             {
-                phi::i16 signed_value{static_cast<std::int16_t>(0)};
+                phi::i16 signed_value{static_cast<phi::int16_t>(0)};
                 phi::u16 unsigned_value;
             };
         };
@@ -70,7 +70,7 @@ namespace dlx
                 FloatRegisterID id) noexcept;
 
         friend InstructionArgument ConstructInstructionArgumentImmediateValue(
-                std::int16_t value) noexcept;
+                phi::int16_t value) noexcept;
 
         friend InstructionArgument ConstructInstructionArgumentAddressDisplacement(
                 IntRegisterID id, phi::i32 displacement) noexcept;
@@ -101,7 +101,7 @@ namespace dlx
 
     InstructionArgument ConstructInstructionArgumentRegisterFloat(FloatRegisterID id) noexcept;
 
-    InstructionArgument ConstructInstructionArgumentImmediateValue(std::int16_t value) noexcept;
+    InstructionArgument ConstructInstructionArgumentImmediateValue(phi::int16_t value) noexcept;
 
     InstructionArgument ConstructInstructionArgumentAddressDisplacement(
             IntRegisterID id, phi::i32 displacement) noexcept;

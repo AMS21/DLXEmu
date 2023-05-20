@@ -82,7 +82,7 @@ extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size
 
     FUZZ_LOG("Beginning execution");
 
-    for (std::size_t index{0u}; index < size;)
+    for (phi::size_t index{0u}; index < size;)
     {
         GET_T(phi::uint32_t, function_index);
 

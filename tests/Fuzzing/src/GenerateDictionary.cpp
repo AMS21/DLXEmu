@@ -4,9 +4,6 @@
 #include <fmt/ostream.h>
 #include <phi/container/array.hpp>
 #include <phi/core/scope_guard.hpp>
-#include <cstdio>
-#include <iostream>
-#include <memory>
 
 int main()
 {

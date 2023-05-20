@@ -4,7 +4,6 @@
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/integer.hpp>
 #include <phi/core/types.hpp>
-#include <cstdint>
 
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=const")
 PHI_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=pure")
@@ -58,7 +57,7 @@ namespace dlx
             return {};
         }
 
-        return *reinterpret_cast<const std::int16_t*>(&m_Values[raw_address].signed_value);
+        return *reinterpret_cast<const phi::int16_t*>(&m_Values[raw_address].signed_value);
     }
 
     phi::optional<phi::u16> MemoryBlock::LoadUnsignedHalfWord(phi::usize address) const noexcept
@@ -77,7 +76,7 @@ namespace dlx
             return {};
         }
 
-        return *reinterpret_cast<const std::uint16_t*>(&m_Values[raw_address].unsigned_value);
+        return *reinterpret_cast<const phi::uint16_t*>(&m_Values[raw_address].unsigned_value);
     }
 
     phi::optional<phi::i32> MemoryBlock::LoadWord(phi::usize address) const noexcept
@@ -96,7 +95,7 @@ namespace dlx
             return {};
         }
 
-        return *reinterpret_cast<const std::int32_t*>(&m_Values[raw_address].signed_value);
+        return *reinterpret_cast<const phi::int32_t*>(&m_Values[raw_address].signed_value);
     }
 
     phi::optional<phi::u32> MemoryBlock::LoadUnsignedWord(phi::usize address) const noexcept
@@ -115,7 +114,7 @@ namespace dlx
             return {};
         }
 
-        return *reinterpret_cast<const std::uint32_t*>(&m_Values[raw_address].unsigned_value);
+        return *reinterpret_cast<const phi::uint32_t*>(&m_Values[raw_address].unsigned_value);
     }
 
     phi::optional<phi::f32> MemoryBlock::LoadFloat(phi::usize address) const noexcept
@@ -189,7 +188,7 @@ namespace dlx
         }
 
         phi::size_t index = (address - m_StartingAddress).unsafe();
-        *reinterpret_cast<std::int16_t*>(&m_Values[index].signed_value) = value.unsafe();
+        *reinterpret_cast<phi::int16_t*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
     }
@@ -203,7 +202,7 @@ namespace dlx
         }
 
         phi::size_t index = (address - m_StartingAddress).unsafe();
-        *reinterpret_cast<std::uint16_t*>(&m_Values[index].unsigned_value) = value.unsafe();
+        *reinterpret_cast<phi::uint16_t*>(&m_Values[index].unsigned_value) = value.unsafe();
 
         return true;
     }
@@ -217,7 +216,7 @@ namespace dlx
         }
 
         phi::size_t index = (address - m_StartingAddress).unsafe();
-        *reinterpret_cast<std::int32_t*>(&m_Values[index].signed_value) = value.unsafe();
+        *reinterpret_cast<phi::int32_t*>(&m_Values[index].signed_value) = value.unsafe();
 
         return true;
     }
@@ -231,7 +230,7 @@ namespace dlx
         }
 
         phi::size_t index = (address - m_StartingAddress).unsafe();
-        *reinterpret_cast<std::uint32_t*>(&m_Values[index].unsigned_value) = value.unsafe();
+        *reinterpret_cast<phi::uint32_t*>(&m_Values[index].unsigned_value) = value.unsafe();
 
         return true;
     }

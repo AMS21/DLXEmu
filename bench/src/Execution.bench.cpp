@@ -11,14 +11,14 @@ static void BM_ProcessorCountWithADDI(benchmark::State& state)
 {
     static constexpr const char* program_source = "ADDI R1 R1 #1\n";
 
-    std::int64_t                      count         = state.range(0);
+    phi::int64_t                      count         = state.range(0);
     static constexpr const phi::usize string_length = phi::string_length(program_source);
 
     // Prepare source code
     std::string source;
     source.reserve(static_cast<phi::size_t>(count) * string_length.unsafe());
 
-    for (std::int64_t i{0}; i < count; ++i)
+    for (phi::int64_t i{0}; i < count; ++i)
     {
         source += program_source;
     }
@@ -59,7 +59,7 @@ end:
     HALT
 )dlx";
 
-    std::int64_t count = state.range(0);
+    phi::int64_t count = state.range(0);
 
     // Parse it
     auto prog = dlx::Parser::Parse(program_source);
@@ -69,7 +69,7 @@ end:
     proc.LoadProgram(prog);
 
     // Set end value
-    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, static_cast<std::int32_t>(count));
+    proc.IntRegisterSetSignedValue(dlx::IntRegisterID::R3, static_cast<phi::int32_t>(count));
 
     for (auto _ : state)
     {
@@ -95,13 +95,13 @@ loop:
     J loop
 )dlx";
 
-    std::int64_t count = state.range(0);
+    phi::int64_t count = state.range(0);
 
     // Parse it
     auto prog = dlx::Parser::Parse(program_source);
 
     dlx::Processor proc;
-    proc.SetMaxNumberOfSteps(static_cast<std::uint64_t>(count)); // Limit number of executions
+    proc.SetMaxNumberOfSteps(static_cast<phi::uint64_t>(count)); // Limit number of executions
     proc.LoadProgram(prog);
 
     for (auto _ : state)

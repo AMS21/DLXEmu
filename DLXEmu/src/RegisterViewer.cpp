@@ -33,7 +33,7 @@ namespace dlxemu
                         ImGui::BeginDisabled();
                     }
 
-                    for (std::uint32_t index{1}; index < 32; ++index)
+                    for (phi::uint32_t index{1}; index < 32; ++index)
                     {
                         ImGui::InputInt(fmt::format("R{}", index).c_str(),
                                         reinterpret_cast<phi::int32_t*>(&proc.GetIntRegister(
@@ -58,7 +58,7 @@ namespace dlxemu
                         ImGui::BeginDisabled();
                     }
 
-                    for (std::uint32_t index{0}; index < 32; ++index)
+                    for (phi::uint32_t index{0}; index < 32; ++index)
                     {
                         ImGui::InputFloat(
                                 fmt::format("F{}", index).c_str(),

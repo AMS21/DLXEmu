@@ -196,20 +196,20 @@ namespace dlx
 
         [[nodiscard]] constexpr phi::u8 GetNumberOfRequiredArguments() const noexcept
         {
-            phi::u8 number_of_argument_required = static_cast<std::uint8_t>(0u);
+            phi::u8 number_of_argument_required = static_cast<phi::uint8_t>(0u);
 
             // Count the number of argument we need
             if (m_Arg1Type != ArgumentType::None)
             {
-                number_of_argument_required += static_cast<std::uint8_t>(1u);
+                number_of_argument_required += static_cast<phi::uint8_t>(1u);
             }
             if (m_Arg2Type != ArgumentType::None)
             {
-                number_of_argument_required += static_cast<std::uint8_t>(1u);
+                number_of_argument_required += static_cast<phi::uint8_t>(1u);
             }
             if (m_Arg3Type != ArgumentType::None)
             {
-                number_of_argument_required += static_cast<std::uint8_t>(1u);
+                number_of_argument_required += static_cast<phi::uint8_t>(1u);
             }
 
             return number_of_argument_required;

@@ -243,7 +243,7 @@ namespace dlx
 
         const FloatRegister& first_reg = GetFloatRegister(id);
         const FloatRegister& second_reg =
-                GetFloatRegister(static_cast<FloatRegisterID>(static_cast<std::size_t>(id) + 1));
+                GetFloatRegister(static_cast<FloatRegisterID>(static_cast<phi::size_t>(id) + 1));
 
         const float first_value  = first_reg.GetValue().unsafe();
         const float second_value = second_reg.GetValue().unsafe();
@@ -251,13 +251,13 @@ namespace dlx
         // TODO: Don't invoke undefined behavior this way. Instead use union type punning
         PHI_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wundefined-reinterpret-cast")
 
-        const std::uint32_t first_value_bits =
-                *reinterpret_cast<const std::uint32_t*>(&first_value);
-        const std::uint32_t second_value_bits =
-                *reinterpret_cast<const std::uint32_t*>(&second_value);
+        const phi::uint32_t first_value_bits =
+                *reinterpret_cast<const phi::uint32_t*>(&first_value);
+        const phi::uint32_t second_value_bits =
+                *reinterpret_cast<const phi::uint32_t*>(&second_value);
 
-        std::uint64_t final_value_bits =
-                static_cast<std::uint64_t>(second_value_bits) << 32u | first_value_bits;
+        phi::uint64_t final_value_bits =
+                static_cast<phi::uint64_t>(second_value_bits) << 32u | first_value_bits;
 
         return *reinterpret_cast<double*>(&final_value_bits);
 
@@ -292,21 +292,21 @@ namespace dlx
             return;
         }
 
-        const constexpr std::uint64_t first_32_bits  = 0b11111111'11111111'11111111'11111111;
-        const constexpr std::uint64_t second_32_bits = first_32_bits << 32u;
+        const constexpr phi::uint64_t first_32_bits  = 0b11111111'11111111'11111111'11111111;
+        const constexpr phi::uint64_t second_32_bits = first_32_bits << 32u;
 
         double              value_raw  = value.unsafe();
-        const std::uint64_t value_bits = *reinterpret_cast<std::uint64_t*>(&value_raw);
+        const phi::uint64_t value_bits = *reinterpret_cast<phi::uint64_t*>(&value_raw);
 
-        const std::uint32_t first_bits  = value_bits & first_32_bits;
-        const std::uint32_t second_bits = (value_bits & second_32_bits) >> 32u;
+        const phi::uint32_t first_bits  = value_bits & first_32_bits;
+        const phi::uint32_t second_bits = (value_bits & second_32_bits) >> 32u;
 
         const float first_value  = *reinterpret_cast<const float*>(&first_bits);
         const float second_value = *reinterpret_cast<const float*>(&second_bits);
 
         FloatRegister& first_reg = GetFloatRegister(id);
         FloatRegister& second_reg =
-                GetFloatRegister(static_cast<FloatRegisterID>(static_cast<std::size_t>(id) + 1));
+                GetFloatRegister(static_cast<FloatRegisterID>(static_cast<phi::size_t>(id) + 1));
 
         first_reg.SetValue(first_value);
         second_reg.SetValue(second_value);
@@ -609,7 +609,7 @@ namespace dlx
         {
             const FloatRegister reg        = m_FloatRegisters.at(i.unsafe());
             float               value      = reg.GetValue().unsafe();
-            std::uint32_t       value_uint = *reinterpret_cast<std::uint32_t*>(&value);
+            phi::uint32_t       value_uint = *reinterpret_cast<phi::uint32_t*>(&value);
             text.append(fmt::format("F{0}: flt: {1:f}, hex: 0x{2:08X}, bin: {2:#032b}\n",
                                     i.unsafe(), reg.GetValue().unsafe(), value_uint));
         }

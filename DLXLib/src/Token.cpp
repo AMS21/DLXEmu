@@ -27,7 +27,7 @@ namespace dlx
     {}
 
     Token::Token(Type type, phi::string_view text, phi::u64 line_number, phi::u64 column,
-                 std::uint32_t hint) noexcept
+                 phi::uint32_t hint) noexcept
         : m_Type{type}
         , m_Text{text}
         , m_LineNumber{line_number}
@@ -80,7 +80,7 @@ namespace dlx
         return m_HasHint;
     }
 
-    PHI_ATTRIBUTE_CONST std::uint32_t Token::GetHint() const noexcept
+    PHI_ATTRIBUTE_CONST phi::uint32_t Token::GetHint() const noexcept
     {
         PHI_ASSERT(m_Type == Type::RegisterInt || m_Type == Type::RegisterFloat ||
                    m_Type == Type::IntegerLiteral || m_Type == Type::OpCode ||
