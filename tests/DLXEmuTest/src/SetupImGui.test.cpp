@@ -21,15 +21,31 @@ TEST_CASE("SetupImGui simple")
 
 TEST_CASE("SetupImGui with viewports")
 {
-    ImGuiIO& io = ImGui::GetIO();
+    {
+        BeginImGui();
 
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-    BeginImGui();
-    EndImGui();
+        EndImGui();
+    }
 
-    io.ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
+    {
+        BeginImGui();
+        EndImGui();
+    }
 
-    BeginImGui();
-    EndImGui();
+    {
+        BeginImGui();
+
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
+
+        EndImGui();
+    }
+
+    {
+        BeginImGui();
+        EndImGui();
+    }
 }
