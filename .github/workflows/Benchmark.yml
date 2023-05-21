@@ -85,5 +85,5 @@ jobs:
       - name: Upload result
         uses: actions/upload-artifact@v3
         with:
-          name: base_benchmark.json
-          path: build/base_benchmark_${{ matrix.compiler }}.json
+          name: base_benchmark_${{ matrix.compiler }}.json
+          path: build/base_benchmark.json
