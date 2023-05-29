@@ -9201,8 +9201,6 @@ function dbg(text) {
       return GLFW.createWindow(width, height, title, monitor, share);
     }
 
-  function _glfwCreateWindowSurface(instance, winid, allocator, surface) { throw "glfwCreateWindowSurface is not implemented."; }
-
   function _glfwDestroyCursor(cursor) {}
 
   function _glfwDestroyWindow(winid) {
@@ -10407,7 +10405,6 @@ var wasmImports = {
   "glViewport": _glViewport,
   "glfwCreateStandardCursor": _glfwCreateStandardCursor,
   "glfwCreateWindow": _glfwCreateWindow,
-  "glfwCreateWindowSurface": _glfwCreateWindowSurface,
   "glfwDestroyCursor": _glfwDestroyCursor,
   "glfwDestroyWindow": _glfwDestroyWindow,
   "glfwFocusWindow": _glfwFocusWindow,
@@ -10502,8 +10499,6 @@ var _emscripten_stack_get_current = function() {
   return (_emscripten_stack_get_current = Module["asm"]["emscripten_stack_get_current"]).apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iijii = Module["dynCall_iijii"] = createExportWrapper("dynCall_iijii");
 /** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 /** @type {function(...*):?} */
