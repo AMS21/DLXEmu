@@ -252,7 +252,7 @@ namespace dlx
 
     phi::boolean VirtualFileSystem::FileExists(const std::string& file_path) const noexcept
     {
-        return m_FileSystem.contains(file_path);
+        return m_FileSystem.find(file_path) != m_FileSystem.end();
     }
 
     phi::observer_ptr<BasicFileHandle> VirtualFileSystem::FileGet(

@@ -22,6 +22,12 @@ static dlxemu::Emulator emulator;
 // TODO: MoveX with 0 amount being noop
 // TODO: Undo/Redo with 0
 
+template <typename ContainerT, typename ValueT>
+bool contains(const ContainerT& container, const ValueT& value)
+{
+    return std::find(container.begin(), container.end(), value) != container.end();
+}
+
 TEST_CASE("CodeEditor::Coordinates")
 {
     const dlxemu::CodeEditor::Coordinates default_coord{};
@@ -383,8 +389,8 @@ TEST_CASE("Breakpoints")
 
     break_points = editor.GetBreakpoints();
     CHECK(break_points.size() == 2);
-    CHECK(break_points.contains(1u));
-    CHECK(break_points.contains(3u));
+    CHECK(contains(break_points, 1u));
+    CHECK(contains(break_points, 3u));
 
     // ClearBreakpoints
     editor.ClearBreakPoints();
@@ -398,22 +404,22 @@ TEST_CASE("Breakpoints")
     break_points = editor.GetBreakpoints();
 
     REQUIRE(break_points.size() == 1);
-    CHECK(break_points.contains(3u));
+    CHECK(contains(break_points, 3u));
 
     CHECK_FALSE(editor.AddBreakpoint(3u));
     editor.VerifyInternalState();
     break_points = editor.GetBreakpoints();
 
     REQUIRE(break_points.size() == 1);
-    CHECK(break_points.contains(3u));
+    CHECK(contains(break_points, 3u));
 
     CHECK(editor.AddBreakpoint(5u));
     editor.VerifyInternalState();
     break_points = editor.GetBreakpoints();
 
     REQUIRE(break_points.size() == 2);
-    CHECK(break_points.contains(3u));
-    CHECK(break_points.contains(5u));
+    CHECK(contains(break_points, 3u));
+    CHECK(contains(break_points, 5u));
 
     // RemoveBreakpoint
     CHECK(editor.RemoveBreakpoint(5u));
@@ -421,14 +427,14 @@ TEST_CASE("Breakpoints")
     break_points = editor.GetBreakpoints();
 
     REQUIRE(break_points.size() == 1);
-    CHECK(break_points.contains(3u));
+    CHECK(contains(break_points, 3u));
 
     CHECK_FALSE(editor.RemoveBreakpoint(5u));
     editor.VerifyInternalState();
     break_points = editor.GetBreakpoints();
 
     REQUIRE(break_points.size() == 1);
-    CHECK(break_points.contains(3u));
+    CHECK(contains(break_points, 3u));
 
     // ToggleBreakpoint
     CHECK(editor.ToggleBreakpoint(5u));
@@ -436,15 +442,15 @@ TEST_CASE("Breakpoints")
     break_points = editor.GetBreakpoints();
 
     REQUIRE(break_points.size() == 2);
-    CHECK(break_points.contains(3u));
-    CHECK(break_points.contains(5u));
+    CHECK(contains(break_points, 3u));
+    CHECK(contains(break_points, 5u));
 
     CHECK_FALSE(editor.ToggleBreakpoint(5u));
     editor.VerifyInternalState();
     break_points = editor.GetBreakpoints();
 
     REQUIRE(break_points.size() == 1);
-    CHECK(break_points.contains(3u));
+    CHECK(contains(break_points, 3u));
 
     // const
     const dlxemu::CodeEditor const_editor{&emulator};

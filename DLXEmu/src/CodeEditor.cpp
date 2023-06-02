@@ -326,7 +326,7 @@ namespace dlxemu
             return;
         }
 
-        if (m_ErrorMarkers.contains(line_number.unsafe()))
+        if (m_ErrorMarkers.find(line_number.unsafe()) != m_ErrorMarkers.end())
         {
             m_ErrorMarkers[line_number.unsafe()] += '\n' + message;
         }
@@ -3381,7 +3381,7 @@ namespace dlxemu
             const ImVec2 start =
                     ImVec2(line_start_screen_pos.x + scroll_x, line_start_screen_pos.y);
 
-            if (m_Breakpoints.contains(line_no.unsafe() + 1u))
+            if (m_Breakpoints.find(line_no.unsafe() + 1u) != m_Breakpoints.end())
             {
                 const ImVec2 end =
                         ImVec2(line_start_screen_pos.x + content_size.x + 2.0f * scroll_x,
