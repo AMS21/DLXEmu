@@ -61,7 +61,7 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          key: ${{ matrix.os }}-${{ matrix.compiler }}
+          key: ${{ runner.os }}-${{ matrix.compiler }}
 
       - name: Setup Environment
         run: |
@@ -72,10 +72,6 @@ jobs:
 
       - name: Install compiler
         run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja
-
-      - name: Install gcovr
-        if: ${{ matrix.dynamic_test == 'coverage' }}
-        run: external/Phi/scripts/ci/InstallTools.sh gcovr
 
       - name: Install dependencies
         run: sudo scripts/ci/InstallDependencies.sh
