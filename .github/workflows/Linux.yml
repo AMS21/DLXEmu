@@ -81,7 +81,7 @@ jobs:
           mkdir build -p
           cd build
 
-          cmake -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_CXX_FLAGS:STRING="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" -DDLXEMU_ENABLE_ASAN:BOOL=${{ matrix.dynamic_test == 'asan' }} -DDLXEMU_ENABLE_LSAN:BOOL=${{ matrix.dynamic_test == 'lsan' }} -DDLXEMU_ENABLE_TSAN:BOOL=${{ matrix.dynamic_test == 'tsan' }} -DDLXEMU_ENABLE_UBSAN:BOOL=${{ matrix.dynamic_test == 'ubsan' }} ..
+          cmake -DCMAKE_AR=$AR_EXECUTABLE -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_CXX_FLAGS:STRING="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" -DDLXEMU_ENABLE_ASAN:BOOL=${{ matrix.dynamic_test == 'asan' }} -DDLXEMU_ENABLE_LSAN:BOOL=${{ matrix.dynamic_test == 'lsan' }} -DDLXEMU_ENABLE_TSAN:BOOL=${{ matrix.dynamic_test == 'tsan' }} -DDLXEMU_ENABLE_UBSAN:BOOL=${{ matrix.dynamic_test == 'ubsan' }} ..
 
       - name: Build
         working-directory: ./build
