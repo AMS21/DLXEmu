@@ -35,7 +35,7 @@ configure_file("src/BuildInfo.hpp.in"
 # Read and configure thirdparty licenses
 set(EXTERNAL_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../external")
 
-file(READ "${EXTERNAL_ROOT}/fmt/LICENSE.rst" FMT_LICENSE)
+file(READ "${EXTERNAL_ROOT}/fmt/LICENSE" FMT_LICENSE)
 file(READ "${EXTERNAL_ROOT}/glad/LICENSE" GLAD_LICENSE)
 file(READ "${EXTERNAL_ROOT}/glfw/LICENSE.md" GLFW_LICENSE)
 file(READ "${EXTERNAL_ROOT}/imgui/LICENSE.txt" IMGUI_LICENSE)
