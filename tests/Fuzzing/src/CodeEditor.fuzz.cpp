@@ -409,7 +409,6 @@ extern "C" int LLVMFuzzerTestOneInput(const phi::uint8_t* data, phi::size_t size
     (void)imgui_init;
 
     // Reset some ImGui states
-    ImGui::GetIO().ClearInputCharacters();
     ImGui::GetIO().ClearInputKeys();
     ImGui::GetIO().InputQueueSurrogate = 0;
     GImGui->InputEventsQueue.resize(0u);
