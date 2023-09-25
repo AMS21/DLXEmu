@@ -71,7 +71,7 @@ jobs:
 
       - name: Setup XCode
         if: matrix.cfg.compiler == 'clang'
-        uses: maxim-lobanov/setup-xcode@v1.5.1
+        uses: maxim-lobanov/setup-xcode@v1.6.0
         with:
           xcode-version: ${{ matrix.cfg.compiler_version }}
 
