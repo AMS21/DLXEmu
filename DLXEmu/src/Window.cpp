@@ -254,7 +254,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1280,701 Split=X
 
         ImGui::LoadIniSettingsFromMemory(web_default_config);
 #else
-        io.IniFilename           = "DLXEmu.ini";
+        io.IniFilename = "DLXEmu.ini";
 #endif
 
         // Setup Dear ImGui style
