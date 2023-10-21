@@ -2,7 +2,6 @@
 #include "DLXEmu/Emulator.hpp"
 #include <phi/compiler_support/platform.hpp>
 #include <phi/compiler_support/unused.hpp>
-#include <cstddef>
 
 #if PHI_PLATFORM_IS(WEB)
 

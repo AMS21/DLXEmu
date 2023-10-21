@@ -13,7 +13,6 @@
 #include <phi/core/boolean.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/core/types.hpp>
-#include <vector>
 
 namespace dlxemu
 {
