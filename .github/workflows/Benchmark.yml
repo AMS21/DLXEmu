@@ -83,7 +83,7 @@ jobs:
         run: ./bin/DLXLibBenchmark --benchmark_repetitions=20 --benchmark_enable_random_interleaving=true --benchmark_out=base_benchmark.json --benchmark_out_format=json --benchmark_display_aggregates_only=true
 
       - name: Upload result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: base_benchmark_${{ matrix.compiler }}.json
           path: build/base_benchmark.json
