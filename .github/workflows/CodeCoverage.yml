@@ -81,7 +81,7 @@ jobs:
         run: gcovr -j $PROC_COUNT --delete --root ../ --exclude-unreachable-branches --exclude-function-lines --print-summary --xml-pretty --xml coverage.xml . --gcov-executable "$GCOV_EXECUTABLE"
 
       - name: Upload coverage data
-        uses: codecov/codecov-action@v3.1.4
+        uses: codecov/codecov-action@v3.1.5
         with:
           file: ./build/coverage.xml
           flags: ${{ runner.os }},${{ matrix.compiler }}
