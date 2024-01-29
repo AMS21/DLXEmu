@@ -89,13 +89,14 @@ include(Environment)
 if(PHI_PLATFORM_EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX ".js")
   add_link_options(
-    -sUSE_GLFW=3
+    -sASSERTIONS=1
+    -sDISABLE_EXCEPTION_CATCHING=1
+    -sERROR_ON_UNDEFINED_SYMBOLS=0
     -sFETCH=1
     -sFULL_ES2=1
     -sFULL_ES3=1
-    -sASSERTIONS=1
-    -sDISABLE_EXCEPTION_CATCHING=1
-    -sERROR_ON_UNDEFINED_SYMBOLS=0)
+    -sGL_ENABLE_GET_PROC_ADDRESS=1
+    -sUSE_GLFW=3)
 endif()
 
 # Ensure submodules were cloned correctly
