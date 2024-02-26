@@ -58,11 +58,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
       - name: Install
         run: external/Phi/scripts/ci/InstallTools.sh cmake-format
 

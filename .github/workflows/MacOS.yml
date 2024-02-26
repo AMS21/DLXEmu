@@ -28,7 +28,7 @@ concurrency:
 
 jobs:
   Build:
-    runs-on: macos-12
+    runs-on: macos-13
 
     env:
       CMAKE_BUILD_PARALLEL_LEVEL: "2"
@@ -45,7 +45,7 @@ jobs:
       matrix:
         cfg:
           #- { compiler: gcc,   compiler_version: "12" }
-          - { compiler: clang, compiler_version: "14.2" }
+          - { compiler: clang, compiler_version: "15.2" }
 
         build_type:
           - "Debug"
@@ -75,6 +75,12 @@ jobs:
         with:
           xcode-version: ${{ matrix.cfg.compiler_version }}
 
+      - name: Setup python
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
       - name: Install ninja
         run: brew install ninja
 
@@ -97,7 +103,7 @@ jobs:
           mkdir build -p
           cd build
 
-          cmake -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_CXX_FLAGS:STRING="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" -DDLXEMU_ENABLE_ASAN:BOOL=${{ matrix.dynamic_test == 'asan' }} -DDLXEMU_ENABLE_LSAN:BOOL=${{ matrix.dynamic_test == 'lsan' }} -DDLXEMU_ENABLE_TSAN:BOOL=${{ matrix.dynamic_test == 'tsan' }} -DDLXEMU_ENABLE_UBSAN:BOOL=${{ matrix.dynamic_test == 'ubsan' }} ..
+          cmake -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS:STRING="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN" -DDLXEMU_ENABLE_ASAN:BOOL=${{ matrix.dynamic_test == 'asan' }} -DDLXEMU_ENABLE_LSAN:BOOL=${{ matrix.dynamic_test == 'lsan' }} -DDLXEMU_ENABLE_TSAN:BOOL=${{ matrix.dynamic_test == 'tsan' }} -DDLXEMU_ENABLE_UBSAN:BOOL=${{ matrix.dynamic_test == 'ubsan' }} ..
 
       - name: Build
         working-directory: ./build

@@ -1,6 +1,11 @@
 #include "DLXEmu/Emulator.hpp"
 
-#include <glad/gl.h>
+#ifdef DLXEMU_USE_GLAD
+#    include <glad/gl.h>
+
+static int glad_gl_version;
+
+#endif
 
 #include <DLX/Logger.hpp>
 #include <DLX/TokenStream.hpp>
@@ -26,8 +31,6 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 static constexpr const phi::size_t MaxExecutionPerFrame{500'000u};
-
-static int glad_gl_version;
 
 namespace dlxemu
 {
@@ -508,7 +511,9 @@ namespace dlxemu
                     "Version:    {:d}.{:d}.{:d} {:s}\n"
                     "Commit:     {:s}\n"
                     "Build date: {:s} {:s}\n"
+#ifdef DLXEMU_USE_GLAD
                     "OpenGL:     {:d}.{:d}\n"
+#endif
                     "GLFW:       {:d}.{:d}.{:d}\n"
                     "Dear ImGui: {:s}\n"
                     "Platform:   {:s} {:s}\n"
@@ -516,7 +521,9 @@ namespace dlxemu
                     "Compiler:   {:s} ({:d}.{:d}.{:d}){}",
                     dlxemu::VersionMajor, dlxemu::VersionMinor, dlxemu::VersionPatch,
                     dlxemu::GitBranch, dlxemu::GitShaFull, dlxemu::BuildDate, dlxemu::BuildTime,
+#ifdef DLXEMU_USE_GLAD
                     GLAD_VERSION_MAJOR(glad_gl_version), GLAD_VERSION_MINOR(glad_gl_version),
+#endif
                     GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION, IMGUI_VERSION,
                     PHI_PLATFORM_NAME(), arch_flag, DLXEMU_UNAME, PHI_COMPILER_NAME(),
                     PHI_CURRENT_COMPILER_VERSION_MAJOR(), PHI_CURRENT_COMPILER_VERSION_MINOR(),

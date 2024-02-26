@@ -12,13 +12,15 @@ add_subdirectory(fmt)
 target_compile_definitions(fmt PUBLIC FMT_EXCEPTIONS=0)
 
 # glad
-add_subdirectory(glad/cmake)
+if(DLXEMU_USE_GLAD)
+  add_subdirectory(glad/cmake)
 
-# Add target
-glad_add_library(glad STATIC LANGUAGE C++ API gl:core=3.3)
-add_library(glad::glad ALIAS glad)
+  # Add target
+  glad_add_library(glad STATIC LANGUAGE C++ API gl:core=3.3)
+  add_library(glad::glad ALIAS glad)
 
-set_target_properties(glad PROPERTIES LINKER_LANGUAGE "C")
+  set_target_properties(glad PROPERTIES LINKER_LANGUAGE "C")
+endif()
 
 # glfw
 if(NOT PHI_PLATFORM_EMSCRIPTEN)
@@ -60,7 +62,11 @@ target_compile_definitions(
 
 target_include_directories("ImGui" PUBLIC "imgui")
 
-target_link_libraries("ImGui" PUBLIC glad::glad glfw Phi::Core)
+target_link_libraries("ImGui" PUBLIC glfw Phi::Core)
+
+if(DLXEMU_USE_GLAD)
+  target_link_libraries("ImGui" PUBLIC glad::glad)
+endif()
 
 # ImGuiFilebrowser
 add_library("ImGuiFilebrowser" INTERFACE)

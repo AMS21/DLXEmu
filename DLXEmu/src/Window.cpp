@@ -3,10 +3,15 @@
 #include "DLX/Logger.hpp"
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-#include <glad/gl.h>
 #include <imgui.h>
 #include <phi/compiler_support/warning.hpp>
 #include <phi/core/boolean.hpp>
+
+#ifdef DLXEMU_USE_GLAD
+#    include <glad/gl.h>
+
+static int glad_gl_version = 0;
+#endif
 
 #if PHI_PLATFORM_IS(WEB)
 #    include <emscripten.h>
@@ -21,8 +26,6 @@ extern ImGuiContext* GImGui;
 
 static phi::boolean glfw_initialized{false};
 static phi::boolean imgui_initialized{false};
-
-static int glad_gl_version = 0;
 
 namespace dlxemu
 {
@@ -83,6 +86,7 @@ namespace dlxemu
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(1); // Enable vsync
 
+#ifdef DLXEMU_USE_GLAD
         // Initialize OpenGL using glad
         glad_gl_version = gladLoadGL(glfwGetProcAddress);
         if (glad_gl_version == 0)
@@ -92,12 +96,13 @@ namespace dlxemu
         }
 
         // Hook unsupported functions
-#if PHI_PLATFORM_IS(WEB)
+#    if PHI_PLATFORM_IS(WEB)
         glad_glPolygonMode = [](GLenum /*face*/, GLenum /*mode*/) -> void { return; };
-#endif
+#    endif
 
         DLX_INFO("Successfully loaded OpenGL version {}.{}", GLAD_VERSION_MAJOR(glad_gl_version),
                  GLAD_VERSION_MINOR(glad_gl_version));
+#endif
 
         InitializeImGui();
 
@@ -152,8 +157,6 @@ namespace dlxemu
 
     void Window::EndFrame() noexcept
     {
-        constexpr const static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
         // Rendering
         ImGui::Render();
 
@@ -161,10 +164,16 @@ namespace dlxemu
         int display_h{};
 
         glfwGetFramebufferSize(m_Window, &display_w, &display_h);
+
+#ifdef DLXEMU_USE_GLAD
+        constexpr const static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w,
                      clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+#endif
+
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         const ImGuiIO& io = ImGui::GetIO();

@@ -63,7 +63,7 @@ jobs:
           mkdir -p build
           cd build
 
-          emcmake cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Release
+          emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
           emmake cmake --build . --clean-first --target DLXEmu
 
           # Move minified html
@@ -90,7 +90,7 @@ jobs:
           mkdir -p build
           cd build
 
-          emcmake cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN -DPHI_DEBUG"
+          emcmake cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="-DDLXEMU_VERIFY_UNDO_REDO -DDLXEMU_VERIFY_COLUMN -DPHI_DEBUG"
           emmake cmake --build . --clean-first --target DLXEmu
 
           cp ../data/index.html bin/index.html

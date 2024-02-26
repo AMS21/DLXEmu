@@ -15,6 +15,7 @@ option(DLXEMU_BUILD_TESTS "" ON)
 option(DLXEMU_FUZZ_BUILD "" OFF)
 option(DLXEMU_RUN_FUZZ_TESTS "" ON)
 option(DLXEMU_BUILD_BENCHMARKS "" OFF)
+option(DLXEMU_USE_GLAD "Use the glad library for OpenGL" ON)
 
 # Build modes
 option(DLXEMU_ENABLE_ASAN OFF)
@@ -95,7 +96,6 @@ if(PHI_PLATFORM_EMSCRIPTEN)
     -sFETCH=1
     -sFULL_ES2=1
     -sFULL_ES3=1
-    -sGL_ENABLE_GET_PROC_ADDRESS=1
     -sUSE_GLFW=3)
 endif()
 

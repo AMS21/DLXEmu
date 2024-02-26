@@ -129,7 +129,7 @@ jobs:
           cmake --build . --target glad --clean-first
 
           # Run clang-tidy
-          run-clang-tidy-${{ env.LLVM_VERSION }} -quiet -header-filter ".*" -j $(nproc) > clang_tidy.log
+          run-clang-tidy-${{ env.LLVM_VERSION }} -quiet -header-filter "*" -j $(nproc) | tee clang_tidy.log
 
           # Filter to only include warnings
           cat clang_tidy.log | grep "warning:" > clang_tidy_warnings.log
@@ -361,6 +361,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: Setup python
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: '3.x'
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install jinja2
