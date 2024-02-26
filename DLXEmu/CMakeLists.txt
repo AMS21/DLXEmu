@@ -21,6 +21,10 @@ target_include_directories("DLXEmuLib" PUBLIC "include")
 
 target_link_libraries("DLXEmuLib" PUBLIC DLXLib ImGui ImGuiFilebrowser)
 
+if(DLXEMU_USE_GLAD)
+  target_compile_definitions("DLXEmuLib" PUBLIC "DLXEMU_USE_GLAD")
+endif()
+
 # DLXEmu
 add_executable("DLXEmu" "src/main.cpp")
 

@@ -47,6 +47,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup Environment
+        run: external/Phi/scripts/ci/SetupEnvironment.sh
+
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
@@ -54,9 +57,6 @@ jobs:
 
       - name: Install dependencies
         run: sudo scripts/ci/InstallDependencies.sh
-
-      - name: Setup Environment
-        run: external/Phi/scripts/ci/SetupEnvironment.sh
 
       - name: Install compiler
         run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja gcovr
@@ -86,3 +86,5 @@ jobs:
           file: ./build/coverage.xml
           flags: ${{ runner.os }},${{ matrix.compiler }}
           name: ${{ runner.os }}-${{ matrix.compiler }}
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
