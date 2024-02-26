@@ -19,11 +19,6 @@ add_custom_target(
 
 add_dependencies(generate_dictionary generate_dictionary_app)
 
-# Convert structured text
-add_executable(convert_structured_text "src/ConvertStructuredText.cpp")
-target_link_libraries(convert_structured_text PRIVATE DLXLib Threads::Threads)
-target_include_directories(convert_structured_text PRIVATE "include")
-
 # Fuzzers
 function(define_fuzzer)
   cmake_parse_arguments(df "ASCII" "NAME" "SOURCE;LIBRARIES;DEPENDENCY;RUN_ARGS" ${ARGN})
@@ -31,7 +26,6 @@ function(define_fuzzer)
   add_executable(${df_NAME} ${df_SOURCE})
   target_link_libraries(${df_NAME} PRIVATE Threads::Threads -fsanitize=fuzzer ${df_LIBRARIES})
   target_compile_options(${df_NAME} PRIVATE -fsanitize=fuzzer)
-  target_include_directories(${df_NAME} PRIVATE "include")
   if(df_DEPENDENCY)
     add_dependencies(${df_NAME} ${df_DEPENDENCY})
   endif()
@@ -83,26 +77,6 @@ define_fuzzer(
   DEPENDENCY
   generate_dictionary
   ASCII)
-
-# Structured Execution
-define_fuzzer(NAME fuzz_structured_execution SOURCE "src/StructuredExecution.fuzz.cpp" LIBRARIES
-              DLXLib)
-
-# Syntax highlighting
-define_fuzzer(
-  NAME
-  fuzz_syntax_highlighting
-  SOURCE
-  "src/SyntaxHighlighting.fuzz.cpp"
-  LIBRARIES
-  DLXEmuLib
-  DEPENDENCY
-  generate_dictionary
-  ASCII)
-
-# Structured Syntax highlighting
-define_fuzzer(NAME fuzz_structured_syntax_highlighting SOURCE
-              "src/StructuredSyntaxHighlighting.fuzz.cpp" LIBRARIES DLXEmuLib)
 
 # CodeEditor
 define_fuzzer(NAME fuzz_code_editor SOURCE "src/CodeEditor.fuzz.cpp" LIBRARIES DLXEmuLib)
