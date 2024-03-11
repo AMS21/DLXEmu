@@ -39,7 +39,6 @@ SOFTWARE.
 #include <phi/container/array.hpp>
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
-#include <phi/core/conversion.hpp>
 #include <phi/core/narrow_cast.hpp>
 #include <phi/core/size_t.hpp>
 #include <phi/core/sized_types.hpp>

@@ -14,7 +14,6 @@
 #include "DLX/Tokenize.hpp"
 #include <phi/core/assert.hpp>
 #include <phi/core/boolean.hpp>
-#include <phi/core/conversion.hpp>
 #include <phi/core/optional.hpp>
 #include <phi/core/types.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
