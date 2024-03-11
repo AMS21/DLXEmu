@@ -37,7 +37,7 @@ jobs:
   cppcheck:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 17
+      LLVM_VERSION: 18
 
     steps:
       - name: Checkout
@@ -97,7 +97,7 @@ jobs:
   clang-tidy:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 17
+      LLVM_VERSION: 18
 
     steps:
       - name: Checkout
@@ -160,8 +160,7 @@ jobs:
   include-what-you-use:
     runs-on: ubuntu-20.04
     env:
-      LLVM_VERSION: 16
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
+      LLVM_VERSION: 18
 
     steps:
       - name: Checkout
@@ -271,7 +270,7 @@ jobs:
 
         compiler:
           - 'gcc-13'
-          - 'clang-17'
+          - 'clang-18'
 
         build_type:
           - 'Debug'
