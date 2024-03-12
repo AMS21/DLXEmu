@@ -53,6 +53,7 @@
 PHI_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
 PHI_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
+PHI_CLANG_SUPPRESS_WARNING("-Wswitch-default")
 
 // TODO: Use string_view as much as possible so we avoid needless copies
 

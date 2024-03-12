@@ -8,6 +8,8 @@ PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(5262)
 #include <fmt/format.h>
 PHI_MSVC_SUPPRESS_WARNING_POP()
 
+PHI_CLANG_SUPPRESS_WARNING("-Wswitch-default")
+
 namespace dlx
 {
     Instruction::Instruction(const InstructionInfo& info, const phi::u64 source_line) noexcept

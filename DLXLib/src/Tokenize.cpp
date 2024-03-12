@@ -2,10 +2,13 @@
 
 #include "DLX/ParserUtils.hpp"
 #include "DLX/TokenStream.hpp"
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/narrow_cast.hpp>
 #include <phi/core/sized_types.hpp>
 #include <phi/forward/string_view.hpp>
 #include <phi/type_traits/is_array.hpp>
+
+PHI_CLANG_SUPPRESS_WARNING("-Wswitch-default")
 
 namespace dlx
 {

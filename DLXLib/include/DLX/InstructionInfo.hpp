@@ -166,6 +166,7 @@ namespace dlx
 
         PHI_CLANG_AND_GCC_SUPPRESS_WARNING_PUSH()
         PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wreturn-type")
+        PHI_CLANG_SUPPRESS_WARNING("-Wswitch-default")
         PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4702) // Unreachable code
 
         [[nodiscard]] constexpr ArgumentType GetArgumentType(phi::u8 index) const noexcept

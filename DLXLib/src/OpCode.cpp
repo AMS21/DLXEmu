@@ -7,6 +7,7 @@
 #include <algorithm>
 
 PHI_CLANG_AND_GCC_SUPPRESS_WARNING("-Wimplicit-fallthrough")
+PHI_CLANG_SUPPRESS_WARNING("-Wswitch-default")
 
 namespace dlx
 {

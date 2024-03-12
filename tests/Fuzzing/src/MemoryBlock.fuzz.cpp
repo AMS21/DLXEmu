@@ -10,6 +10,7 @@
 
 PHI_CLANG_SUPPRESS_WARNING("-Wunknown-warning-option")
 PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
+PHI_CLANG_SUPPRESS_WARNING("-Wswitch-default")
 
 #define GET_T(type, name)                                                                          \
     auto PHI_GLUE(name, _opt) = consume_t<type>(data, size, index);                                \

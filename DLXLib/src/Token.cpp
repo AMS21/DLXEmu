@@ -13,6 +13,7 @@ PHI_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wuninitialized")
 PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
+PHI_CLANG_SUPPRESS_WARNING("-Wswitch-default")
 
 namespace dlx
 {
