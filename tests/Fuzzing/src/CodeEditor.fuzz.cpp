@@ -17,6 +17,7 @@
 #include <phi/math/abs.hpp>
 #include <phi/math/is_nan.hpp>
 #include <phi/preprocessor/function_like_macro.hpp>
+#include <phi/preprocessor/glue.hpp>
 #include <phi/type_traits/make_unsigned.hpp>
 #include <phi/type_traits/to_unsafe.hpp>
 #include <phi/type_traits/underlying_type.hpp>
