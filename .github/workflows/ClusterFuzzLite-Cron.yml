@@ -18,7 +18,7 @@ permissions: read-all
 jobs:
   Pruning:
     # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2004-Readme.md
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Build Fuzzers
@@ -42,7 +42,7 @@ jobs:
 
   Coverage:
     # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2004-Readme.md
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Build Fuzzers
