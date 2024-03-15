@@ -19,7 +19,6 @@ jobs:
     if: github.event_name != 'release'
 
     env:
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
       EM_CACHE_FOLDER: 'emsdk-cache'
       EM_VERSION: "3.1.56"
 
