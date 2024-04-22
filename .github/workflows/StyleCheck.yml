@@ -260,7 +260,7 @@ jobs:
           if_false: 'github-check'
 
       - name: Run alex with reviewdog
-        uses: reviewdog/action-alex@v1.7
+        uses: reviewdog/action-alex@v1.8
         continue-on-error: true
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
