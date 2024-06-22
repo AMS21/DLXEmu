@@ -28,14 +28,14 @@ concurrency:
 
 jobs:
   Build:
-    runs-on: macos-13
+    runs-on: macos-14
 
     strategy:
       fail-fast: false
       matrix:
         cfg:
           #- { compiler: gcc,   compiler_version: "12" }
-          - { compiler: clang, compiler_version: "15.2" }
+          - { compiler: clang, compiler_version: "15.4" }
 
         build_type:
           - "Debug"
@@ -55,13 +55,13 @@ jobs:
           submodules: recursive
 
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ${{ matrix.os }}-${{ matrix.cfg.compiler }}-${{ matrix.cfg.compiler_version }}
+          key: ${{ runner.os }}-${{ matrix.cfg.compiler }}-${{ matrix.cfg.compiler_version }}
 
       - name: Setup XCode
         if: matrix.cfg.compiler == 'clang'
-        uses: maxim-lobanov/setup-xcode@v1.6.0
+        uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: ${{ matrix.cfg.compiler_version }}
 
@@ -69,7 +69,7 @@ jobs:
         run: external/Phi/scripts/ci/SetupEnvironment.sh
 
       - name: Setup python
-        uses: actions/setup-python@v5.1.0
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
           cache: 'pip'

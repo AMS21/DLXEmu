@@ -30,14 +30,14 @@ concurrency:
 
 jobs:
   Build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
 
       matrix:
         compiler:
-          - "gcc-13"
+          - "gcc-14"
           - "clang-18"
 
         build_type:
@@ -59,7 +59,7 @@ jobs:
           submodules: recursive
 
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-${{ matrix.compiler }}
 

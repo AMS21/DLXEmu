@@ -30,7 +30,7 @@ concurrency:
 
 jobs:
   linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       LLVM_PROFILE_FILE: "profile-%p.profraw"
 
@@ -39,7 +39,7 @@ jobs:
 
       matrix:
         compiler:
-          - "gcc-13"
+          - "gcc-14"
 
     steps:
       - name: Checkout
@@ -51,9 +51,9 @@ jobs:
         run: external/Phi/scripts/ci/SetupEnvironment.sh
 
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ${{ matrix.os }}-${{ matrix.compiler }}
+          key: ${{ runner.os }}-${{ matrix.compiler }}
 
       - name: Install dependencies
         run: sudo scripts/ci/InstallDependencies.sh
@@ -81,7 +81,7 @@ jobs:
         run: gcovr -j $PROC_COUNT --delete --root ../ --exclude-unreachable-branches --exclude-function-lines --print-summary --xml-pretty --xml coverage.xml . --gcov-executable "$GCOV_EXECUTABLE"
 
       - name: Upload coverage data
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v4
         with:
           file: ./build/coverage.xml
           flags: ${{ runner.os }},${{ matrix.compiler }}

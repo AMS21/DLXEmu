@@ -28,7 +28,7 @@ concurrency:
 
 jobs:
   benchmark:
-    runs-on: 'ubuntu-22.04'
+    runs-on: 'ubuntu-24.04'
 
     strategy:
       fail-fast: false
@@ -36,7 +36,7 @@ jobs:
       matrix:
         compiler:
           - "clang-18"
-          - "gcc-13"
+          - "gcc-14"
 
     steps:
       - name: Checkout
@@ -45,9 +45,9 @@ jobs:
           submodules: recursive
 
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ${{ matrix.os }}-${{ matrix.compiler }}
+          key: ${{ runner.os }}-${{ matrix.compiler }}
 
       - name: Setup Environment
         run: external/Phi/scripts/ci/SetupEnvironment.sh

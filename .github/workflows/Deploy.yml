@@ -15,12 +15,12 @@ concurrency:
 
 jobs:
   gh_pages:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: github.event_name != 'release'
 
     env:
       EM_CACHE_FOLDER: 'emsdk-cache'
-      EM_VERSION: "3.1.57"
+      EM_VERSION: "3.1.61"
 
     steps:
       - name: Checkout
@@ -36,7 +36,7 @@ jobs:
           actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
 
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@v1
         with:
           key: emscripten-${{ env.EM_VERSION }}
 
@@ -107,7 +107,7 @@ jobs:
           git_commit_gpgsign: true
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.6.1
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: output
