@@ -131,7 +131,7 @@ namespace dlxemu
 
         // Add docking space
         const auto* viewport = ImGui::GetWindowViewport();
-        ImGui::DockSpaceOverViewport(viewport);
+        ImGui::DockSpaceOverViewport(viewport->ID);
 
         // Render our stuff
         RenderMenuBar();
