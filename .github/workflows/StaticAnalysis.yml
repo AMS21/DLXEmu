@@ -35,7 +35,7 @@ concurrency:
 
 jobs:
   cppcheck:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       LLVM_VERSION: 18
 
@@ -46,7 +46,7 @@ jobs:
           submodules: recursive
           fetch-depth: 2
 
-      - uses: reviewdog/action-setup@v1.3.0
+      - uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest
 
@@ -55,7 +55,7 @@ jobs:
 
       - name: Install
         env:
-          CPPCHECK_VERSION: "2.14.0"
+          CPPCHECK_VERSION: "2.14.2"
         run: external/Phi/scripts/ci/InstallTools.sh clang-${{ env.LLVM_VERSION }} cppcheck-${{ env.CPPCHECK_VERSION }} ninja
 
       - name: Configure
@@ -72,7 +72,10 @@ jobs:
 
       - name: Run cppcheck
         run: |
-          cppcheck --project=build/compile_commands.json --enable=all --inconclusive --inline-suppr --template='{file}:{line}:{column}: {severity}: {message} [{id}](CWE {cwe})' -DPHI_CONFIG_ALWAYS_INLINE_OVERWRITE=inline -DPHI_CONFIG_NEVER_INLINE_OVERWRITE="" --cppcheck-build-dir="build-cppcheck" -i external --suppress=missingInclude --suppress=unusedFunction --suppress=unmatchedSuppression -UDLXEMU_COVERAGE_BUILD 2> cppcheck.log
+          # Create build directory
+          mkdir -p build-cppcheck
+
+          cppcheck --project=build/compile_commands.json --enable=all --inconclusive --inline-suppr --template='{file}:{line}:{column}: {severity}: {message} [{id}](CWE {cwe})' -DPHI_CONFIG_ALWAYS_INLINE_OVERWRITE=inline -DPHI_CONFIG_NEVER_INLINE_OVERWRITE="" --cppcheck-build-dir="build-cppcheck" -i external --suppress=missingInclude --suppress=unusedFunction --suppress=unmatchedSuppression --suppress=missingIncludeSystem --suppress=unknownMacro -UDLXEMU_COVERAGE_BUILD 2> cppcheck.log
 
           # Filter out external libraries and test code
           cat cppcheck.log | grep -Ev "external/|tests/" > cppcheck_filtered.log || true
@@ -95,7 +98,7 @@ jobs:
           cat cppcheck_filtered.log | reviewdog -efm="%f:%l:%c: %m" -diff="git diff HEAD~1" -reporter=${{ steps.reporter.outputs.value }} -name CppCheck -level warning
 
   clang-tidy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       LLVM_VERSION: 18
 
@@ -106,7 +109,7 @@ jobs:
           submodules: recursive
           fetch-depth: 2
 
-      - uses: reviewdog/action-setup@v1.3.0
+      - uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest
 
@@ -158,7 +161,7 @@ jobs:
           cat build/clang_tidy_output.log | reviewdog -efm="%f:%l:%c: warning: %m" -diff="git diff HEAD~1" -reporter=${{ steps.reporter.outputs.value }} -name Clang-Tidy -level warning
 
   include-what-you-use:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       LLVM_VERSION: 18
 
@@ -170,7 +173,7 @@ jobs:
           fetch-depth: 2
 
       - name: Setup Reviewdog
-        uses: reviewdog/action-setup@v1.3.0
+        uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest
 
@@ -213,7 +216,7 @@ jobs:
           cat build/iwyu_filtered.log | reviewdog -efm="%Z%A%f:%l:%c: error: %m" -efm="%C%m" -diff="git diff HEAD~1" -reporter=${{ steps.reporter.outputs.value }} -name include-what-you-use -level warning
 
   cmake-lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -222,12 +225,12 @@ jobs:
           submodules: recursive
 
       - name: Setup Reviewdog
-        uses: reviewdog/action-setup@v1.3.0
+        uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest
 
       - name: Setup python
-        uses: actions/setup-python@v5.1.0
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -255,7 +258,7 @@ jobs:
           cat cmake_lint.log | reviewdog -efm="%f:%l: %m" -diff="git diff HEAD~1" -reporter=${{ steps.reporter.outputs.value }} -name cmake-lint -level warning
 
   code-ql:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     permissions:
       actions: read
@@ -269,12 +272,11 @@ jobs:
         language: [ 'cpp' ]
 
         compiler:
-          - 'gcc-13'
+          - 'gcc-14'
           - 'clang-18'
 
         build_type:
           - 'Debug'
-          - 'RelWithDebInfo'
           - 'Release'
 
     steps:
@@ -284,9 +286,9 @@ jobs:
           submodules: recursive
 
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ${{ matrix.os }}-${{ matrix.compiler }}
+          key: ${{ runner.os }}-${{ matrix.compiler }}
 
       - name: Setup Environment
         run: external/Phi/scripts/ci/SetupEnvironment.sh
@@ -362,7 +364,7 @@ jobs:
           submodules: recursive
 
       - name: Setup python
-        uses: actions/setup-python@v5.1.0
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
           cache: 'pip'
@@ -415,7 +417,7 @@ jobs:
 
   dev-skim:
     name: DevSkim
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     permissions:
       actions: read
@@ -440,7 +442,7 @@ jobs:
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
 
     name: Codacy Security Scan
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       # Checkout the repository to the GitHub Actions runner
@@ -451,7 +453,7 @@ jobs:
 
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI
-        uses: codacy/codacy-analysis-cli-action@v4.4.1
+        uses: codacy/codacy-analysis-cli-action@v4
         with:
           verbose: true
           output: results.sarif
@@ -477,7 +479,7 @@ jobs:
 
   shellcheck:
     name: ShellCheck
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout

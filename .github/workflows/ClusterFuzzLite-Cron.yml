@@ -17,8 +17,7 @@ permissions: read-all
 
 jobs:
   Pruning:
-    # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2004-Readme.md
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Build Fuzzers
@@ -41,8 +40,7 @@ jobs:
           storage-repo-branch-coverage: gh-pages  # Optional. Defaults to "gh-pages".
 
   Coverage:
-    # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2004-Readme.md
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Build Fuzzers

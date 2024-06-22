@@ -59,7 +59,7 @@ jobs:
           submodules: recursive
 
       - name: Setup python
-        uses: actions/setup-python@v5.1.0
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
           cache: 'pip'
@@ -94,7 +94,7 @@ jobs:
 
       - name: Setup msvc dev
         if: matrix.cfg.compiler == 'cl'
-        uses: ilammy/msvc-dev-cmd@v1.13.0
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Configure build directory
         run: |

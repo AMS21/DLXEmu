@@ -19,8 +19,7 @@ permissions: read-all
 
 jobs:
   BatchFuzzing:
-    # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2004-Readme.md
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <phi/compiler_support/warning.hpp>
 #include <phi/core/types.hpp>
 #include <string>
 
@@ -23,11 +24,15 @@ namespace dlx
         void SetReadOnly(phi::boolean read_only) noexcept;
 
     protected:
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4582) // 'x': constructor is not implicitly called
+
         union
         {
             phi::i32 m_ValueSigned;
             phi::u32 m_ValueUnsigned;
         };
+
+        PHI_MSVC_SUPPRESS_WARNING_POP()
 
         phi::boolean m_IsReadOnly;
     };

@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   clang-format:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     env:
       LLVM_VERSION: 18
@@ -46,7 +46,7 @@ jobs:
           fi
 
   cmake-format:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -71,7 +71,7 @@ jobs:
           fi
 
   spacing:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -104,7 +104,7 @@ jobs:
           fi
 
   encoding:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -133,7 +133,7 @@ jobs:
           fi
 
   misspell:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -148,7 +148,7 @@ jobs:
           if_false: 'github-check'
 
       - name: Run misspell with reviewdog
-        uses: reviewdog/action-misspell@v1.21
+        uses: reviewdog/action-misspell@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           locale: US
@@ -156,7 +156,7 @@ jobs:
           level: warning
 
   yamllint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -171,7 +171,7 @@ jobs:
           if_false: 'github-check'
 
       - name: Run yamllint with reviewdog
-        uses: reviewdog/action-yamllint@v1.16
+        uses: reviewdog/action-yamllint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
@@ -179,7 +179,7 @@ jobs:
           level: warning
 
   markdownlint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -194,14 +194,14 @@ jobs:
           if_false: 'github-check'
 
       - name: Run markdownlint with reviewdog
-        uses: prologic/action-markdownlint@v0.22
+        uses: prologic/action-markdownlint@v0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
           level: warning
 
   remark-lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -216,14 +216,14 @@ jobs:
           if_false: 'github-check'
 
       - name: Run remark-lint with reviewdog
-        uses: prologic/action-remark-lint@v5.12.0
+        uses: prologic/action-remark-lint@v5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
           level: warning
 
   languagetool:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -238,14 +238,14 @@ jobs:
           if_false: 'github-check'
 
       - name: Run languagetool with Reviewdog
-        uses: reviewdog/action-languagetool@v1.17.0
+        uses: reviewdog/action-languagetool@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
           level: warning
 
   alex:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -260,7 +260,7 @@ jobs:
           if_false: 'github-check'
 
       - name: Run alex with reviewdog
-        uses: reviewdog/action-alex@v1.11
+        uses: reviewdog/action-alex@v1
         continue-on-error: true
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

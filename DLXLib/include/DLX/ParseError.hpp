@@ -109,6 +109,8 @@ namespace dlx
         phi::uint64_t m_LineNumber;
         phi::uint64_t m_Column;
 
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4582) // 'x': constructor is not implicitly called
+
         union
         {
             UnexpectedArgumentType unexpected_argument_type;
@@ -120,6 +122,8 @@ namespace dlx
             TooFewArguments        too_few_arguments;
             EmptyLabel             empty_label;
         };
+
+        PHI_MSVC_SUPPRESS_WARNING_POP()
 
         friend ParseError ConstructUnexpectedArgumentTypeParseError(
                 phi::uint64_t line_number, phi::uint64_t column, ArgumentType expected_type,

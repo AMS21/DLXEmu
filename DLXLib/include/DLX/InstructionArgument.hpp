@@ -79,6 +79,8 @@ namespace dlx
                 phi::string_view label_name) noexcept;
 
     private:
+        PHI_MSVC_SUPPRESS_WARNING_WITH_PUSH(4582) // 'x': constructor is not implicitly called
+
         union
         {
             RegisterInt         register_int;
@@ -87,6 +89,8 @@ namespace dlx
             AddressDisplacement address_displacement;
             Label               label;
         };
+
+        PHI_MSVC_SUPPRESS_WARNING_POP()
 
         ArgumentType m_Type;
     };

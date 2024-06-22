@@ -21,7 +21,7 @@ jobs:
     permissions:
       contents: write
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -42,14 +42,14 @@ jobs:
           git push
 
   deploy_assets_linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: create_release
 
     strategy:
       matrix:
         cfg:
-          - { compiler: gcc-13, flags: "-m32", arch_name: "x86-32" }
-          - { compiler: gcc-13, flags: "-m64", arch_name: "x86-64" }
+          - { compiler: gcc-14, flags: "-m32", arch_name: "x86-32" }
+          - { compiler: gcc-14, flags: "-m64", arch_name: "x86-64" }
 
     steps:
       - name: Checkout
