@@ -11,7 +11,6 @@ on:
       # CMake files
       - '**.cmake'
       - '**.txt'
-    tags:
     branches-ignore:
       - 'dependabot/**'
   pull_request:
@@ -38,12 +37,11 @@ jobs:
 
       matrix:
         em_version:
-          - "3.1.61"
+          - "3.1.63"
           - "2.0.31"
 
         build_type:
           - "Debug"
-          - "RelWithDebInfo"
           - "Release"
 
     steps:

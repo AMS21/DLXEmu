@@ -16,7 +16,6 @@ on:
       # dotfiles
       - '.clang-tidy'
       - '.cmake-format.yaml'
-    tags:
     branches-ignore:
       - 'dependabot/**'
   pull_request:
@@ -273,11 +272,6 @@ jobs:
 
         compiler:
           - 'gcc-14'
-          - 'clang-18'
-
-        build_type:
-          - 'Debug'
-          - 'Release'
 
     steps:
       - name: Checkout repository
@@ -304,7 +298,7 @@ jobs:
           mkdir build -p
           cd build
 
-          cmake -DCMAKE_AR=$AR_EXECUTABLE -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} -DDLXEMU_COVERAGE_BUILD:BOOL=${{ matrix.build_type == 'Debug' }} ..
+          cmake -DCMAKE_AR=$AR_EXECUTABLE -DCMAKE_BUILD_TYPE:STRING=Debug ..
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
@@ -319,7 +313,7 @@ jobs:
 
       - name: Build
         working-directory: ./build
-        run: cmake --build . --config ${{ matrix.build_type }}
+        run: cmake --build . --config Debug
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

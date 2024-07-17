@@ -11,7 +11,6 @@ on:
       # CMake files
       - '**.cmake'
       - '**.txt'
-    tags:
     branches-ignore:
       - 'dependabot/**'
   pull_request:
@@ -63,7 +62,7 @@ jobs:
           mkdir build -p
           cd build
 
-          cmake -DCMAKE_AR=$AR_EXECUTABLE -DCMAKE_BUILD_TYPE:STRING="Release" -DDLXEMU_BUILD_BENCHMARKS:BOOL=ON -DDLXEMU_BUILD_TESTS:BOOL=OFF ..
+          cmake -DCMAKE_AR=${AR_EXECUTABLE} -DCMAKE_BUILD_TYPE:STRING="Release" -DDLXEMU_BUILD_BENCHMARKS:BOOL=ON -DDLXEMU_BUILD_TESTS:BOOL=OFF ..
 
       - name: Build
         working-directory: ./build
