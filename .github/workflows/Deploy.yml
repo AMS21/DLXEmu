@@ -13,6 +13,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CMAKE_C_COMPILER_LAUNCHER: "ccache"
+  CMAKE_CXX_COMPILER_LAUNCHER: "ccache"
+
 jobs:
   gh_pages:
     runs-on: ubuntu-24.04
@@ -38,7 +42,7 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: emscripten-${{ env.EM_VERSION }}
+          key: ${{ runner.os }}-emscripten-${{ env.EM_VERSION }}
 
       - name: Verify version
         run: emcc --version

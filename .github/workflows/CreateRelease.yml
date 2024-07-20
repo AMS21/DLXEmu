@@ -33,7 +33,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
+          tag_name: 'v${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
 
       - name: Merge develop -> main
         run: |
@@ -90,18 +90,18 @@ jobs:
       - name: Package build artifacts
         working-directory: ./build
         run: |
-          zip       ${{ env.RELEASE_NAME }}.zip bin/DLXEmu
-          sha256sum ${{ env.RELEASE_NAME }}.zip > ${{ env.RELEASE_NAME }}.zip.sha256
+          zip       ${RELEASE_NAME}.zip bin/DLXEmu
+          sha256sum ${RELEASE_NAME}.zip > ${RELEASE_NAME}.zip.sha256
 
-          tar -czvf ${{ env.RELEASE_NAME }}.tar.gz bin/DLXEmu
-          sha256sum ${{ env.RELEASE_NAME }}.tar.gz > ${{ env.RELEASE_NAME }}.tar.gz.sha256
+          tar -czvf ${RELEASE_NAME}.tar.gz bin/DLXEmu
+          sha256sum ${RELEASE_NAME}.tar.gz > ${RELEASE_NAME}.tar.gz.sha256
 
       - name: Upload Release asset
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: '${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
+          tag_name: 'v${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}'
           files: |
-            build/${{ env.RELEASE_NAME }}.zip
-            build/${{ env.RELEASE_NAME }}.zip.sha256
-            build/${{ env.RELEASE_NAME }}.tar.gz
-            build/${{ env.RELEASE_NAME }}.tar.gz.sha256
+            build/${RELEASE_NAME}.zip
+            build/${RELEASE_NAME}.zip.sha256
+            build/${RELEASE_NAME}.tar.gz
+            build/${RELEASE_NAME}.tar.gz.sha256

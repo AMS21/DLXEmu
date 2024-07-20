@@ -25,6 +25,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CMAKE_C_COMPILER_LAUNCHER: "ccache"
+  CMAKE_CXX_COMPILER_LAUNCHER: "ccache"
+
 jobs:
   Build:
     runs-on: ubuntu-24.04
@@ -57,6 +61,11 @@ jobs:
         with:
           version: ${{ matrix.em_version }}
           actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ runner.os }}-emscripten-${{ matrix.em_version }}
 
       - name: Setup Environment
         run: external/Phi/scripts/ci/SetupEnvironment.sh
