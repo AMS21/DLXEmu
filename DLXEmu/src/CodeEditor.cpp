@@ -444,7 +444,7 @@ namespace dlxemu
             ComputeCharAdvance();
 
             HandleKeyboardInputs();
-            ImGui::PushTabStop(true);
+            ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
 
             HandleMouseInputs();
 
@@ -470,7 +470,7 @@ namespace dlxemu
 
             InternalRender();
 
-            ImGui::PopTabStop();
+            ImGui::PopItemFlag();
 
             ImGui::EndChild();
         }
