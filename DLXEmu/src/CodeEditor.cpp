@@ -73,7 +73,7 @@ PHI_GCC_SUPPRESS_WARNING_POP()
 
 PHI_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")
 PHI_CLANG_SUPPRESS_WARNING("-Wunsafe-buffer-usage")
-// TODO: Fix all the warnigns from gcc
+// TODO: Fix all the warnings from gcc
 PHI_GCC_SUPPRESS_WARNING("-Wsign-conversion")
 PHI_GCC_SUPPRESS_WARNING("-Wstrict-overflow")
 PHI_GCC_SUPPRESS_WARNING("-Wfloat-equal")
@@ -83,106 +83,123 @@ PHI_GCC_SUPPRESS_WARNING("-Wfloat-equal")
 
 // Free Helper functions
 
-[[nodiscard]] static constexpr phi::boolean IsUTFSequence(const char character) noexcept
+namespace
 {
-    return (character & 0xC0) == 0x80;
-}
 
-[[nodiscard]] static constexpr phi::boolean IsUTFSequence(const unsigned char character) noexcept
-{
-    return IsUTFSequence(static_cast<char>(character));
-}
-
-using namespace phi::literals;
-
-// https://en.wikipedia.org/wiki/UTF-8
-// We assume that the char is a standalone character (<128) or a leading byte of an UTF-8 code sequence (non-10xxxxxx code)
-[[nodiscard]] static constexpr phi::u8_fast UTF8CharLength(const char character) noexcept
-{
-    if ((character & 0xFE) == 0xFC)
+    [[nodiscard]] constexpr phi::boolean IsUTFSequence(const char character) noexcept
     {
-        return 6_u8;
+        return (character & 0xC0) == 0x80;
     }
 
-    if ((character & 0xFC) == 0xF8)
+    [[nodiscard]] constexpr phi::boolean IsUTFSequence(const unsigned char character) noexcept
     {
-        return 5_u8;
+        return IsUTFSequence(static_cast<char>(character));
     }
 
-    if ((character & 0xF8) == 0xF0)
+    using namespace phi::literals;
+
+    // https://en.wikipedia.org/wiki/UTF-8
+    // We assume that the char is a standalone character (<128) or a leading byte of an UTF-8 code sequence (non-10xxxxxx code)
+    [[nodiscard]] constexpr phi::u8_fast UTF8CharLength(const char character) noexcept
     {
-        return 4_u8;
-    }
+        if ((character & 0xFE) == 0xFC)
+        {
+            return 6_u8;
+        }
 
-    if ((character & 0xF0) == 0xE0)
-    {
-        return 3_u8;
-    }
+        if ((character & 0xFC) == 0xF8)
+        {
+            return 5_u8;
+        }
 
-    if ((character & 0xE0) == 0xC0)
-    {
-        return 2_u8;
-    }
+        if ((character & 0xF8) == 0xF0)
+        {
+            return 4_u8;
+        }
 
-    return 1_u8;
-}
+        if ((character & 0xF0) == 0xE0)
+        {
+            return 3_u8;
+        }
 
-[[nodiscard]] static constexpr phi::u8_fast UTF8CharLength(const unsigned char character) noexcept
-{
-    return UTF8CharLength(static_cast<char>(character));
-}
+        if ((character & 0xE0) == 0xC0)
+        {
+            return 2_u8;
+        }
 
-// "Borrowed" from ImGui source
-static inline phi::u8_fast ImTextCharToUtf8(phi::array<char, 5u>& buffer,
-                                            const phi::u32        character) noexcept
-{
-    if (character < 0x80u)
-    {
-        buffer[0u] = static_cast<char>(character.unsafe());
-        buffer[1u] = '\0';
         return 1_u8;
     }
-    if (character < 0x800u)
-    {
-        buffer[0u] = static_cast<char>(0xc0 + (character.unsafe() >> 6));
-        buffer[1u] = static_cast<char>(0x80 + (character.unsafe() & 0x3f));
-        buffer[2u] = '\0';
 
-        return 2_u8;
-    }
-    if (character >= 0xdc00u && character < 0xe000u)
+    [[nodiscard]] constexpr phi::u8_fast UTF8CharLength(const unsigned char character) noexcept
     {
-        buffer[0u] = '\0';
-        return 0_u8;
+        return UTF8CharLength(static_cast<char>(character));
     }
 
-    if (character >= 0xd800u && character < 0xdc00u)
+    // "Borrowed" from ImGui source
+    phi::u8_fast ImTextCharToUtf8(phi::array<char, 5u>& buffer, const phi::u32 character) noexcept
     {
-        buffer[0u] = static_cast<char>(0xf0 + (character.unsafe() >> 18));
-        buffer[1u] = static_cast<char>(0x80 + ((character.unsafe() >> 12) & 0x3f));
-        buffer[2u] = static_cast<char>(0x80 + ((character.unsafe() >> 6) & 0x3f));
-        buffer[3u] = static_cast<char>(0x80 + (character.unsafe() & 0x3f));
-        buffer[4u] = '\0';
+        if (character < 0x80u)
+        {
+            buffer[0u] = static_cast<char>(character.unsafe());
+            buffer[1u] = '\0';
+            return 1_u8;
+        }
+        if (character < 0x800u)
+        {
+            buffer[0u] = static_cast<char>(0xc0 + (character.unsafe() >> 6));
+            buffer[1u] = static_cast<char>(0x80 + (character.unsafe() & 0x3f));
+            buffer[2u] = '\0';
 
-        return 4_u8;
+            return 2_u8;
+        }
+        if (character >= 0xdc00u && character < 0xe000u)
+        {
+            buffer[0u] = '\0';
+            return 0_u8;
+        }
+
+        if (character >= 0xd800u && character < 0xdc00u)
+        {
+            buffer[0u] = static_cast<char>(0xf0 + (character.unsafe() >> 18));
+            buffer[1u] = static_cast<char>(0x80 + ((character.unsafe() >> 12) & 0x3f));
+            buffer[2u] = static_cast<char>(0x80 + ((character.unsafe() >> 6) & 0x3f));
+            buffer[3u] = static_cast<char>(0x80 + (character.unsafe() & 0x3f));
+            buffer[4u] = '\0';
+
+            return 4_u8;
+        }
+        //else if (character < 0x10000)
+        {
+            PHI_ASSERT(character.unsafe() < 0x10000);
+
+            buffer[0u] = static_cast<char>(0xe0 + (character.unsafe() >> 12));
+            buffer[1u] = static_cast<char>(0x80 + ((character.unsafe() >> 6) & 0x3f));
+            buffer[2u] = static_cast<char>(0x80 + (character.unsafe() & 0x3f));
+            buffer[3u] = '\0';
+
+            return 3_u8;
+        }
     }
-    //else if (character < 0x10000)
+
+    [[nodiscard]] constexpr phi::boolean IsValidUTF8Sequence(const phi::u32 character) noexcept
     {
-        PHI_ASSERT(character.unsafe() < 0x10000);
-
-        buffer[0u] = static_cast<char>(0xe0 + (character.unsafe() >> 12));
-        buffer[1u] = static_cast<char>(0x80 + ((character.unsafe() >> 6) & 0x3f));
-        buffer[2u] = static_cast<char>(0x80 + (character.unsafe() & 0x3f));
-        buffer[3u] = '\0';
-
-        return 3_u8;
+        return !(character >= 0xdc00u && character < 0xe000u);
     }
-}
 
-[[nodiscard]] static constexpr phi::boolean IsValidUTF8Sequence(const phi::u32 character) noexcept
-{
-    return !(character >= 0xdc00u && character < 0xe000u);
-}
+    // NOTE: This function has been obsoleted in ImGui 1.91.0
+    [[nodiscard]] ImVec2 GetWindowContentRegionMax() noexcept
+    {
+        const ImGuiWindow* window             = GImGui->CurrentWindow;
+        const ImVec2       content_region_max = window->ContentRegionRect.Max;
+        const ImVec2       window_position    = window->Pos;
+
+        return {
+                content_region_max.x - window_position.x,
+                content_region_max.y - window_position.y,
+        };
+    }
+
+} // namespace
 
 namespace dlxemu
 {
@@ -3280,7 +3297,7 @@ namespace dlxemu
     {
         PHI_ASSERT(m_LineBuffer.empty());
 
-        const ImVec2 content_size = ImGui::GetWindowContentRegionMax();
+        const ImVec2 content_size = GetWindowContentRegionMax();
         ImDrawList*  draw_list    = ImGui::GetWindowDrawList();
         float        longest      = m_TextStart;
 
