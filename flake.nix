@@ -28,8 +28,8 @@
 
           buildInputs = with pkgs; [
             # Tooling
-            clang_18
-            clang-tools_18
+            clang_19
+            clang-tools_19
             cmake
             ninja
             python3

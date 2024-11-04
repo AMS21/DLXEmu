@@ -38,7 +38,7 @@ jobs:
 
       matrix:
         compiler:
-          - "clang-18"
+          - "clang-19"
           - "gcc-14"
 
     steps:

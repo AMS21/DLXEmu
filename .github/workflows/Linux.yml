@@ -41,7 +41,7 @@ jobs:
       matrix:
         compiler:
           - "gcc-14"
-          - "clang-18"
+          - "clang-19"
 
         build_type:
           - "Debug"
