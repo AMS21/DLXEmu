@@ -24,7 +24,7 @@ jobs:
 
     env:
       EM_CACHE_FOLDER: 'emsdk-cache'
-      EM_VERSION: "3.1.63"
+      EM_VERSION: "3.1.70"
 
     steps:
       - name: Checkout
