@@ -4,7 +4,7 @@
 #include <fmt/core.h>
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <phi/compiler_support/assume.hpp>
 #include <phi/compiler_support/unused.hpp>
 #include <phi/compiler_support/warning.hpp>
