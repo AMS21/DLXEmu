@@ -41,8 +41,8 @@ jobs:
 
       matrix:
         em_version:
-          - "3.1.70"
-          - "2.0.31"
+          - "4.0.3"
+          - "3.1.74"
 
         build_type:
           - "Debug"
