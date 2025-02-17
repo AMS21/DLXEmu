@@ -63,7 +63,16 @@ jobs:
         run: sudo scripts/ci/InstallDependencies.sh
 
       - name: Install compiler
-        run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja gcovr
+        run: external/Phi/scripts/ci/InstallTools.sh ${{ matrix.compiler }} ninja
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
+      - name: Install gcovr
+        run: pip install gcovr
 
       - name: Configure build directory
         run: |
@@ -87,7 +96,7 @@ jobs:
       - name: Upload coverage data
         uses: codecov/codecov-action@v5
         with:
-          file: ./build/coverage.xml
+          files: ./build/coverage.xml
           flags: ${{ runner.os }},${{ matrix.compiler }}
           name: ${{ runner.os }}-${{ matrix.compiler }}
           fail_ci_if_error: true
