@@ -40,6 +40,7 @@
             libxkbcommon
             python3Packages.jinja2
             wayland
+            wayland-scanner
             xorg.libX11
             xorg.libXcursor
             xorg.libXi
