@@ -10070,8 +10070,6 @@ function ImGui_ImplGlfw_EmscriptenOpenURL(url) { url = url ? UTF8ToString(url) :
 
   var _glfwDestroyWindow = (winid) => GLFW.destroyWindow(winid);
 
-  var _glfwFocusWindow = (winid) => 0;
-
   var _glfwGetClipboardString = (win) => 0;
 
   var _glfwGetCurrentContext = () => GLFW.active ? GLFW.active.id : 0;
@@ -10282,8 +10280,6 @@ function ImGui_ImplGlfw_EmscriptenOpenURL(url) { url = url ? UTF8ToString(url) :
 
   var _glfwSetScrollCallback = (winid, cbfun) => GLFW.setScrollCallback(winid, cbfun);
 
-  var _glfwSetWindowCloseCallback = (winid, cbfun) => GLFW.setWindowCloseCallback(winid, cbfun);
-
   var _glfwSetWindowFocusCallback = (winid, cbfun) => {
       var win = GLFW.WindowFromId(winid);
       if (!win) return null;
@@ -10291,26 +10287,6 @@ function ImGui_ImplGlfw_EmscriptenOpenURL(url) { url = url ? UTF8ToString(url) :
       win.windowFocusFunc = cbfun;
       return prevcbfun;
     };
-
-  var _glfwSetWindowOpacity = (winid, opacity) => { /* error */ };
-
-  var _glfwSetWindowPos = (winid, x, y) => GLFW.setWindowPos(winid, x, y);
-
-  var _glfwSetWindowPosCallback = (winid, cbfun) => {
-      var win = GLFW.WindowFromId(winid);
-      if (!win) return null;
-      var prevcbfun = win.windowPosFunc;
-      win.windowPosFunc = cbfun;
-      return prevcbfun;
-    };
-
-  var _glfwSetWindowSize = (winid, width, height) => GLFW.setWindowSize(winid, width, height);
-
-  var _glfwSetWindowSizeCallback = (winid, cbfun) => GLFW.setWindowSizeCallback(winid, cbfun);
-
-  var _glfwSetWindowTitle = (winid, title) => GLFW.setWindowTitle(winid, title);
-
-  var _glfwShowWindow = (winid) => 0;
 
   var _glfwSwapBuffers = (winid) => GLFW.swapBuffers(winid);
 
@@ -11112,8 +11088,6 @@ var wasmImports = {
   /** @export */
   glfwDestroyWindow: _glfwDestroyWindow,
   /** @export */
-  glfwFocusWindow: _glfwFocusWindow,
-  /** @export */
   glfwGetClipboardString: _glfwGetClipboardString,
   /** @export */
   glfwGetCurrentContext: _glfwGetCurrentContext,
@@ -11178,23 +11152,7 @@ var wasmImports = {
   /** @export */
   glfwSetScrollCallback: _glfwSetScrollCallback,
   /** @export */
-  glfwSetWindowCloseCallback: _glfwSetWindowCloseCallback,
-  /** @export */
   glfwSetWindowFocusCallback: _glfwSetWindowFocusCallback,
-  /** @export */
-  glfwSetWindowOpacity: _glfwSetWindowOpacity,
-  /** @export */
-  glfwSetWindowPos: _glfwSetWindowPos,
-  /** @export */
-  glfwSetWindowPosCallback: _glfwSetWindowPosCallback,
-  /** @export */
-  glfwSetWindowSize: _glfwSetWindowSize,
-  /** @export */
-  glfwSetWindowSizeCallback: _glfwSetWindowSizeCallback,
-  /** @export */
-  glfwSetWindowTitle: _glfwSetWindowTitle,
-  /** @export */
-  glfwShowWindow: _glfwShowWindow,
   /** @export */
   glfwSwapBuffers: _glfwSwapBuffers,
   /** @export */
