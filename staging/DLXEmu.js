@@ -8418,6 +8418,7 @@ function ImGui_ImplGlfw_EmscriptenOpenURL(url) { url = url ? UTF8ToString(url) :
 
 
 
+
   
   
   
@@ -11069,6 +11070,8 @@ var wasmImports = {
   glTexImage2D: _glTexImage2D,
   /** @export */
   glTexParameteri: _glTexParameteri,
+  /** @export */
+  glTexSubImage2D: _glTexSubImage2D,
   /** @export */
   glUniform1i: _glUniform1i,
   /** @export */
