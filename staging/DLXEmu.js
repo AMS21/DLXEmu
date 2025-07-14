@@ -10141,11 +10141,6 @@ function ImGui_ImplGlfw_EmscriptenOpenURL(url) { url = url ? UTF8ToString(url) :
 
   var _glfwGetKey = (winid, key) => GLFW.getKey(winid, key);
 
-  var _glfwGetMonitorContentScale = (monitor, x, y) => {
-      HEAPF32[((x)>>2)] = GLFW.scale;
-      HEAPF32[((y)>>2)] = GLFW.scale;
-    };
-
   var _glfwGetMonitorPos = (monitor, x, y) => {
       HEAP32[((x)>>2)] = 0;
       HEAP32[((y)>>2)] = 0;
@@ -11106,8 +11101,6 @@ var wasmImports = {
   glfwGetJoystickButtons: _glfwGetJoystickButtons,
   /** @export */
   glfwGetKey: _glfwGetKey,
-  /** @export */
-  glfwGetMonitorContentScale: _glfwGetMonitorContentScale,
   /** @export */
   glfwGetMonitorPos: _glfwGetMonitorPos,
   /** @export */
