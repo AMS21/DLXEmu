@@ -8419,6 +8419,7 @@ function ImGui_ImplGlfw_EmscriptenOpenURL(url) { url = url ? UTF8ToString(url) :
 
 
 
+
   
   
   
@@ -11057,6 +11058,8 @@ var wasmImports = {
   glIsProgram: _glIsProgram,
   /** @export */
   glLinkProgram: _glLinkProgram,
+  /** @export */
+  glPixelStorei: _glPixelStorei,
   /** @export */
   glScissor: _glScissor,
   /** @export */
