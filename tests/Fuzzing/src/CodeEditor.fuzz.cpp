@@ -355,11 +355,13 @@ bool SetupImGui() noexcept
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
 
+    io.BackendFlags |= ImGuiBackendFlags_RendererHasTextures; // Backend Flags
+
     // Enforce valid display size
     io.DisplaySize.x = 1024.0f;
     io.DisplaySize.y = 768.0f;
 
-    // Enfore valid DeltaTime
+    // Enforce valid DeltaTime
     io.DeltaTime = 1.0f / 60.0f;
 
     // Don't save any config
@@ -372,12 +374,6 @@ bool SetupImGui() noexcept
         style.WindowRounding              = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
-
-    // Build atlas
-    unsigned char* tex_pixels{nullptr};
-    int            tex_w;
-    int            tex_h;
-    io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
 
     return true;
 }

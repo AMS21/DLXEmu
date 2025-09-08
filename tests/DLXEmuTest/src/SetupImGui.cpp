@@ -22,6 +22,9 @@ void BeginImGui() noexcept
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
 
+    // Backend Flags
+    io.BackendFlags |= ImGuiBackendFlags_RendererHasTextures;
+
     // Enforce valid display size
     io.DisplaySize.x = 1024.0f;
     io.DisplaySize.y = 768.0f;
@@ -45,12 +48,6 @@ void BeginImGui() noexcept
     }
 
     PHI_CLANG_SUPPRESS_WARNING_POP()
-
-    // Build atlas
-    unsigned char* tex_pixels{nullptr};
-    int            tex_w{0};
-    int            tex_h{0};
-    io.Fonts->GetTexDataAsRGBA32(&tex_pixels, &tex_w, &tex_h);
 
     ImGui::NewFrame();
 }
