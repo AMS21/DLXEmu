@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: main
           submodules: recursive
@@ -81,7 +81,7 @@ jobs:
           cp -r bin/* $GITHUB_WORKSPACE/output
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: develop
           submodules: recursive
