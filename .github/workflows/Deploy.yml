@@ -103,7 +103,7 @@ jobs:
           cp -r bin/* $GITHUB_WORKSPACE/output/staging
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.BOT_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_KEY_PASSPHRASE }}
