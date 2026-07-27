@@ -71,7 +71,7 @@ jobs:
         run: external/Phi/scripts/ci/SetupEnvironment.sh
 
       - name: Setup python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.x'
           cache: 'pip'
